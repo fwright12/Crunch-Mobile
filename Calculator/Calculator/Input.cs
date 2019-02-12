@@ -10,27 +10,27 @@ namespace Calculator
     {
         public static Input selected;
         public static IGraphicsHandler graphicsHandler;
-
-        //public static Graphics UI;
-        public List<Symbol> text = new List<Symbol>();
         public static int pos;
-        public static OnReceive state = OnReceive.add;
-
-        public enum OnReceive { add, delete };
+        public static Symbol lastAdded;
+        public static object layoutRoot;
 
         public static bool editing = false;
         public static object editField;
+        public static Edit editor;
 
-        public static readonly Text EditingPlaceHolder = new Text("for debugging purposes");
+        public List<Symbol> text = new List<Symbol>();
         public Expression expression;
         public MathView mathView;
-        public Number changing;
+
+        public static OnReceive state = OnReceive.add;
+        public enum OnReceive { add, delete };
 
         private Text equalSign = new Text("=");
 
         public Input(MathView view)
         {
             mathView = view;
+            pos = 0;
         }
 
         public static bool IsNumber(string s)
@@ -54,81 +54,59 @@ namespace Calculator
             return false;
         }
 
-        public void ExitEditMode()
+        private void Insert(Symbol sender)
         {
-            text[pos] = new Number(changing.value);
-            mathView.SetText(text);
-            //graphicsHandler.RemoveChild(mathView.main, pos);
-            //Graphics.graphicsHandler.AddChild(mathView.parent, Graphics.Create((Number)text[pos]), pos);
-            //editField = null;
-            pos++;
+            text.Insert(pos, sender);
+            lastAdded = sender;
         }
 
         public void Key(string s)
         {
-            //If already editing and another number is sent
-            /*if (IsNumber(s) && !editing)
-            {
-                print.log("started");
-                text.Insert(pos, new Text("number place holder"));
-                UI.StartEditing();
-            }
-            else if (!editing)
-            {*/
-
-            Symbol adding = null;
-
             if (IsNumber(s))
             {
                 if (!editing)
                 {
                     editField = graphicsHandler.AddEditField();
-                    //graphicsHandler.AddChild(mathView.main, editField, pos);
-                    text.Insert(pos, EditingPlaceHolder);
-                    //text.Add(EditingPlaceHolder);
-                }
-                else
-                {
-                    //text[pos] = new Number(double.Parse(graphicsHandler.DispatchKey(s)));
-                    //Equation.selected.SetAnswer();
-                    //return;
+                    Insert(editor = new Edit(0));
                 }
 
-                changing = new Number(double.Parse(graphicsHandler.DispatchKey(s)));
-
-                //Input.UI.views.Remove(Input.text[Input.pos]);
-                //Input.text[Input.pos] = new Number(double.Parse(editField.Text));
-                //Input.UI.views.Add(Input.text[Input.pos], Input.editField);
-
-                //Input.UI.expression.parts = Expression.Parse(Input.text);
+                editor.Dispatch(double.Parse(graphicsHandler.DispatchKey(s)));
             }
             else
             {
                 if (editing)
                 {
-                    ExitEditMode();
-                    //mathView.SetText(Expression.Parse(text));
+                    text.Remove(editor);
+                    Insert(new Number(editor.value));
+                    pos++;
                 }
 
                 switch (s)
                 {
+                    case "exit edit mode":
+                        if (text.Count == 0)
+                        {
+                            graphicsHandler.RemoveChild(layoutRoot, mathView.main);
+                        }
+                        pos--;
+                        break;
+                    case "^":
                     case "/":
+                    case "*":
                     case "+":
                     case "-":
-                    case "*":
-                        text.Insert(pos, new Operand(s));
+                        Insert(new Operand(s));
                         break;
                     case "(":
-                        Expression temp = new Expression();
-                        temp.Parend = true;
-                        expression.Insert(temp);
+                    case ")":
+                        Insert(new Text(s));
                         break;
                     default:
-                        text.Insert(pos, new Function(s, new Expression()));
+                        Insert(new Function(s));
+                        parend(++pos);
                         break;
                 }
 
-                //Graphics.graphicsHandler.AddChild(UI.graphicalObject, Graphics.Create((dynamic)text[pos]), pos);
                 pos++;
             }
 
@@ -136,124 +114,189 @@ namespace Calculator
 
             print.log("Input text");
             foreach (Symbol a in text)
-                print.log(a);
+                print.log(a +", "+ a.GetHashCode());
 
-            //}
+            List<Symbol> parsed = Parse(text);
+            parsed.Add(new Text("="));
+            parsed.Add(new Expression(parsed).answer.Copy());
 
-            //editing = IsNumber(s);
+            mathView.SetText(parsed);
+        }
 
-            //UI.Update();
-            List<Symbol> idk = Expression.Parse(text);
+        public void parend(int index)
+        {
+            text.Insert(Math.Min(index + 1, text.Count), new Text(")"));
+            text.Insert(Math.Max(index, 0), new Text("("));
+        }
 
-            idk.Add(equalSign);
-            //idk.Add(new Text("="));
-            //idk.Add(new Number(0));
+        public List<Symbol> Parse(List<Symbol> sender)
+        {
+            List<Symbol> list = new List<Symbol>();
+            foreach (Symbol s in sender)
+                list.Add(s);
 
-            mathView.SetText(idk);
+            List<Symbol> result = new List<Symbol>();
 
-            //Equation.selected.SetAnswer();
-
-            /*editing = IsNumber(s);
-
-            print.log(state +", "+ (state == OnReceive.delete));
-            if (state == OnReceive.delete && !editing)
+            //Search for and create expressions
+            for (int i = 0; i < list.Count; i++)
             {
-                print.log("in");
-                UI.expression.parts.RemoveAt(--pos);
-            }
-
-            //print.log("SDFSDFSD " + pos);
-
-            //If no longer editing but the object still exists, then
-            //the last thing sent must have been a number
-            if (!editing && editField != null)
-            {
-                //UI.expression.parts[pos - 1] = new Number(double.Parse(UI.expression.parts[pos - 1].text));
-                pos++;
-                editField = null;
-            }
-
-            switch (s)
-            {
-                case "/":
-                    //List<Symbol> temp = Expression.next(UI.expression.parts, -1, "+", "-", "*", "/");
-                    //print.log(UI.expression.parts[pos - 1]);
-                    //UI.expression.parts.RemoveRange(pos - temp.Count, temp.Count);
-
-                    dynamic denominator;// = new Expression();
-                    try
-                    {
-                        denominator = UI.expression.parts[pos + 1];
-                    }
-                    catch
-                    {
-                        denominator = new Expression();
-                    }
-
-                    UI.expression.parts[pos - 1] = new Fraction((dynamic)UI.expression.parts[pos - 1], denominator);
-
-                    break;
-                case "+":
-                case "-":
-                case "*":
-                case "^":
-                    UI.expression.Insert(new Operand(s));
-                    break;
-                case "(":
-                    Expression temp = new Expression();
-                    temp.Parend = true;
-                    UI.expression.Insert(temp);
-                    break;
-                default:
-                    try
-                    {
-                        double.Parse(s);
-
-                        //If the object hasn't been created, then
-                        //this is the first number
-                        if (editField == null)
-                        {
-                            UI.expression.Insert(new Number(0));
-                            UI.Update();
-                            UI.expression.parts[pos] = new Number(double.Parse(s));
-                            //UI.Update();
-                        }
-                        else
-                        {
-                            UI.expression.parts[pos] = new Number(double.Parse(UI.expression.parts[pos].text + s));
-                        }
-                    }
-                    catch
-                    {
-                        UI.expression.Insert(new Function(s, new Expression()));
-                    }
-
-                    //Equation.selected.SetAnswer();
-                    //return;
-                    break;
-            }
-
-            if (!editing)
-                pos++;
-
-            //If there's no edit object, then
-            //it's either not editing or one needs to be created
-            if (editField == null)
-            {
-                Graphics updatedInputUI = UI.Update();
-
-                //if (!editing)
-                 //   pos++;
-
-                //print.log("thi sk k k  " + updatedInputUI + "DSF DS");
-                if (updatedInputUI != null)
+                if (list[i].text == "(")
                 {
-                    UI = updatedInputUI;
-                    pos = 0;
+                    int count = 0;
+
+                    int j;
+                    for(j = i + 1; j < list.Count; j++)
+                    {
+                        if (list[j].text == "(")
+                        {
+                            count++;
+                        }
+                        else if (list[j].text == ")")
+                        {
+                            if (count == 0)
+                                break;
+
+                            count--;
+                        }
+                    }
+
+                    if (j < list.Count)
+                    {
+                        List<Symbol> temp = Parse(list.GetRange(i + 1, j - i - 1));
+                        temp.Insert(0, list[i]);
+                        temp.Add(list[j]);
+
+                        list.RemoveRange(i, j - i + 1);
+                        list.Insert(i, new Expression(temp));
+                        //result.Add(list[j]);
+
+                        //i = j;
+                    }
                 }
             }
 
-            Equation.selected.SetAnswer();*/
+            print.log("extracted expressions");
+            foreach (Symbol s in list)
+                print.log(s);
+
+            //Special cases
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (list[i].text == "/")
+                {
+                    Expression[] frac = new Expression[2];
+
+                    for (int j = 0; j < 2; j++)
+                    {
+                        print.log("j is " + j);
+                        try
+                        {
+                            Symbol temp = list[i + (j * 2 - 1)];
+
+                            if (temp.GetType() == typeof(Expression))
+                            {
+                                frac[j] = temp as Expression;
+                            }
+                            else
+                            {
+                                frac[j] = new Expression(temp);
+
+                                parend(text.IndexOf(list[i]) + (j * 2 - 1));
+                                if (temp.GetType() == typeof(Edit))
+                                    pos--;
+                                pos += 2;
+                            }
+                        }
+                        catch
+                        {
+                            frac[j] = new Expression();
+                        }
+                    }
+
+                    result[result.Count - 1] = new Fraction(frac[0], frac[1]);
+
+                    i++;
+                }
+                else if (list[i].text == "^")
+                {
+                    Expression[] exp = new Expression[2];
+
+                    for (int j = 1; j < 2; j++)
+                    {
+                        try
+                        {
+                            Symbol temp = list[i + (j * 2 - 1)];
+
+                            if (temp is Expression)
+                            {
+                                exp[j] = temp as Expression;
+                            }
+                            else
+                            {
+                                exp[j] = new Expression(temp);
+
+                                parend(text.IndexOf(list[i]) + (j * 2 - 1));
+                                if (temp.GetType() == typeof(Edit))
+                                    pos--;
+                                pos += 2;
+                            }
+                        }
+                        catch
+                        {
+                            exp[j] = new Expression();
+                        }
+                    }
+
+                    //result[result.Count - 1] = new Exponent(exp[0], exp[1]);
+                    exp[1].format = Format.Exponent;
+                    result.Add(exp[1]);
+
+                    i++;
+                }
+                else
+                {
+                    result.Add(list[i]);
+                }
+
+                /*if (list[i].text == "^")
+                {
+                    try
+                    {
+                        if (list[i + 1].GetType() == typeof(Expression))
+                        {
+                            result.Add(list[i + 1]);
+                        }
+                        else
+                        {
+                            parend(text.IndexOf(list[i + 1]));
+                            result.Add(Expression.Wrap(list[i + 1]));
+                        }
+
+                        i++;
+                    }
+                    catch { }
+                }*/
+            }
+
+            print.log("new text");
+            foreach (Symbol s in text)
+                print.log(s + ", " + s.text);
+            print.log("----parsed list-----");
+            foreach (Symbol s in result)
+                print.log(s +", "+ s.GetHashCode());
+            print.log("----parsed list-----");
+
+            return result;
+        }
+    }
+
+    public class Edit : Number
+    {
+        public Edit(double d) : base(d) { }
+
+        public void Dispatch(double d)
+        {
+            _value = d;
         }
     }
 }

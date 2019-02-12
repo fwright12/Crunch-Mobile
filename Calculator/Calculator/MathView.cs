@@ -10,7 +10,7 @@ namespace Calculator
     {
         public object parent;
         public object child;
-        public Symbol text;
+        public string format;
 
         public Graphic(object Parent, object Child, int index)
         {
@@ -21,7 +21,6 @@ namespace Calculator
         public Graphic(object Parent, Symbol Text, int index)
         {
             child = Input.selected.mathView.Create((dynamic)Text);
-            text = Text;
 
             SetParent(index, Parent);
         }
@@ -36,12 +35,13 @@ namespace Calculator
 
             Input.graphicsHandler.AddChild(newParent, child, index);
             parent = newParent;
-            Input.selected.mathView.main = parent;
         }
     }
 
     public class MathView
     {
+        public static List<string> supportedFunctions = new List<string>() { "Pythagorean Theorem", "Law of Sines", "Law of Cosines" };
+
         public object main;
 
         public Dictionary<Symbol, Graphic> views = new Dictionary<Symbol, Graphic>();
@@ -49,115 +49,114 @@ namespace Calculator
         public MathView(object layout)
         {
             main = layout;// Create(new Expression());
-            //Graphics.graphicsHandler.AddChild(canvas, parent, 0);
         }
 
         private List<Symbol> sent = new List<Symbol>();
+        public static List<Symbol> different = new List<Symbol>();
+
+        private List<Type> unparend = new List<Type>() { typeof(Fraction) };
+        private bool parendFlag = false;
 
         public void SetText(List<Symbol> list)
         {
             sent.Clear();
 
+            //different.Clear();
+            //findDifferent(list);
+
             SetText(main, list);
 
             print.log("removing...");
+            foreach (Symbol s in sent)
+                print.log(s);
+            print.log("SDFSDFF");
             List<Symbol> temp = views.Keys.ToList();
             foreach (Symbol s in temp)
             {
                 if (!sent.Contains(s))
                 {
-                    print.log("removed " + s);
+                    print.log("removed " + s);// +", "+ views[s]);
                     Input.graphicsHandler.RemoveChild(views[s].parent, views[s].child);
                     views.Remove(s);
                 }
             }
         }
 
+        private void findDifferent(List<Symbol> list)
+        {
+            foreach (Symbol s in list)
+            {
+                if (s.GetText().Count > 0 && s != s.GetText()[0])
+                {
+                    findDifferent(s.GetText());
+                }
+                else if (!views.Keys.Contains(s))
+                {
+                    different.Add(s);
+                }
+            }
+        }
+                       
         private void SetText(object parent, List<Symbol> list)
         {
             for (int i = 0; i < list.Count; i++)
             {
-                print.log(i +", "+ "look here " + list[i] + ", " + views.ContainsKey(list[i]) + ", "+ list[i].Equals(new Text("=")));
-                //print.log(list[i].GetText()[0].text);
-                //foreach (Symbol s in list[i].GetText())
-                //    print.log(s);
-
-                sent.Add(list[i]);
+                print.log(i +", "+ "look here " + list[i] + ", " + views.ContainsKey(list[i]) + ", "+ list[i].GetHashCode());
 
                 if (!views.ContainsKey(list[i]))
                 {
-                    print.log("adding new");
-                    //object temp = Create((dynamic)list[i]); //Graphics.graphicsHandler.AddText(" " + list[i].text + " ");
-                    //if (Graphics.clickable)
-                    //    Graphics.graphicsHandler.Select(temp);
-
-                    //Input.graphicsHandler.AddChild(adding.parent, adding.child, i);
-
-                    /*if (Input.editing && !views.ContainsKey(Input.EditingPlaceHolder))
-                    {
-                        Input.selected.text.Add(Input.EditingPlaceHolder);
-                        views.Add(Input.EditingPlaceHolder, new Graphic(parent, Input.editField, i));
-                    }*/
-                    //else if (!Input.editing)
-                    //{
-
-                    //}
                     views.Add(list[i], new Graphic(parent, list[i], i));
+                    print.log("adding new " + list[i]);
+
+                    if (list[i] == Input.lastAdded)
+                    {
+                        Input.lastAdded = null;
+                    }
                 }
-                else if (views.ContainsKey(list[i]) && views[list[i]].parent != parent)
+                else if (views[list[i]].parent != parent)
                 {
                     views[list[i]].SetParent(i, parent);
                 }
 
-                if (list[i] != list[i].GetText()[0])
+                if (list[i].GetText().Count > 0 && list[i] != list[i].GetText()[0])
                 {
-                    print.log("going again");
-                    SetText(views[list[i]].child, list[i].GetText());
+                    Graphic temp = views[list[i]];
+                    views.Remove(list[i]);
+
+                    if (unparend.Contains(list[i].GetType()))
+                        parendFlag = true;
+
+                    SetText(temp.child, list[i].GetText());
+
+                    if (unparend.Contains(list[i].GetType()))
+                        parendFlag = false;
+
+                    views.Add(list[i], temp);
                 }
+
+                //if (!(parendFlag && (list[i].text == "(" || list[i].text == ")")))
+                    sent.Add(list[i]);
             }
         }
 
         public object Create(Symbol sender)
         {
-            if (sender == Input.EditingPlaceHolder)
-            {
-                return Input.editField;
-            }
-            else
-            {
-                return Input.graphicsHandler.AddText(" " + sender.text + " ");
-            }
+            return Input.graphicsHandler.AddText(" " + sender.text + " ");
+        }
+
+        public object Create(Edit sender)
+        {
+            return Input.editField;
         }
 
         public object Create(Expression sender)
         {
-            //Graphics temp = new Graphics(sender);
-
-            //temp.Update();
-
-            //lastAdded = temp;
-
-            return Input.graphicsHandler.AddLayout(true);
-            //return temp.graphicalObject;
+            return Input.graphicsHandler.AddLayout(sender.format);
         }
 
         public object Create(Fraction sender)
         {
-            object layout = Input.graphicsHandler.AddLayout(false);
-
-            return layout;
-            //print.log("SDFLJSDFJLSDF " + ", " + views.ContainsKey(sender.numerator.GetText()[0]) + ", "+ sender.numerator.GetText()[0]);
-
-            //The numberator already exists as an expression
-            if (!views.ContainsKey(sender.numerator))
-            {
-                views.Add(sender.numerator, new Graphic(layout, sender.numerator, 0));
-            }
-
-            if (!views.ContainsKey(sender.denominator))
-            {
-                views.Add(sender.denominator, new Graphic(layout, sender.denominator, 1));
-            }
+            object layout = Input.graphicsHandler.AddLayout(new Format(orientation: "vertical"));
 
             return layout;
         }

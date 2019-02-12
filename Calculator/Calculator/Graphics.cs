@@ -8,17 +8,32 @@ namespace Calculator
 {
     public interface IGraphicsHandler
     {
-        object AddLayout(bool isHorizontal);
+        object AddLayout(Format f);
         object AddText(string text);
         object AddEditField();
+        void Superscript(object sender);
         string DispatchKey(string key);
 
         void Select(object sender);
 
         void AddChild(object parent, object child, int index);
         void RemoveChild(object parent, int index);
-        void RemoveChild(object parent, object sender);
-        bool hasParent(object sender);
+        void RemoveChild(object parent, object child);
+    }
+
+    public class Format
+    {
+        public static readonly Format Exponent = new Format(padding: 75);
+        public static readonly Format Fraction = new Format(orientation: "vertical");
+
+        public string Orientation;
+        public int Padding;
+
+        public Format(string orientation = "horizontal", int padding = 0)
+        {
+            Orientation = orientation;
+            Padding = padding;
+        }
     }
 
     /*public class Graphics

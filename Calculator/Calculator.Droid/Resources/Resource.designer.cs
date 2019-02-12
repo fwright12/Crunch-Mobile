@@ -60,6 +60,15 @@ namespace Calculator.Droid
 		public partial class Id
 		{
 			
+			// aapt resource value: 0x7f050034
+			public const int FunctionalityButton = 2131034164;
+			
+			// aapt resource value: 0x7f050035
+			public const int FunctionalityLayout = 2131034165;
+			
+			// aapt resource value: 0x7f050037
+			public const int FunctionalityListView = 2131034167;
+			
 			// aapt resource value: 0x7f050004
 			public const int button1 = 2131034116;
 			
@@ -215,6 +224,9 @@ namespace Calculator.Droid
 			
 			// aapt resource value: 0x7f05002e
 			public const int tableRow8 = 2131034158;
+			
+			// aapt resource value: 0x7f050036
+			public const int textView1 = 2131034166;
 			
 			static Id()
 			{

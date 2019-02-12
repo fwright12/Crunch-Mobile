@@ -6,5 +6,3 @@ C:\Users\Flint\documents\visual studio 2015\Projects\Calculator\Calculator\Calcu
 C:\Users\Flint\documents\visual studio 2015\Projects\Calculator\Calculator\Calculator\obj\Debug\Calculator.pdb
 C:\Users\Flint\documents\visual studio 2015\Projects\Calculator\Calculator\Calculator\obj\Debug\Calculator.dll.mdb
 C:\Users\Flint\documents\visual studio 2015\Projects\Calculator\Calculator\Calculator\bin\Debug\Calculator.dll.mdb
-C:\Users\Flint\documents\visual studio 2015\Projects\Calculator\Calculator\Calculator\obj\Debug\Calculator.dll.mdb
-C:\Users\Flint\documents\visual studio 2015\Projects\Calculator\Calculator\Calculator\bin\Debug\Calculator.dll.mdb

@@ -13,6 +13,9 @@ namespace Calculator
             get;
         }
 
+        public abstract Symbol Copy();
+        public Format format;
+
         public virtual List<Symbol> GetText()
         {
             return new List<Symbol>() { this };
@@ -27,6 +30,11 @@ namespace Calculator
             {
                 return " ";
             }
+        }
+
+        public override Symbol Copy()
+        {
+            throw new NotImplementedException();
         }
     }
 
@@ -46,6 +54,11 @@ namespace Calculator
         {
             _text = s;
         }
+
+        public override Symbol Copy()
+        {
+            return new Text(text);
+        }
     }
 
     public class Operand : Text
@@ -59,32 +72,27 @@ namespace Calculator
         {
             get
             {
-                return value.ToString();
+                return func;
             }
         }
 
-        public double value
+        private string func;
+
+        public Function(string Func)
         {
-            get
-            {
-                return findFunction();
-            }
+            func = Func;
         }
 
-        private string Func;
-        private Expression Exp;
-
-        public Function(string func, Expression exp)
+        public Number evaluate(Term t)
         {
-            Func = func;
-            Exp = exp;
+            return new Number(search(t));
         }
 
-        private double findFunction()
+        private double search(Term t)
         {
-            double input = Exp.evaluate().value;
+            double input = t.value;
 
-            switch (Func)
+            switch (func)
             {
                 case "sin":
                     return Math.Sin(input);
@@ -92,9 +100,20 @@ namespace Calculator
                     return Math.Cos(input);
                 case "tan":
                     return Math.Tan(input);
+                case "sqrt":
+                    return Math.Sqrt(input);
+                case "ln":
+                    return Math.Log(input);
+                case "log":
+                    return Math.Log10(input);
                 default:
                     throw new NotSupportedException();
             }
+        }
+
+        public override Symbol Copy()
+        {
+            throw new NotImplementedException();
         }
     }
 
@@ -113,14 +132,30 @@ namespace Calculator
             get;
         }
 
-        public abstract Term Add(Number other);
-        public abstract Term Add(Fraction other);
+        public virtual Term Simplify()
+        {
+            return new Number(value);
+        }
 
-        public abstract Term Multiply(Number other);
-        public abstract Term Multiply(Fraction other);
+        public virtual Term Evaluate(Expression other)
+        {
+            return other.answer as dynamic;
+        }
 
-        public abstract Term Pow(Number other);
-        public abstract Term Pow(Fraction other);
+        public virtual Term Add(Term other)
+        {
+            return new Number(value + other.value);
+        }
+
+        public virtual Term Multiply(Term other)
+        {
+            return new Number(value * other.value);
+        }
+
+        public virtual Term Pow(Term other)
+        {
+            return new Number(Math.Pow(value, other.value));
+        }
     }
 
     public class Number : Term
@@ -133,41 +168,67 @@ namespace Calculator
             }
         }
 
-        private double _value;
+        protected double _value;
 
         public Number(double d)
         {
             _value = d;
         }
 
-        public override Term Add(Number other)
-        {
-            return new Number(value + other.value);
-        }
-
-        public override Term Add(Fraction other)
+        public Term Add(Fraction other)
         {
             return other.Add(this);
         }
 
-        public override Term Multiply(Number other)
-        {
-            return new Number(value * other.value);
-        }
-
-        public override Term Multiply(Fraction other)
+        public Term Multiply(Fraction other)
         {
             return other.Multiply(this);
         }
 
-        public override Term Pow(Number other)
-        {
-            return new Number(Math.Pow(value, other.value));
-        }
-
-        public override Term Pow(Fraction other)
+        public Term Pow(Fraction other)
         {
             return other.Pow(this);
+        }
+
+        public override Symbol Copy()
+        {
+            return new Number(value);
+        }
+    }
+
+    public class Power : Expression
+    {
+
+    }
+
+    public class Exponent : Term
+    {
+        public override double value
+        {
+            get
+            {
+                return Math.Pow(Evaluate(num).value, Evaluate(power).value);
+            }
+        }
+
+        private Expression num;
+        private Expression power;
+
+        public Exponent(Expression Num, Expression Power)
+        {
+            num = Num;
+            power = Power;
+            power.format = new Format(padding: 75);
+        }
+
+        public override List<Symbol> GetText()
+        {
+            return new List<Symbol>() { num, power };
+        }
+
+        public override Symbol Copy()
+        {
+            throw new NotImplementedException();
         }
     }
 
@@ -177,16 +238,19 @@ namespace Calculator
         {
             get
             {
-                return numerator.evaluate().value / denominator.evaluate().value;
+                return Evaluate(numerator).value / Evaluate(denominator).value;
             }
         }
 
-        public Expression numerator;
-        public Expression denominator;
+        private Expression numerator;
+        private Expression denominator;
 
         public Fraction(Symbol n, Symbol d)
         {
-            if (n.GetType() == typeof(Expression))
+            numerator = Expression.Wrap(n);
+            denominator = Expression.Wrap(d);
+
+            /*if (n.GetType() == typeof(Expression))
                 numerator = n as Expression;
             else
                 numerator = new Expression(new List<Symbol>() { n });
@@ -194,43 +258,30 @@ namespace Calculator
             if (d.GetType() == typeof(Expression))
                 denominator = d as Expression;
             else
-                denominator = new Expression(new List<Symbol>() { d });
-
-            numerator.Parend = false;
-            denominator.Parend = false;
+                denominator = new Expression(new List<Symbol>() { d });*/
         }
 
-        public Fraction Simplify()
+        public override Term Simplify()
         {
-            return new Fraction(numerator.evaluate(), denominator.evaluate());
+            return new Fraction(Evaluate(numerator), Evaluate(denominator));
         }
 
-        public override Term Add(Number other)
+        public Term Add(Number other)
         {
-            return new Fraction(numerator.evaluate().Add(other.Multiply((dynamic)denominator.evaluate())), denominator);
+            return new Fraction(Evaluate(numerator).Add(other.Multiply(Evaluate(denominator))), denominator);
         }
 
-        public override Term Add(Fraction other)
+        public Term Add(Fraction other)
         {
             throw new NotImplementedException();
         }
 
-        public override Term Multiply(Number other)
+        public Term Multiply(Number other)
         {
-            return new Fraction(other.Multiply((dynamic)numerator.evaluate()), denominator);
+            return new Fraction(other.Multiply(Evaluate(numerator)), denominator);
         }
 
-        public override Term Multiply(Fraction other)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Term Pow(Number other)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Term Pow(Fraction other)
+        public Term Multiply(Fraction other)
         {
             throw new NotImplementedException();
         }
@@ -240,9 +291,22 @@ namespace Calculator
             return new List<Symbol>() { numerator, denominator };
         }
 
-        /*public override bool Equals(object obj)
+        public override bool Equals(object obj)
         {
-            return (obj as Fraction).numerator.Equals(numerator) && (obj as Fraction).denominator.Equals(denominator);
-        }*/
+            if (obj == null || obj.GetType() != typeof(Fraction))
+                return false;
+
+            return GetHashCode() == (obj as Fraction).GetHashCode();
+        }
+
+        public override Symbol Copy()
+        {
+            return new Fraction(numerator.Copy(), denominator.Copy());
+        }
+
+        public override int GetHashCode()
+        {
+            return (numerator.GetHashCode() + denominator.GetHashCode()) % int.MaxValue;
+        }
     }
 }

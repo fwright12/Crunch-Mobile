@@ -14,6 +14,9 @@ public final class R {
         public static final int icon=0x7f020000;
     }
     public static final class id {
+        public static final int FunctionalityButton=0x7f050034;
+        public static final int FunctionalityLayout=0x7f050035;
+        public static final int FunctionalityListView=0x7f050037;
         public static final int button1=0x7f050004;
         public static final int button10=0x7f05000e;
         public static final int button12=0x7f050011;
@@ -66,6 +69,7 @@ public final class R {
         public static final int tableRow6=0x7f050022;
         public static final int tableRow7=0x7f050028;
         public static final int tableRow8=0x7f05002e;
+        public static final int textView1=0x7f050036;
     }
     public static final class layout {
         public static final int main=0x7f030000;

@@ -17,14 +17,15 @@ using Android.Text;
 namespace Calculator.Droid
 {
     [Activity (Label = "Calculator.Droid", MainLauncher = true, Icon = "@drawable/icon")]
-	public class MainActivity : Activity, IGraphicsHandler
+	public partial class MainActivity : Activity, IGraphicsHandler
 	{
         public static string screenSize = "xLarge";
         public static OrderedDictionary text = new OrderedDictionary();
 
         public RelativeLayout canvas;
         private TableLayout keyboard;
-
+        private LinearLayout functionalityMenu;
+        
         protected override void OnCreate (Bundle bundle)
 		{
             //Bogus operation to remove later lag - problem with dynamic?
@@ -36,22 +37,25 @@ namespace Calculator.Droid
             // Set our view from the "main" layout resource
 			SetContentView (Resource.Layout.Main);
 
-            Input.graphicsHandler = this;
-
             // Get our button from the layout resource,
             // and attach an event to it
             canvas = FindViewById<RelativeLayout>(Resource.Id.canvas);
-            Button button = FindViewById<Button> (Resource.Id.myButton);
             keyboard = FindViewById<TableLayout>(Resource.Id.keyboard);
+            functionalityMenu = FindViewById<LinearLayout>(Resource.Id.FunctionalityLayout);
+            functionalityMenu.Visibility = ViewStates.Gone;
             
+            Input.graphicsHandler = this;
+            Input.layoutRoot = canvas;
+
             Window.SetSoftInputMode(SoftInput.StateAlwaysHidden);
 
             FindViewById<Button>(Resource.Id.cursorLeft).Click += cursorLeft;
             FindViewById<Button>(Resource.Id.cursorRight).Click += cursorRight;
             FindViewById<Button>(Resource.Id.delete).Click += delete;
             FindViewById<Button>(Resource.Id.enter).Click += enterIsItNecessary;
+            FindViewById<Button>(Resource.Id.FunctionalityButton).Click += openFunctionalityMenu;
+            FindViewById<ListView>(Resource.Id.FunctionalityListView).Adapter = new ArrayAdapter<String>(this, Android.Resource.Layout.SimpleListItem1, MathView.supportedFunctions);
 
-            Console.WriteLine(keyboard.ChildCount);
             for (int i = 0; i < keyboard.ChildCount; i++)
             {
                 TableRow row = (TableRow)keyboard.GetChildAt(i);
@@ -75,22 +79,17 @@ namespace Calculator.Droid
             canvas.Touch += canvasTouch;
 		}
 
-        private EditText editField;
+        private void openFunctionalityMenu(object sender, EventArgs e)
+        {
+            functionalityMenu.Visibility = ViewStates.Visible;
+        }
 
         private void KeyPress(object sender, EventArgs e)
         {
             Button sent = (Button)sender;
 
-            Input.selected.Key(sent.Text);
-
-            //Equation.selected.SetAnswer();
-        }
-
-        public string DispatchKey(string text)
-        {
-            ((EditText)Input.editField).DispatchKeyEvent(new KeyEvent(0, text, 0, new KeyEventFlags()));
-
-            return ((EditText)Input.editField).Text;
+            if (Input.selected != null)
+                Input.selected.Key(sent.Text);
         }
 
         /*public void StartEditing()
@@ -114,23 +113,6 @@ namespace Calculator.Droid
             //graphicsHandler.AddChild(graphicalObject, Input.editField, Input.pos);
         }*/
 
-        public object AddText(string text)
-        {
-            TextView temp = new TextView(this);
-            temp.TextSize = 40;
-
-            temp.Text = text;
-
-            /*if (Input.clickable)
-            {
-                temp.Click += symbolTouch;
-            }*/
-
-            temp.LongClick += LongClicked;
-
-            return temp;
-        }
-
         private object moving;
 
         private void LongClicked(object sender, View.LongClickEventArgs e)
@@ -139,13 +121,6 @@ namespace Calculator.Droid
             v.Vibrate(3000);
 
             ((View)sender).Touch += Touching;
-        }
-
-        private void aTouching(object sender, View.TouchEventArgs touchArgs)
-        {
-            MotionEvent e = touchArgs.Event;
-
-            print.log(e.Action);
         }
 
         private void Touching(object sender, View.TouchEventArgs touchArgs)
@@ -173,37 +148,6 @@ namespace Calculator.Droid
             else if (e.Action.Equals(MotionEventActions.Up))
             {
                 //((View)sender).Touch -= Touching;
-            }
-        }
-
-        private View selected;
-
-        public void Select(object sender)
-        {
-            if (sender.Equals(selected))
-            {
-                if (Input.state == Input.OnReceive.add)
-                {
-                    selected.SetBackgroundColor(Color.Red);
-                    Input.state = Input.OnReceive.delete;
-                }
-                else
-                {
-                    selected.SetBackgroundColor(Color.Green);
-                    Input.state = Input.OnReceive.add;
-                }
-            }
-            else
-            {
-                if (selected != null)
-                {
-                    selected.SetBackgroundColor(Color.Transparent);
-                }
-
-                ((View)sender).SetBackgroundColor(Color.Green);
-                Input.state = Input.OnReceive.add;
-
-                selected = (View)sender;
             }
         }
 
@@ -271,18 +215,7 @@ namespace Calculator.Droid
             Equation.selected = Equation.findByGraphics[sent];*/
         }
 
-        public object AddEditField()
-        {
-            EditText temp = new EditText(this);
-            temp.InputType = Android.Text.InputTypes.NumberFlagDecimal | Android.Text.InputTypes.NumberFlagSigned;
-            temp.TextSize = 35;
-            temp.RequestFocus();
-            temp.Click += symbolTouch;
-
-            return temp;
-        }
-
-        public void Parentheses(object parent, bool isVisible)
+        /*public void Parentheses(object parent, bool isVisible)
         {
             if (isVisible)
             {
@@ -294,49 +227,7 @@ namespace Calculator.Droid
                 ((ViewGroup)parent).GetChildAt(0).Visibility = ViewStates.Gone;
                 ((ViewGroup)parent).GetChildAt(((ViewGroup)parent).ChildCount - 1).Visibility = ViewStates.Gone;
             }
-        }
-
-        public object AddLayout(bool isHorizontal)
-        {
-            LinearLayout layout = new LinearLayout(this);
-
-            if (isHorizontal)
-            {
-                layout.Orientation = Orientation.Horizontal;
-
-                //layout.AddView((View)Graphics.Create(new Text("(")), 0);
-                //layout.AddView((View)Graphics.Create(new Text(")")), 1);
-            }
-            else
-            {
-                layout.Orientation = Orientation.Vertical;
-            }
-
-            layout.SetGravity(GravityFlags.Center);
-            //layout.Click += symbolTouch;
-
-            return layout;
-        }
-
-        public bool hasParent(object sender)
-        {
-            return ((View)sender).Parent != null;
-        }
-
-        public void AddChild(object parent, object child, int index)
-        {
-            ((ViewGroup)parent).AddView((View)child, index);
-        }
-
-        public void RemoveChild(object parent, int index)
-        {
-            ((ViewGroup)parent).RemoveViewAt(index);
-        }
-
-        public void RemoveChild(object parent, object child)
-        {
-            ((ViewGroup)parent).RemoveView((View)child);
-        }
+        }*/
 
         private void canvasTouch(object sender, View.TouchEventArgs touchArgs) {
             if (selected != null)
@@ -346,6 +237,12 @@ namespace Calculator.Droid
                 //Input.UI.Update();
                 //Input.editField = null;
             }
+
+            functionalityMenu.Visibility = ViewStates.Gone;
+            ShowKeyboard();
+
+            if (Input.selected != null)
+                Input.selected.Key("exit edit mode");
 
             MotionEvent e = touchArgs.Event;
             if (!touchArgs.Event.Action.Equals(MotionEventActions.Up))
@@ -360,8 +257,6 @@ namespace Calculator.Droid
             canvas.AddView(layout);
 
             Input.selected = new Input(new MathView(layout));
-
-            //Equation.selected = new Equation(layout, new Expression());
         }
 
         private float start, end;
@@ -378,12 +273,22 @@ namespace Calculator.Droid
                     end = e.Event.GetX();
 
                     if (end < start && Math.Abs(end - start) > minDistance)
-                        keyboard.Visibility = ViewStates.Gone;
-                        
+                        HideKeyboard();
+
                     break;
             }
 
             e.Handled = false;
+        }
+
+        private void HideKeyboard()
+        {
+            keyboard.Visibility = ViewStates.Gone;
+        }
+
+        private void ShowKeyboard()
+        {
+            keyboard.Visibility = ViewStates.Visible;
         }
 
         private void cursorLeft(object sender, EventArgs e)
