@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace Calculator
 {
+    public delegate void OverlapListener();
+
     public class MathView
     {
         public static Dictionary<string, List<string>> supportedFunctions = new Dictionary<string, List<string>>()
@@ -21,6 +23,8 @@ namespace Calculator
         //private bool parendFlag = true;
 
         private List<Symbol> all;
+
+        //public Graphic this[Symbol symbol]
 
         public void SetText(List<Symbol> list)
         {
@@ -60,14 +64,16 @@ namespace Calculator
 
             return list;
         }
-                       
+
+        private bool numberFlag = false;
+
         private void SetText(object parent, Symbol sender, bool parend)
         {
             List<Symbol> list = sender.GetText();
 
             for (int i = 0; i < list.Count; i++)
             {
-                print.log(i +", "+ "look here " + list[i] + ", " + views.ContainsKey(list[i]) + ", "+ list[i].GetHashCode());
+                print.log(i +", "+ "look here " + list[i].text + ", " + views.ContainsKey(list[i]) + ", "+ list[i].GetHashCode());
 
                 if ((list[i].text == "(" || list[i].text == ")") && !parend)
                 {
@@ -77,13 +83,13 @@ namespace Calculator
                 }
                 else if (!views.ContainsKey(list[i]))
                 {
+                    numberFlag = i > 0 && i < list.Count - 1 && list[i - 1] is Number && list[i + 1] is Number;
+
                     views.Add(list[i], new Graphic(parent, list[i], i));
                     print.log("adding new " + list[i]);
 
-                    //if (list[i] == Input.lastAdded)
                     if (Input.adding.Contains(list[i]))
                     {
-                        //Input.lastAdded = null;
                         Input.adding.Remove(list[i]);
                     }
                 }
@@ -110,40 +116,37 @@ namespace Calculator
             }
         }
 
-        public object Create(Symbol sender)
+        public static object Create(Symbol sender)
         {
-            if (sender == Symbol.Cursor)
-            {
-                return Input.cursor;
-            }
-            else
-            {
-                return Input.graphicsHandler.AddText(" " + sender.text + " ");
-            }
+            var temp = new Xamarin.Forms.Label();
+            temp.Text = " " + sender.text + " ";
+            //return temp;
+
+            return Input.graphicsHandler.AddText(" " + sender.text + " ");
         }
 
-        public object Create(Edit sender)
+        public static object Create(Number sender)
         {
-            return Input.editField;
+            return Input.graphicsHandler.AddText(sender.text);
         }
 
-        public object Create(Expression sender)
+        public static object Create(Expression sender)
         {
             return Input.graphicsHandler.AddLayout(sender.format);
         }
 
-        public object Create(Fraction sender)
+        public static object Create(Fraction sender)
         {
             sender.format.Orientation = "vertical";
             return Input.graphicsHandler.AddLayout(sender.format);
         }
 
-        public object Create(Exponent sender)
+        public static object Create(Exponent sender)
         {
             return Input.graphicsHandler.AddLayout(new Format(gravity: "abottom"));
         }
 
-        public object Create(Bar sender)
+        public static object Create(Bar sender)
         {
             return Input.graphicsHandler.AddBar();
         }

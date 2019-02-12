@@ -41,6 +41,30 @@ namespace Calculator
 
     public class Bar : Symbol { }
 
+    public class Answer : Symbol
+    {
+        public static bool isFraction = true;
+
+        private Term value;
+
+        public Answer(Term Value)
+        {
+            value = Value;
+        }
+
+        public Term Get()
+        {
+            if (isFraction)
+            {
+                return value;
+            }
+            else
+            {
+                return new Number(value.value);
+            }
+        }
+    }
+
     public class Text : Symbol
     {
         public override string text
@@ -68,6 +92,8 @@ namespace Calculator
     {
         public Operand(string s) : base(s) { }
     }
+
+    public class Space : Symbol { }
 
     public class Function : Symbol
     {

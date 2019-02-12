@@ -16,13 +16,35 @@ namespace Calculator
             foreach (Symbol s in sent.parts)
                 calculate.Add(s);
 
-            calculate.Remove(Symbol.Cursor);
+            foreach (Symbol s in calculate)
+                print.log(s.text);
+            //calculate.Remove(Symbol.Cursor);
+
+            //Combine numbers
+            for (int i = 0; i < calculate.Count; i++)
+            {
+                if (calculate[i].GetType() == typeof(Number))
+                {
+                    string number = "";
+
+                    int j = i;
+                    while (j < calculate.Count && calculate[j].GetType() == typeof(Number))
+                    {
+                        number += calculate[j].text;
+                        j++;
+                    }
+
+                    calculate.RemoveRange(i, j - i);
+                    calculate.Insert(i, new Number(double.Parse(number)));
+                }
+            }
 
             //Evaluate exponents
             for (int i = 0; i < calculate.Count; i++)
             {
                 if (calculate[i].format == Format.Exponent)
                 {
+                    throw new Exception();
                     calculate[i - 1] = new Exponent(Expression.Wrap(calculate[i - 1]), Expression.Wrap(calculate[i]));
                     calculate.RemoveAt(i);
                     i--;
@@ -115,7 +137,7 @@ namespace Calculator
 
         public static List<Symbol> next(List<Symbol> list, int dir, params string[] stops)
         {
-            return next(list, dir, Input.pos + dir, stops);
+            return next(list, dir, Input.selected.pos + dir, stops);
         }
 
         public static List<Symbol> next(List<Symbol> list, int dir, int start, params string[] stops)

@@ -40,7 +40,7 @@ namespace Calculator
 
         public Expression()
         {
-            parts = new List<Symbol>();
+            parts = new List<Symbol> { new Space() };
         }
 
         public Expression(params Symbol[] list)
@@ -53,6 +53,11 @@ namespace Calculator
         public Expression(List<Symbol> list)
         {
             parts = list;
+
+            if (parts.Count == 1 && parts[0] == Symbol.Cursor)
+            {
+                //parts.Add(new Space());
+            }
         }
 
         //Determine if sent symbol is already an expression, and if not make it one
@@ -203,7 +208,6 @@ namespace Calculator
 
             foreach (Symbol s in parts)
             {
-                //if (s != Input.lastAdded)
                 if (!Input.adding.Contains(s))
                     result = (result + s.GetHashCode()) % int.MaxValue;
             }
@@ -218,7 +222,7 @@ namespace Calculator
 
         public static List<Symbol> next(List<Symbol> list, int dir, params string[] stops)
         {
-            return next(list, dir, Input.pos + dir, stops);
+            return next(list, dir, Input.selected.pos + dir, stops);
         }
 
         public static List<Symbol> next(List<Symbol> list, int dir, int start, params string[] stops)
