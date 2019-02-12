@@ -31,11 +31,12 @@
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Equation.cs" />
     <Compile Include="Expression.cs" />
     <Compile Include="Graphics.cs" />
     <Compile Include="Input.cs" />
+    <Compile Include="MathView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Quantity.cs" />
     <Compile Include="Symbol.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -8,6 +8,11 @@ using Android.Widget;
 using Android.OS;
 using Android.Util;
 using System.Collections.Generic;
+using Android.Graphics;
+using Android.Graphics.Drawables;
+
+using System.Collections.Specialized;
+using Android.Text;
 
 namespace Calculator.Droid
 {
@@ -15,44 +20,23 @@ namespace Calculator.Droid
 	public class MainActivity : Activity, IGraphicsHandler
 	{
         public static string screenSize = "xLarge";
+        public static OrderedDictionary text = new OrderedDictionary();
 
-        private DroidGraphics display;
         public RelativeLayout canvas;
         private TableLayout keyboard;
 
-        public Dictionary<LinearLayout, Expression> expressions = new Dictionary<LinearLayout, Expression>();
-
-        int count = 1;
-        EditText focused;
-
-        //Raw input (ie EditText)
-        //Parse for numbers, operands, and functions
-        //Output for display
-
-		protected override void OnCreate (Bundle bundle)
+        protected override void OnCreate (Bundle bundle)
 		{
-			base.OnCreate (bundle);
+            //Bogus operation to remove later lag - problem with dynamic?
+            //new Operation(new Operand("+"), new Number(1)).operate(new Number(1));
+            new Expression().FixWeirdError();
+
+            base.OnCreate (bundle);
             
             // Set our view from the "main" layout resource
 			SetContentView (Resource.Layout.Main);
 
-            /*Number n = new Number(0);
-            TextView temp = new TextView(this);
-            temp.Text = "Number";
-            n.graphicalObject = temp;
-
-            Number na = new Number(1);
-            temp = new TextView(this);
-            temp.Text = "Another number";
-            na.graphicalObject = temp;
-
-            Console.WriteLine(((TextView)n.graphicalObject).Text + ", " + ((TextView)na.graphicalObject).Text);*/
-
-            //Bogus operation to remove later lag - problem with dynamic?
-            new Operation(new Operand("+"), new Number(1)).operate(new Number(1));
-
-            display = new DroidGraphics(this);
-            Graphics.graphicsHandler = this;
+            Input.graphicsHandler = this;
 
             // Get our button from the layout resource,
             // and attach an event to it
@@ -78,7 +62,7 @@ namespace Calculator.Droid
 
                     if (!key.HasOnClickListeners)
                     {
-                        key.Click += input;
+                        key.Click += KeyPress;
                     }
 
                     if (screenSize == "xLarge")
@@ -89,209 +73,295 @@ namespace Calculator.Droid
             }
 
             canvas.Touch += canvasTouch;
-            //keyboard.Touch += keyboardTouch;
 		}
 
         private EditText editField;
 
-        private void input(object sender, EventArgs e)
+        private void KeyPress(object sender, EventArgs e)
         {
             Button sent = (Button)sender;
 
-            //Input.Key(sent.Text);
+            Input.selected.Key(sent.Text);
 
-            //Console.WriteLine(((LinearLayout)Input.UI.graphicalObject).ChildCount);
-            if (((LinearLayout)Input.UI.graphicalObject).ChildCount == 1)
-                ((LinearLayout)Input.UI.graphicalObject).AddView((View)Create(new Operand(" = ")), 0);
+            //Equation.selected.SetAnswer();
+        }
 
-            if (Input.IsNumber(sent.Text))
+        public string DispatchKey(string text)
+        {
+            ((EditText)Input.editField).DispatchKeyEvent(new KeyEvent(0, text, 0, new KeyEventFlags()));
+
+            return ((EditText)Input.editField).Text;
+        }
+
+        /*public void StartEditing()
+        {
+            editField = (EditText)AddEditField();
+
+            if (Input.UI.views.ContainsKey(Input.text[Input.pos]))
             {
-                if (editField == null)
-                {
-                    editField = new EditText(this);
-                    editField.InputType = Android.Text.InputTypes.NumberFlagDecimal | Android.Text.InputTypes.NumberFlagSigned;
-                    editField.TextSize = 35;
-                    //Insert()
-                    //((LinearLayout)Input.selected.graphicalObject).AddView(editText);
+                RemoveChild(Input.UI.graphicalObject, Input.pos);
+                Input.UI.views.Remove(Input.text[Input.pos]);
 
-                    //editText.TextChanged += textChanged;
-                    //editText.FocusChange += focusChanged;
-
-                    editField.RequestFocus();
-
-                    ((LinearLayout)Input.UI.graphicalObject).AddView(editField, Input.pos);
-
-                    //Input.editing = new Number(sent.Text);
-                    //Input.selected.Insert(editing);
-                }
-
-                editField.DispatchKeyEvent(new KeyEvent(0, sent.Text, 0, new KeyEventFlags()));
-                //Input.editing = new Number(editing.Text);
-                Input.Key(editField.Text);
+                //views[Input.text[Input.pos]] = Input.editField;
             }
             else
             {
+                //views.Add(Input.text[Input.pos], Input.editField);
+            }
+
+            AddChild(Input.UI.graphicalObject, editField, Input.pos);
+
+            //graphicsHandler.AddChild(graphicalObject, Input.editField, Input.pos);
+        }*/
+
+        public object AddText(string text)
+        {
+            TextView temp = new TextView(this);
+            temp.TextSize = 40;
+
+            temp.Text = text;
+
+            /*if (Input.clickable)
+            {
+                temp.Click += symbolTouch;
+            }*/
+
+            temp.LongClick += LongClicked;
+
+            return temp;
+        }
+
+        private object moving;
+
+        private void LongClicked(object sender, View.LongClickEventArgs e)
+        {
+            Vibrator v = (Vibrator)GetSystemService(VibratorService);
+            v.Vibrate(3000);
+
+            ((View)sender).Touch += Touching;
+        }
+
+        private void aTouching(object sender, View.TouchEventArgs touchArgs)
+        {
+            MotionEvent e = touchArgs.Event;
+
+            print.log(e.Action);
+        }
+
+        private void Touching(object sender, View.TouchEventArgs touchArgs)
+        {
+            MotionEvent e = touchArgs.Event;
+            LinearLayout sent = (LinearLayout)((View)sender).Parent;
+            
+            if (e.Action.Equals(MotionEventActions.Move))
+            {
+                print.log("moving");
+                print.log(e.GetX() + ", " + e.GetY());
+                print.log(((LinearLayout)sent.Parent).Left + " ," + ((LinearLayout)sent.Parent).Top);
+
+                ViewGroup parent = (ViewGroup)sent.Parent;
+                parent.RemoveView(sent);
+
+                RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WrapContent, ViewGroup.LayoutParams.WrapContent);
+                //param.SetMargins((int)e.GetX(), (int)e.GetY(), 0, 0);
+                param.SetMargins(parent.Left + (int)e.GetX() + sent.Width / 4, parent.Top + (int)e.GetY() - sent.Height / 2, 0, 0);
+                sent.LayoutParameters = param;
+                
+                canvas.AddView(sent);
+                sent.Touch += Touching;
+            }
+            else if (e.Action.Equals(MotionEventActions.Up))
+            {
+                //((View)sender).Touch -= Touching;
+            }
+        }
+
+        private View selected;
+
+        public void Select(object sender)
+        {
+            if (sender.Equals(selected))
+            {
+                if (Input.state == Input.OnReceive.add)
+                {
+                    selected.SetBackgroundColor(Color.Red);
+                    Input.state = Input.OnReceive.delete;
+                }
+                else
+                {
+                    selected.SetBackgroundColor(Color.Green);
+                    Input.state = Input.OnReceive.add;
+                }
+            }
+            else
+            {
+                if (selected != null)
+                {
+                    selected.SetBackgroundColor(Color.Transparent);
+                }
+
+                ((View)sender).SetBackgroundColor(Color.Green);
+                Input.state = Input.OnReceive.add;
+
+                selected = (View)sender;
+            }
+        }
+
+        private void symbolTouch(object sender, EventArgs e)
+        {
+            /*return;
+            print.log("clicked");
+            Input.UI.Update();
+            Input.editField = null;
+
+            View sent = (View)sender;
+            
+            Select(sender);
+
+            Input.pos = ((ViewGroup)sent.Parent).IndexOfChild(sent);
+            Input.UI = Graphics.findByLayout[sent.Parent];
+
+            if (Input.UI.expression.parts[Input.pos].GetType() == typeof(Number))
+            {
+                string temp = Input.UI.expression.parts[Input.pos].text;
+
+                Input.editing = true;
+                Input.UI.expression.parts[Input.pos] = new Number(0);
+                Input.UI.Update();
+                Input.UI.expression.parts[Input.pos] = new Number(double.Parse(temp));
+
+                sent = (View)Input.editField;
+                ((EditText)sent).Text = temp;
+                ((EditText)sent).SetSelection(temp.Length);
+            }
+            else
+                Input.pos++;
+
+            /*    ((LinearLayout)Input.UI.graphicalObject).RemoveViewAt(Input.pos);
+                Input.UI.views.RemoveAt(Input.pos);
+
+                editField = new EditText(this);
+                editField.InputType = Android.Text.InputTypes.NumberFlagDecimal | Android.Text.InputTypes.NumberFlagSigned;
+                editField.TextSize = 35;
+                editField.RequestFocus();
+                editField.Click += symbolTouch;
+
+                editField.Text = Input.UI.expression.parts[Input.pos].text;
+                editField.SetSelection(editField.Text.Length);
+                Input.editing = true;
+
+                Select(editField);
+
+                ((LinearLayout)Input.UI.graphicalObject).AddView(editField, Input.pos);
+
+                sent = editField;
+            }
+            else
+            {
+                Input.pos++;
                 tryEditTextExit();
-
-                Input.Key(sent.Text);
             }
 
-            /*Console.WriteLine(sent.Text);
-            switch (inputType(sent.Text))
+            //View temp = Input.UI;
+            while (!Equation.findByGraphics.ContainsKey(sent))
             {
-                case "number":
-                    if (Input.selected != null)
-                    {
-                        if (enter == null)
-                        {
-                            Console.WriteLine("in");
-                            EditText editText = new EditText(this);
-                            editText.TextSize = 35;
-                            ((LinearLayout)Input.selected.graphicalObject).AddView(editText);
-
-                            //editText.TextChanged += textChanged;
-                            //editText.FocusChange += focusChanged;
-
-                            enter = editText;
-                            enter.RequestFocus();
-                        }
-
-                        enter.DispatchKeyEvent(new KeyEvent(0, sent.Text, 0, new KeyEventFlags()));
-
-                        //Console.WriteLine(display.answer);
-                    }
-                    break;
-                default:
-                    tryEditTextExit();
-
-                    TextView text = new TextView(this);
-                    text.TextSize = 40;
-                    text.Text = sent.Text;
-                    display.Add(text);
-
-                    break;
+                //temp = Graphics.findByLayout[((View)temp.graphicalObject).Parent];
+                sent = (View)sent.Parent;
             }
-
-            display.Evaluate(display.selected);*/
+            Equation.selected = Equation.findByGraphics[sent];*/
         }
 
-        private void tryEditTextExit()
+        public object AddEditField()
         {
-            if (Input.UI != null && editField != null)
+            EditText temp = new EditText(this);
+            temp.InputType = Android.Text.InputTypes.NumberFlagDecimal | Android.Text.InputTypes.NumberFlagSigned;
+            temp.TextSize = 35;
+            temp.RequestFocus();
+            temp.Click += symbolTouch;
+
+            return temp;
+        }
+
+        public void Parentheses(object parent, bool isVisible)
+        {
+            if (isVisible)
             {
-                //int index = ((LinearLayout)editing.parent.graphicalObject).IndexOfChild((View)editing.graphicalObject);
-                //Remove(editing);
-                ((LinearLayout)Input.UI.graphicalObject).RemoveView(editField);
-                Input.Key("exit edit mode");
-
-                //string text = ((EditText)editing.graphicalObject).Text;
-                //print.log("SDFSDSDF " + editing.value);
-                //editing.graphicalObject = Create(editing);
-                //editing.value = text;
-
-                editField = null;
+                ((ViewGroup)parent).GetChildAt(0).Visibility = ViewStates.Visible;
+                ((ViewGroup)parent).GetChildAt(((ViewGroup)parent).ChildCount - 1).Visibility = ViewStates.Visible;
+            }
+            else
+            {
+                ((ViewGroup)parent).GetChildAt(0).Visibility = ViewStates.Gone;
+                ((ViewGroup)parent).GetChildAt(((ViewGroup)parent).ChildCount - 1).Visibility = ViewStates.Gone;
             }
         }
 
-        public object Create(Symbol sender)
-        {
-            TextView text = new TextView(this);
-            text.TextSize = 40;
-            text.Text = sender.text;
-
-            return text;
-        }
-
-        public object Create(Fraction sender)
-        {
-
-            throw new NotImplementedException();
-        }
-
-        public object Create(Expression sender)
+        public object AddLayout(bool isHorizontal)
         {
             LinearLayout layout = new LinearLayout(this);
-            layout.Orientation = Orientation.Horizontal;
-            //canvas.AddView(layout);
+
+            if (isHorizontal)
+            {
+                layout.Orientation = Orientation.Horizontal;
+
+                //layout.AddView((View)Graphics.Create(new Text("(")), 0);
+                //layout.AddView((View)Graphics.Create(new Text(")")), 1);
+            }
+            else
+            {
+                layout.Orientation = Orientation.Vertical;
+            }
+
+            layout.SetGravity(GravityFlags.Center);
+            //layout.Click += symbolTouch;
 
             return layout;
         }
 
+        public bool hasParent(object sender)
+        {
+            return ((View)sender).Parent != null;
+        }
+
         public void AddChild(object parent, object child, int index)
         {
-            Console.WriteLine(parent.GetType() + ", " + child.GetType() + ", " + index);
             ((ViewGroup)parent).AddView((View)child, index);
         }
 
         public void RemoveChild(object parent, int index)
         {
             ((ViewGroup)parent).RemoveViewAt(index);
-            //((LinearLayout)sender.parent.graphicalObject).RemoveView((View)sender.graphicalObject);
         }
 
-        public void SendText(Symbol sender, string s)
+        public void RemoveChild(object parent, object child)
         {
-            //((EditText)sender.graphicalObject).DispatchKeyEvent(new KeyEvent(0, s, 0, new KeyEventFlags()));
-        }
-
-        public string GetText(Symbol sender)
-        {
-            return "";// ((TextView)sender.graphicalObject).Text;
-        }
-
-        public void SetText(object parent, int index, string s)
-        {
-            ((TextView)((ViewGroup)parent).GetChildAt(index)).Text = s;
-            //((TextView)sender.graphicalObject).Text = s;
+            ((ViewGroup)parent).RemoveView((View)child);
         }
 
         private void canvasTouch(object sender, View.TouchEventArgs touchArgs) {
-            //Console.WriteLine("touch" + touchArgs.Event.Action.Equals(MotionEventActions.Up) +", "+ FindViewById<Button>(Resource.Id.button1).Height);
-
-            //if (focused != null)
-            //  focused.ClearFocus();
-
-            tryEditTextExit();
+            if (selected != null)
+            {
+                selected.SetBackgroundColor(Color.Transparent);
+                //Input.ExitEditMode();
+                //Input.UI.Update();
+                //Input.editField = null;
+            }
 
             MotionEvent e = touchArgs.Event;
             if (!touchArgs.Event.Action.Equals(MotionEventActions.Up))
                 return;
-            Console.WriteLine("touched");
+            Console.WriteLine("canvas touched");
 
-            /*if (focused != null && focused.HasFocus)
-            {
-                Console.WriteLine("click off");
-                focused.ClearFocus();
-                return;
-            }*/
-
-            //Expression temp = Input.Touch(canvas);
-
-            LinearLayout layout = Input.Touch(canvas).graphicalObject as LinearLayout;
+            LinearLayout layout = new LinearLayout(this);
             RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WrapContent, ViewGroup.LayoutParams.WrapContent);
             param.SetMargins((int)e.GetX(), (int)e.GetY(), 0, 0);
             layout.LayoutParameters = param;
-            layout.Touch += blockTouch;
+            layout.SetGravity(GravityFlags.Center);
+            canvas.AddView(layout);
 
-            //temp.graphicalObject = layout;
+            Input.selected = new Input(new MathView(layout));
 
-            /*EditText editText = new EditText(this);
-            editText.TextSize = 40;
-            editText.TextChanged += textChanged;
-            editText.FocusChange += focusChanged;
-            //editText.Click += delegate
-            //{
-            //    requestFocus(editText);
-            //};
-            requestFocus(editText);*/
-
-            /*TextView text = new TextView(this);
-            text.TextSize = 40;
-            text.Text = " = error";
-            //layout.AddView(editText);
-            layout.AddView(text);*/
-
-            //display.Create(layout);
+            //Equation.selected = new Equation(layout, new Expression());
         }
 
         private float start, end;
@@ -308,7 +378,6 @@ namespace Calculator.Droid
                     end = e.Event.GetX();
 
                     if (end < start && Math.Abs(end - start) > minDistance)
-                        //Console.WriteLine("swiped left");
                         keyboard.Visibility = ViewStates.Gone;
                         
                     break;
@@ -317,60 +386,21 @@ namespace Calculator.Droid
             e.Handled = false;
         }
 
-        private void textChanged(object sender, Android.Text.TextChangedEventArgs e)
-        {
-            LinearLayout parent = (LinearLayout)((EditText)sender).Parent;
-
-            //((TextView)parent.GetChildAt(1)).Text = "= " + Expression.evaluate(((EditText)sender).Text);
-            Console.WriteLine("Text is different");
-        }
-
-        private void focusChanged(object sender, View.FocusChangeEventArgs e)
-        {
-            EditText sent = (EditText)sender;
-
-            if (e.HasFocus)
-            {
-                Console.WriteLine("focused on " + sent.Text);
-
-                focused = sent;
-
-                //if (sent.GetX() < 400)
-                  //  canvas.RemoveView((LinearLayout)sent.Parent);
-            }
-            else
-            {
-                //if (sent.Text == "")
-                 //   canvas.RemoveView((LinearLayout)sent.Parent);
-
-                //focused = null;
-
-                Console.WriteLine("lost focus on " + sent.Text);
-            }
-        }
-
-        private void blockTouch(object sender, View.TouchEventArgs e)
-        {
-            Console.WriteLine("linear layout touched");
-
-            e.Handled = true;
-        }
-
         private void cursorLeft(object sender, EventArgs e)
         {
             Console.WriteLine("left");
-            focused.DispatchKeyEvent(new KeyEvent(new KeyEventActions(), Keycode.DpadLeft));
+            //focused.DispatchKeyEvent(new KeyEvent(new KeyEventActions(), Keycode.DpadLeft));
         }
 
         private void cursorRight(object sender, EventArgs e)
         {
             Console.WriteLine("right");
-            focused.DispatchKeyEvent(new KeyEvent(new KeyEventActions(), Keycode.DpadRight));
+            //focused.DispatchKeyEvent(new KeyEvent(new KeyEventActions(), Keycode.DpadRight));
         }
 
         private void delete(object sender, EventArgs e)
         {
-            focused.DispatchKeyEvent(new KeyEvent(new KeyEventActions(), Keycode.Del));
+            //focused.DispatchKeyEvent(new KeyEvent(new KeyEventActions(), Keycode.Del));
             Console.WriteLine("delete");
         }
 

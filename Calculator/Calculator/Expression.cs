@@ -6,84 +6,69 @@ using System.Threading.Tasks;
 
 namespace Calculator
 {
-    /*public class EMDAS
-    {
-        public List<Operation> operations = new List<Operation>();
-
-        public EMDAS()
-        {
-            operations = list;
-        }
-
-        public double MD()
-        {
-            double first = operations[0];
-
-            foreach (Operation o in operations)
-            {
-
-            }
-        }
-    }*/
-
-    public class Operation
-    {
-        private Operand operand;
-        public dynamic term;
-
-        public Operation (Operand o, Term t)
-        {
-            operand = o;
-            term = t;
-
-            if (operand.text == "-")
-            {
-                operand = new Operand("+");
-                term = term.Multiply(new Number(-1));
-            }
-        }
-
-        public Term operate(Term sent)
-        {
-            switch (operand.text)
-            {
-                case "+":
-                    return sent.Add(term);
-                case "*":
-                    return sent.Multiply(term);
-                default:
-                    throw new NotSupportedException();
-            }
-        }
-    }
-
-    public class Expression
+    public class Expression : Symbol
     {
         public static Expression selected;
 
         public static double radDegMode = 180 / Math.PI;
 
         public List<Symbol> parts;
-        public Symbol answer
+        public bool Parend
         {
-            get
+            set
             {
-                try
+                if (value != parend)
                 {
-                    return evaluate();
-                }
-                catch
-                {
-                    return new Operand("error");
+                    if (value)
+                    {
+                        parts.Insert(parts.Count, new Text(")"));
+                        parts.Insert(0, new Text("("));
+                    }
+                    else
+                    {
+                        parts.RemoveAt(parts.Count);
+                        parts.RemoveAt(0);
+                    }
+
+                    parend = value;
                 }
             }
         }
 
-        public List<Quantity> expression = new List<Quantity>();
+        private bool parend = false;
+
+        public override string text
+        {
+            get
+            {
+                return answer.text;
+            }
+        }
+
+        public Symbol answer
+        {
+            get
+            {
+                //return evaluate();
+
+                try
+                {
+                    print.log("call fron answer");
+                    return evaluate();
+                }
+                catch
+                {
+                    if (parts.Count == 0)
+                        return new Text("");
+                    else
+                        return new Text("error");
+                }
+            }
+        }
+
         //public List<Operation> operations = new List<Operation>();
         
-        public Func<string> evaluated;
-        //private Quantity answer;
+            //private Quantity answer;
 
         /*public Symbol AddChild(Symbol sender, string s)
         {
@@ -102,46 +87,233 @@ namespace Calculator
                 sender.graphicalObject = graphicsHandler.Create(sender);
             graphicsHandler.Insert(sender, pos);*/
 
-            parts.Insert(Input.pos, sender);
+            Insert(Input.pos, sender);
             //answer.value = evaluate();
         }
 
-        public Expression prev(params string[] stops)
+        public void Insert(int pos, Symbol sender)
         {
-            return prev(Input.pos, stops);
-        }
-
-        public Expression prev(int start, params string[] stops)
-        {
-            int index;
-            for (index = start; index > -1; index--)
+            /*if (parts.Count == 1 && parts[0].GetType() == typeof(Space))
             {
-                if (stops.Contains(parts[index].text))
-                    break;
+                parts.RemoveAt(0);
+            }*/
+
+            int add = 0;
+            if (parend)
+                add = 1;
+
+            if (parts.Count == 1 + add && parts[add].GetType() == typeof(Space))
+            {
+                parts.RemoveAt(add);
             }
 
-            foreach (Symbol s in parts.GetRange(index, start - index))
-                print.log(s.ToString());
+            parts.Insert(pos, sender);
+        }
 
-            return new Expression();
+        public static List<Symbol> next(List<Symbol> list, int dir, params string[] stops)
+        {
+            return next(list, dir, Input.pos + dir, stops);
+        }
+
+        public static List<Symbol> next(List<Symbol> list, int dir, int start, params string[] stops)
+        {
+            List<Symbol> answer = new List<Symbol>();
+
+            int index = start;
+            while(index < list.Count && index > -1)
+            {
+                //print.log(index + ", " + parts[index].text + ", " + stops[0] +", "+ stops[1]);
+                if (stops.Contains(list[index].text))
+                    break;
+
+                answer.Add(list[index]);
+                index += dir;
+            }
+            
+            return answer;
         }
 
         public Expression()
         {
-            parts = new List<Symbol>();
-            //answer = new Symbol();
-
-            /*answer = new Symbol();
-            answer.parent = this;
-            answer.graphicalObject = graphicsHandler.Create(answer);
-            graphicsHandler.Insert(answer, pos);*/
+            parts = new List<Symbol>() { new Space() };
+            //Input.pos++;
+            //parend = true;
         }
 
+        public Expression(List<Symbol> list)
+        {
+            parts = list;
+        }
+
+        public override List<Symbol> GetText()
+        {
+            List<Symbol> result = new List<Symbol>();
+
+            foreach(Symbol s in parts)
+            {
+                result.Add(s);
+            }
+
+            return result;
+        }
         public Term evaluate()
         {
-            print.log("starting");
+            //parts = new List<Symbol>() { new Number(63), new Operand("+"), new Number(9) };
+            List<Symbol> calculate = new List<Symbol>();
+            foreach (Symbol s in parts)
+                calculate.Add(s);
+            //calculate.RemoveAt(0);
+
+            print.log("evaluating...");
+            foreach (Symbol s in calculate)
+                print.log(s);
+
+            for (int i = 0; i < calculate.Count; i++)
+            {
+                Type t = calculate[i].GetType();
+
+                if (t == typeof(Expression))
+                {
+                    calculate[i] = ((Expression)calculate[i]).evaluate();
+                }
+                else if (t == typeof(Text))
+                {
+                    calculate.RemoveAt(i--);
+                }
+            }
+
+            for (int i = 0; i < calculate.Count; i++)
+            {
+                if (calculate[i].GetType() == typeof(Function))
+                {
+                    calculate[i] = new Number(((Function)calculate[i]).value);
+                    calculate.RemoveAt(i + 1);
+                }
+            }
+
+            for (int i = 1; i < calculate.Count; i+=2)
+            {
+                if (((Operand)calculate[i]).text == "-")
+                {
+                    calculate[i] = new Operand("+");
+                    calculate[i + 1] = ((Term)calculate[i + 1]).Multiply(new Number(-1));
+                }
+            }
+
+            //print.log("***converted to addition***");
+            //foreach (Symbol s in calculate)
+            //    print.log(s.text);
+
+            for (int i = 0; i < calculate.Count; i++)
+            {
+                if (calculate[i].text == "*")
+                {
+                    List<Symbol> temp = next(calculate, 1, i - 1, "+", "-");
+                    calculate.RemoveRange(i - 1, temp.Count);
+                    calculate.Insert(i - 1, operate("*", temp));
+
+                    i = -1;
+                }
+            }
+
+            return operate("+", calculate);
+        }
+
+        private Term operate(string o, List<Symbol> list)
+        {
+            Term value = (Term)list[0];
+
+            List<Term> terms = new List<Term>();
+            foreach (Symbol s in list)
+            {
+                Term temp = s as Term;
+                if (temp != null)
+                {
+                    terms.Add(temp);
+                }
+            }
+
+            while (terms.Count > 1)
+            {
+                if (o == "*")
+                    terms[0] = terms[0].Multiply((dynamic)terms[1]);
+                else if (o == "+")
+                    terms[0] = terms[0].Add((dynamic)terms[1]);
+
+                terms.RemoveAt(1);
+            }
+
+            return terms[0];
+        }
+
+        public static List<Symbol> Parse(List<Symbol> list)
+        {
+            List<Symbol> result = new List<Symbol>();
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (list[i].text == "/")
+                {
+                    Expression[] frac = new Expression[2];
+
+                    for (int j = 0; j < 2; j++) {
+                        try
+                        {
+                            frac[j] = new Expression(new List<Symbol>() { list[i + (j * 2 - 1)] });
+                        }
+                        catch
+                        {
+                            frac[j] = new Expression();
+                        }
+                    }
+
+                    result[result.Count - 1] = new Fraction(frac[0], frac[1]);
+
+                    i++;
+                }
+                else
+                {
+                    result.Add(list[i]);
+                }
+            }
+
+            print.log("----parsed list-----");
+            foreach (Symbol s in result)
+                print.log(s);
+            print.log("----parsed list-----");
+
+            return result;
+        }
+
+        /*public override bool Equals(object obj)
+        {
+            return (obj as Expression).parts == parts;
+        }*/
+
+        public void FixWeirdError()
+        {
+            operate("+", new List<Symbol>() { new Number(1), new Number(1) });
+        }
+
+        /*public Term evaluatea()
+        {
+            print.log("evaluating...");
             foreach (Symbol s in parts)
                 print.log(s.text);
+
+            for (int i = 0; i < parts.Count; i++)
+            {
+                if (parts[i].text == "*")
+                {
+                    //parts[i - 1] = next(i - 1, "+", "-").answer;
+
+                    print.log("***new list***");
+                    foreach (Symbol s in parts)
+                        print.log(s.text);
+
+                    i = -1;
+                }
+            }
 
             List<Operation> operations = new List<Operation>();
             Term axis = parts[0] as Number;
@@ -160,12 +332,7 @@ namespace Calculator
 
             //axis.value = " = " + axis.value;
             return axis;
-        }
-
-        public Expression(List<Symbol> list)
-        {
-
-        }
+        }*/
 
         /*public Expression(List<string> list)
         {

@@ -13,31 +13,88 @@ namespace Calculator
             get;
         }
 
-        /*public string text
+        public virtual List<Symbol> GetText()
         {
-            get
-            {
-                return graphicsHandler.GetText(this);
-            }
-            set
-            {
-                graphicsHandler.SetText(this, value);
-            }
-        }*/
+            return new List<Symbol>() { this };
+        }
     }
 
-    public class Operand : Symbol
+    public class Space : Symbol
     {
         public override string text
         {
-            get { return _text; }
+            get
+            {
+                return " ";
+            }
+        }
+    }
+
+    public class Text : Symbol
+    {
+        public override string text
+        {
+            get
+            {
+                return _text;
+            }
         }
 
         private string _text;
 
-        public Operand(string s)
+        public Text(string s)
         {
             _text = s;
+        }
+    }
+
+    public class Operand : Text
+    {
+        public Operand(string s) : base(s) { }
+    }
+
+    public class Function : Symbol
+    {
+        public override string text
+        {
+            get
+            {
+                return value.ToString();
+            }
+        }
+
+        public double value
+        {
+            get
+            {
+                return findFunction();
+            }
+        }
+
+        private string Func;
+        private Expression Exp;
+
+        public Function(string func, Expression exp)
+        {
+            Func = func;
+            Exp = exp;
+        }
+
+        private double findFunction()
+        {
+            double input = Exp.evaluate().value;
+
+            switch (Func)
+            {
+                case "sin":
+                    return Math.Sin(input);
+                case "cos":
+                    return Math.Cos(input);
+                case "tan":
+                    return Math.Tan(input);
+                default:
+                    throw new NotSupportedException();
+            }
         }
     }
 
@@ -123,18 +180,34 @@ namespace Calculator
                 return numerator.evaluate().value / denominator.evaluate().value;
             }
         }
-        private Expression numerator;
-        private Expression denominator;
 
-        public Fraction(Expression n, Expression d)
+        public Expression numerator;
+        public Expression denominator;
+
+        public Fraction(Symbol n, Symbol d)
         {
-            numerator = n;
-            denominator = d;
+            if (n.GetType() == typeof(Expression))
+                numerator = n as Expression;
+            else
+                numerator = new Expression(new List<Symbol>() { n });
+
+            if (d.GetType() == typeof(Expression))
+                denominator = d as Expression;
+            else
+                denominator = new Expression(new List<Symbol>() { d });
+
+            numerator.Parend = false;
+            denominator.Parend = false;
+        }
+
+        public Fraction Simplify()
+        {
+            return new Fraction(numerator.evaluate(), denominator.evaluate());
         }
 
         public override Term Add(Number other)
         {
-            throw new NotImplementedException();
+            return new Fraction(numerator.evaluate().Add(other.Multiply((dynamic)denominator.evaluate())), denominator);
         }
 
         public override Term Add(Fraction other)
@@ -144,7 +217,7 @@ namespace Calculator
 
         public override Term Multiply(Number other)
         {
-            throw new NotImplementedException();
+            return new Fraction(other.Multiply((dynamic)numerator.evaluate()), denominator);
         }
 
         public override Term Multiply(Fraction other)
@@ -161,5 +234,15 @@ namespace Calculator
         {
             throw new NotImplementedException();
         }
+
+        public override List<Symbol> GetText()
+        {
+            return new List<Symbol>() { numerator, denominator };
+        }
+
+        /*public override bool Equals(object obj)
+        {
+            return (obj as Fraction).numerator.Equals(numerator) && (obj as Fraction).denominator.Equals(denominator);
+        }*/
     }
 }
