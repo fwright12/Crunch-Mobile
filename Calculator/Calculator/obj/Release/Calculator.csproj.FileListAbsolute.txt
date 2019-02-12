@@ -1,0 +1,8 @@
+C:\Users\Flint\documents\visual studio 2015\Projects\Calculator\Calculator\Calculator\bin\Release\Calculator.dll
+C:\Users\Flint\documents\visual studio 2015\Projects\Calculator\Calculator\Calculator\bin\Release\Calculator.pdb
+C:\Users\Flint\documents\visual studio 2015\Projects\Calculator\Calculator\Calculator\bin\Release\Mono.Android.dll
+C:\Users\Flint\documents\visual studio 2015\Projects\Calculator\Calculator\Calculator\bin\Release\Mono.Android.xml
+C:\Users\Flint\documents\visual studio 2015\Projects\Calculator\Calculator\Calculator\obj\Release\Calculator.dll
+C:\Users\Flint\documents\visual studio 2015\Projects\Calculator\Calculator\Calculator\obj\Release\Calculator.pdb
+C:\Users\Flint\documents\visual studio 2015\Projects\Calculator\Calculator\Calculator\obj\Release\Calculator.dll.mdb
+C:\Users\Flint\documents\visual studio 2015\Projects\Calculator\Calculator\Calculator\bin\Release\Calculator.dll.mdb

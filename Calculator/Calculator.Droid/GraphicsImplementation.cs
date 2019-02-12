@@ -13,6 +13,7 @@ using Android.Graphics.Drawables;
 
 using System.Collections.Specialized;
 using Android.Text;
+using System.Reflection;
 
 namespace Calculator.Droid
 {
@@ -20,19 +21,25 @@ namespace Calculator.Droid
     {
         public object AddLayout(Format f)
         {
-            if (f == null)
-                f = new Format();
-
             LinearLayout layout = new LinearLayout(this);
-            layout.SetGravity(GravityFlags.Center);
+            layout.LayoutParameters = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WrapContent, ViewGroup.LayoutParams.WrapContent);
 
             if (f.Orientation == "horizontal")
-                layout.Orientation = Orientation.Horizontal;
+                layout.Orientation = Android.Widget.Orientation.Horizontal;
             else
-                layout.Orientation = Orientation.Vertical;
+                layout.Orientation = Android.Widget.Orientation.Vertical;
 
+            if (f.Gravity == "aabottom")
+                layout.SetGravity(GravityFlags.Bottom);
+            else
+                layout.SetGravity(GravityFlags.Center);
+
+            //layout.SetPadding(10, 10, 10, 10);
             layout.SetPadding(0, 0, 0, f.Padding);
             //layout.Click += symbolTouch;
+
+            if (f.IsAnswer)
+                layout.Click += toggleAnswer;
 
             return layout;
         }
@@ -43,6 +50,9 @@ namespace Calculator.Droid
             temp.TextSize = 40;
 
             temp.Text = text;
+
+            temp.Touch += symbolTouch;
+            temp.Drag += SymbolHover;
 
             /*if (Input.clickable)
             {
@@ -60,14 +70,40 @@ namespace Calculator.Droid
             temp.InputType = InputTypes.NumberFlagDecimal | InputTypes.NumberFlagSigned;
             temp.TextSize = 35;
             temp.RequestFocus();
-            temp.Click += symbolTouch;
+            //temp.Click += symbolTouch;
 
             return temp;
         }
 
-        public void Superscript(object sender)
+        public object AddCursor()
         {
-            ((TextView)sender).Text = Html.FromHtml("<p>" + ((TextView)sender).Text.ToString() + "</p>").ToString();
+            TextView temp = new TextView(this);
+            temp.Text = "'";
+            temp.TextSize = 40;
+            temp.SetBackgroundColor(Color.White);
+            temp.SetTextColor(Color.White);
+            
+            /*//try
+            //{
+                FieldInfo f = temp.GetType().GetField("mCursorDrawableRes");
+                //f.a(true);
+                f.SetValue(temp, Resource.Drawable.Cursor);
+            //} 
+            //catch (Exception ignored)
+            //{
+            //}*/
+
+            //temp.SetBackgroundColor(Color.Transparent);
+
+            return temp;
+        }
+
+        public object AddBar()
+        {
+            LinearLayout layout = new LinearLayout(this);
+            layout.SetPadding(0, 0, 0, 3);
+            layout.SetBackgroundColor(Color.White);
+            return layout;
         }
 
         public string DispatchKey(string text)
@@ -79,6 +115,7 @@ namespace Calculator.Droid
 
         private View selected;
 
+        //Not in use
         public void Select(object sender)
         {
             if (sender.Equals(selected))
@@ -106,6 +143,14 @@ namespace Calculator.Droid
 
                 selected = (View)sender;
             }
+        }
+
+        public void Reorder(object child, int pos)
+        {
+            ViewGroup parent = ((ViewGroup)((View)child).Parent);
+
+            parent.RemoveView(child as View);
+            parent.AddView(child as View, pos);
         }
 
         public void AddChild(object parent, object child, int index)

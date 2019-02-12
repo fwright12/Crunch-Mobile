@@ -6,111 +6,85 @@ using System.Threading.Tasks;
 
 namespace Calculator
 {
-    public class Graphic
-    {
-        public object parent;
-        public object child;
-        public string format;
-
-        public Graphic(object Parent, object Child, int index)
-        {
-            child = Child;
-            SetParent(index, Parent);
-        }
-
-        public Graphic(object Parent, Symbol Text, int index)
-        {
-            child = Input.selected.mathView.Create((dynamic)Text);
-
-            SetParent(index, Parent);
-        }
-
-        public void SetParent(int index, object newParent)
-        {
-            try
-            {
-                Input.graphicsHandler.RemoveChild(parent, child);
-            }
-            catch { }
-
-            Input.graphicsHandler.AddChild(newParent, child, index);
-            parent = newParent;
-        }
-    }
-
     public class MathView
     {
-        public static List<string> supportedFunctions = new List<string>() { "Pythagorean Theorem", "Law of Sines", "Law of Cosines" };
+        public static Dictionary<string, List<string>> supportedFunctions = new Dictionary<string, List<string>>()
+        {
+            { "Pythagorean Theorem", new List<string> {"(", "(", "a", ")", "^", "(", "2", ")", ")", "+", "(", "(", "b", ")", "^", "(", "2", ")", ")", "=", "(", "(", "c", ")", "^", "(", "2", ")", ")"} }
+        };
 
-        public object main;
+        public object root;
 
         public Dictionary<Symbol, Graphic> views = new Dictionary<Symbol, Graphic>();
+        public Dictionary<object, Symbol> shown = new Dictionary<object, Symbol>();
 
-        public MathView(object layout)
-        {
-            main = layout;// Create(new Expression());
-        }
+        //private bool parendFlag = true;
 
-        private List<Symbol> sent = new List<Symbol>();
-        public static List<Symbol> different = new List<Symbol>();
-
-        private List<Type> unparend = new List<Type>() { typeof(Fraction) };
-        private bool parendFlag = false;
+        private List<Symbol> all;
 
         public void SetText(List<Symbol> list)
         {
-            sent.Clear();
-
-            //different.Clear();
-            //findDifferent(list);
-
-            SetText(main, list);
+            all = expand(list);
 
             print.log("removing...");
-            foreach (Symbol s in sent)
-                print.log(s);
-            print.log("SDFSDFF");
+            //Remove all views that are still being shown, but no longer should be
             List<Symbol> temp = views.Keys.ToList();
             foreach (Symbol s in temp)
             {
-                if (!sent.Contains(s))
+                if (!all.Contains(s))
                 {
-                    print.log("removed " + s);// +", "+ views[s]);
+                    print.log("removed " + s + ", " + s.text);// +", "+ views[s]);
                     Input.graphicsHandler.RemoveChild(views[s].parent, views[s].child);
+                    shown.Remove(views[s].child);
                     views.Remove(s);
                 }
             }
+
+            shown.Clear();
+            SetText(root, new Expression(list), true);
         }
 
-        private void findDifferent(List<Symbol> list)
+        public static List<Symbol> expand(List<Symbol> sender)
         {
-            foreach (Symbol s in list)
+            List<Symbol> list = new List<Symbol>();
+            foreach (Symbol s in sender)
+                list.Add(s);
+
+            for (int i = 0; i < list.Count; i++)
             {
-                if (s.GetText().Count > 0 && s != s.GetText()[0])
+                if (list[i].GetText().Count > 0 && list[i] != list[i].GetText()[0])
                 {
-                    findDifferent(s.GetText());
-                }
-                else if (!views.Keys.Contains(s))
-                {
-                    different.Add(s);
+                    list.InsertRange(i + 1, list[i].GetText());
                 }
             }
+
+            return list;
         }
                        
-        private void SetText(object parent, List<Symbol> list)
+        private void SetText(object parent, Symbol sender, bool parend)
         {
+            List<Symbol> list = sender.GetText();
+
             for (int i = 0; i < list.Count; i++)
             {
                 print.log(i +", "+ "look here " + list[i] + ", " + views.ContainsKey(list[i]) + ", "+ list[i].GetHashCode());
 
-                if (!views.ContainsKey(list[i]))
+                if ((list[i].text == "(" || list[i].text == ")") && !parend)
+                {
+                    all.Remove(list[i]);
+                    list.RemoveAt(i--);
+                    continue;
+                }
+                else if (!views.ContainsKey(list[i]))
                 {
                     views.Add(list[i], new Graphic(parent, list[i], i));
                     print.log("adding new " + list[i]);
 
-                    if (list[i] == Input.lastAdded)
+                    //if (list[i] == Input.lastAdded)
+                    if (Input.adding.Contains(list[i]))
                     {
-                        Input.lastAdded = null;
+                        //Input.lastAdded = null;
+                        Input.adding.Remove(list[i]);
                     }
                 }
                 else if (views[list[i]].parent != parent)
@@ -123,25 +97,29 @@ namespace Calculator
                     Graphic temp = views[list[i]];
                     views.Remove(list[i]);
 
-                    if (unparend.Contains(list[i].GetType()))
-                        parendFlag = true;
+                    bool canParend = list[i].GetType() == typeof(Expression) && list[i].format == null && sender.GetType() == typeof(Expression);
 
-                    SetText(temp.child, list[i].GetText());
-
-                    if (unparend.Contains(list[i].GetType()))
-                        parendFlag = false;
+                    SetText(temp.child, list[i], canParend);
 
                     views.Add(list[i], temp);
                 }
-
-                //if (!(parendFlag && (list[i].text == "(" || list[i].text == ")")))
-                    sent.Add(list[i]);
+                else if (!shown.Keys.Contains(views[list[i]].child))
+                {
+                    shown.Add(views[list[i]].child, list[i]);
+                }
             }
         }
 
         public object Create(Symbol sender)
         {
-            return Input.graphicsHandler.AddText(" " + sender.text + " ");
+            if (sender == Symbol.Cursor)
+            {
+                return Input.cursor;
+            }
+            else
+            {
+                return Input.graphicsHandler.AddText(" " + sender.text + " ");
+            }
         }
 
         public object Create(Edit sender)
@@ -156,9 +134,18 @@ namespace Calculator
 
         public object Create(Fraction sender)
         {
-            object layout = Input.graphicsHandler.AddLayout(new Format(orientation: "vertical"));
+            sender.format.Orientation = "vertical";
+            return Input.graphicsHandler.AddLayout(sender.format);
+        }
 
-            return layout;
+        public object Create(Exponent sender)
+        {
+            return Input.graphicsHandler.AddLayout(new Format(gravity: "abottom"));
+        }
+
+        public object Create(Bar sender)
+        {
+            return Input.graphicsHandler.AddBar();
         }
     }
 }

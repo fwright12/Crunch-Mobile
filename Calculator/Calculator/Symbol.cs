@@ -6,15 +6,32 @@ using System.Threading.Tasks;
 
 namespace Calculator
 {
-    public abstract class Symbol
+    public class Symbol
     {
-        public abstract string text
+        public static readonly Symbol Cursor = new Symbol();
+
+        public virtual string text
         {
-            get;
+            get
+            {
+                return _text;
+            }
+        }
+        private string _text;
+
+        public Format format = new Format();
+
+        public Symbol() : this("") { }
+
+        public Symbol (string Text)
+        {
+            _text = Text;
         }
 
-        public abstract Symbol Copy();
-        public Format format;
+        public virtual Symbol Copy()
+        {
+            return new Symbol(text);
+        }
 
         public virtual List<Symbol> GetText()
         {
@@ -22,21 +39,7 @@ namespace Calculator
         }
     }
 
-    public class Space : Symbol
-    {
-        public override string text
-        {
-            get
-            {
-                return " ";
-            }
-        }
-
-        public override Symbol Copy()
-        {
-            throw new NotImplementedException();
-        }
-    }
+    public class Bar : Symbol { }
 
     public class Text : Symbol
     {
@@ -123,7 +126,14 @@ namespace Calculator
         {
             get
             {
-                return value.ToString();
+                try
+                {
+                    return value.ToString();
+                }
+                catch
+                {
+                    return "null";
+                }
             }
         }
 
@@ -196,9 +206,14 @@ namespace Calculator
         }
     }
 
-    public class Power : Expression
+    public class Edit : Number
     {
+        public Edit(double d) : base(d) { }
 
+        public void Dispatch(double d)
+        {
+            _value = d;
+        }
     }
 
     public class Exponent : Term
@@ -214,16 +229,28 @@ namespace Calculator
         private Expression num;
         private Expression power;
 
-        public Exponent(Expression Num, Expression Power)
+        public Exponent(Symbol Num, Symbol Power)
         {
-            num = Num;
-            power = Power;
-            power.format = new Format(padding: 75);
+            num = Expression.Wrap(Num);
+            power = Expression.Wrap(Power);
         }
 
         public override List<Symbol> GetText()
         {
             return new List<Symbol>() { num, power };
+        }
+
+        public override int GetHashCode()
+        {
+            return (num.GetHashCode() + power.GetHashCode()) % int.MaxValue;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null || obj.GetType() != typeof(Exponent))
+                return false;
+
+            return GetHashCode() == (obj as Exponent).GetHashCode();
         }
 
         public override Symbol Copy()
@@ -243,27 +270,87 @@ namespace Calculator
         }
 
         private Expression numerator;
+        private Bar bar = new Bar();
         private Expression denominator;
+
+        public Fraction(Symbol n) : this(n, new Number(1)) { }
 
         public Fraction(Symbol n, Symbol d)
         {
             numerator = Expression.Wrap(n);
             denominator = Expression.Wrap(d);
-
-            /*if (n.GetType() == typeof(Expression))
-                numerator = n as Expression;
-            else
-                numerator = new Expression(new List<Symbol>() { n });
-
-            if (d.GetType() == typeof(Expression))
-                denominator = d as Expression;
-            else
-                denominator = new Expression(new List<Symbol>() { d });*/
         }
 
         public override Term Simplify()
         {
-            return new Fraction(Evaluate(numerator), Evaluate(denominator));
+            Term n = Evaluate(numerator);
+            Term d = Evaluate(denominator);
+
+            if (n.GetType() != typeof(Fraction) && d.GetType() != typeof(Fraction))
+            {
+                if (value == (int)value)
+                {
+                    return new Number(value);
+                }
+                else if (n.value == (int)n.value && d.value == (int)d.value)
+                {
+                    Number temp = new Number(gcd((int)n.value, (int)d.value));
+                    return new Fraction(new Number(n.value / temp.value), new Number(d.value / temp.value));
+                }
+                else
+                {
+                    return new Fraction(n, d);
+                }
+            }
+            else
+            {
+                Fraction top, bottom;
+
+                if (n.GetType() == typeof(Fraction))
+                {
+                    top = Wrap((n as Fraction).Simplify());
+                }
+                else
+                {
+                    top = new Fraction(n);
+                }
+
+                if (d.GetType() == typeof(Fraction))
+                {
+                    bottom = Wrap(((Fraction)(d)).Simplify());
+                }
+                else
+                {
+                    bottom = new Fraction(d);
+                }
+
+                return new Fraction(Evaluate(top.numerator).Multiply(Evaluate(bottom.denominator)), Evaluate(top.denominator).Multiply(Evaluate(bottom.numerator)));
+            }
+        }
+
+        public Fraction Wrap(Term t)
+        {
+            if (t.GetType() == typeof(Fraction))
+            {
+                return t as Fraction;
+            }
+            else
+            {
+                return new Fraction(t);
+            }
+        }
+
+        public int gcd(int a, int b)
+        {
+            if (a == 0)
+                return b;
+            if (b == 0)
+                return a;
+
+            if (a > b)
+                return gcd(a % b, b);
+            else
+                return gcd(a, b % a);
         }
 
         public Term Add(Number other)
@@ -283,12 +370,12 @@ namespace Calculator
 
         public Term Multiply(Fraction other)
         {
-            throw new NotImplementedException();
+            return new Fraction(Evaluate(numerator).Multiply(Evaluate(other.numerator)), Evaluate(denominator).Multiply(Evaluate(other.denominator)));
         }
 
         public override List<Symbol> GetText()
         {
-            return new List<Symbol>() { numerator, denominator };
+            return new List<Symbol>() { numerator, new Bar(), denominator };
         }
 
         public override bool Equals(object obj)

@@ -8,66 +8,24 @@ namespace Calculator
 {
     public class Equation
     {
-        public static Dictionary<object, Equation> findByGraphics = new Dictionary<object, Equation>();
-        public static Equation selected;
+        public static Dictionary<object, Equation> all = new Dictionary<object, Equation>();
+        public static object canvas;
 
-        public object parent;
+        public MathText left = new MathText();
+        public MathText right = new MathText();
 
-        public Expression left;
-        public Symbol right;
-        public Symbol answer;
+        public object root;
 
-        public Equation(object Parent, Expression Left)
+        public Equation()
         {
-            /*parent = Parent;
-            left = Left;
+            root = Input.graphicsHandler.AddLayout(new Format());
 
-            selected = this;
+            MathText.selected = left;
 
-            //new Graphics(left);
-
-            Input.UI = new Graphics(left);
-            Input.UI.Update();
-            Input.pos = 0;
-            Input.editField = null;
-            findByGraphics.Add(parent, this);
-            //Graphics.findByLayout.Add(Input.UI.graphicalObject, Input.UI);
-            Graphics.graphicsHandler.AddChild(parent, Input.UI.graphicalObject, 0);
-
-            //print.log("testing this " + Graphics.Create(new Number(1)));
-            //Graphics.graphicsHandler.AddChild(Input.UI.graphicalObject, Graphics.Create(new Number(1)), Input.pos);
-
-            //Input.UI = Graphics.aaAdd(parent, new Graphics(left), 0);
-            /*graphicsHandler.AddChild(parent, toAdd.graphicalObject, index);
-            toAdd.Update();
-            Input.pos = 0;
-
-            return toAdd;
-
-            //Graphics.graphicsHandler.AddChild(parent, Input.UI.graphicalObject, 0);
-            //Graphics.Add(parent, new Graphics(left), 0);*/
-        }
-
-        public void SetAnswer()
-        {
-            /*Graphics.clickable = false;
-
-            answer = left.answer;
-
-            try
-            {
-                Graphics.graphicsHandler.RemoveChild(parent, 2);
-            }
-            catch
-            {
-                Graphics.graphicsHandler.AddChild(parent, Graphics.graphicsHandler.AddText(" = "), 1);
-            }
-
-            if (answer.GetType() == typeof(Fraction))
-                answer = ((Fraction)answer).Simplify();
-
-            Graphics.graphicsHandler.AddChild(parent, Graphics.Create((dynamic)answer), 2);
-            Graphics.clickable = true;*/
+            Input.graphicsHandler.AddChild(canvas, root, 0);
+            Input.graphicsHandler.AddChild(root, left.mathView.root = Input.graphicsHandler.AddLayout(new Format()), 0);
+            Input.graphicsHandler.AddChild(root, Input.graphicsHandler.AddText("="), 0);
+            Input.graphicsHandler.AddChild(root, right.mathView.root = Input.graphicsHandler.AddLayout(new Format()), 0);
         }
     }
 }

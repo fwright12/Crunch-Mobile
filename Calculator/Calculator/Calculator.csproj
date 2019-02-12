@@ -33,8 +33,12 @@
   <ItemGroup>
     <Compile Include="Equation.cs" />
     <Compile Include="Expression.cs" />
-    <Compile Include="Graphics.cs" />
+    <Compile Include="Format.cs" />
+    <Compile Include="Graphic.cs" />
+    <Compile Include="IGraphicsHandler.cs" />
     <Compile Include="Input.cs" />
+    <Compile Include="Crunch.cs" />
+    <Compile Include="MathText.cs" />
     <Compile Include="MathView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Symbol.cs" />

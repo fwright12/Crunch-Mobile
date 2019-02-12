@@ -1,2 +1,2 @@
 android.app.Application
-Calculator.Droid
+IBCompSciIA.CalcuPad

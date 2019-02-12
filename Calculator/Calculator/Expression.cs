@@ -8,7 +8,7 @@ namespace Calculator
 {
     public class Expression : Symbol
     {
-        public static double radDegMode = 180 / Math.PI;
+        public static bool showDecimal = false;
 
         public List<Symbol> parts;
 
@@ -24,15 +24,12 @@ namespace Calculator
         {
             get
             {
-                print.log("call from answer");
-
                 try
                 {
                     return evaluate();
                 }
                 catch
                 {
-                    print.log("error");
                     if (parts.Count == 0)
                         return new Text("");
                     else
@@ -41,36 +38,16 @@ namespace Calculator
             }
         }
 
-        public static List<Symbol> next(List<Symbol> list, int dir, params string[] stops)
-        {
-            return next(list, dir, Input.pos + dir, stops);
-        }
-
-        public static List<Symbol> next(List<Symbol> list, int dir, int start, params string[] stops)
-        {
-            List<Symbol> answer = new List<Symbol>();
-
-            int index = start;
-            while(index < list.Count && index > -1)
-            {
-                if (stops.Contains(list[index].text))
-                    break;
-
-                answer.Add(list[index]);
-                index += dir;
-            }
-            
-            return answer;
-        }
-
         public Expression()
         {
-            parts = new List<Symbol>();// { new Space() };
+            parts = new List<Symbol>();
         }
 
-        public Expression(Symbol s)
+        public Expression(params Symbol[] list)
         {
-            parts = new List<Symbol>() { s };
+            parts = new List<Symbol>();
+            foreach (Symbol s in list)
+                parts.Add(s);
         }
 
         public Expression(List<Symbol> list)
@@ -78,18 +55,7 @@ namespace Calculator
             parts = list;
         }
 
-        public override List<Symbol> GetText()
-        {
-            List<Symbol> result = new List<Symbol>();
-
-            foreach(Symbol s in parts)
-            {
-                result.Add(s);
-            }
-
-            return result;
-        }
-
+        //Determine if sent symbol is already an expression, and if not make it one
         public static Expression Wrap(Symbol sender)
         {
             if (sender.GetType() == typeof(Expression))
@@ -100,16 +66,13 @@ namespace Calculator
 
         private Term evaluate()
         {
-            //parts = new List<Symbol>() { new Number(63), new Operand("+"), new Number(9) };
             List<Symbol> calculate = new List<Symbol>();
             foreach (Symbol s in parts)
                 calculate.Add(s);
 
-            print.log("evaluating...");
-            foreach (Symbol s in calculate)
-                print.log(s);
+            calculate.Remove(Symbol.Cursor);
 
-            //Exponents
+            //Evaluate exponents
             for (int i = 0; i < calculate.Count; i++)
             {
                 if (calculate[i].format == Format.Exponent)
@@ -144,8 +107,6 @@ namespace Calculator
             {
                 if (calculate[i].GetType() == typeof(Function))
                 {
-                    print.log("LSDFL:JSDFL:KSDF:L ");
-                    //print.log("LSDFL:JSDFL:KSDF:L " + (calculate[i + 1] as Expression).answer);
                     calculate[i] = (calculate[i] as Function).evaluate(calculate[i + 1] as Term);
                     calculate.RemoveAt(i + 1);
                 }
@@ -157,7 +118,7 @@ namespace Calculator
                 if (((Operand)calculate[i]).text == "-")
                 {
                     calculate[i] = new Operand("+");
-                    calculate[i + 1] = ((Term)calculate[i + 1]).Multiply(new Number(-1));
+                    calculate[i + 1] = ((dynamic)calculate[i + 1]).Multiply(new Number(-1));
                 }
             }
 
@@ -182,6 +143,7 @@ namespace Calculator
         {
             Term value = (Term)list[0];
 
+            //Get all terms in the list
             List<Term> terms = new List<Term>();
             foreach (Symbol s in list)
             {
@@ -203,6 +165,18 @@ namespace Calculator
             }
 
             return terms[0];
+        }
+
+        public override List<Symbol> GetText()
+        {
+            List<Symbol> result = new List<Symbol>();
+
+            foreach (Symbol s in parts)
+            {
+                result.Add(s);
+            }
+
+            return result;
         }
 
         public override Symbol Copy()
@@ -229,7 +203,8 @@ namespace Calculator
 
             foreach (Symbol s in parts)
             {
-                if (s != Input.lastAdded)
+                //if (s != Input.lastAdded)
+                if (!Input.adding.Contains(s))
                     result = (result + s.GetHashCode()) % int.MaxValue;
             }
 
@@ -239,6 +214,28 @@ namespace Calculator
         public void FixWeirdError()
         {
             operate("+", new List<Symbol>() { new Number(1), new Number(1) });
+        }
+
+        public static List<Symbol> next(List<Symbol> list, int dir, params string[] stops)
+        {
+            return next(list, dir, Input.pos + dir, stops);
+        }
+
+        public static List<Symbol> next(List<Symbol> list, int dir, int start, params string[] stops)
+        {
+            List<Symbol> answer = new List<Symbol>();
+
+            int index = start;
+            while (index < list.Count && index > -1)
+            {
+                if (stops.Contains(list[index].text))
+                    break;
+
+                answer.Add(list[index]);
+                index += dir;
+            }
+
+            return answer;
         }
     }
 
