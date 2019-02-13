@@ -25,8 +25,8 @@ namespace Calculator.Droid
             keyboard = FindViewById<TableLayout>(Resource.Id.keyboard);
             keyboard.Measure((canvas.Parent as View).Width, (canvas.Parent as View).Height);
 
-            FindViewById<Button>(Resource.Id.rightArrow).Click += delegate { RightArrow(); };
-            FindViewById<Button>(Resource.Id.leftArrow).Click += delegate { LeftArrow(); };
+            FindViewById<Button>(Resource.Id.rightArrow).Click += delegate { Input.selected.RightArrow(); };
+            FindViewById<Button>(Resource.Id.leftArrow).Click += delegate { Input.selected.LeftArrow(); };
 
             arrowKeys = FindViewById<LinearLayout>(Resource.Id.arrowKeysLayout);
             //arrowKeys.LayoutParameters = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, keyboard.meas);
@@ -184,7 +184,8 @@ namespace Calculator.Droid
             View view = GetViewAt(GraphicsEngine.canvas as ViewGroup, x, y);
             view.GetLocationInWindow(bounds);
             var leftOrRight = (int)Math.Round((double)(x - bounds[0]) / view.Width);
-            Input.selected.MoveCursor(view, view.PaddingLeft > 0, view.PaddingRight > 0, leftOrRight);
+
+            Input.selected.MoveCursor(view, leftOrRight);
         }
 
         public void KeyboardCursorMode()
@@ -213,16 +214,6 @@ namespace Calculator.Droid
             arrowKeys.Visibility = ViewStates.Gone;
             //arrowKeys.SetBackgroundColor(Color.Transparent);
             (GraphicsEngine.phantomCursor as View).Visibility = ViewStates.Gone;
-        }
-
-        public void RightArrow()
-        {
-            print.log("right arrow");
-        }
-
-        public void LeftArrow()
-        {
-            print.log("left arrow");
         }
 
         public void HideKeyboard()

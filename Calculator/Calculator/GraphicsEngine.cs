@@ -11,7 +11,7 @@ namespace Calculator
     public class GraphicsEngine
     {
         public static RenderFactory renderFactory = new RenderFactory();
-        public static Queue<Action> Creator = new Queue<Action>();
+        public static BiDictionary<Symbol, object> viewLookup = new BiDictionary<Symbol, object>();
         public static object canvas;
         public static object phantomCursor;
 
@@ -20,7 +20,6 @@ namespace Calculator
         public static int textWidth;
         public static int TextSize = 40;
 
-        public BiDictionary<Symbol, object> viewLookup = new BiDictionary<Symbol, object>();
         public Symbol cursor = new Cursor();
         public object cursorObject
         {
@@ -78,9 +77,21 @@ namespace Calculator
             //SetText(root, Equation.cursor.Value);
         }
 
-        public void SetText(object parent, Symbol symbol, int index = 0)
+        public void SetText(Symbol symbol)
         {
-            print.log("set text " + symbol +", "+ (symbol is Expression));
+            if (symbol.HasParent && viewLookup.Contains(symbol.Parent))
+            {
+                SetText(viewLookup[symbol.Parent], symbol, symbol.Parent.Children.IndexOf(symbol));
+            }
+            else
+            {
+                throw new Exception("The given symbol either is does not have a parent symbol, or the parent does not have an associated view. Alternatively, pass a parent and index");
+            }
+        }
+
+        public void SetText(object parent, Symbol symbol, int index = 0, bool selectable = true)
+        {
+            print.log("set text " + symbol + ", " + (symbol is Expression));
             var view = default(object);
 
             if (viewLookup.Contains(symbol))
@@ -93,10 +104,9 @@ namespace Calculator
                 viewLookup.Add(symbol, view);
             }
 
-            var viewParent = renderFactory.GetParent(view as dynamic);
-            if (viewParent == null || !viewParent.Equals(parent as dynamic))
+            object currentParent = renderFactory.GetParent(view as dynamic);
+            if (currentParent == null || !currentParent.Equals(parent) || renderFactory.GetIndex(view as dynamic) != index)
             {
-                //print.log("adding");
                 renderFactory.Add(parent as dynamic, view as dynamic, index);
             }
 
@@ -116,198 +126,113 @@ namespace Calculator
             Expression temp = viewLookup[parent] as Expression;
             renderFactory.SetPadding(
                 parent as dynamic,
-                (temp.Children.First.Value is Layout && temp.Children.First.Value.GetType() != typeof(Expression)).ToInt() * cursorWidth,
-                (temp.Children.Last.Value is Layout && temp.Children.Last.Value.GetType() != typeof(Expression)).ToInt() * cursorWidth
+                (temp.Children.First() is Layout && temp.Children.First().GetType() != typeof(Expression)).ToInt() * cursorWidth,
+                (temp.Children.Last() is Layout && temp.Children.Last().GetType() != typeof(Expression)).ToInt() * cursorWidth
                 );
         }
 
-        private object lastParent;
-        private object parent;
-
-        public void MoveCursor(object view, bool isPaddedLeft, bool isPaddedRight, int leftOrRight)
+        public void MoveCursor(object view, int leftOrRight)
         {
-            Symbol symbol = Input.selected.viewLookup[view];
-            parent = renderFactory.GetParent(view as dynamic);
-
-            if (symbol is Text)
+            if (viewLookup.Contains(view) && ((viewLookup[view] is Text && (viewLookup[view] as Text).selectable) || viewLookup[view] is Expression))
             {
-                //SetText(parent, symbol, )
-            }
-            else if (symbol is Expression)
-            {
+                Symbol symbol = viewLookup[view];
 
-            }
+                cursor.Remove();
 
-            if (leftOrRight == 0)
-            {
-                layout.Children.AddBefore(layout.Children.Find(symbol), symbolCursor);
-            }
-            else if (leftOrRight == 1)
-            {
-                layout.Children.AddAfter(layout.Children.Find(symbol), symbolCursor);
-            }
-
-            renderFactory.Add(parent as dynamic, cursorObject as dynamic, renderFactory.GetIndex(view as dynamic) + leftOrRight);
-
-            SetText(parent, symbol);
-
-            if (symbol is Text || symbol.GetType() == typeof(Expression))
-            {
-
-                var symbolCursor = cursor;
-
-                if (symbol is Expression && (symbol as Expression).Children.Count == 0)
+                if (symbol is Expression)
                 {
-                    (symbol as Expression).Children.AddFirst(symbolCursor);
-                }
-                else
-                {
-                    Expression layout = default(Expression);
+                    Expression expression = symbol as Expression;
 
-                    if (symbol is Expression)
+                    if (expression.Children.Count == 0)
                     {
-                        layout = symbol as Expression;
-
-                        if (isPaddedLeft)
-                        {
-                            leftOrRight = 0;
-                            symbol = layout.Children.First.Value;
-                        }
-                        else if (isPaddedRight)
-                        {
-                            leftOrRight = 1;
-                            symbol = layout.Children.Last.Value;
-                        }
-
-                        parent = view;// viewLookup[layout];
-                        view = viewLookup[symbol];
-
-                        //renderFactory.Add(temp as dynamic, cursorObject as dynamic, renderFactory.GetIndex(viewLookup[symbol] as dynamic) + leftOrRight);
-                        //temp.AddView(realCursor, temp.IndexOfChild(Input.selected.viewLookup[symbol] as View) + leftOrRight);
+                        expression.Add(cursor);
                     }
                     else
                     {
-                        layout = viewLookup[parent] as Expression;
-                        //parent.AddView(realCursor, parent.IndexOfChild(view) + leftOrRight);
+                        symbol = expression.Children[(expression.Children.Count - 1) * leftOrRight];
                     }
-
-                    if (leftOrRight == 0)
-                    {
-                        layout.Children.AddBefore(layout.Children.Find(symbol), symbolCursor);
-                    }
-                    else if (leftOrRight == 1)
-                    {
-                        layout.Children.AddAfter(layout.Children.Find(symbol), symbolCursor);
-                    }
-
-                    renderFactory.Add(parent as dynamic, cursorObject as dynamic, renderFactory.GetIndex(view as dynamic) + leftOrRight);
                 }
+
+                SetCursor(symbol.Parent, symbol.Index);
+
+                /*if (leftOrRight == 0)
+                {
+                    cursor.AddBefore(symbol);
+                }
+                else if (leftOrRight == 1)
+                {
+                    cursor.AddAfter(symbol);
+                }
+
+                SetText(cursor);*/
             }
         }
 
-        /*public void MoveCursor(object view, bool isPaddedLeft, bool isPaddedRight, int leftOrRight)
+        public void SetCursor(Layout parent, int index)
         {
-            if (!viewLookup.Contains(view))
+            if (index == 0)
             {
-                return;
+                cursor.AddBefore(parent.Children[0]);
+            }
+            else
+            {
+                cursor.AddAfter(parent.Children[index - 1]);
             }
 
-            Symbol symbol = Input.selected.viewLookup[view];
+            SetText(cursor);
+        }
 
-            if (symbol is Text || symbol.GetType() == typeof(Expression))
-            {
-                lastParent = parent;
-                parent = renderFactory.GetParent(view as dynamic);
+        public void RightArrow(Symbol symbol)
+        {
+            int index = symbol.Parent.Children.IndexOf(symbol);
 
-                renderFactory.Remove(cursorObject as dynamic);
-                var symbolCursor = cursor.DetachNode();
 
-                if (symbol is Expression && (symbol as Expression).Children.Count == 0)
-                {
-                    //parent.AddView(realCursor, parent.IndexOfChild(Symbol) + leftOrRight);
-                    renderFactory.Add(view as dynamic, cursorObject as dynamic);
-                    (symbol as Expression).Children.AddFirst(symbolCursor);
-                    parent = renderFactory.GetParent(view as dynamic);
-                }
-                else
-                {
-                    Expression layout = default(Expression);
+        }
 
-                    if (symbol is Expression)
-                    {
-                        layout = symbol as Expression;
+        public void LeftArrow()
+        {
 
-                        if (isPaddedLeft)
-                        {
-                            leftOrRight = 0;
-                            symbol = layout.Children.First.Value;
-                        }
-                        else if (isPaddedRight)
-                        {
-                            leftOrRight = 1;
-                            symbol = layout.Children.Last.Value;
-                        }
+        }
 
-                        parent = view;// viewLookup[layout];
-                        view = viewLookup[symbol];
-
-                        //renderFactory.Add(temp as dynamic, cursorObject as dynamic, renderFactory.GetIndex(viewLookup[symbol] as dynamic) + leftOrRight);
-                        //temp.AddView(realCursor, temp.IndexOfChild(Input.selected.viewLookup[symbol] as View) + leftOrRight);
-                    }
-                    else
-                    {
-                        layout = viewLookup[parent] as Expression;
-                        //parent.AddView(realCursor, parent.IndexOfChild(view) + leftOrRight);
-                    }
-
-                    if (leftOrRight == 0)
-                    {
-                        layout.Children.AddBefore(layout.Children.Find(symbol), symbolCursor);
-                    }
-                    else if (leftOrRight == 1)
-                    {
-                        layout.Children.AddAfter(layout.Children.Find(symbol), symbolCursor);
-                    }
-
-                    renderFactory.Add(parent as dynamic, cursorObject as dynamic, renderFactory.GetIndex(view as dynamic) + leftOrRight);
-                }
-            }
-        }*/
+        public static Queue<Action<Symbol>> Creator = new Queue<Action<Symbol>>();
 
         public void Wrapper(params string[] text)
         {
-            LinkedListNode<Symbol> node = null;
+            Symbol node = default(Symbol);
 
             foreach (string str in text)
             {
-                node = new LinkedListNode<Symbol>(default(Symbol));
-
                 switch (str)
                 {
                     case "/":
-                        node.Value = new Fraction(node);
+                        node = new Fraction();
                         break;
                     default:
                         if (Input.IsNumber(str))
                         {
-                            node.Value = new Number(str);
+                            node = new Number(str);
                         }
                         else
                         {
-                            node.Value = new Text(str);
+                            node = new Text(str);
                         }
                         break;
                 }
 
-                cursor.Parent.Children.AddBefore(cursor.Node, node);
+                node.AddBefore(cursor);
             }
 
             while (Creator.Count > 0)
             {
-                Creator.Dequeue()();
+                Creator.Dequeue()(node);
             }
 
-            SetText(renderFactory.GetParent(cursorObject as dynamic) as dynamic, node.Value, renderFactory.GetIndex(viewLookup[cursor.Value] as dynamic));
+            print.log("root children");
+            foreach (Symbol s in root.Children)
+                print.log(s);
+
+            //SetText(renderFactory.GetParent(cursorObject as dynamic) as dynamic, node, renderFactory.GetIndex(viewLookup[cursor] as dynamic));
+            SetText(node);
 
             /*if (text.Length > 1)
             {

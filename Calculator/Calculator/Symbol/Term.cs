@@ -13,11 +13,6 @@ namespace Crunch
             get;
         }
 
-        public virtual Term Simplify()
-        {
-            return new Number(value);
-        }
-
         public static Number operator +(Term t1, Term t2)
         {
             return new Number(t1.value + t2.value);

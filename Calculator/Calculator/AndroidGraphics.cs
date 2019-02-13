@@ -90,7 +90,18 @@ namespace Calculator
         {
             var temp = BaseLayout() as LinearLayout;
             temp.Orientation = Orientation.Vertical;
-            //temp.SetPadding(GraphicsEngine.textWidth, 0, GraphicsEngine.textWidth, 0);
+
+            temp.ChildViewAdded += delegate
+            {
+                if (temp.ChildCount == 2)
+                {
+                    var bar = new LinearLayout(Application.Context);
+                    bar.SetPadding(0, 0, 0, 3);
+                    bar.SetBackgroundColor(Color.White);
+                    temp.AddView(bar, 1);
+                }
+            };
+
             return temp;
         }
 
@@ -98,14 +109,6 @@ namespace Calculator
         {
             var temp = BaseLayout();
             temp.SetPadding(0, 0, 0, 50);
-            return temp;
-        }
-
-        public ViewGroup Create(Bar sender)
-        {
-            var temp = new LinearLayout(Application.Context);
-            temp.SetPadding(0, 0, 0, 3);
-            temp.SetBackgroundColor(Color.White);
             return temp;
         }
 
@@ -138,7 +141,7 @@ namespace Calculator
 
         public int GetIndex(View sender)
         {
-            return (sender.Parent as ViewGroup).IndexOfChild(sender);
+            return GetParent(sender).IndexOfChild(sender);
         }
 
         public void SetPadding(ViewGroup sender, int left, int right)
@@ -157,7 +160,7 @@ namespace Calculator
             view.SetY(y);
         }
 
-        public void IsOverlapping(View first, View second, Symbol sender)
+        /*public void IsOverlapping(View first, View second, Symbol sender)
         {
             ViewGroup root = null;// Input.selected.root as ViewGroup;
 
@@ -178,7 +181,7 @@ namespace Calculator
                 /*if ((Input.cursor as View).Parent != null)
                 {
                     ((Input.cursor as View).Parent as ViewGroup).RemoveView(Input.cursor as View);
-                }*/
+                }
 
                 if (first is LinearLayout)
                 {
@@ -193,6 +196,6 @@ namespace Calculator
                     //Input.selected.pos = Input.selected.text.IndexOf(sender) + leftOrRight;
                 }
             }
-        }
+        }*/
     }
 }

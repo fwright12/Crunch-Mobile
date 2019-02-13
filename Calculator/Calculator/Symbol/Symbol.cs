@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Calculator;
-
+using System.Collections.ObjectModel;
 
 namespace Graphics
 {
@@ -14,28 +14,51 @@ namespace Graphics
         public object view;
         public Layout Parent;
 
-        public LinkedListNode<Symbol> Next
+        public bool HasParent
         {
             get
             {
-                return Parent.Children.Find(this).Next;
+                return Parent != null;
             }
         }
 
-        public LinkedListNode<Symbol> Previous
+        public int Index
         {
             get
             {
-                return Parent.Children.Find(this).Previous;
+                return Parent.Children.IndexOf(this);
             }
         }
 
-        public LinkedListNode<Symbol> Node
+        public Symbol Next
         {
             get
             {
-                return Parent.Children.Find(this);
+                return Parent.Children[Parent.Children.IndexOf(this) + 1];
             }
+        }
+
+        public Symbol Previous
+        {
+            get
+            {
+                return Parent.Children[Parent.Children.IndexOf(this) - 1];
+            }
+        }
+
+        public void AddAfter(Symbol symbol)
+        {
+            symbol.Parent.Add(this, symbol.Parent.Children.IndexOf(symbol) + 1);
+        }
+
+        public void AddBefore(Symbol symbol)
+        {
+            symbol.Parent.Add(this, symbol.Parent.Children.IndexOf(symbol));
+        }
+
+        public void Remove()
+        {
+            Parent.Remove(this);
         }
 
         public static implicit operator Symbol(Crunch.Number n)
@@ -54,13 +77,28 @@ namespace Graphics
         }*/
     }
 
-    public class Cursor : Symbol { }
-    public class Bar : Symbol { }
-    public class Space : Symbol { }
+    public class Cursor : Symbol
+    {
+        /*new public Symbol Next;
+        new public Symbol Previous;
+
+        new public void AddBefore(Symbol symbol)
+        {
+            Previous = symbol.Previous;
+            Next = symbol;
+        }
+        
+        new public void AddAfter(Symbol symbol)
+        {
+            Previous = symbol;
+            Next = symbol.Next;
+        }*/
+    }
 
     public class Text : Symbol
     {
         public string text;
+        public bool selectable = false;
 
         public Text(string str)
         {
@@ -85,19 +123,35 @@ namespace Graphics
 
     public abstract class Layout : Symbol
     {
-        public LinkedList<Symbol> Children = new LinkedList<Symbol>();
-        public LinkedList<Symbol> List;
+        public ReadOnlyCollection<Symbol> Children
+        {
+            get
+            {
+                return new ReadOnlyCollection<Symbol>(children);
+            }
+        }
+
+        private List<Symbol> children = new List<Symbol>();
 
         public void Add(Symbol symbol)
         {
-            Add(symbol, Children.Count - 1);
+            Add(symbol, children.Count);
         }
 
         public void Add(Symbol symbol, int index)
         {
+            //Remove from old list
+            if (symbol.Parent != null)
+            {
+                symbol.Parent.children.Remove(symbol);
+            }
+            children.Insert(index, symbol);
+            symbol.Parent = this;
+        }
 
-            Children.AddAfter(Children.NodeAt(index).DetachNode(), symbol);
-            Parent = this;
+        public void Remove(Symbol symbol)
+        {
+            children.Remove(symbol);
         }
     }
 
@@ -117,7 +171,15 @@ namespace Graphics
         {
             try
             {
-                return Cruncher.Evaluate(layout.Children.ToList());
+                var temp = Cruncher.Evaluate(layout.Children.ToList());
+                if (temp is Crunch.Fraction)
+                {
+                    return (temp as Crunch.Fraction).Simplify();
+                }
+                else
+                {
+                    return temp;
+                }
             }
             catch
             {
@@ -128,52 +190,72 @@ namespace Graphics
 
     public class Fraction : Layout
     {
-        private Func<LinkedListNode<Symbol>, LinkedListNode<Symbol>> previous = delegate (LinkedListNode<Symbol> node) { return node.Previous; };
-        private Func<LinkedListNode<Symbol>, LinkedListNode<Symbol>> next = delegate (LinkedListNode<Symbol> node) { return node.Next; };
+        private Func<Symbol, Symbol> previous = delegate (Symbol node) { return node.Previous; };
+        private Func<Symbol, Symbol> next = delegate (Symbol node) { return node.Next; };
 
         public Fraction(Expression Numerator, Expression Denominator)
         {
-            Children.AddLast(Numerator);
-            Children.AddLast(new Bar());
-            Children.AddLast(Denominator);
+            Add(Numerator);
+            Add(Denominator);
         }
 
-        public Fraction(LinkedListNode<Symbol> text)
+        public Fraction()
         {
-            GraphicsEngine.Creator.Enqueue(delegate ()
+            GraphicsEngine.Creator.Enqueue(delegate (Symbol text)
             {
-                //print.log("SDFLKJSDKLJ: " + text.Value +", " + text.Previous.Value +", "+ text.Next.Value);
-                Children.AddLast(new Expression(GetQuantity(previous, text).ToList()));
-                Children.AddLast(new Bar());
-                //children.AddLast(new Layout(new LinkedListNode<Symbol>(new Space()), Input.selected.cursor.GetNode()));
-                Children.AddLast(new Expression(GetQuantity(next, text).ToList()));
+                print.log(text.Parent == null);
+                Add(new Expression(GetQuantity(text, false)));
+                Add(new Expression(GetQuantity(text, true)));
             });
         }
 
-        public LinkedList<Symbol> GetQuantity(Func<LinkedListNode<Symbol>, LinkedListNode<Symbol>> get, LinkedListNode<Symbol> start)
+        public List<Symbol> GetQuantity(Symbol start, bool forward)
         {
-            LinkedList<Symbol> result = new LinkedList<Symbol>();
+            List<Symbol> result = new List<Symbol>();
+            List<Symbol> list = start.Parent.Children.ToList();
+            if (!forward)
+            {
+                list.Reverse();
+            }
+
+            int index = list.IndexOf(start);
+            while (index + 1 < list.Count && (list[index + 1] is Number || list[index + 1] is Cursor))
+            {
+                result.Add(list[++index]);
+                if (result.Last() is Cursor)
+                {
+                    break;
+                }
+            }
+
+            if (!forward)
+            {
+                list.Reverse();
+            }
+            return result;
+
             Func<Symbol, bool> condition = null;
+            Func<Symbol, Symbol> get = null;
 
             if (get(start) != null)
             {
                 start = get(start);
 
-                if (start.Value == Input.selected.cursor)
+                if (start == Input.selected.cursor)
                 {
-                    result.AddFirst(start.DetachNode());
+                    result.Add(start);
                     return result;
                 }
 
-                if (get == previous && IsExpressionEnd(start.Value))
+                if (get == previous && IsExpressionEnd(start))
                 {
                     condition = IsExpressionStart;
                 }
-                else if (get == next && IsExpressionStart(start.Value))
+                else if (get == next && IsExpressionStart(start))
                 {
                     condition = IsExpressionEnd;
                 }
-                else if (!IsNotNumber(start.Value))
+                else if (!IsNotNumber(start))
                 {
                     condition = IsNotNumber;
                 }
@@ -181,10 +263,10 @@ namespace Graphics
                 do
                 {
                     var temp = get(start);
-                    result.AddFirst(start.DetachNode());
+                    result.Insert(0, start);
                     start = temp;
                 }
-                while (start != null && !condition(start.Value));
+                while (start != null && !condition(start));
             }
 
             return result;
@@ -200,6 +282,11 @@ namespace Graphics
             return symbol is Text && (symbol as Text).text == ")";
         }
 
+        public bool IsNumber(Symbol symbol)
+        {
+            return symbol is Number;
+        }
+
         public bool IsNotNumber(Symbol symbol)
         {
             return !(symbol is Number);
@@ -207,7 +294,7 @@ namespace Graphics
 
         public static implicit operator Crunch.Fraction(Fraction f)
         {
-            return new Crunch.Fraction(f.Children.First.Value as dynamic, f.Children.Last.Value as dynamic);
+            return new Crunch.Fraction(f.Children.First() as dynamic, f.Children.Last() as dynamic);
         }
     }
 

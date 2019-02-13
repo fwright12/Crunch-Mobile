@@ -1,2 +1,0 @@
-C:\Users\Flint\documents\visual studio 2015\Projects\Calculator\Calculator\Calculator.WinPhone\Calculator.WinPhone.csproj;neutral
-C:\Users\Flint\documents\visual studio 2015\Projects\Calculator\Calculator\Calculator\Calculator.csproj;neutral

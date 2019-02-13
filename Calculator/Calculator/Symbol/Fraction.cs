@@ -27,34 +27,60 @@ namespace Crunch
             denominator = Denominator;
         }
 
-        /*public override Term Simplify()
+        public Term Simplify()
         {
-            Term n = Evaluate(numerator);
-            Term d = Evaluate(denominator);
-
-            if (n.GetType() != typeof(Fraction) && d.GetType() != typeof(Fraction))
+            //Both numerator and denominator are whole numbers
+            if (numerator.GetType() != typeof(Fraction) && denominator.GetType() != typeof(Fraction))
             {
+                //The fraction simplifies to a whole number
                 if (value == (int)value)
                 {
                     return new Number(value);
                 }
-                else if (n.value == (int)n.value && d.value == (int)d.value)
+                //If the numerator and denominator are whole numbers, look for gcd
+                else if (numerator.value == (int)numerator.value && denominator.value == (int)denominator.value)
                 {
-                    Number temp = new Number(gcd((int)n.value, (int)d.value));
-                    return new Fraction(new Number(n.value / temp.value), new Number(d.value / temp.value));
+                    Number temp = new Number(gcd((int)numerator.value, (int)denominator.value));
+                    return new Fraction(new Number(numerator.value / temp.value), new Number(denominator.value / temp.value));
                 }
+                //Can't be further simplified
                 else
                 {
-                    return new Fraction(n, d);
+                    return new Fraction(numerator, denominator);
                 }
             }
             else
             {
-                Fraction top, bottom;
+                //Term top = new Fraction(numerator).Simplify();
+                //Term bottom = new Fraction(denominator).Simplify();
 
-                if (n.GetType() == typeof(Fraction))
+                Term[] terms = new Term[] { numerator, denominator };
+                Fraction[] fractions = new Fraction[2];
+
+                for (int i = 0; i < 2; i++) {
+                    var term = terms[i];
+
+                    if (term is Fraction)
+                    {
+                        var temp = (term as Fraction).Simplify();
+                        if (temp is Fraction)
+                        {
+                            fractions[i] = temp as Fraction;
+                        }
+                        else
+                        {
+                            fractions[i] = new Fraction(temp);
+                        }
+                    }
+                    else
+                    {
+                        fractions[i] = new Fraction(terms[i]);
+                    }
+                }
+
+                /*if (numerator is Fraction)
                 {
-                    top = Wrap((n as Fraction).Simplify());
+                    top = new Fraction((numerator as Fraction).Simplify()); //Wrap((n as Fraction).Simplify());
                 }
                 else
                 {
@@ -68,21 +94,10 @@ namespace Crunch
                 else
                 {
                     bottom = new Fraction(d);
-                }
+                }*/
 
-                return new Fraction(Evaluate(top.numerator).Multiply(Evaluate(bottom.denominator)), Evaluate(top.denominator).Multiply(Evaluate(bottom.numerator)));
-            }
-        }*/
-
-        public Fraction Wrap(Term t)
-        {
-            if (t.GetType() == typeof(Fraction))
-            {
-                return t as Fraction;
-            }
-            else
-            {
-                return new Fraction(t);
+                //return new Fraction(Evaluate(top.numerator).Multiply(Evaluate(bottom.denominator)), Evaluate(top.denominator).Multiply(Evaluate(bottom.numerator)));
+                return new Fraction(fractions[0].numerator * fractions[1].denominator, fractions[0].denominator * fractions[1].numerator);
             }
         }
 

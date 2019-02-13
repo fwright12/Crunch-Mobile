@@ -49,7 +49,6 @@ namespace Calculator
         TView Create(Number sender);
         TLayout Create(Expression sender);
         TLayout Create(Fraction sender);
-        TLayout Create(Bar sender);
         TView Create(Cursor sender);
 
         void SetPadding(TLayout sender, int left, int right);
