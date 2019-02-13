@@ -15,54 +15,52 @@
     <StackLayout x:Name="page">
         <local:ScrollSpy x:Name="phantomCursorField" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
             <ScrollView x:Name="canvasScroll" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" Orientation="Both">
-                <local:GestureRelativeLayout x:Name="canvas" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+                <local:GestureRelativeLayout x:Name="canvas">
                 </local:GestureRelativeLayout>
             </ScrollView>
         </local:ScrollSpy>
 
         <AbsoluteLayout x:Name="keyboardContainer">
-            <local:Mask x:Name="keyboard" Orientation="Horizontal" Spacing="0">
+            <local:Mask x:Name="keyboard" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" Orientation="Horizontal" Spacing="0">
                 <ScrollView x:Name="keyboardScroll" Orientation="Horizontal">
                     <Grid x:Name="keypad" ColumnSpacing="0" RowSpacing="0" >
-                        <local:LongClickableButton Text="&#8730;" Grid.Row="0" Grid.Column="0" />
-                        <local:LongClickableButton Text="^" Grid.Row="0" Grid.Column="1" />
-                        <local:LongClickableButton Text="1" Grid.Row="0" Grid.Column="2" />
-                        <local:LongClickableButton Text="2" Grid.Row="0" Grid.Column="3" />
-                        <local:LongClickableButton Text="3" Grid.Row="0" Grid.Column="4" />
+                        <local:LongClickableButton Grid.Row="0" Grid.Column="0" Text="(" />
+                        <local:LongClickableButton Grid.Row="0" Grid.Column="1" Text="7" />
+                        <local:LongClickableButton Grid.Row="0" Grid.Column="2" Text="8" />
+                        <local:LongClickableButton Grid.Row="0" Grid.Column="3" Text="9" />
+                        <local:LongClickableButton Grid.Row="0" Grid.Column="4" Text="&#247;" />
 
-                        <local:LongClickableButton Text="&#178;" Grid.Row="1" Grid.Column="0" />
-                        <local:LongClickableButton Text="/" Grid.Row="1" Grid.Column="1" />
-                        <local:LongClickableButton Text="4" Grid.Row="1" Grid.Column="2" />
-                        <local:LongClickableButton Text="5" Grid.Row="1" Grid.Column="3" />
-                        <local:LongClickableButton Text="6" Grid.Row="1" Grid.Column="4" />
+                        <local:LongClickableButton Grid.Row="1" Grid.Column="0" Text=")" />
+                        <local:LongClickableButton Grid.Row="1" Grid.Column="1" Text="4" />
+                        <local:LongClickableButton Grid.Row="1" Grid.Column="2" Text="5" />
+                        <local:LongClickableButton Grid.Row="1" Grid.Column="3" Text="6" />
+                        <local:LongClickableButton Grid.Row="1" Grid.Column="4" Text="&#215;" />
 
-                        <local:LongClickableButton Text="&#960;" Grid.Row="2" Grid.Column="0" />
-                        <local:LongClickableButton Text="*" Grid.Row="2" Grid.Column="1" />
-                        <local:LongClickableButton Text="7" Grid.Row="2" Grid.Column="2" />
-                        <local:LongClickableButton Text="8" Grid.Row="2" Grid.Column="3" />
-                        <local:LongClickableButton Text="9" Grid.Row="2" Grid.Column="4" />
+                        <local:LongClickableButton Grid.Row="2" Grid.Column="0" Text="x&#178;" />
+                        <local:LongClickableButton Grid.Row="2" Grid.Column="1" Text="1" />
+                        <local:LongClickableButton Grid.Row="2" Grid.Column="2" Text="2" />
+                        <local:LongClickableButton Grid.Row="2" Grid.Column="3" Text="3" />
+                        <local:LongClickableButton Grid.Row="2" Grid.Column="4" Text="-" />
 
-                        <local:LongClickableButton Text="e" Grid.Row="3" Grid.Column="0" />
-                        <local:LongClickableButton Text="+" Grid.Row="3" Grid.Column="1" />
-                        <local:LongClickableButton Text="-" Grid.Row="3" Grid.Column="2" />
-                        <local:LongClickableButton Text="." Grid.Row="3" Grid.Column="3" />
-                        <local:LongClickableButton Text="0" Grid.Row="3" Grid.Column="4" />
+                        <local:LongClickableButton Grid.Row="3" Grid.Column="0" Text="x&#8319;" />
+                        <local:LongClickableButton Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Text="0" />
+                        <local:LongClickableButton Grid.Row="3" Grid.Column="3" Text="." />
+                        <local:LongClickableButton Grid.Row="3" Grid.Column="4" Text="+" />
                     </Grid>
                 </ScrollView>
-                <StackLayout x:Name="permanentKeys" Orientation="Vertical" Spacing="0">
-                    <local:LongClickableButton Text="i"/>
-                    <local:LongClickableButton x:Name="delete" Text="&lt;X"/>
-                    <StackLayout Orientation="Horizontal" Spacing="0">
-                        <local:LongClickableButton x:Name="left" Text="&#10094;"/>
-                        <local:LongClickableButton x:Name="right" Text="&#10095;"/>
-                    </StackLayout>
-                    <local:LongClickableButton x:Name="dock" Text=""/>
-                </StackLayout>
 
-                <ListView x:Name="formulas" IsVisible="False" />
+                <StackLayout x:Name="permanentKeys" Orientation="Vertical" Spacing="0">
+                    <local:LongClickableButton x:Name="info" Text="INFO"/>
+                    <local:LongClickableButton x:Name="delete" Text="DEL"/>
+                    <StackLayout x:Name="arrowKeys" Orientation="Horizontal" Spacing="0">
+                        <local:LongClickableButton x:Name="left" Text="&#10216;"/>
+                        <local:LongClickableButton x:Name="right" Text="&#10217;"/>
+                    </StackLayout>
+                    <!--<local:DockButton x:Name="dock"/>-->
+                </StackLayout>
             </local:Mask>
 
-            <StackLayout x:Name="keyboardMask" IsVisible="False" BackgroundColor="Gray" Opacity="0.75"
+            <StackLayout x:Name="keyboardMask" InputTransparent="True" IsVisible="False" BackgroundColor="Gray" Opacity="0.75"
                          AbsoluteLayout.LayoutBounds="0,0,1,1"
                          AbsoluteLayout.LayoutFlags="All" />
         </AbsoluteLayout>

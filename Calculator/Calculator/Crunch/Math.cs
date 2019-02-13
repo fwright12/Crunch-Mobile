@@ -19,12 +19,24 @@ namespace Crunch
         public static Term Evaluate(Expression expression)
         {
             List<View> calculate = (expression as StackLayout).Children.ToList();
-            
+
+            //Get rid of the cursor
+            if (Cursor.Parent == expression)
+            {
+                calculate.RemoveAt(Cursor.Index);
+            }
+
+            int i = 0;
+            return Evaluate(calculate, ref i);
+        }
+
+        public static Term Evaluate(List<View> calculate, ref int i)
+        {
             List<Term> terms = new List<Term>();
             List<string> operands = new List<string>();
-
+            
             //Parse
-            for (int i = 0; i < calculate.Count; i++)
+            for ( ; i < calculate.Count; i++)
             {
                 Type type = calculate[i].GetType();
 
@@ -49,14 +61,29 @@ namespace Crunch
                 }
                 else if (type == typeof(Text) || type == typeof(Minus))
                 {
-                    if ((calculate[i] as Text).Text == "-")
+                    string text = (calculate[i] as Text).Text.Trim();
+
+                    if (text == "(")
+                    {
+                        i++;
+                        terms.Add(Evaluate(calculate, ref i));
+                    }
+                    else if (text == ")")
+                    {
+                        break;
+                    }
+                    else if ((calculate[i] as Text).Text == "-")
                     {
                         operands.Add("*");
                         terms.Add(new Number(-1));
                     }
                     else
                     {
-                        operands.Add((calculate[i] as Text).Text.Trim());
+                        if (text == "×")
+                        {
+                            text = "*";
+                        }
+                        operands.Add(text);
                     }
                 }
                 //These types have implicit operators defined
@@ -65,7 +92,7 @@ namespace Crunch
                     Calculator.Fraction f = calculate[i] as Calculator.Fraction;
                     terms.Add(new Fraction(Evaluate(f.Numerator), Evaluate(f.Denominator)).Simplify());
                 }
-                else if (type != typeof(Cursor))
+                else
                 {
                     throw new UnrecognizedSymbolException(type);
                 }
@@ -91,7 +118,6 @@ namespace Crunch
                 operate(operands[i], ref terms, ref operands, ref i);
             }
 
-            print.log(terms[0]);
             return terms[0].Simplify();
         }
 

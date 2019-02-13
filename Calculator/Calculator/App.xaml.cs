@@ -15,6 +15,7 @@ namespace Calculator
         protected override void OnStart()
         {
             // Handle when your app starts
+            print.log("on start");
         }
 
         protected override void OnSleep()

@@ -21,6 +21,11 @@ namespace Xamarin.Forms
 
     public static class ExtensionMethods
     {
+        public static Element ParentElement(this View view)
+        {
+            return view.Parent;
+        }
+
         public static bool Selectable(this View view)
         {
             if (view is Text)

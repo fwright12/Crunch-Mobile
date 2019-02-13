@@ -10,24 +10,127 @@ using Android.Runtime;
 using Android.OS;
 
 [assembly: ExportRenderer(typeof(GestureRelativeLayout), typeof(AndroidRelativeLayoutRenderer))]
-[assembly: ExportRenderer(typeof(SoftKeyboardDisabledEntry), typeof(SoftkeyboardDisabledEntryRenderer))]
 [assembly: ExportRenderer(typeof(LongClickableButton), typeof(LongClickableButtonRenderer))]
 [assembly: ExportRenderer(typeof(Mask), typeof(MaskRenderer))]
 [assembly: ExportRenderer(typeof(ScrollSpy), typeof(ScrollSpyRenderer))]
+[assembly: ExportRenderer(typeof(Answer), typeof(TouchEnabledViewRenderer))]
+[assembly: ExportRenderer(typeof(DockButton), typeof(DockButtonRenderer))]
+//[assembly: ExportRenderer(typeof(BannerAd), typeof(BannerAdRenderer))]
 
 namespace Calculator.Droid
 {
-    public class ScrollSpyRenderer : VisualElementRenderer<AbsoluteLayout>
+    /*public class BannerAdRenderer : ViewRenderer
+    {
+        string adUnitId = string.Empty;
+        //Note you may want to adjust this, see further down.
+        AdSize adSize = AdSize.SmartBanner;
+        AdView adView;
+        AdView CreateNativeAdControl()
+        {
+            if (adView != null)
+                return adView;
+
+            // This is a string in the Resources/values/strings.xml that I added or you can modify it here. This comes from admob and contains a / in it
+            adUnitId = Forms.Context.Resources.GetString(Resource.String.banner_ad_unit_id);
+            adView = new AdView(Forms.Context);
+            adView.AdSize = adSize;
+            adView.AdUnitId = adUnitId;
+
+            var adParams = new LinearLayout.LayoutParams(LayoutParams.WrapContent, LayoutParams.WrapContent);
+
+            adView.LayoutParameters = adParams;
+
+            adView.LoadAd(new AdRequest
+                            .Builder()
+                            .Build());
+            return adView;
+        }
+
+        protected override void OnElementChanged(ElementChangedEventArgs<Controls.AdControlView> e)
+        {
+            base.OnElementChanged(e);
+            if (Control == null)
+            {
+                CreateNativeAdControl();
+                SetNativeControl(adView);
+            }
+        }
+    }*/
+
+    /*public class BannerAdRenderer : ViewRenderer
+    {
+        /// <summary>
+        /// Used for registration with dependency service
+        /// </summary>
+        public static void Init() { }
+
+        /// <summary>
+        /// reload the view and hit up google admob 
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnElementChanged(ElementChangedEventArgs<Xamarin.Forms.View> e)
+        {
+            base.OnElementChanged(e);
+
+            //convert the element to the control we want
+            var adMobElement = Element as BannerAdRenderer;
+
+            if ((adMobElement != null) && (e.OldElement == null))
+            {
+                BannerAd ad = new BannerAd(Context);
+                ad.adSize = AdSize.Banner;
+                ad.AdUnitId = adMobElement.AdUnitId;
+                var requestbuilder = new AdRequest.Builder();
+                ad.LoadAd(requestbuilder.Build());
+                this.SetNativeControl(ad);
+            }
+        }
+    }*/
+
+    public class DockButtonRenderer : ButtonRenderer
     {
         public override bool OnTouchEvent(MotionEvent e)
         {
-            print.log("touch");
+            Input.MoveKeyboard(new Xamarin.Forms.Point(e.RawX / RootView.Width, e.RawY / RootView.Height));
+
             return false;
         }
 
         public override bool OnInterceptTouchEvent(MotionEvent ev)
         {
-            print.log("intercepted");
+            if (ev.Action == MotionEventActions.Move)
+            {
+                Input.UndockKeyboard(new Xamarin.Forms.Point(ev.RawX / RootView.Width, ev.RawY / RootView.Height));
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    public class TouchEnabledViewRenderer : VisualElementRenderer<Xamarin.Forms.View>
+    {
+        public TouchEnabledViewRenderer()
+        {
+            Touch += (sender, e) =>
+            {
+                if (e.Event.Action == MotionEventActions.Up)
+                {
+                    Input.ViewTouched(Element as Answer);
+                }
+            };
+        }
+    }
+
+    public class ScrollSpyRenderer : VisualElementRenderer<AbsoluteLayout>
+    {
+        public override bool OnTouchEvent(MotionEvent e)
+        {
+            return false;
+        }
+
+        public override bool OnInterceptTouchEvent(MotionEvent ev)
+        {
             if (ev.Action == MotionEventActions.Down)
             {
                 MainPage.isTouchingCanvas = true;
@@ -36,7 +139,7 @@ namespace Calculator.Droid
             {
                 MainPage.isTouchingCanvas = false;
             }
-            print.log(MainPage.isTouchingCanvas);
+
             return false;
         }
     }
@@ -48,23 +151,26 @@ namespace Calculator.Droid
             base.OnElementChanged(e);
 
             if (Control != null)
-            {
-                Control.LongClick += (sender, args) => Input.LongClickDown(Control.Text, true);
+            {                
+                Control.LongClick += (sender, args) => Input.LongClickDown(Element, MaskRenderer.point, true);
             }
         }
     }
 
     public class MaskRenderer : VisualElementRenderer<StackLayout>
     {
+        public static Xamarin.Forms.Point point;
+
         public override bool OnTouchEvent(MotionEvent e)
         {
             if (e.Action == MotionEventActions.Move)
             {
-                Input.MoveCursor(new Xamarin.Forms.Point(e.RawX, e.RawY));
+                Input.MoveCursor(new Xamarin.Forms.Point(e.RawX / RootView.Width, e.RawY / RootView.Height));
+                //Input.MoveCursor(new Xamarin.Forms.Point(e.GetX() / Width, e.GetY() / Height));
             }
             else if (e.Action == MotionEventActions.Up)
             {
-                Input.LongClickDown("ending long click", false);
+                Input.LongClickDown(null, Xamarin.Forms.Point.Zero, false);
             }
 
             return false;
@@ -72,9 +178,18 @@ namespace Calculator.Droid
 
         public override bool OnInterceptTouchEvent(MotionEvent ev)
         {
-            if (MainPage.IsInCursorMode && ev.Action == MotionEventActions.Move)
+            point = new Xamarin.Forms.Point(ev.RawX / RootView.Width, ev.RawY / RootView.Height);
+
+            if (MainPage.IsInCursorMode)
             {
-                return true;
+                if (ev.Action == MotionEventActions.Move)
+                {
+                    return true;
+                }
+                else if (ev.Action == MotionEventActions.Up)
+                {
+                    Input.LongClickDown(null, Xamarin.Forms.Point.Zero, false);
+                }
             }
 
             return false;
@@ -97,7 +212,7 @@ namespace Calculator.Droid
         }
     }
 
-    public class SoftkeyboardDisabledEntryRenderer : EntryRenderer
+    /*public class SoftkeyboardDisabledEntryRenderer : EntryRenderer
     {
         public SoftkeyboardDisabledEntryRenderer()
         {
@@ -161,5 +276,5 @@ namespace Calculator.Droid
                 //imm.HideSoftInputFromWindow(this.Control.WindowToken, 0);
             }
         }
-    }
+    }*/
 }

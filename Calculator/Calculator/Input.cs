@@ -25,8 +25,7 @@ namespace Calculator
         {
             if (Cursor.Delete())
             {
-                Cursor.Parent.RemoveAt(Cursor.Index);
-                graphics.SetAnswer();
+
             }
         }
 
@@ -35,28 +34,31 @@ namespace Calculator
             graphics.AddEquation(pos);
         }
 
-        public static void LongClickDown(string text, bool isDown)
+        public static void ViewTouched(Answer answer)
         {
-            print.log("long click");
-
-            if (text == "<X")
-            {
-                graphics.clearCanvas();
-            }
-            else
-            {
-                graphics.CursorMode(isDown);
-            }
+            answer.SwitchFormat();
         }
 
-        public static void CursorMode(bool isCursorMode)
+        public static void LongClickDown(Element element, Point pos, bool isDown) => graphics.LongClickDown(element, pos, isDown);
+
+        public static void CursorMode(Point pos, bool isCursorMode)
         {
-            graphics.CursorMode(isCursorMode);
+            graphics.CursorMode(pos, isCursorMode);
         }
 
         public static void MoveCursor(Point pos)
         {
             graphics.MovePhantomCursor(pos);
+        }
+
+        public static void UndockKeyboard(Point pos)
+        {
+            graphics.InitMoveKeyboard(pos);
+        }
+
+        public static void MoveKeyboard(Point pos)
+        {
+            graphics.MoveKeyboard(pos);
         }
 
         public static Action Focus;
@@ -69,59 +71,33 @@ namespace Calculator
             View node = parseKey(key, ref backward, ref forward);
 
             Cursor.Add(node);
-            if (forward != null)
+            if (node is Expression)
+            {
+                (node as Expression).Build();
+            }
+
+            /*if (forward != null)
             {
                 Grab(forward, node, 1);
             }
             if (backward != null)
             {
                 Grab(backward, node, -1);
-            }
+            }*/
 
-            graphics.SetAnswer();
-        }
-
-        /// <summary>
-        /// Populate this expresssion with the value in <paramref name="parent"/> that precedes or follows
-        /// the value at the index <paramref name="index"/>
-        /// </summary>
-        /// <param name="parent"></param>
-        /// <param name="index"></param>
-        /// <param name="direction"></param>
-        private static void Grab(Expression target, View adding, int direction)
-        {
-            Layout<View> temp = adding.Parent as Layout<View>;
-            IList<View> list = temp.Children;
-            int index = temp.Children.IndexOf(adding);
-
-            if ((index + direction).IsBetween(0, list.Count - 1))
-            {
-                View view = list[index + direction];
-
-                if (view is Number)
-                {
-                    print.log("grabbing " + (view as Number).Text);
-                    while ((index + direction).IsBetween(0, list.Count - 1) && list[index + direction] is Number)
-                    {
-                        index += direction;
-                        target.Insert(target.ChildCount * (direction + 1) / -2, list[index]);
-                    }
-                }
-                else if (view is BoxView || view is Fraction)
-                {
-                    target.Add(view);
-                }
-            }
+            MainPage.SetAnswer();
         }
 
         private static View parseKey(string key, ref Expression backward, ref Expression forward)
         {
             switch (key)
             {
-                case "/":
-                    return new Fraction(backward = new Expression(), forward = new Expression());
-                case "^":
-                    return forward = new Exponent();
+                case "÷":
+                    return new Fraction(new Expression(Cursor.Parent, -1), new Expression(Cursor.Parent, 1));
+                case "xⁿ":
+                    return new Exponent(Cursor.Parent, 1);
+                case "x²":
+                    return new Exponent(new Number("2"));
                 default:
                     if (key.IsNumber())
                     {
@@ -131,9 +107,13 @@ namespace Calculator
                     {
                         return new Minus();
                     }
-                    else
+                    else if (key == "(" || key == ")")
                     {
                         return new Text(key);
+                    }
+                    else
+                    {
+                        return new Text(" " + key + " ");
                     }
             }
         }

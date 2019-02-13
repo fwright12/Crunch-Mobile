@@ -35,11 +35,11 @@ namespace Calculator
         private static View toView(Crunch.Fraction f)
         {
             var a = new Fraction(new Expression(new Crunch.Number(Math.Abs(f.Numerator.value)).ToView()), new Expression(new Crunch.Number(Math.Abs(f.Denominator.value)).ToView()));
+
             Text b = new Text();
-            b.Text = "";
             if (f.value < 0)
             {
-                b.Text = "-";
+                b.Text = "- ";
             }
             return new Expression(b, a);
         }

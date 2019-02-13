@@ -10,7 +10,7 @@ namespace Calculator
 {
     public class Cursor : BoxView
     {
-        public static new Expression Parent { get => (instance as BoxView).Parent as Expression; }
+        public static new Expression Parent => (instance as BoxView).Parent as Expression;
         public static int Index { get => index; }
 
         public static void Right() => move(1);
@@ -36,11 +36,48 @@ namespace Calculator
         {
             if (index == 0)
             {
-                return false;
+                int loc;
+                if (Parent == MainPage.focus)
+                {
+                    return false;
+                }
+                else if (Parent.Parent is Fraction)
+                {
+                    Fraction f = Parent.Parent as Fraction;
+                    loc = f.Index() + 1;
+                    lyse(f.Denominator, f.Parent, loc);
+                    lyse(f.Numerator, f.Parent, loc);
+                }
+                else if (Parent is Expression)
+                {
+                    loc = Parent.Index() + 1;
+                    lyse(Parent, Parent.Parent, loc);
+                }
+                else
+                {
+                    return false;
+                }
+
+                Parent.RemoveAt(loc - 1);
+                UpdateIndex();
+            }
+            else
+            {
+                index--;
+                Parent.RemoveAt(index);
             }
 
-            index--;
+            MainPage.SetAnswer();
+
             return true;
+        }
+
+        private static void lyse(Layout<View> target, Expression destination, int index)
+        {
+            for (int i = target.Children.Count - 1; i >= 0 ; i--)
+            {
+                destination.Insert(index, target.Children[i]);
+            }
         }
 
         public static bool Move(Expression parent, int _index = 0)
@@ -61,7 +98,7 @@ namespace Calculator
             Parent.Insert(index++, view);
         }
 
-        public static void UpdateIndex() => index = Parent.IndexOf(instance);
+        public static void UpdateIndex() => index = (Parent as Layout<View>).Children.IndexOf(instance);
 
         private static void move(int direction)
         {
