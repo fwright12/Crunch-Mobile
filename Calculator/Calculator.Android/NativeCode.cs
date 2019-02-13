@@ -11,28 +11,29 @@ using Android.OS;
 
 using Crunch.GraphX;
 using Android.Gms.Ads;
+using Xamarin.Forms.Extensions;
 
 [assembly: ExportRenderer(typeof(Calculator.Canvas), typeof(CanvasRenderer))]
 [assembly: ExportRenderer(typeof(LongClickableButton), typeof(LongClickableButtonRenderer))]
-[assembly: ExportRenderer(typeof(Answer), typeof(StackLayoutRenderer))]
+[assembly: ExportRenderer(typeof(TouchableStackLayout), typeof(TouchableStackLayoutRenderer))]
 [assembly: ExportRenderer(typeof(DockButton), typeof(DockButtonRenderer))]
 [assembly: ExportRenderer(typeof(BannerAd), typeof(BannerAdRenderer))]
-[assembly: ExportRenderer(typeof(Text), typeof(TextRenderer))]
+[assembly: ExportRenderer(typeof(TouchableLabel), typeof(TouchableLabelRenderer))]
 [assembly: ExportRenderer(typeof(TouchScreen), typeof(TouchScreenRenderer))]
+[assembly: ExportRenderer(typeof(UntouchableBoxView), typeof(UntouchableBoxViewRenderer))]
 
 namespace Calculator.Droid
 {
     public static class ExtensionMethods
     {
-        public static void RelayTouch(this Xamarin.Forms.View shared, Android.Views.View native, MotionEvent e)
-        {
-            shared.TryToTouch(native.ScaleTouch(shared, e), (int)e.Action);
-        }
+        public static bool RelayTouch(this Xamarin.Forms.View shared, Android.Views.View native, MotionEvent e) => shared.TryToTouch(native.ScaleTouch(shared, e), (int)e.Action);
 
-        public static Xamarin.Forms.Point ScaleTouch(this Android.Views.View native, Xamarin.Forms.View shared, MotionEvent e)
-        {
-            return new Xamarin.Forms.Point(shared.Width * e.GetX() / native.Width, shared.Height * e.GetY() / native.Height);
-        }
+        public static Xamarin.Forms.Point ScaleTouch(this Android.Views.View native, Xamarin.Forms.View shared, MotionEvent e) => new Xamarin.Forms.Point(shared.Width * e.GetX() / native.Width, shared.Height * e.GetY() / native.Height);
+    }
+
+    public class UntouchableBoxViewRenderer : VisualElementRenderer<BoxView>
+    {
+        public override bool OnTouchEvent(MotionEvent e) => false;
     }
 
     public class TouchScreenRenderer : VisualElementRenderer<StackLayout>
@@ -45,6 +46,8 @@ namespace Calculator.Droid
 
         public override bool OnInterceptTouchEvent(MotionEvent e)
         {
+            (Element as TouchScreen).OnInterceptedTouch(this.ScaleTouch(Element, e), (TouchState)(int)e.Action);
+
             if (e.Action == MotionEventActions.Down)
             {
                 TouchScreen.LastDownEvent = this.ScaleTouch(Element, e);
@@ -57,12 +60,14 @@ namespace Calculator.Droid
         }
     }
 
-    public class TextRenderer : LabelRenderer
+    public class TouchableLabelRenderer : LabelRenderer
     {
-        public TextRenderer()
+        public TouchableLabelRenderer()
         {
-            Touch += (sender, e) => Element.RelayTouch(sender as Android.Views.View, e.Event);
+            //Touch += (sender, e) => Element.RelayTouch(sender as Android.Views.View, e.Event);
         }
+
+        public override bool OnTouchEvent(MotionEvent e) => Element is Text && (Element as Text).ShouldIntercept ? Element.RelayTouch(this, e) : false;
     }
 
     public class DockButtonRenderer : ButtonRenderer
@@ -84,17 +89,34 @@ namespace Calculator.Droid
         }
     }
 
-    public class StackLayoutRenderer : VisualElementRenderer<StackLayout>
+    public class TouchableStackLayoutRenderer : VisualElementRenderer<StackLayout>
     {
-        public StackLayoutRenderer()
+        public TouchableStackLayoutRenderer()
         {
-            Touch += (sender, e) => Element.RelayTouch(sender as Android.Views.View, e.Event);
+            //Touch += (sender, e) => Element.RelayTouch(sender as Android.Views.View, e.Event);
+        }
+
+        public override bool OnTouchEvent(MotionEvent e) => Element is TouchableStackLayout && (Element as TouchableStackLayout).ShouldIntercept ? Element.RelayTouch(this, e) : false;
+
+        /*public override bool OnTouchEvent(MotionEvent e)
+        {
+            print.log("touched " + (Element as dynamic).ToString());// Element.RelayTouch(this, e);
+            return Element.RelayTouch(this, e);
+        }*/
+
+        //public override bool OnInterceptTouchEvent(MotionEvent ev) => (Element as TouchableStackLayout).InterceptTouch;
+
+        /*public override bool OnTouchEvent(MotionEvent e)
+        {
+            print.log("touched " + this);
+            Element.RelayTouch(this as Android.Views.View, e);
+            return true;
         }
 
         public override bool OnInterceptTouchEvent(MotionEvent ev)
         {
             return true;
-        }
+        }*/
     }
 
     public class LongClickableButtonRenderer : ButtonRenderer

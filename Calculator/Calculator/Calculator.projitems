@@ -26,6 +26,7 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Playground.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)print.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Settings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Tips.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drag.cs" />
   </ItemGroup>
@@ -33,18 +34,6 @@
     <Content Include="$(MSBuildThisFileDirectory)desmos.html" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="$(MSBuildThisFileDirectory)MasterDetailPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="$(MSBuildThisFileDirectory)MasterDetailPage1.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="$(MSBuildThisFileDirectory)MasterDetailPageDetail.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="$(MSBuildThisFileDirectory)MasterDetailPageMaster.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Tips.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -33,6 +33,9 @@ namespace Calculator {
         private global::Calculator.BannerAd ad;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
+        private global::Xamarin.Forms.Button menuButton;
+        
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
         private global::Xamarin.Forms.StackLayout menu;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
@@ -40,6 +43,15 @@ namespace Calculator {
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
         private global::Xamarin.Forms.Stepper stepper;
+        
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
+        private global::Xamarin.Forms.ViewCell fractiondecimal;
+        
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
+        private global::Xamarin.Forms.ViewCell factoredexpanded;
+        
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
+        private global::Xamarin.Forms.ViewCell degrad;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
         private global::Xamarin.Forms.AbsoluteLayout keyboardContainer;
@@ -60,19 +72,19 @@ namespace Calculator {
         private global::Xamarin.Forms.StackLayout permanentKeys;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
-        private global::Calculator.LongClickableButton info;
+        private global::Xamarin.Forms.Extensions.LongClickableButton info;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
-        private global::Calculator.LongClickableButton delete;
+        private global::Xamarin.Forms.Extensions.LongClickableButton delete;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
         private global::Xamarin.Forms.StackLayout arrowKeys;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
-        private global::Calculator.LongClickableButton left;
+        private global::Xamarin.Forms.Extensions.LongClickableButton left;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
-        private global::Calculator.LongClickableButton right;
+        private global::Xamarin.Forms.Extensions.LongClickableButton right;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
         private global::Xamarin.Forms.StackLayout keyboardMask;
@@ -85,20 +97,24 @@ namespace Calculator {
             canvasScroll = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.ScrollView>(this, "canvasScroll");
             canvas = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Calculator.Canvas>(this, "canvas");
             ad = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Calculator.BannerAd>(this, "ad");
+            menuButton = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Button>(this, "menuButton");
             menu = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.StackLayout>(this, "menu");
             decimalPrecision = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Label>(this, "decimalPrecision");
             stepper = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Stepper>(this, "stepper");
+            fractiondecimal = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.ViewCell>(this, "fractiondecimal");
+            factoredexpanded = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.ViewCell>(this, "factoredexpanded");
+            degrad = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.ViewCell>(this, "degrad");
             keyboardContainer = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.AbsoluteLayout>(this, "keyboardContainer");
             keyboard = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.StackLayout>(this, "keyboard");
             keyboardScroll = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.ScrollView>(this, "keyboardScroll");
             keypad = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Grid>(this, "keypad");
             parentheses = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.StackLayout>(this, "parentheses");
             permanentKeys = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.StackLayout>(this, "permanentKeys");
-            info = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Calculator.LongClickableButton>(this, "info");
-            delete = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Calculator.LongClickableButton>(this, "delete");
+            info = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Extensions.LongClickableButton>(this, "info");
+            delete = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Extensions.LongClickableButton>(this, "delete");
             arrowKeys = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.StackLayout>(this, "arrowKeys");
-            left = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Calculator.LongClickableButton>(this, "left");
-            right = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Calculator.LongClickableButton>(this, "right");
+            left = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Extensions.LongClickableButton>(this, "left");
+            right = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Extensions.LongClickableButton>(this, "right");
             keyboardMask = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.StackLayout>(this, "keyboardMask");
         }
     }

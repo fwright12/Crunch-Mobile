@@ -4,6 +4,7 @@
              xmlns:androidWidget="clr-namespace:Android.Widget;assembly=Mono.Android;targetPlatform=Android"
              xmlns:formsAndroid="clr-namespace:Xamarin.Forms;assembly=Xamarin.Forms.Platform.Android;targetPlatform=Android"
              xmlns:custom="clr-namespace:Calculator"
+             xmlns:extensions="clr-namespace:Xamarin.Forms.Extensions;assembly=Xamarin.Forms.Extensions"
              x:Class="Calculator.MainPage" >
     
     <ContentPage.Padding>
@@ -12,102 +13,111 @@
             <On Platform="Android, WinPhone, Windows" Value="10" />
         </OnPlatform>
     </ContentPage.Padding>
-    
-    <custom:TouchScreen x:Name="page">
-        <AbsoluteLayout x:Name="phantomCursorField" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
-            <ScrollView x:Name="canvasScroll" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" Orientation="Both">
-                <custom:Canvas x:Name="canvas" />
-            </ScrollView>
 
-            <custom:BannerAd x:Name="ad"/>
-            <Button IsVisible="False" Text="&#8801;" FontSize="50" AbsoluteLayout.LayoutBounds="0,0,50,50" AbsoluteLayout.LayoutFlags="PositionProportional" />
-            <StackLayout IsVisible="False" x:Name="menu" BackgroundColor="LightGray" Spacing="0" Orientation="Vertical" AbsoluteLayout.LayoutFlags="SizeProportional">
-                <StackLayout VerticalOptions="FillAndExpand">
-                    <TableView Intent="Settings">
-                        <TableRoot>
-                            <TableSection Title="Math">
-                                <ViewCell>
-                                    <StackLayout Padding="25,0,0,0" Orientation="Horizontal">
-                                        <Label Text="Decimal precision: " VerticalOptions="Center"/>
-                                        <Label x:Name="decimalPrecision" VerticalOptions="Center" />
-                                        <Stepper x:Name="stepper"
-                                                 Value="3"
-                                                 ValueChanged="SetDecimalPrecision"
-                                                 Minimum="1"
-                                                 Maximum="15"
-                                                 Increment="1" 
-                                                 HorizontalOptions="EndAndExpand"
-                                                 VerticalOptions="Center"/>
-                                    </StackLayout>
-                                </ViewCell>
-                            </TableSection>
-                            <TableSection Title="Defaults">
-                                <SwitchCell Text="Prefer decimal answers"/>
-                                <SwitchCell Text="Prefer radians"/>
-                            </TableSection>
-                            <TableSection Title="Other">
-                                <SwitchCell Text="Clear canvas warning" On="True"/>
-                                <SwitchCell Text="Left-handed"/>
-                                <custom:StepperCell ValueChanged="SetDecimalPrecision" ShowValue="True" Text="test" Minimum="1" />
-                            </TableSection>
-                        </TableRoot>
-                    </TableView>
-                </StackLayout>
-                <Button Text="Tips" FontSize="Large" VerticalOptions="End"/>
-                <Button Text="About" FontSize="Large" VerticalOptions="End"/>
-            </StackLayout>
-        </AbsoluteLayout>
-
-        <AbsoluteLayout x:Name="keyboardContainer">
-            <StackLayout x:Name="keyboard" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" Orientation="Horizontal" Spacing="0">
-                <ScrollView x:Name="keyboardScroll" Orientation="Horizontal">
-                    <Grid x:Name="keypad" ColumnSpacing="0" RowSpacing="0" >
-                        <custom:LongClickableButton Grid.Row="0" Grid.Column="0" Text="sin" />
-                        <custom:LongClickableButton Grid.Row="0" Grid.Column="1" Text="x&#178;" StyleId="^2" />
-                        <custom:LongClickableButton Grid.Row="0" Grid.Column="2" Text="7" />
-                        <custom:LongClickableButton Grid.Row="0" Grid.Column="3" Text="8" />
-                        <custom:LongClickableButton Grid.Row="0" Grid.Column="4" Text="9" />
-                        <custom:LongClickableButton Grid.Row="0" Grid.Column="5" Text="&#247;" StyleId="/" />
-
-                        <custom:LongClickableButton Grid.Row="1" Grid.Column="0" Text="cos" />
-                        <custom:LongClickableButton Grid.Row="1" Grid.Column="1" Text="x&#8319;" StyleId="^" />
-                        <custom:LongClickableButton Grid.Row="1" Grid.Column="2" Text="4" />
-                        <custom:LongClickableButton Grid.Row="1" Grid.Column="3" Text="5" />
-                        <custom:LongClickableButton Grid.Row="1" Grid.Column="4" Text="6" />
-                        <custom:LongClickableButton Grid.Row="1" Grid.Column="5" Text="&#215;"/>
-
-                        <custom:LongClickableButton Grid.Row="2" Grid.Column="0" Text="tan" />
-                        <custom:LongClickableButton Grid.Row="2" Grid.Column="1" Text="x"/>
-                        <custom:LongClickableButton Grid.Row="2" Grid.Column="2" Text="1" />
-                        <custom:LongClickableButton Grid.Row="2" Grid.Column="3" Text="2" />
-                        <custom:LongClickableButton Grid.Row="2" Grid.Column="4" Text="3" />
-                        <custom:LongClickableButton Grid.Row="2" Grid.Column="5" Text="-" />
-
-                        <custom:LongClickableButton Grid.Row="3" Grid.Column="0" Text="&#960;" />
-                        <custom:LongClickableButton Grid.Row="3" Grid.Column="1" Text="e" />
-                        <custom:LongClickableButton Grid.Row="3" Grid.Column="2" Text="0" />
-                        <custom:LongClickableButton Grid.Row="3" Grid.Column="3" Text="." />
-                        <StackLayout x:Name="parentheses" Grid.Row="3" Grid.Column="4" Orientation="Horizontal" Spacing="0">
-                            <custom:LongClickableButton Text="("/>
-                            <custom:LongClickableButton Text=")"/>
-                        </StackLayout>
-                        <custom:LongClickableButton Grid.Row="3" Grid.Column="5" Text="+" />
-                    </Grid>
+    <AbsoluteLayout>
+        <custom:TouchScreen x:Name="page" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All">
+            <AbsoluteLayout x:Name="phantomCursorField" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+                <ScrollView x:Name="canvasScroll" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" Orientation="Both">
+                    <custom:Canvas x:Name="canvas" />
                 </ScrollView>
 
-                <StackLayout x:Name="permanentKeys" Orientation="Vertical" Spacing="0">
-                    <custom:LongClickableButton x:Name="info" Text="INFO"/>
-                    <custom:LongClickableButton x:Name="delete" Text="DEL"/>
-                    <StackLayout x:Name="arrowKeys" Orientation="Horizontal" Spacing="0">
-                        <custom:LongClickableButton x:Name="left" Text="&#10216;"/>
-                        <custom:LongClickableButton x:Name="right" Text="&#10217;"/>
+                <custom:BannerAd x:Name="ad"/>
+            </AbsoluteLayout>
+
+            <AbsoluteLayout x:Name="keyboardContainer">
+                <StackLayout x:Name="keyboard" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" Orientation="Horizontal" Spacing="0">
+                    <ScrollView x:Name="keyboardScroll" Orientation="Horizontal">
+                        <Grid x:Name="keypad" ColumnSpacing="0" RowSpacing="0" >
+                            <extensions:LongClickableButton Grid.Row="0" Grid.Column="0" Text="sin" />
+                            <extensions:LongClickableButton Grid.Row="0" Grid.Column="1" Text="x&#178;" StyleId="^2" />
+                            <extensions:LongClickableButton Grid.Row="0" Grid.Column="2" Text="7" />
+                            <extensions:LongClickableButton Grid.Row="0" Grid.Column="3" Text="8" />
+                            <extensions:LongClickableButton Grid.Row="0" Grid.Column="4" Text="9" />
+                            <extensions:LongClickableButton Grid.Row="0" Grid.Column="5" Text="&#247;" StyleId="/" />
+
+                            <extensions:LongClickableButton Grid.Row="1" Grid.Column="0" Text="cos" />
+                            <extensions:LongClickableButton Grid.Row="1" Grid.Column="1" Text="x&#8319;" StyleId="^" />
+                            <extensions:LongClickableButton Grid.Row="1" Grid.Column="2" Text="4" />
+                            <extensions:LongClickableButton Grid.Row="1" Grid.Column="3" Text="5" />
+                            <extensions:LongClickableButton Grid.Row="1" Grid.Column="4" Text="6" />
+                            <extensions:LongClickableButton Grid.Row="1" Grid.Column="5" Text="&#215;"/>
+
+                            <extensions:LongClickableButton Grid.Row="2" Grid.Column="0" Text="tan" />
+                            <extensions:LongClickableButton Grid.Row="2" Grid.Column="1" Text="x"/>
+                            <extensions:LongClickableButton Grid.Row="2" Grid.Column="2" Text="1" />
+                            <extensions:LongClickableButton Grid.Row="2" Grid.Column="3" Text="2" />
+                            <extensions:LongClickableButton Grid.Row="2" Grid.Column="4" Text="3" />
+                            <extensions:LongClickableButton Grid.Row="2" Grid.Column="5" Text="-" />
+
+                            <extensions:LongClickableButton Grid.Row="3" Grid.Column="0" Text="&#960;" />
+                            <extensions:LongClickableButton Grid.Row="3" Grid.Column="1" Text="e" />
+                            <extensions:LongClickableButton Grid.Row="3" Grid.Column="2" Text="0" />
+                            <extensions:LongClickableButton Grid.Row="3" Grid.Column="3" Text="." />
+                            <StackLayout x:Name="parentheses" Grid.Row="3" Grid.Column="4" Orientation="Horizontal" Spacing="0">
+                                <extensions:LongClickableButton Text="("/>
+                                <extensions:LongClickableButton Text=")"/>
+                            </StackLayout>
+                            <extensions:LongClickableButton Grid.Row="3" Grid.Column="5" Text="+" />
+                        </Grid>
+                    </ScrollView>
+
+                    <StackLayout x:Name="permanentKeys" Orientation="Vertical" Spacing="0">
+                        <extensions:LongClickableButton />
+                        <extensions:LongClickableButton x:Name="delete" Text="DEL"/>
+                        <StackLayout x:Name="arrowKeys" Orientation="Horizontal" Spacing="0">
+                            <extensions:LongClickableButton x:Name="left" Text="&#10216;"/>
+                            <extensions:LongClickableButton x:Name="right" Text="&#10217;"/>
+                        </StackLayout>
                     </StackLayout>
                 </StackLayout>
-            </StackLayout>
 
-            <StackLayout x:Name="keyboardMask" InputTransparent="True" IsVisible="False" BackgroundColor="Gray" Opacity="0.75"
-                         AbsoluteLayout.LayoutBounds="0,0,1,1"
-                         AbsoluteLayout.LayoutFlags="All" />
+                <StackLayout x:Name="keyboardMask" InputTransparent="True" IsVisible="False" BackgroundColor="Gray" Opacity="0.75"
+                             AbsoluteLayout.LayoutBounds="0,0,1,1"
+                             AbsoluteLayout.LayoutFlags="All" />
+            </AbsoluteLayout>
+        </custom:TouchScreen>
+
+        <AbsoluteLayout AbsoluteLayout.LayoutBounds="0,0,50,50" AbsoluteLayout.LayoutFlags="None">
+            <Button IsVisible="True" BorderRadius="0" x:Name="menuButton" Clicked="MenuClicked" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" />
+            <custom:UntouchableBoxView BackgroundColor="Black" AbsoluteLayout.LayoutBounds="0.5,0.25,0.6,0.075" AbsoluteLayout.LayoutFlags="All"/>
+            <custom:UntouchableBoxView BackgroundColor="Black" AbsoluteLayout.LayoutBounds="0.5,0.5,0.6,0.075" AbsoluteLayout.LayoutFlags="All"/>
+            <custom:UntouchableBoxView BackgroundColor="Black" AbsoluteLayout.LayoutBounds="0.5,0.75,0.6,0.075" AbsoluteLayout.LayoutFlags="All"/>
         </AbsoluteLayout>
-    </custom:TouchScreen>
+        
+        <StackLayout IsVisible="False" x:Name="menu" BackgroundColor="LightGray" Spacing="0" Orientation="Vertical" AbsoluteLayout.LayoutFlags="SizeProportional">
+            <StackLayout VerticalOptions="FillAndExpand">
+                <TableView Intent="Settings" HasUnevenRows="True">
+                    <TableRoot>
+                        <TableSection Title="Math">
+                            <ViewCell>
+                                <StackLayout Padding="25,0,0,0" Orientation="Horizontal">
+                                    <StackLayout Orientation="Horizontal" HorizontalOptions="StartAndExpand">
+                                        <Label Text="Decimal precision: " VerticalOptions="Center"/>
+                                        <Label x:Name="decimalPrecision" VerticalOptions="Center" />
+                                    </StackLayout>
+                                    <Stepper x:Name="decimalPrecisionStepper"
+                                             Value="3"
+                                             ValueChanged="SetDecimalPrecision"
+                                             Minimum="1"
+                                             Maximum="10"
+                                             Increment="1" 
+                                             HorizontalOptions="Center"
+                                             VerticalOptions="Center"/>
+                                </StackLayout>
+                            </ViewCell>
+                        </TableSection>
+                        <TableSection Title="Answer Defaults">
+                            <ViewCell x:Name="fractiondecimal" />
+                            <ViewCell x:Name="degrad" />
+                        </TableSection>
+                        <TableSection Title="Other">
+                            <SwitchCell x:Name="clearCanvasWarningSwitch" Text="Clear canvas warning" On="True" OnChanged="ClearCanvasWarning" />
+                        </TableSection>
+                    </TableRoot>
+                </TableView>
+            </StackLayout>
+            <Button x:Name="tips" Text="Tips" FontSize="Large" VerticalOptions="End"/>
+            <Button x:Name="about" Text="About" FontSize="Large" VerticalOptions="End"/>
+        </StackLayout>
+    </AbsoluteLayout>
 </ContentPage>

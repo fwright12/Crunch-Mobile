@@ -70,7 +70,5 @@ namespace Xamarin.Forms
                 );
             move(v, p);
         }
-
-        public static void TryToTouch(this View v, Point point, int i) => (v as ITouchable)?.OnTouch(point, (TouchState)i);
     }
 }

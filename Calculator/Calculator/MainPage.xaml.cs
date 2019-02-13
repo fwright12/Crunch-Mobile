@@ -13,6 +13,15 @@ namespace Calculator
     //&#8801; - hamburger menu ≡
     //&#8942; - kabob menu ⋮
 
+    /* To do:
+     * rendering issue for nested exponents (x^2)^2
+     * simplify exponentiated terms 2^(2x) = 4^x
+     * problem with pressing del on empty substituted variable
+     * change inverse trig interpretations?
+     * rendering issue with negative signs (-2)
+     * render (sinx)^2 as sin^2(x)
+     */
+
     public partial class MainPage : ContentPage
     {
         public static MainPage VisiblePage { get; private set; }
@@ -24,41 +33,75 @@ namespace Calculator
         private BoxView phantomCursor;
         //How much extra space is in the lower right
         private int padding = 100;
-        private static string tips
+
+        private static string canvasLocation
         {
             get
             {
                 if (Device.Idiom == TargetIdiom.Tablet)
                 {
-                    return "Press anywhere on the screen to start a new calculation. Long press DEL to clear the " +
-                        "canvas. Long press anywhere else on the keyboard to move the cursor. Press the dock button" +
-                        "(bottom right corner) to detach the keyboard, then drag to move the keyboard.";
+                    return "The entire screen is the canvas - tap anywhere to start a new calculation";
                 }
                 else
                 {
-                    return "The top half of the page is the canvas, where you can do calculations. Press anywhere to " +
-                        "start a new calculation.\n" +
-                        "The bottom half of the page is the keyboard. Long press DEL to clear the canvas. Long press " +
-                        "anywhere else on the keyboard to move the cursor. Scroll the keyboard for more operations.";
+                    return "The top half of the page is the canvas - tap it to start a new calculation";
+                }
+            }
+        }
+
+        private static string additionalKeyboardFunctionality
+        {
+            get
+            {
+                if (Device.Idiom == TargetIdiom.Tablet)
+                {
+                    return "The dock button (bottom right key) can be used to change the location of the keyboard. Tap it to toggle between having the keyboard follow your calculations, or float in one position. Tap and drag to change the floating position.";
+                }
+                else
+                {
+                    return "Additional operations can be accessed by scrolling the keyboard to the right";
                 }
             }
         }
 
         private void SetDecimalPrecision(object sender, ValueChangedEventArgs e)
         {
-            Crunch.Engine.Math.DecimalPlaces = (int)e.NewValue;
+            Settings.DecimalPlaces = (int)e.NewValue;
             decimalPrecision.Text = e.NewValue.ToString();
         }
+
+        private void MenuClicked(object sender, ClickedEventArgs e) => SetMenuVisibility(!menu.IsVisible);
+
+        private void SetMenuVisibility(bool visible)
+        {
+            menu.IsVisible = visible;
+            AbsoluteLayout.SetLayoutBounds(menuButton.Parent, new Rectangle((menu.Width + 10) * System.Extensions.ExtensionMethods.ToInt(menu.IsVisible), 0, 50, 50));
+        }
+
+        private void ClearCanvasWarning(object sender, ToggledEventArgs e) => Settings.ClearCanvasWarning = e.Value;
 
         public MainPage()
         {
             InitializeComponent();
-
-            //Application.Current.Properties["test"] = 234;
+            App.LoadSettings();
 
             AbsoluteLayout.SetLayoutBounds(menu, new Rectangle(0, 0, Device.Idiom == TargetIdiom.Tablet ? 0.3 : 0.8, 1));
-            SetDecimalPrecision(null, new ValueChangedEventArgs(0, 3));
+
+            decimalPrecisionStepper.Value = Settings.DecimalPlaces;
+            SetDecimalPrecision(null, new ValueChangedEventArgs(0, Settings.DecimalPlaces));
             //stepper.SizeChanged += (sender, e) => stepper.WidthRequest = stepper.Height * 2;
+            
+            (decimalPrecision.Parent.Parent as StackLayout).Orientation = Device.Idiom == TargetIdiom.Tablet ? StackOrientation.Horizontal : StackOrientation.Vertical;
+
+            fractiondecimal.View = new Toggle("Numerical values:", (int)Settings.Numbers, Enum.GetNames(typeof(Crunch.Engine.Numbers)));
+            (fractiondecimal.View as Toggle).Toggled += (selected) => Settings.Numbers = (Crunch.Engine.Numbers)selected;
+            
+            //factoredexpanded.View = new Toggle("Polynomials:", Enum.GetNames(typeof(Crunch.Engine.Polynomials)));
+
+            degrad.View = new Toggle("Trigonometry:", (int)Settings.Trigonometry, Enum.GetNames(typeof(Crunch.Engine.Trigonometry)));
+            (degrad.View as Toggle).Toggled += (selected) => Settings.Trigonometry = (Crunch.Engine.Trigonometry)selected;
+
+            clearCanvasWarningSwitch.On = Settings.ClearCanvasWarning;
 
             Button dock;
             if (Device.Idiom == TargetIdiom.Tablet)
@@ -120,17 +163,29 @@ namespace Calculator
             
             VisiblePage = this;
             Drag.Screen = page;
+            page.InterceptedTouch += (point, state) =>
+            {
+                if (menu.IsVisible)
+                {
+                    SetMenuVisibility(false);
+                    App.SaveSettings();
+                }
+            };
 
             //Button hookup
             left.Clicked += (sender, e) => SoftKeyboard.Left();
             right.Clicked += (sender, e) => SoftKeyboard.Right();
             delete.Clicked += delegate { SoftKeyboard.Delete(); Equation.Focus.SetAnswer(); };
             delete.LongClick += ClearCanvas;
-            info.Clicked += (sender, e) => DisplayAlert("About Crunch",
+
+            tips.Clicked += (sender, e) => DisplayAlert("Tips",
+                "A few tips about how to navigate the app:\n\n" + canvasLocation +
+                "\n\nCrunch allows you to view your answer in multiple forms, when possible. Tap the answer to cycle through them, or in the case of degrees and radians, tap the label. The answer can also be moved on the canvas by simply touching and dragging the equals sign.\n\n" +
+                "There is also additional functionality attached to the keyboard keys. Long pressing DEL will clear the canvas, and long pressing any other button gives you the ability to move the cursor.\n" + additionalKeyboardFunctionality,
+                "Dismiss");
+
+            about.Clicked += (sender, e) => DisplayAlert("About Crunch",
                 "Thank you for using Crunch!\n\n" +
-                "A few tips about how to navigate the app: " + tips +
-                "\nClick the answer to see alternate formats. Touch and drag the equals sign to move the equation " +
-                "on the canvas.\n\n" +
                 "If you find any bugs, please report them to GreenMountainLabs802@gmail.com. The more information " +
                 "you can provide (what you did to cause the error, screenshots, etc.) the easier it will be to fix.\n\n" +
                 "If you enjoy using Crunch, please rate it on the app store. Ratings help with visibility, so other " +
@@ -374,7 +429,7 @@ namespace Calculator
 
         private async void ClearCanvas()
         {
-            if (await DisplayAlert("Wait!", "Are you sure you want to clear the canvas?", "Yes", "No"))
+            if (!Settings.ClearCanvasWarning || await DisplayAlert("Wait!", "Are you sure you want to clear the canvas?", "Yes", "No"))
             {
                 canvas.Children.Clear();
                 canvas.WidthRequest = (canvas.Parent as View).Width;

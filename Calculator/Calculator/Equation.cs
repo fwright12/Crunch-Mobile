@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
+using System.Extensions;
 using Xamarin.Forms;
 using Xamarin.Forms.Extensions;
 using Crunch.Engine;
@@ -9,7 +10,7 @@ using Crunch.GraphX;
 
 namespace Calculator
 {
-    public class Equation : StackLayout
+    public class Equation : TouchableStackLayout
     {
         new public static Equation Focus;
 
@@ -26,8 +27,8 @@ namespace Calculator
             LHS = text == "" ? new Expression() : new Expression(Render.Math(text));
             LHS.Editable = true;
 
-            Text equals = new Text(" = ");
-            equals.Touch += (point, state) =>
+            Text equals = new Text(" = ") { FontSize = Text.MaxFontSize };
+            Touch += (point, state) =>
             {
                 if (state == TouchState.Down)
                 {
@@ -35,9 +36,12 @@ namespace Calculator
                 }
             };
 
-            Children.Add(new Expression(LHS, equals, RHS = new Answer()));
-            Children[0].HorizontalOptions = LayoutOptions.Start;
+            StackLayout layout = new StackLayout { Orientation = StackOrientation.Horizontal, Spacing = 0, VerticalOptions = LayoutOptions.Center };
+            layout.Children.AddRange(LHS, equals, RHS = new Answer());
 
+            Children.Add(layout);
+            Children[0].HorizontalOptions = LayoutOptions.Start;
+            
             SetAnswer();
         }
 
@@ -51,47 +55,48 @@ namespace Calculator
                 string s = (Children[i] as Expression).Children[1].ToString();
                 if (s != "()")
                 {
-                    List<Operand> temp = Crunch.Engine.Math.Evaluate(s);
-                    if (temp.Count > 0)
+                    Operand temp = Crunch.Engine.Math.Evaluate(s);
+                    if (temp != null)
                     {
-                        substitutions.Add(((Children[i] as Expression).Children[0] as Text).Text[0], temp[0]);
+                        substitutions.Add(((Children[i] as Expression).Children[0] as Text).Text[0], temp);
                     }
                 }
             }
 
-            List<Operand> answers = Crunch.Engine.Math.Evaluate(LHS.ToString(), ref substitutions);
-            
-            if (RecognizeVariables && (answers.Count > 0 || LHS.ChildCount() == 0))
+            Dictionary<char, Operand> updatedUnknowns = new Dictionary<char, Operand>(); 
+            Operand answer = Crunch.Engine.Math.Evaluate(LHS.ToString(), ref updatedUnknowns);
+
+            if (answer != null)
+            {
+                answer.Knowns = substitutions;
+            }
+            RHS.Update(answer);
+
+            if (RecognizeVariables)
             {
                 foreach (char c in unknowns.Keys)
                 {
-                    if (!substitutions.ContainsKey(c))
+                    if (answer == null || !answer.Unknowns.Contains(c))
                     {
                         unknowns[c].Parent.IsVisible = false;
                     }
                 }
 
-                foreach(char c in substitutions.Keys)
+                if (answer != null)
                 {
-                    if (!unknowns.ContainsKey(c))
+                    foreach (char c in answer.Unknowns)
                     {
-                        unknowns.Add(c, AddVariable(c));
-                    }
-                    else
-                    {
-                        unknowns[c].Parent.IsVisible = true;
+                        if (!unknowns.ContainsKey(c))
+                        {
+                            unknowns.Add(c, AddVariable(c));
+                        }
+                        else
+                        {
+                            unknowns[c].Parent.IsVisible = true;
+                        }
                     }
                 }
             }
-
-            /*if (answers.Count == 0)
-            {
-                RHS.Children.Clear();
-            }
-            else
-            {*/
-                RHS.Update(answers);
-            //}
 
             print.log("*************************");
         }
@@ -106,7 +111,7 @@ namespace Calculator
 
         public string ToLatex()
         {
-            return LHS.ToLatex() + "=" + RHS.ToLatex();
+            return LHS.ToLatex() + "=";// + RHS.ToLatex();
         }
 
         public override string ToString()
