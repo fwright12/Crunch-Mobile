@@ -7,9 +7,46 @@ using Xamarin.Forms.Extensions;
 
 namespace Calculator
 {
-    public class UntouchableBoxView : BoxView { }
-
     public delegate void ToggledEventHandler(int selected);
+
+    public class AnythingButton : TouchableAbsoluteLayout
+    {
+        public event EventHandler Clicked;
+
+        private LongClickableButton button;
+
+        public AnythingButton()
+        {
+            Children.Add(button = new LongClickableButton(), new Rectangle(0, 0, 1, 1), AbsoluteLayoutFlags.All);
+            button.Clicked += (sender, e) => Clicked?.Invoke(sender, e);
+        }
+
+        public void SetButtonBorderWidth(double width) => button.BorderWidth = width;
+    }
+
+    public class TextImage : AbsoluteLayout
+    {
+        new public double HeightRequest
+        {
+            set
+            {
+                SetLayoutBounds(image, new Rectangle(0, 0, MainPage.parenthesesWidth, value));
+            }
+        }
+
+        private Image image;
+        private string Text;
+
+        public TextImage(Image image, string text)
+        {
+            //BackgroundColor = Color.Gainsboro;
+
+            Text = text;
+            Children.Add(this.image = image, new Rectangle(0, 0, MainPage.parenthesesWidth, 0));
+        }
+
+        public override string ToString() => Text;
+    }
 
     public class Toggle : StackLayout
     {
@@ -56,7 +93,7 @@ namespace Calculator
             HorizontalOptions = LayoutOptions.FillAndExpand;
             VerticalOptions = LayoutOptions.FillAndExpand;
             Padding = new Thickness(25, 5, 10, 5);
-
+            
             Children.Add(label);
             Children.Add(layout);
         }

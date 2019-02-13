@@ -16,11 +16,11 @@ using Xamarin.Forms.Extensions;
 [assembly: ExportRenderer(typeof(Calculator.Canvas), typeof(CanvasRenderer))]
 [assembly: ExportRenderer(typeof(LongClickableButton), typeof(LongClickableButtonRenderer))]
 [assembly: ExportRenderer(typeof(TouchableStackLayout), typeof(TouchableStackLayoutRenderer))]
+[assembly: ExportRenderer(typeof(TouchableAbsoluteLayout), typeof(TouchableAbsoluteLayoutRenderer))]
 [assembly: ExportRenderer(typeof(DockButton), typeof(DockButtonRenderer))]
 [assembly: ExportRenderer(typeof(BannerAd), typeof(BannerAdRenderer))]
 [assembly: ExportRenderer(typeof(TouchableLabel), typeof(TouchableLabelRenderer))]
 [assembly: ExportRenderer(typeof(TouchScreen), typeof(TouchScreenRenderer))]
-[assembly: ExportRenderer(typeof(UntouchableBoxView), typeof(UntouchableBoxViewRenderer))]
 
 namespace Calculator.Droid
 {
@@ -29,11 +29,6 @@ namespace Calculator.Droid
         public static bool RelayTouch(this Xamarin.Forms.View shared, Android.Views.View native, MotionEvent e) => shared.TryToTouch(native.ScaleTouch(shared, e), (int)e.Action);
 
         public static Xamarin.Forms.Point ScaleTouch(this Android.Views.View native, Xamarin.Forms.View shared, MotionEvent e) => new Xamarin.Forms.Point(shared.Width * e.GetX() / native.Width, shared.Height * e.GetY() / native.Height);
-    }
-
-    public class UntouchableBoxViewRenderer : VisualElementRenderer<BoxView>
-    {
-        public override bool OnTouchEvent(MotionEvent e) => false;
     }
 
     public class TouchScreenRenderer : VisualElementRenderer<StackLayout>
@@ -87,6 +82,12 @@ namespace Calculator.Droid
 
             return false;
         }
+    }
+
+    public class TouchableAbsoluteLayoutRenderer : VisualElementRenderer<AbsoluteLayout>
+    {
+        public override bool OnTouchEvent(MotionEvent e) => Element is TouchableAbsoluteLayout && (Element as TouchableAbsoluteLayout).ShouldIntercept ? Element.RelayTouch(this, e) : false;
+
     }
 
     public class TouchableStackLayoutRenderer : VisualElementRenderer<StackLayout>

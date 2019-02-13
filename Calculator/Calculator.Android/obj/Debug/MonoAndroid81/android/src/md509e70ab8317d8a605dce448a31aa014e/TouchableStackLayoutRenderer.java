@@ -16,6 +16,14 @@ public class TouchableStackLayoutRenderer
 	}
 
 
+	public TouchableStackLayoutRenderer (android.content.Context p0)
+	{
+		super (p0);
+		if (getClass () == TouchableStackLayoutRenderer.class)
+			mono.android.TypeManager.Activate ("Calculator.Droid.TouchableStackLayoutRenderer, Calculator.Android", "Android.Content.Context, Mono.Android", this, new java.lang.Object[] { p0 });
+	}
+
+
 	public TouchableStackLayoutRenderer (android.content.Context p0, android.util.AttributeSet p1, int p2)
 	{
 		super (p0, p1, p2);
@@ -29,14 +37,6 @@ public class TouchableStackLayoutRenderer
 		super (p0, p1);
 		if (getClass () == TouchableStackLayoutRenderer.class)
 			mono.android.TypeManager.Activate ("Calculator.Droid.TouchableStackLayoutRenderer, Calculator.Android", "Android.Content.Context, Mono.Android:Android.Util.IAttributeSet, Mono.Android", this, new java.lang.Object[] { p0, p1 });
-	}
-
-
-	public TouchableStackLayoutRenderer (android.content.Context p0)
-	{
-		super (p0);
-		if (getClass () == TouchableStackLayoutRenderer.class)
-			mono.android.TypeManager.Activate ("Calculator.Droid.TouchableStackLayoutRenderer, Calculator.Android", "Android.Content.Context, Mono.Android", this, new java.lang.Object[] { p0 });
 	}
 
 

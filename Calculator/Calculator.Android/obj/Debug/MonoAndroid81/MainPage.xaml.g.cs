@@ -63,7 +63,7 @@ namespace Calculator {
         private global::Xamarin.Forms.StackLayout keyboardMask;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "0.0.0.0")]
-        private global::Xamarin.Forms.Button settingsMenuButton;
+        private global::Calculator.AnythingButton settingsMenuButton;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "0.0.0.0")]
         private global::Xamarin.Forms.StackLayout settingsMenu;
@@ -122,7 +122,7 @@ namespace Calculator {
             left = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Extensions.LongClickableButton>(this, "left");
             right = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Extensions.LongClickableButton>(this, "right");
             keyboardMask = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.StackLayout>(this, "keyboardMask");
-            settingsMenuButton = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Button>(this, "settingsMenuButton");
+            settingsMenuButton = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Calculator.AnythingButton>(this, "settingsMenuButton");
             settingsMenu = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.StackLayout>(this, "settingsMenu");
             decimalPrecision = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Label>(this, "decimalPrecision");
             decimalPrecisionStepper = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Stepper>(this, "decimalPrecisionStepper");

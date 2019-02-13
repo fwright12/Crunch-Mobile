@@ -14,16 +14,27 @@ namespace Calculator
     //&#8801; - hamburger menu ≡
     //&#8942; - kabob menu ⋮
 
+    //Parentheses pictures - 500 font in Word Roboto (80,80,80), default Android ratio is 114 * 443 - trim and resize in Paint to 369 * 1127
+    //Radical pictures - 667 font in Paint Segoe UI Symbol (copy from Graphemica), trim completely (609 * 1114)
+    //Radical - right half is about 1/2 of horizontal, bottom left takes up about 1/2 of vertical, thickness is 0.1, horizontal bar is about 1/3 of horizontal
+
     /* To do:
+     * Make substituted variables equations
+     * Choice for how to interpret logarithms (base 2 or 10)
+     * Choice for expanded/scrolling keyboard
+     * 
+     * Better looking parentheses - expand vertically
+     * Add radical sign
+     * Support for logarithms
+     * Keyboard doesn't move when variable is hidden because answer is null
      * 
      * rendering issue for nested exponents (x^2)^2 ?
      * simplify exponentiated terms 2^(2x) = 4^x
      * change inverse trig interpretations?
      * render (sinx)^2 as sin^2(x)
      * 
-     * Fixed:
-     * rendering issue with negative signs (-2)
-     * problem with pressing del on empty substituted variable
+     * Done:
+     * Broke moving calculations
      */
 
     public delegate void FocusChangedEventHandler(Calculation oldFocus, Calculation newFocus);
@@ -45,102 +56,12 @@ namespace Calculator
         //How much extra space is in the lower right
         private int padding = 100;
 
-        private static string canvasLocation
-        {
-            get
-            {
-                if (Device.Idiom == TargetIdiom.Tablet)
-                {
-                    return "The entire screen is the canvas - tap anywhere to start a new calculation";
-                }
-                else
-                {
-                    return "The top half of the page is the canvas - tap it to start a new calculation";
-                }
-            }
-        }
-
-        private static string additionalKeyboardFunctionality
-        {
-            get
-            {
-                if (Device.Idiom == TargetIdiom.Tablet)
-                {
-                    return "The dock button (bottom right key) can be used to change the location of the keyboard. Tap it to toggle between having the keyboard follow your calculations, or float in one position. Tap and drag to change the floating position.";
-                }
-                else
-                {
-                    return "Additional operations can be accessed by scrolling the keyboard to the right";
-                }
-            }
-        }
-
-        private void SetDecimalPrecision(object sender, ValueChangedEventArgs e)
-        {
-            Settings.DecimalPlaces = (int)e.NewValue;
-            decimalPrecision.Text = e.NewValue.ToString();
-        }
-
-        private void SetMenuVisibility(bool visible)
-        {
-            settingsMenu.TranslateTo((settingsMenuWidth + Padding.Left) * (visible.ToInt() - 1), 0);
-            (settingsMenuButton.Parent as View).TranslateTo((settingsMenuWidth + Padding.Left) * visible.ToInt(), 0);
-
-            //AbsoluteLayout.SetLayoutBounds(settingsMenuButton.Parent, new Rectangle((settingsMenuWidth + Padding.Left) * visible.ToInt(), 0, 50, 50));
-        }
-
-        private void ClearCanvasWarning(object sender, ToggledEventArgs e) => Settings.ClearCanvasWarning = e.Value;
-
-        private double settingsMenuWidth;
-        private readonly double maxSettingsMenuWidth = 400;
-        private bool smallerSettingsMenu => settingsMenuWidth < maxSettingsMenuWidth;
-
-        private void SettingsMenuSetup()
-        {
-            App.LoadSettings();
-            //Resources = CrunchStyle.Apply();
-            
-
-
-            AbsoluteLayout.SetLayoutBounds(settingsMenuButton.Parent, new Rectangle(0, 0, 50, 50));
-            settingsMenuButton.Clicked += (sender, e) => SetMenuVisibility(settingsMenu.TranslationX < 0);
-
-            decimalPrecisionStepper.Value = Settings.DecimalPlaces;
-            SetDecimalPrecision(null, new ValueChangedEventArgs(0, Settings.DecimalPlaces));
-
-            fractiondecimal.View = new Toggle("Numerical values:", (int)Settings.Numbers, Enum.GetNames(typeof(Crunch.Engine.Numbers)));
-            (fractiondecimal.View as Toggle).Toggled += (selected) => Settings.Numbers = (Crunch.Engine.Numbers)selected;
-
-            //factoredexpanded.View = new Toggle("Polynomials:", Enum.GetNames(typeof(Crunch.Engine.Polynomials)));
-
-            degrad.View = new Toggle("Trigonometry:", (int)Settings.Trigonometry, Enum.GetNames(typeof(Crunch.Engine.Trigonometry)));
-            (degrad.View as Toggle).Toggled += (selected) => Settings.Trigonometry = (Crunch.Engine.Trigonometry)selected;
-
-            clearCanvasWarningSwitch.On = Settings.ClearCanvasWarning;
-
-            tips.Clicked += (sender, e) => DisplayAlert("Tips",
-                "A few tips about how to navigate the app:\n\n" + canvasLocation +
-                "\n\nCrunch allows you to view your answer in multiple forms, when possible. Tap the answer to cycle through them, or in the case of degrees and radians, tap the label. The answer can also be moved on the canvas by simply touching and dragging the equals sign.\n\n" +
-                "There is also additional functionality attached to the keyboard keys. Long pressing DEL will clear the canvas, and long pressing any other button gives you the ability to move the cursor.\n" + additionalKeyboardFunctionality,
-                "Dismiss");
-
-            about.Clicked += (sender, e) => DisplayAlert("About Crunch",
-                "Thank you for using Crunch!\n\n" +
-                "If you find any bugs, please report them to GreenMountainLabs802@gmail.com. The more information " +
-                "you can provide (what you did to cause the error, screenshots, etc.) the easier it will be to fix.\n\n" +
-                "If you enjoy using Crunch, please rate it on the app store. Ratings help with visibility, so other " +
-                "people can find Crunch.\n\n" +
-                "Please also email me with any ideas you have about how the app can be improved, or features you " +
-                "would like to see in the future. I'm open to suggestions!",
-                "Dismiss");
-        }
-
         public static double parenthesesWidth;
 
         public MainPage()
         {
             InitializeComponent();
-            
+
             SettingsMenuSetup();
 
             AbsoluteLayout.SetLayoutBounds(equationsMenu, new Rectangle(0, 0, Device.Idiom == TargetIdiom.Tablet ? 0.3 : 0.8, 1));
@@ -201,19 +122,23 @@ namespace Calculator
             buttonFormat(keyboard);
 
             //Measuring for cursor
-            Label l = new Label() { Text = "(" };
+            Label l = new Label() { Text = "(", HorizontalOptions = LayoutOptions.Start };
             l.FontSize = Text.MaxFontSize;
-            phantomCursorField.Children.Add(l);
+            page.Children.Add(l);
             l.SizeChanged += delegate
             {
                 Text.MaxTextHeight = l.Height;
                 parenthesesWidth = l.Width;
 
-                //phantomCursorField.Children.Remove(l);
+                Render.CreateLeftParenthesis = () => new TextImage(new Image() { Source = "leftParenthesis.png", HeightRequest = 0, WidthRequest = parenthesesWidth, Aspect = Aspect.Fill }, "(");
+                Render.CreateRightParenthesis = () => new TextImage(new Image() { Source = "rightParenthesis.png", HeightRequest = 0, WidthRequest = parenthesesWidth, Aspect = Aspect.Fill }, ")");
+                Render.CreateRadical = () => new Image() { Source = "radical.png", HeightRequest = 0, WidthRequest = parenthesesWidth * 2, Aspect = Aspect.Fill };
+
+                page.Children.Remove(l);
 
                 takeMathTest();
             };
-            
+
             VisiblePage = this;
             Drag.Screen = page;
             page.InterceptedTouch += (point, state) =>
@@ -240,6 +165,7 @@ namespace Calculator
 
             //Phantom cursor stuff
             phantomCursor = new CursorView() { Color = Color.Red, IsVisible = false };
+            SoftKeyboard.Cursor.SizeChanged += delegate { phantomCursor.HeightRequest = SoftKeyboard.Cursor.Height; };
             phantomCursorField.Children.Add(phantomCursor);
 
             FixDynamicLag("");
@@ -447,7 +373,6 @@ namespace Calculator
         {
             keyboardDocked = isDocked;
 
-            print.log("dock clicked", keyboardDocked);
             if (keyboardDocked)
             {
                 AdjustKeyboardPosition();
@@ -470,26 +395,6 @@ namespace Calculator
                 newFocus.LayoutChanged += AdjustKeyboardPosition;
             }
         }
-
-        /*private Equation setFocus(Equation e)
-        {
-            if (Equation.Focus != null)
-            {
-                Equation.Focus.LayoutChanged -= Focus_SizeChanged;
-                if (Equation.Focus.LHS.ChildCount() == 0)
-                {
-                    Equation.Focus.Remove();
-                }
-            }
-            
-            if (e != null)
-            {
-                Equation.Focus = e;
-                Equation.Focus.LayoutChanged += Focus_SizeChanged;
-            }
-
-            return Equation.Focus;
-        }*/
 
         private void AdjustKeyboardPosition(object sender, EventArgs e) => AdjustKeyboardPosition();
 
@@ -519,7 +424,6 @@ namespace Calculator
 
             Calculation calculation = new Calculation(equation) { RecognizeVariables = true };
             FocusOnCalculation(calculation);
-            //Equation equation = setFocus(new Equation() { RecognizeVariables = true });
 
             calculation.SizeChanged += delegate
             {
@@ -648,7 +552,6 @@ namespace Calculator
                 if (view is Text || view is Expression)
                 {
                     int leftOrRight = (int)Math.Round(loc.X / view.Width);
-                    phantomCursor.HeightRequest = SoftKeyboard.Cursor.Height;
 
                     if (view.GetType() == typeof(Expression))
                     {
@@ -673,10 +576,10 @@ namespace Calculator
                 View child = parent.Children[i];
                 
                 //Is the point inside the bounds that this child occupies?
-                if (pos.X >= child.X && pos.X <= child.X + child.Width && pos.Y >= child.Y - child.Margin.Top + child.TranslationY && pos.Y <= child.Y + child.Height + child.TranslationY)
+                if (pos.X >= child.X && pos.X <= child.X + child.Width && pos.Y >= child.Y && pos.Y <= child.Y + child.Height)
                 {
                     pos = pos.Add(new Point(-child.X, -(child.Y + child.TranslationY)));
-
+                    
                     if (child is Layout<View>)
                     {
                         ans = GetViewAt(child as Layout<View>, ref pos);
@@ -689,8 +592,9 @@ namespace Calculator
                     break;
                 }
             }
-
-            if (i == parent.Children.Count && parent.Editable() && (pos.X <= parent.Padding.Left || pos.X >= parent.Width - parent.Padding.Right))
+            
+            Expression e = parent as Expression;
+            if (i == parent.Children.Count && e != null && e.Editable && (pos.X <= e.PadLeft || pos.X >= e.Width - e.PadRight))
             {
                 ans = parent;
             }
@@ -700,24 +604,41 @@ namespace Calculator
 
         private void takeMathTest()
         {
-            System.Collections.Generic.List<string> testcases = Crunch.Engine.Testing.Test();
+            Crunch.Engine.MathTest testcases = Crunch.Engine.Testing.Test();
 
-            int num = testcases.Count;
+            int num = testcases.Questions.Count;
             if (num == 0) return;
-            int cutoff = 10;
+
+            int correct = 0;
+            int incorrect = 0;
+
             for (int i = 0; i < num; i++)
             {
-                string s = testcases[i];
-                if (s != "")
+                string question = testcases.Questions[i];
+                bool needToShowWork = !testcases.CheckQuestion(i, question);
+
+                if (Crunch.Engine.Testing.DisplayCorrectAnswers || needToShowWork)
                 {
-                    var temp = new Equation(s);
-                    canvas.Children.Add(temp);
-                    temp.TranslationY = 50 + 100 * (i - cutoff * (i / cutoff));
-                    temp.TranslationX = 500 * (i / cutoff);
+                    Crunch.Engine.Testing.Debug = needToShowWork;
+                    Equation e = new Equation(question);
+                    canvas.Children.Add(e);
+
+                    if (needToShowWork)
+                    {
+                        e.Children.Add(new Text("          --------------------->      "));
+                        e.Children.Add(new Expression(Render.Math(testcases.Answers[i].ToString())));
+
+                        e.TranslateTo(0, 50 + incorrect++ * 150);
+                    }
+                    else
+                    {
+                        e.TranslateTo(1000, 50 + correct++ * 150);
+                    }
                 }
             }
-            canvas.HeightRequest = 50 + num * 100;
-            canvas.WidthRequest = 500 * (num / cutoff + 1) + canvas.Children.Last().Width;
+
+            canvas.HeightRequest = 50 + Math.Max(correct, incorrect) * 150;
+            canvas.WidthRequest = 2000;
         }
     }
 }

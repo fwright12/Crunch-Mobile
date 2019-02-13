@@ -10,13 +10,18 @@ using Crunch.GraphX;
 
 namespace Calculator
 {
-    public class Equation : TouchableStackLayout
+    public class Equation : MathLayout
     {
         public Expression LHS { get; private set; }
         public Answer RHS { get; private set; }
 
+        public override double Middle => 0.5;
+        public override Expression InputContinuation => LHS;
+        public override double MinimumHeight => System.Math.Max(LHS.MinimumHeight, RHS.MinimumHeight);
+
         public Equation(string text = "")
         {
+            //BackgroundColor = Color.PowderBlue;
             Orientation = StackOrientation.Horizontal;
             Spacing = 0;
             VerticalOptions = LayoutOptions.Center;
@@ -25,18 +30,8 @@ namespace Calculator
             LHS.Editable = true;
 
             //LHS.Children.Add(new BoxView { Color = Color.Blue, WidthRequest = 5, HeightRequest = 0 });
-            /*LHS.Children.Add(new Image { Source = "leftParenthesis.png", HeightRequest = 0, WidthRequest = MainPage.parenthesesWidth, Aspect = Aspect.Fill });
-            LHS.Children.Add(new Image { Source = "rightParenthesis.png", HeightRequest = 0, WidthRequest = MainPage.parenthesesWidth, Aspect = Aspect.Fill });
-            LHS.Children.Add(new Image { Source = "radical.png", HeightRequest = 0, WidthRequest = MainPage.parenthesesWidth, Aspect = Aspect.Fill });*/
 
             Text equals = new Text(" = ") { FontSize = Text.MaxFontSize };
-            Touch += (point, state) =>
-            {
-                if (state == TouchState.Down)
-                {
-                    this.BeginDrag(MainPage.VisiblePage.Canvas.Bounds);
-                }
-            };
 
             Children.AddRange(LHS, equals, RHS = new Answer());
 
@@ -63,7 +58,9 @@ namespace Calculator
             return answer == null ? new RestrictedHashSet<char>() : answer.Unknowns;
         }
 
-        public string ToLatex()
+        public override void Lyse() => Lyse(LHS);
+
+        public override string ToLatex()
         {
             return LHS.ToLatex() + "=";// + RHS.ToLatex();
         }

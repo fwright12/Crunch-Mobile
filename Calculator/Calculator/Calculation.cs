@@ -24,17 +24,25 @@ namespace Calculator
             Spacing = 0;
 
             Children.Add(Main = main);
+
+            (Main.Children[1] as Text).Touch += (point, state) =>
+            {
+                if (state == TouchState.Down)
+                {
+                    this.BeginDrag(MainPage.VisiblePage.Canvas.Bounds);
+                }
+            };
         }
 
         public void SetAnswer()
         {
             Dictionary<char, Operand> substitutions = new Dictionary<char, Operand>();
-            //for (int i = 1; i < Children.Count; i++)
+            
             foreach (KeyValuePair<char, Equation> pair in Substitutions)
             {
-                //string s = (Children[i] as Expression).Children[1].ToString();
                 string s = pair.Value.LHS.ToString();
-                if (s != "()")
+
+                if (s != "")
                 {
                     Operand temp = Crunch.Engine.Math.Evaluate(s);
                     if (temp != null)

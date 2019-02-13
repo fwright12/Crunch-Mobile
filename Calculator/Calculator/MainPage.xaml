@@ -29,35 +29,39 @@
                     <ScrollView x:Name="keyboardScroll" Orientation="Horizontal">
                         <Grid x:Name="keypad" ColumnSpacing="0" RowSpacing="0" >
                             <extensions:LongClickableButton Grid.Row="0" Grid.Column="0" Text="sin" />
-                            <extensions:LongClickableButton Grid.Row="0" Grid.Column="1" Text="x&#178;" StyleId="^2" />
-                            <extensions:LongClickableButton Grid.Row="0" Grid.Column="2" Text="7" />
-                            <extensions:LongClickableButton Grid.Row="0" Grid.Column="3" Text="8" />
-                            <extensions:LongClickableButton Grid.Row="0" Grid.Column="4" Text="9" />
-                            <extensions:LongClickableButton Grid.Row="0" Grid.Column="5" Text="&#247;" StyleId="/" />
+                            <extensions:LongClickableButton Grid.Row="0" Grid.Column="1" Text="x&#8319;" StyleId="^" />
+                            <extensions:LongClickableButton Grid.Row="0" Grid.Column="2" Text="x&#178;" StyleId="^2" />
+                            <extensions:LongClickableButton Grid.Row="0" Grid.Column="3" Text="7" />
+                            <extensions:LongClickableButton Grid.Row="0" Grid.Column="4" Text="8" />
+                            <extensions:LongClickableButton Grid.Row="0" Grid.Column="5" Text="9" />
+                            <extensions:LongClickableButton Grid.Row="0" Grid.Column="6" Text="&#247;" StyleId="/" />
 
                             <extensions:LongClickableButton Grid.Row="1" Grid.Column="0" Text="cos" />
-                            <extensions:LongClickableButton Grid.Row="1" Grid.Column="1" Text="x&#8319;" StyleId="^" />
-                            <extensions:LongClickableButton Grid.Row="1" Grid.Column="2" Text="4" />
-                            <extensions:LongClickableButton Grid.Row="1" Grid.Column="3" Text="5" />
-                            <extensions:LongClickableButton Grid.Row="1" Grid.Column="4" Text="6" />
-                            <extensions:LongClickableButton Grid.Row="1" Grid.Column="5" Text="&#215;"/>
+                            <extensions:LongClickableButton Grid.Row="1" Grid.Column="1" Text="log" StyleId="log_"/>
+                            <extensions:LongClickableButton Grid.Row="1" Grid.Column="2" Text="&#8730;" StyleId="sqrt"/>
+                            <extensions:LongClickableButton Grid.Row="1" Grid.Column="3" Text="4" />
+                            <extensions:LongClickableButton Grid.Row="1" Grid.Column="4" Text="5" />
+                            <extensions:LongClickableButton Grid.Row="1" Grid.Column="5" Text="6" />
+                            <extensions:LongClickableButton Grid.Row="1" Grid.Column="6" Text="&#215;"/>
 
                             <extensions:LongClickableButton Grid.Row="2" Grid.Column="0" Text="tan" />
-                            <extensions:LongClickableButton Grid.Row="2" Grid.Column="1" Text="x"/>
-                            <extensions:LongClickableButton Grid.Row="2" Grid.Column="2" Text="1" />
-                            <extensions:LongClickableButton Grid.Row="2" Grid.Column="3" Text="2" />
-                            <extensions:LongClickableButton Grid.Row="2" Grid.Column="4" Text="3" />
-                            <extensions:LongClickableButton Grid.Row="2" Grid.Column="5" Text="-" />
+                            <extensions:LongClickableButton Grid.Row="2" Grid.Column="1" Text="ln"/>
+                            <extensions:LongClickableButton Grid.Row="2" Grid.Column="2" Text="10&#8319;" StyleId="10^"/>
+                            <extensions:LongClickableButton Grid.Row="2" Grid.Column="3" Text="1" />
+                            <extensions:LongClickableButton Grid.Row="2" Grid.Column="4" Text="2" />
+                            <extensions:LongClickableButton Grid.Row="2" Grid.Column="5" Text="3" />
+                            <extensions:LongClickableButton Grid.Row="2" Grid.Column="6" Text="-" />
 
                             <extensions:LongClickableButton Grid.Row="3" Grid.Column="0" Text="&#960;" />
                             <extensions:LongClickableButton Grid.Row="3" Grid.Column="1" Text="e" />
-                            <extensions:LongClickableButton Grid.Row="3" Grid.Column="2" Text="0" />
-                            <extensions:LongClickableButton Grid.Row="3" Grid.Column="3" Text="." />
-                            <StackLayout x:Name="parentheses" Grid.Row="3" Grid.Column="4" Orientation="Horizontal" Spacing="0">
+                            <extensions:LongClickableButton Grid.Row="3" Grid.Column="2" Text="x" />
+                            <extensions:LongClickableButton Grid.Row="3" Grid.Column="3" Text="0" />
+                            <extensions:LongClickableButton Grid.Row="3" Grid.Column="4" Text="." />
+                            <StackLayout x:Name="parentheses" Grid.Row="3" Grid.Column="5" Orientation="Horizontal" Spacing="0">
                                 <extensions:LongClickableButton Text="("/>
                                 <extensions:LongClickableButton Text=")"/>
                             </StackLayout>
-                            <extensions:LongClickableButton Grid.Row="3" Grid.Column="5" Text="+" />
+                            <extensions:LongClickableButton Grid.Row="3" Grid.Column="6" Text="+" />
                         </Grid>
                     </ScrollView>
 
@@ -77,13 +81,12 @@
             </AbsoluteLayout>
         </custom:TouchScreen>
 
-        <AbsoluteLayout AbsoluteLayout.LayoutFlags="None">
-            <Button x:Name="settingsMenuButton" BorderWidth="0" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" />
-            <custom:UntouchableBoxView BackgroundColor="Black" AbsoluteLayout.LayoutBounds="0.5,0.25,0.6,0.075" AbsoluteLayout.LayoutFlags="All"/>
-            <custom:UntouchableBoxView BackgroundColor="Black" AbsoluteLayout.LayoutBounds="0.5,0.5,0.6,0.075" AbsoluteLayout.LayoutFlags="All"/>
-            <custom:UntouchableBoxView BackgroundColor="Black" AbsoluteLayout.LayoutBounds="0.5,0.75,0.6,0.075" AbsoluteLayout.LayoutFlags="All"/>
-        </AbsoluteLayout>
-        
+        <custom:AnythingButton x:Name="settingsMenuButton" AbsoluteLayout.LayoutFlags="None">
+            <BoxView BackgroundColor="Black" AbsoluteLayout.LayoutBounds="0.5,0.25,0.6,0.075" AbsoluteLayout.LayoutFlags="All"/>
+            <BoxView BackgroundColor="Black" AbsoluteLayout.LayoutBounds="0.5,0.5,0.6,0.075" AbsoluteLayout.LayoutFlags="All"/>
+            <BoxView BackgroundColor="Black" AbsoluteLayout.LayoutBounds="0.5,0.75,0.6,0.075" AbsoluteLayout.LayoutFlags="All"/>
+        </custom:AnythingButton>
+
         <StackLayout IsVisible="True" x:Name="settingsMenu" TranslationX="-1000" BackgroundColor="LightGray" Spacing="0" Orientation="Vertical" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="HeightProportional">
             <StackLayout VerticalOptions="FillAndExpand">
                 <TableView Intent="Settings" HasUnevenRows="True">

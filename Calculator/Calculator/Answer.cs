@@ -40,7 +40,7 @@ namespace Calculator
         }
     }*/
 
-    public class Answer : StackLayout // Expression, ITouchable
+    public class Answer : Expression // Expression, ITouchable
     {
         public Polynomials PolynomialChoice = Settings.Polynomials;
         public Numbers NumberChoice = Settings.Numbers;
@@ -121,12 +121,13 @@ namespace Calculator
                     {
                         o = answer.Format(polynomials, numbers, TrigChoice);
                     }
-                    catch
+                    catch (Exception ex)
                     {
                         if (Children.Count > 0)
                         {
                             Children.RemoveAt(0);
                         }
+                        print.log("error formatting", ex.Message);
                         return false;
                     }
 

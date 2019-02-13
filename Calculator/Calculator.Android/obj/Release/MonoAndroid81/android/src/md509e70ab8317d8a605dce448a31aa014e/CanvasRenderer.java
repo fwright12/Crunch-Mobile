@@ -15,6 +15,14 @@ public class CanvasRenderer
 	}
 
 
+	public CanvasRenderer (android.content.Context p0)
+	{
+		super (p0);
+		if (getClass () == CanvasRenderer.class)
+			mono.android.TypeManager.Activate ("Calculator.Droid.CanvasRenderer, Calculator.Android", "Android.Content.Context, Mono.Android", this, new java.lang.Object[] { p0 });
+	}
+
+
 	public CanvasRenderer (android.content.Context p0, android.util.AttributeSet p1, int p2)
 	{
 		super (p0, p1, p2);
@@ -28,14 +36,6 @@ public class CanvasRenderer
 		super (p0, p1);
 		if (getClass () == CanvasRenderer.class)
 			mono.android.TypeManager.Activate ("Calculator.Droid.CanvasRenderer, Calculator.Android", "Android.Content.Context, Mono.Android:Android.Util.IAttributeSet, Mono.Android", this, new java.lang.Object[] { p0, p1 });
-	}
-
-
-	public CanvasRenderer (android.content.Context p0)
-	{
-		super (p0);
-		if (getClass () == CanvasRenderer.class)
-			mono.android.TypeManager.Activate ("Calculator.Droid.CanvasRenderer, Calculator.Android", "Android.Content.Context, Mono.Android", this, new java.lang.Object[] { p0 });
 	}
 
 	private java.util.ArrayList refList;
