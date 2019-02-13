@@ -13,7 +13,7 @@ public class AppEventListenerImplementor
 		__md_methods = 
 			"n_onAppEvent:(Ljava/lang/String;Ljava/lang/String;)V:GetOnAppEvent_Ljava_lang_String_Ljava_lang_String_Handler:Android.Gms.Ads.DoubleClick.IAppEventListenerInvoker, Xamarin.GooglePlayServices.Ads.Lite\n" +
 			"";
-		mono.android.Runtime.register ("Android.Gms.Ads.DoubleClick.IAppEventListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", AppEventListenerImplementor.class, __md_methods);
+		mono.android.Runtime.register ("Android.Gms.Ads.DoubleClick.IAppEventListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite", AppEventListenerImplementor.class, __md_methods);
 	}
 
 
@@ -21,7 +21,7 @@ public class AppEventListenerImplementor
 	{
 		super ();
 		if (getClass () == AppEventListenerImplementor.class)
-			mono.android.TypeManager.Activate ("Android.Gms.Ads.DoubleClick.IAppEventListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", "", this, new java.lang.Object[] {  });
+			mono.android.TypeManager.Activate ("Android.Gms.Ads.DoubleClick.IAppEventListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite", "", this, new java.lang.Object[] {  });
 	}
 
 

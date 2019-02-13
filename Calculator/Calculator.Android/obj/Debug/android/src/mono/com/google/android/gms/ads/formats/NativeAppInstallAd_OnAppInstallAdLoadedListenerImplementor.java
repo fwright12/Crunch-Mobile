@@ -13,7 +13,7 @@ public class NativeAppInstallAd_OnAppInstallAdLoadedListenerImplementor
 		__md_methods = 
 			"n_onAppInstallAdLoaded:(Lcom/google/android/gms/ads/formats/NativeAppInstallAd;)V:GetOnAppInstallAdLoaded_Lcom_google_android_gms_ads_formats_NativeAppInstallAd_Handler:Android.Gms.Ads.Formats.NativeAppInstallAd/IOnAppInstallAdLoadedListenerInvoker, Xamarin.GooglePlayServices.Ads.Lite\n" +
 			"";
-		mono.android.Runtime.register ("Android.Gms.Ads.Formats.NativeAppInstallAd+IOnAppInstallAdLoadedListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", NativeAppInstallAd_OnAppInstallAdLoadedListenerImplementor.class, __md_methods);
+		mono.android.Runtime.register ("Android.Gms.Ads.Formats.NativeAppInstallAd+IOnAppInstallAdLoadedListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite", NativeAppInstallAd_OnAppInstallAdLoadedListenerImplementor.class, __md_methods);
 	}
 
 
@@ -21,7 +21,7 @@ public class NativeAppInstallAd_OnAppInstallAdLoadedListenerImplementor
 	{
 		super ();
 		if (getClass () == NativeAppInstallAd_OnAppInstallAdLoadedListenerImplementor.class)
-			mono.android.TypeManager.Activate ("Android.Gms.Ads.Formats.NativeAppInstallAd+IOnAppInstallAdLoadedListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", "", this, new java.lang.Object[] {  });
+			mono.android.TypeManager.Activate ("Android.Gms.Ads.Formats.NativeAppInstallAd+IOnAppInstallAdLoadedListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite", "", this, new java.lang.Object[] {  });
 	}
 
 

@@ -9,10 +9,10 @@ using Android.Graphics;
 using Android.Runtime;
 using Android.OS;
 
-using Crunch.GraFX;
+using Crunch.GraphX;
 using Android.Gms.Ads;
 
-[assembly: ExportRenderer(typeof(Xamarin.Forms.Canvas), typeof(CanvasRenderer))]
+[assembly: ExportRenderer(typeof(Calculator.Canvas), typeof(CanvasRenderer))]
 [assembly: ExportRenderer(typeof(LongClickableButton), typeof(LongClickableButtonRenderer))]
 [assembly: ExportRenderer(typeof(Answer), typeof(StackLayoutRenderer))]
 [assembly: ExportRenderer(typeof(DockButton), typeof(DockButtonRenderer))]

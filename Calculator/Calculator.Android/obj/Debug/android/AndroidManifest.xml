@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="1.2.2" package="com.GreenMountainLabs.Calculator" android:installLocation="auto" android:versionCode="5">
-  <uses-sdk android:minSdkVersion="22" android:targetSdkVersion="26" />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="1.2.3" package="com.GreenMountainLabs.Calculator" android:installLocation="auto" android:versionCode="6">
+  <!--suppress UsesMinSdkAttributes-->
+  <uses-sdk android:minSdkVersion="22" />
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
   <uses-permission android:name="android.permission.INTERNET" />
   <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -8,7 +9,7 @@
   <application android:label="Crunch" android:icon="@drawable/icon" android:debuggable="true" android:name="android.app.Application" android:allowBackup="true">
     <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
     <activity android:name="com.google.android.gms.ads.AdActivity" android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize" android:theme="@android:style/Theme.Translucent" />
-    <activity android:configChanges="orientation|screenSize" android:icon="@drawable/icon" android:label="Crunch" android:theme="@style/MainTheme" android:name="md570202206b1642cdde93943af1490fb24.MainActivity">
+    <activity android:configChanges="orientation|screenSize" android:icon="@drawable/icon" android:label="Crunch" android:theme="@style/MainTheme" android:name="md509e70ab8317d8a605dce448a31aa014e.MainActivity">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />
@@ -22,11 +23,9 @@
         <category android:name="mono.android.intent.category.SEPPUKU.com.GreenMountainLabs.Calculator" />
       </intent-filter>
     </receiver>
-    <meta-data android:name="android.support.VERSION" android:value="26.1.0" />
     <!--Include the AdActivity and InAppPurchaseActivity configChanges and themes. -->
     <activity android:name="com.google.android.gms.ads.AdActivity" android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize" android:theme="@android:style/Theme.Translucent" android:exported="false" />
     <!--Include the AdActivity and InAppPurchaseActivity configChanges and themes. -->
-    <meta-data android:name="android.arch.lifecycle.VERSION" android:value="27.0.0-SNAPSHOT" />
   </application>
   <supports-screens android:resizeable="true" android:smallScreens="true" android:normalScreens="true" android:largeScreens="true" android:xlargeScreens="true" android:anyDensity="true" />
 </manifest>

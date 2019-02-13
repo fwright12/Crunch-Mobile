@@ -13,7 +13,7 @@ public class OnPublisherAdViewLoadedListenerImplementor
 		__md_methods = 
 			"n_onPublisherAdViewLoaded:(Lcom/google/android/gms/ads/doubleclick/PublisherAdView;)V:GetOnPublisherAdViewLoaded_Lcom_google_android_gms_ads_doubleclick_PublisherAdView_Handler:Android.Gms.Ads.Formats.IOnPublisherAdViewLoadedListenerInvoker, Xamarin.GooglePlayServices.Ads.Lite\n" +
 			"";
-		mono.android.Runtime.register ("Android.Gms.Ads.Formats.IOnPublisherAdViewLoadedListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", OnPublisherAdViewLoadedListenerImplementor.class, __md_methods);
+		mono.android.Runtime.register ("Android.Gms.Ads.Formats.IOnPublisherAdViewLoadedListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite", OnPublisherAdViewLoadedListenerImplementor.class, __md_methods);
 	}
 
 
@@ -21,7 +21,7 @@ public class OnPublisherAdViewLoadedListenerImplementor
 	{
 		super ();
 		if (getClass () == OnPublisherAdViewLoadedListenerImplementor.class)
-			mono.android.TypeManager.Activate ("Android.Gms.Ads.Formats.IOnPublisherAdViewLoadedListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", "", this, new java.lang.Object[] {  });
+			mono.android.TypeManager.Activate ("Android.Gms.Ads.Formats.IOnPublisherAdViewLoadedListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite", "", this, new java.lang.Object[] {  });
 	}
 
 

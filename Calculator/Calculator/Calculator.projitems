@@ -16,36 +16,16 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Crunch\Crunch.GraFX\Answer.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Crunch\Crunch.GraFX\Equation.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Crunch\Crunch.GraFX\Fraction.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Crunch\Crunch.GraFX\Exponent.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Crunch\Crunch.GraFX\Expression.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Crunch\Crunch.GraFX\Minus.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Crunch\Crunch.GraFX\Render.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Crunch\Crunch.GraFX\Text.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Crunch\Crunch.Math\Constant.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Crunch\Crunch.Math\Exponent.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Crunch\Crunch.Math\Expression.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Crunch\Crunch.Math\Fraction.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Crunch\Crunch.Math\Operand.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Crunch\Crunch.Math\Term.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Crunch\Crunch.Math\Testing.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Crunch\Crunch.Math\Variable.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Crunch\Crunch.Math\Math.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Crunch\Parse.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)CursorView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Answer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Equation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CustomViews.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ExtensionMethods.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graph.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)GroupedDictionary.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)OrderedTrie.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Playground.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Crunch\Quantity.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)SoftKeyboard.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)print.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Tips.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drag.cs" />
   </ItemGroup>
@@ -53,6 +33,18 @@
     <Content Include="$(MSBuildThisFileDirectory)desmos.html" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="$(MSBuildThisFileDirectory)MasterDetailPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)MasterDetailPage1.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)MasterDetailPageDetail.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)MasterDetailPageMaster.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Tips.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="1.2.2" package="com.GreenMountainLabs.Calculator" android:installLocation="auto" android:versionCode="5">
-	<uses-sdk android:minSdkVersion="22" android:targetSdkVersion="26" />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="1.2.3" package="com.GreenMountainLabs.Calculator" android:installLocation="auto" android:versionCode="6">
+	<uses-sdk android:minSdkVersion="22" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.INTERNET" />
 	<application android:label="Crunch" android:icon="@drawable/icon">

@@ -13,7 +13,7 @@ public class NativeCustomTemplateAd_OnCustomTemplateAdLoadedListenerImplementor
 		__md_methods = 
 			"n_onCustomTemplateAdLoaded:(Lcom/google/android/gms/ads/formats/NativeCustomTemplateAd;)V:GetOnCustomTemplateAdLoaded_Lcom_google_android_gms_ads_formats_NativeCustomTemplateAd_Handler:Android.Gms.Ads.Formats.INativeCustomTemplateAdOnCustomTemplateAdLoadedListenerInvoker, Xamarin.GooglePlayServices.Ads.Lite\n" +
 			"";
-		mono.android.Runtime.register ("Android.Gms.Ads.Formats.INativeCustomTemplateAdOnCustomTemplateAdLoadedListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", NativeCustomTemplateAd_OnCustomTemplateAdLoadedListenerImplementor.class, __md_methods);
+		mono.android.Runtime.register ("Android.Gms.Ads.Formats.INativeCustomTemplateAdOnCustomTemplateAdLoadedListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite", NativeCustomTemplateAd_OnCustomTemplateAdLoadedListenerImplementor.class, __md_methods);
 	}
 
 
@@ -21,7 +21,7 @@ public class NativeCustomTemplateAd_OnCustomTemplateAdLoadedListenerImplementor
 	{
 		super ();
 		if (getClass () == NativeCustomTemplateAd_OnCustomTemplateAdLoadedListenerImplementor.class)
-			mono.android.TypeManager.Activate ("Android.Gms.Ads.Formats.INativeCustomTemplateAdOnCustomTemplateAdLoadedListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", "", this, new java.lang.Object[] {  });
+			mono.android.TypeManager.Activate ("Android.Gms.Ads.Formats.INativeCustomTemplateAdOnCustomTemplateAdLoadedListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite", "", this, new java.lang.Object[] {  });
 	}
 
 

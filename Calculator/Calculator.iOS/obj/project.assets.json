@@ -2,7 +2,7 @@
   "version": 3,
   "targets": {
     "Xamarin.iOS,Version=v1.0": {
-      "Microsoft.CSharp/4.4.1": {
+      "Microsoft.CSharp/4.5.0": {
         "type": "package",
         "frameworkAssemblies": [
           "Microsoft.CSharp"
@@ -14,7 +14,7 @@
           "lib/xamarinios10/_._": {}
         }
       },
-      "Xamarin.Forms/2.5.0.280555": {
+      "Xamarin.Forms/3.1.0.583944": {
         "type": "package",
         "compile": {
           "lib/Xamarin.iOS10/Xamarin.Forms.Core.dll": {},
@@ -133,13 +133,70 @@
           }
         },
         "build": {
-          "build/netstandard1.0/Xamarin.Forms.props": {},
-          "build/netstandard1.0/Xamarin.Forms.targets": {}
+          "build/netstandard2.0/Xamarin.Forms.props": {},
+          "build/netstandard2.0/Xamarin.Forms.targets": {}
+        }
+      },
+      "Crunch.Engine/1.0.0": {
+        "type": "project",
+        "dependencies": {
+          "Crunch.Machine": "1.0.0",
+          "System.Extensions": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Crunch.Engine.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Crunch.Engine.dll": {}
+        }
+      },
+      "Crunch.GraphX/1.0.0": {
+        "type": "project",
+        "dependencies": {
+          "Crunch.Machine": "1.0.0",
+          "System.Extensions": "1.0.0",
+          "Xamarin.Forms.Extensions": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Crunch.GraphX.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Crunch.GraphX.dll": {}
+        }
+      },
+      "Crunch.Machine/1.0.0": {
+        "type": "project",
+        "dependencies": {
+          "System.Extensions": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Crunch.Machine.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Crunch.Machine.dll": {}
+        }
+      },
+      "System.Extensions/1.0.0": {
+        "type": "project",
+        "compile": {
+          "bin/placeholder/System.Extensions.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/System.Extensions.dll": {}
+        }
+      },
+      "Xamarin.Forms.Extensions/1.0.0": {
+        "type": "project",
+        "compile": {
+          "bin/placeholder/Xamarin.Forms.Extensions.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Xamarin.Forms.Extensions.dll": {}
         }
       }
     },
     "Xamarin.iOS,Version=v1.0/win": {
-      "Microsoft.CSharp/4.4.1": {
+      "Microsoft.CSharp/4.5.0": {
         "type": "package",
         "frameworkAssemblies": [
           "Microsoft.CSharp"
@@ -151,7 +208,7 @@
           "lib/xamarinios10/_._": {}
         }
       },
-      "Xamarin.Forms/2.5.0.280555": {
+      "Xamarin.Forms/3.1.0.583944": {
         "type": "package",
         "compile": {
           "lib/Xamarin.iOS10/Xamarin.Forms.Core.dll": {},
@@ -270,13 +327,70 @@
           }
         },
         "build": {
-          "build/netstandard1.0/Xamarin.Forms.props": {},
-          "build/netstandard1.0/Xamarin.Forms.targets": {}
+          "build/netstandard2.0/Xamarin.Forms.props": {},
+          "build/netstandard2.0/Xamarin.Forms.targets": {}
+        }
+      },
+      "Crunch.Engine/1.0.0": {
+        "type": "project",
+        "dependencies": {
+          "Crunch.Machine": "1.0.0",
+          "System.Extensions": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Crunch.Engine.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Crunch.Engine.dll": {}
+        }
+      },
+      "Crunch.GraphX/1.0.0": {
+        "type": "project",
+        "dependencies": {
+          "Crunch.Machine": "1.0.0",
+          "System.Extensions": "1.0.0",
+          "Xamarin.Forms.Extensions": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Crunch.GraphX.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Crunch.GraphX.dll": {}
+        }
+      },
+      "Crunch.Machine/1.0.0": {
+        "type": "project",
+        "dependencies": {
+          "System.Extensions": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Crunch.Machine.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Crunch.Machine.dll": {}
+        }
+      },
+      "System.Extensions/1.0.0": {
+        "type": "project",
+        "compile": {
+          "bin/placeholder/System.Extensions.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/System.Extensions.dll": {}
+        }
+      },
+      "Xamarin.Forms.Extensions/1.0.0": {
+        "type": "project",
+        "compile": {
+          "bin/placeholder/Xamarin.Forms.Extensions.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Xamarin.Forms.Extensions.dll": {}
         }
       }
     },
     "Xamarin.iOS,Version=v1.0/win-x64": {
-      "Microsoft.CSharp/4.4.1": {
+      "Microsoft.CSharp/4.5.0": {
         "type": "package",
         "frameworkAssemblies": [
           "Microsoft.CSharp"
@@ -288,7 +402,7 @@
           "lib/xamarinios10/_._": {}
         }
       },
-      "Xamarin.Forms/2.5.0.280555": {
+      "Xamarin.Forms/3.1.0.583944": {
         "type": "package",
         "compile": {
           "lib/Xamarin.iOS10/Xamarin.Forms.Core.dll": {},
@@ -407,13 +521,70 @@
           }
         },
         "build": {
-          "build/netstandard1.0/Xamarin.Forms.props": {},
-          "build/netstandard1.0/Xamarin.Forms.targets": {}
+          "build/netstandard2.0/Xamarin.Forms.props": {},
+          "build/netstandard2.0/Xamarin.Forms.targets": {}
+        }
+      },
+      "Crunch.Engine/1.0.0": {
+        "type": "project",
+        "dependencies": {
+          "Crunch.Machine": "1.0.0",
+          "System.Extensions": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Crunch.Engine.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Crunch.Engine.dll": {}
+        }
+      },
+      "Crunch.GraphX/1.0.0": {
+        "type": "project",
+        "dependencies": {
+          "Crunch.Machine": "1.0.0",
+          "System.Extensions": "1.0.0",
+          "Xamarin.Forms.Extensions": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Crunch.GraphX.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Crunch.GraphX.dll": {}
+        }
+      },
+      "Crunch.Machine/1.0.0": {
+        "type": "project",
+        "dependencies": {
+          "System.Extensions": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Crunch.Machine.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Crunch.Machine.dll": {}
+        }
+      },
+      "System.Extensions/1.0.0": {
+        "type": "project",
+        "compile": {
+          "bin/placeholder/System.Extensions.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/System.Extensions.dll": {}
+        }
+      },
+      "Xamarin.Forms.Extensions/1.0.0": {
+        "type": "project",
+        "compile": {
+          "bin/placeholder/Xamarin.Forms.Extensions.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Xamarin.Forms.Extensions.dll": {}
         }
       }
     },
     "Xamarin.iOS,Version=v1.0/win-x86": {
-      "Microsoft.CSharp/4.4.1": {
+      "Microsoft.CSharp/4.5.0": {
         "type": "package",
         "frameworkAssemblies": [
           "Microsoft.CSharp"
@@ -425,7 +596,7 @@
           "lib/xamarinios10/_._": {}
         }
       },
-      "Xamarin.Forms/2.5.0.280555": {
+      "Xamarin.Forms/3.1.0.583944": {
         "type": "package",
         "compile": {
           "lib/Xamarin.iOS10/Xamarin.Forms.Core.dll": {},
@@ -544,18 +715,76 @@
           }
         },
         "build": {
-          "build/netstandard1.0/Xamarin.Forms.props": {},
-          "build/netstandard1.0/Xamarin.Forms.targets": {}
+          "build/netstandard2.0/Xamarin.Forms.props": {},
+          "build/netstandard2.0/Xamarin.Forms.targets": {}
+        }
+      },
+      "Crunch.Engine/1.0.0": {
+        "type": "project",
+        "dependencies": {
+          "Crunch.Machine": "1.0.0",
+          "System.Extensions": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Crunch.Engine.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Crunch.Engine.dll": {}
+        }
+      },
+      "Crunch.GraphX/1.0.0": {
+        "type": "project",
+        "dependencies": {
+          "Crunch.Machine": "1.0.0",
+          "System.Extensions": "1.0.0",
+          "Xamarin.Forms.Extensions": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Crunch.GraphX.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Crunch.GraphX.dll": {}
+        }
+      },
+      "Crunch.Machine/1.0.0": {
+        "type": "project",
+        "dependencies": {
+          "System.Extensions": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Crunch.Machine.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Crunch.Machine.dll": {}
+        }
+      },
+      "System.Extensions/1.0.0": {
+        "type": "project",
+        "compile": {
+          "bin/placeholder/System.Extensions.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/System.Extensions.dll": {}
+        }
+      },
+      "Xamarin.Forms.Extensions/1.0.0": {
+        "type": "project",
+        "compile": {
+          "bin/placeholder/Xamarin.Forms.Extensions.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Xamarin.Forms.Extensions.dll": {}
         }
       }
     }
   },
   "libraries": {
-    "Microsoft.CSharp/4.4.1": {
-      "sha512": "A5hI3gk6WpcBI0QGZY6/d5CCaYUxJgi7iENn1uYEng+Olo8RfI5ReGVkjXjeu3VR3srLvVYREATXa2M0X7FYJA==",
+    "Microsoft.CSharp/4.5.0": {
+      "sha512": "EGoBmf3Na2ppbhPePDE9PlX81r1HuOZH5twBrq7couJZiPTjUnD3648balerQJO6EJ8Sj+43+XuRwQ7r+3tE3w==",
       "type": "package",
-      "path": "microsoft.csharp/4.4.1",
+      "path": "microsoft.csharp/4.5.0",
       "files": [
+        ".signature.p7s",
         "LICENSE.TXT",
         "THIRD-PARTY-NOTICES.TXT",
         "lib/MonoAndroid10/_._",
@@ -566,6 +795,7 @@
         "lib/netstandard1.3/Microsoft.CSharp.dll",
         "lib/netstandard2.0/Microsoft.CSharp.dll",
         "lib/portable-net45+win8+wp8+wpa81/_._",
+        "lib/uap10.0.16299/_._",
         "lib/win8/_._",
         "lib/wp80/_._",
         "lib/wpa81/_._",
@@ -573,7 +803,7 @@
         "lib/xamarinmac20/_._",
         "lib/xamarintvos10/_._",
         "lib/xamarinwatchos10/_._",
-        "microsoft.csharp.4.4.1.nupkg.sha512",
+        "microsoft.csharp.4.5.0.nupkg.sha512",
         "microsoft.csharp.nuspec",
         "ref/MonoAndroid10/_._",
         "ref/MonoTouch10/_._",
@@ -604,6 +834,7 @@
         "ref/netstandard2.0/Microsoft.CSharp.dll",
         "ref/netstandard2.0/Microsoft.CSharp.xml",
         "ref/portable-net45+win8+wp8+wpa81/_._",
+        "ref/uap10.0.16299/_._",
         "ref/win8/_._",
         "ref/wp80/_._",
         "ref/wpa81/_._",
@@ -615,15 +846,17 @@
         "version.txt"
       ]
     },
-    "Xamarin.Forms/2.5.0.280555": {
-      "sha512": "JVmozDJQNKEVhN4NG5EiG2IBua0+xK9b+t1L/VUN9HeIXkc8BubZM6UnnE1CftlGt0U2+JGTQSL79uxpx0KCpQ==",
+    "Xamarin.Forms/3.1.0.583944": {
+      "sha512": "q4AGFr8k9z6v5u++COV6M5TEZ8Oh8iiU3inVysapL5j75bhKfbcU2RizgZxTQ7+2CdlzVK+Dz+nyFx4JFh0Cwg==",
       "type": "package",
-      "path": "xamarin.forms/2.5.0.280555",
+      "path": "xamarin.forms/3.1.0.583944",
       "files": [
+        ".signature.p7s",
         "build/netstandard1.0/Mono.Cecil.Mdb.dll",
         "build/netstandard1.0/Mono.Cecil.Pdb.dll",
         "build/netstandard1.0/Mono.Cecil.Rocks.dll",
         "build/netstandard1.0/Mono.Cecil.dll",
+        "build/netstandard1.0/System.CodeDom.dll",
         "build/netstandard1.0/Xamarin.Forms.Build.Tasks.dll",
         "build/netstandard1.0/Xamarin.Forms.Core.dll",
         "build/netstandard1.0/Xamarin.Forms.DefaultItems.props",
@@ -631,42 +864,33 @@
         "build/netstandard1.0/Xamarin.Forms.Xaml.dll",
         "build/netstandard1.0/Xamarin.Forms.props",
         "build/netstandard1.0/Xamarin.Forms.targets",
-        "build/portable-win+net45+wp80+win81+wpa81/Mono.Cecil.Mdb.dll",
-        "build/portable-win+net45+wp80+win81+wpa81/Mono.Cecil.Pdb.dll",
-        "build/portable-win+net45+wp80+win81+wpa81/Mono.Cecil.Rocks.dll",
-        "build/portable-win+net45+wp80+win81+wpa81/Mono.Cecil.dll",
-        "build/portable-win+net45+wp80+win81+wpa81/Xamarin.Forms.Build.Tasks.dll",
-        "build/portable-win+net45+wp80+win81+wpa81/Xamarin.Forms.Core.dll",
-        "build/portable-win+net45+wp80+win81+wpa81/Xamarin.Forms.DefaultItems.targets",
-        "build/portable-win+net45+wp80+win81+wpa81/Xamarin.Forms.Xaml.dll",
-        "build/portable-win+net45+wp80+win81+wpa81/Xamarin.Forms.targets",
+        "build/netstandard2.0/Mono.Cecil.Mdb.dll",
+        "build/netstandard2.0/Mono.Cecil.Pdb.dll",
+        "build/netstandard2.0/Mono.Cecil.Rocks.dll",
+        "build/netstandard2.0/Mono.Cecil.dll",
+        "build/netstandard2.0/System.CodeDom.dll",
+        "build/netstandard2.0/Xamarin.Forms.Build.Tasks.dll",
+        "build/netstandard2.0/Xamarin.Forms.Core.dll",
+        "build/netstandard2.0/Xamarin.Forms.DefaultItems.props",
+        "build/netstandard2.0/Xamarin.Forms.DefaultItems.targets",
+        "build/netstandard2.0/Xamarin.Forms.Xaml.dll",
+        "build/netstandard2.0/Xamarin.Forms.props",
+        "build/netstandard2.0/Xamarin.Forms.targets",
         "lib/MonoAndroid10/Design/Xamarin.Forms.Core.Design.dll",
         "lib/MonoAndroid10/Design/Xamarin.Forms.Xaml.Design.dll",
         "lib/MonoAndroid10/FormsViewGroup.dll",
-        "lib/MonoAndroid10/FormsViewGroup.dll.mdb",
         "lib/MonoAndroid10/FormsViewGroup.pdb",
         "lib/MonoAndroid10/Xamarin.Forms.Core.dll",
-        "lib/MonoAndroid10/Xamarin.Forms.Core.dll.mdb",
         "lib/MonoAndroid10/Xamarin.Forms.Core.pdb",
         "lib/MonoAndroid10/Xamarin.Forms.Core.xml",
         "lib/MonoAndroid10/Xamarin.Forms.Platform.Android.dll",
-        "lib/MonoAndroid10/Xamarin.Forms.Platform.Android.dll.mdb",
         "lib/MonoAndroid10/Xamarin.Forms.Platform.Android.pdb",
         "lib/MonoAndroid10/Xamarin.Forms.Platform.dll",
         "lib/MonoAndroid10/Xamarin.Forms.Xaml.dll",
-        "lib/MonoAndroid10/Xamarin.Forms.Xaml.dll.mdb",
         "lib/MonoAndroid10/Xamarin.Forms.Xaml.pdb",
         "lib/MonoAndroid10/Xamarin.Forms.Xaml.xml",
-        "lib/WP80/Design/Xamarin.Forms.Core.Design.dll",
-        "lib/WP80/Design/Xamarin.Forms.Xaml.Design.dll",
-        "lib/WP80/Xamarin.Forms.Core.dll",
-        "lib/WP80/Xamarin.Forms.Core.pdb",
-        "lib/WP80/Xamarin.Forms.Core.xml",
-        "lib/WP80/Xamarin.Forms.Platform.WP8.dll",
-        "lib/WP80/Xamarin.Forms.Platform.dll",
-        "lib/WP80/Xamarin.Forms.Xaml.dll",
-        "lib/WP80/Xamarin.Forms.Xaml.pdb",
-        "lib/WP80/Xamarin.Forms.Xaml.xml",
+        "lib/Xamarin.Mac/Design/Xamarin.Forms.Core.Design.dll",
+        "lib/Xamarin.Mac/Design/Xamarin.Forms.Xaml.Design.dll",
         "lib/Xamarin.Mac/Xamarin.Forms.Core.dll",
         "lib/Xamarin.Mac/Xamarin.Forms.Platform.dll",
         "lib/Xamarin.Mac/Xamarin.Forms.Platform.macOS.dll",
@@ -674,14 +898,12 @@
         "lib/Xamarin.iOS10/Design/Xamarin.Forms.Core.Design.dll",
         "lib/Xamarin.iOS10/Design/Xamarin.Forms.Xaml.Design.dll",
         "lib/Xamarin.iOS10/Xamarin.Forms.Core.dll",
-        "lib/Xamarin.iOS10/Xamarin.Forms.Core.dll.mdb",
         "lib/Xamarin.iOS10/Xamarin.Forms.Core.pdb",
         "lib/Xamarin.iOS10/Xamarin.Forms.Core.xml",
         "lib/Xamarin.iOS10/Xamarin.Forms.Platform.dll",
         "lib/Xamarin.iOS10/Xamarin.Forms.Platform.iOS.dll",
         "lib/Xamarin.iOS10/Xamarin.Forms.Platform.iOS.pdb",
         "lib/Xamarin.iOS10/Xamarin.Forms.Xaml.dll",
-        "lib/Xamarin.iOS10/Xamarin.Forms.Xaml.dll.mdb",
         "lib/Xamarin.iOS10/Xamarin.Forms.Xaml.pdb",
         "lib/Xamarin.iOS10/Xamarin.Forms.Xaml.xml",
         "lib/Xamarin.iOS10/ar/Xamarin.Forms.Platform.iOS.resources.dll",
@@ -721,25 +943,32 @@
         "lib/netstandard1.0/Design/Xamarin.Forms.Core.Design.dll",
         "lib/netstandard1.0/Design/Xamarin.Forms.Xaml.Design.dll",
         "lib/netstandard1.0/Xamarin.Forms.Core.dll",
-        "lib/netstandard1.0/Xamarin.Forms.Core.dll.mdb",
         "lib/netstandard1.0/Xamarin.Forms.Core.pdb",
         "lib/netstandard1.0/Xamarin.Forms.Core.xml",
         "lib/netstandard1.0/Xamarin.Forms.Platform.dll",
         "lib/netstandard1.0/Xamarin.Forms.Xaml.dll",
-        "lib/netstandard1.0/Xamarin.Forms.Xaml.dll.mdb",
         "lib/netstandard1.0/Xamarin.Forms.Xaml.pdb",
         "lib/netstandard1.0/Xamarin.Forms.Xaml.xml",
-        "lib/portable-win+net45+wp80+win81+wpa81/Design/Xamarin.Forms.Core.Design.dll",
-        "lib/portable-win+net45+wp80+win81+wpa81/Design/Xamarin.Forms.Xaml.Design.dll",
-        "lib/portable-win+net45+wp80+win81+wpa81/Xamarin.Forms.Core.dll",
-        "lib/portable-win+net45+wp80+win81+wpa81/Xamarin.Forms.Core.dll.mdb",
-        "lib/portable-win+net45+wp80+win81+wpa81/Xamarin.Forms.Core.pdb",
-        "lib/portable-win+net45+wp80+win81+wpa81/Xamarin.Forms.Core.xml",
-        "lib/portable-win+net45+wp80+win81+wpa81/Xamarin.Forms.Platform.dll",
-        "lib/portable-win+net45+wp80+win81+wpa81/Xamarin.Forms.Xaml.dll",
-        "lib/portable-win+net45+wp80+win81+wpa81/Xamarin.Forms.Xaml.dll.mdb",
-        "lib/portable-win+net45+wp80+win81+wpa81/Xamarin.Forms.Xaml.pdb",
-        "lib/portable-win+net45+wp80+win81+wpa81/Xamarin.Forms.Xaml.xml",
+        "lib/netstandard2.0/Design/Xamarin.Forms.Core.Design.dll",
+        "lib/netstandard2.0/Design/Xamarin.Forms.Xaml.Design.dll",
+        "lib/netstandard2.0/Xamarin.Forms.Core.dll",
+        "lib/netstandard2.0/Xamarin.Forms.Core.pdb",
+        "lib/netstandard2.0/Xamarin.Forms.Core.xml",
+        "lib/netstandard2.0/Xamarin.Forms.Platform.dll",
+        "lib/netstandard2.0/Xamarin.Forms.Xaml.dll",
+        "lib/netstandard2.0/Xamarin.Forms.Xaml.pdb",
+        "lib/netstandard2.0/Xamarin.Forms.Xaml.xml",
+        "lib/tizen40/Design/Xamarin.Forms.Core.Design.dll",
+        "lib/tizen40/Design/Xamarin.Forms.Xaml.Design.dll",
+        "lib/tizen40/Xamarin.Forms.Core.dll",
+        "lib/tizen40/Xamarin.Forms.Core.pdb",
+        "lib/tizen40/Xamarin.Forms.Core.xml",
+        "lib/tizen40/Xamarin.Forms.Platform.Tizen.dll",
+        "lib/tizen40/Xamarin.Forms.Platform.Tizen.pdb",
+        "lib/tizen40/Xamarin.Forms.Platform.dll",
+        "lib/tizen40/Xamarin.Forms.Xaml.dll",
+        "lib/tizen40/Xamarin.Forms.Xaml.pdb",
+        "lib/tizen40/Xamarin.Forms.Xaml.xml",
         "lib/uap10.0/Design/Xamarin.Forms.Core.Design.dll",
         "lib/uap10.0/Design/Xamarin.Forms.Xaml.Design.dll",
         "lib/uap10.0/Xamarin.Forms.Core.dll",
@@ -749,63 +978,57 @@
         "lib/uap10.0/Xamarin.Forms.Platform.UAP/AutoSuggestStyle.xbf",
         "lib/uap10.0/Xamarin.Forms.Platform.UAP/FormsCommandBarStyle.xbf",
         "lib/uap10.0/Xamarin.Forms.Platform.UAP/FormsEmbeddedPageWrapper.xbf",
+        "lib/uap10.0/Xamarin.Forms.Platform.UAP/FormsFlyout.xbf",
         "lib/uap10.0/Xamarin.Forms.Platform.UAP/FormsProgressBarStyle.xbf",
         "lib/uap10.0/Xamarin.Forms.Platform.UAP/FormsTextBoxStyle.xbf",
         "lib/uap10.0/Xamarin.Forms.Platform.UAP/MasterDetailControlStyle.xbf",
         "lib/uap10.0/Xamarin.Forms.Platform.UAP/PageControlStyle.xbf",
         "lib/uap10.0/Xamarin.Forms.Platform.UAP/Properties/Xamarin.Forms.Platform.UAP.rd.xml",
         "lib/uap10.0/Xamarin.Forms.Platform.UAP/Resources.xbf",
+        "lib/uap10.0/Xamarin.Forms.Platform.UAP/SliderStyle.xbf",
         "lib/uap10.0/Xamarin.Forms.Platform.UAP/TabbedPageStyle.xbf",
         "lib/uap10.0/Xamarin.Forms.Platform.UAP/Xamarin.Forms.Platform.UAP.xr.xml",
         "lib/uap10.0/Xamarin.Forms.Platform.dll",
         "lib/uap10.0/Xamarin.Forms.Xaml.dll",
         "lib/uap10.0/Xamarin.Forms.Xaml.xml",
-        "lib/win81/Design/Xamarin.Forms.Core.Design.dll",
-        "lib/win81/Design/Xamarin.Forms.Xaml.Design.dll",
-        "lib/win81/Xamarin.Forms.Core.dll",
-        "lib/win81/Xamarin.Forms.Core.xml",
-        "lib/win81/Xamarin.Forms.Platform.WinRT.Tablet.dll",
-        "lib/win81/Xamarin.Forms.Platform.WinRT.Tablet.pri",
-        "lib/win81/Xamarin.Forms.Platform.WinRT.Tablet/FormsProgressBarStyle.xbf",
-        "lib/win81/Xamarin.Forms.Platform.WinRT.Tablet/FormsTextBoxStyle.xbf",
-        "lib/win81/Xamarin.Forms.Platform.WinRT.Tablet/Resources.xbf",
-        "lib/win81/Xamarin.Forms.Platform.WinRT.Tablet/TabletResources.xbf",
-        "lib/win81/Xamarin.Forms.Platform.WinRT.Tablet/Xamarin.Forms.Platform.WinRT.Tablet.xr.xml",
-        "lib/win81/Xamarin.Forms.Platform.WinRT.dll",
-        "lib/win81/Xamarin.Forms.Platform.WinRT.pri",
-        "lib/win81/Xamarin.Forms.Platform.WinRT/StepperControl.xbf",
-        "lib/win81/Xamarin.Forms.Platform.WinRT/Xamarin.Forms.Platform.WinRT.xr.xml",
-        "lib/win81/Xamarin.Forms.Platform.dll",
-        "lib/win81/Xamarin.Forms.Xaml.dll",
-        "lib/win81/Xamarin.Forms.Xaml.xml",
-        "lib/wpa81/Design/Xamarin.Forms.Core.Design.dll",
-        "lib/wpa81/Design/Xamarin.Forms.Xaml.Design.dll",
-        "lib/wpa81/Xamarin.Forms.Core.dll",
-        "lib/wpa81/Xamarin.Forms.Core.xml",
-        "lib/wpa81/Xamarin.Forms.Platform.WinRT.Phone.dll",
-        "lib/wpa81/Xamarin.Forms.Platform.WinRT.Phone.pri",
-        "lib/wpa81/Xamarin.Forms.Platform.WinRT.Phone/FormsProgressBarStyle.xbf",
-        "lib/wpa81/Xamarin.Forms.Platform.WinRT.Phone/FormsTextBoxStyle.xbf",
-        "lib/wpa81/Xamarin.Forms.Platform.WinRT.Phone/PhoneResources.xbf",
-        "lib/wpa81/Xamarin.Forms.Platform.WinRT.Phone/Resources.xbf",
-        "lib/wpa81/Xamarin.Forms.Platform.WinRT.Phone/SearchBox.xbf",
-        "lib/wpa81/Xamarin.Forms.Platform.WinRT.Phone/Xamarin.Forms.Platform.WinRT.Phone.xr.xml",
-        "lib/wpa81/Xamarin.Forms.Platform.WinRT.dll",
-        "lib/wpa81/Xamarin.Forms.Platform.WinRT.pri",
-        "lib/wpa81/Xamarin.Forms.Platform.WinRT/StepperControl.xbf",
-        "lib/wpa81/Xamarin.Forms.Platform.WinRT/Xamarin.Forms.Platform.WinRT.xr.xml",
-        "lib/wpa81/Xamarin.Forms.Platform.dll",
-        "lib/wpa81/Xamarin.Forms.Xaml.dll",
-        "lib/wpa81/Xamarin.Forms.Xaml.xml",
-        "xamarin.forms.2.5.0.280555.nupkg.sha512",
+        "xamarin.forms.3.1.0.583944.nupkg.sha512",
         "xamarin.forms.nuspec"
       ]
+    },
+    "Crunch.Engine/1.0.0": {
+      "type": "project",
+      "path": "../../../Crunch.Engine/Crunch.Engine.csproj",
+      "msbuildProject": "../../../Crunch.Engine/Crunch.Engine.csproj"
+    },
+    "Crunch.GraphX/1.0.0": {
+      "type": "project",
+      "path": "../../../Crunch.GraphX/Crunch.GraphX.csproj",
+      "msbuildProject": "../../../Crunch.GraphX/Crunch.GraphX.csproj"
+    },
+    "Crunch.Machine/1.0.0": {
+      "type": "project",
+      "path": "../../../Crunch.Machine/Crunch.Machine.csproj",
+      "msbuildProject": "../../../Crunch.Machine/Crunch.Machine.csproj"
+    },
+    "System.Extensions/1.0.0": {
+      "type": "project",
+      "path": "../../../../C# Extensions/System.Extensions/System.Extensions.csproj",
+      "msbuildProject": "../../../../C# Extensions/System.Extensions/System.Extensions.csproj"
+    },
+    "Xamarin.Forms.Extensions/1.0.0": {
+      "type": "project",
+      "path": "../../../../C# Extensions/Xamarin.Forms.Extensions/Xamarin.Forms.Extensions.csproj",
+      "msbuildProject": "../../../../C# Extensions/Xamarin.Forms.Extensions/Xamarin.Forms.Extensions.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "Xamarin.iOS,Version=v1.0": [
-      "Microsoft.CSharp >= 4.4.1",
-      "Xamarin.Forms >= 2.5.0.280555"
+      "Crunch.Engine >= 1.0.0",
+      "Crunch.GraphX >= 1.0.0",
+      "Microsoft.CSharp >= 4.5.0",
+      "System.Extensions >= 1.0.0",
+      "Xamarin.Forms >= 3.1.0.583944",
+      "Xamarin.Forms.Extensions >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -814,11 +1037,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Flint\\Documents\\Calculator Stuff\\Backups\\Calculator v1.2.3\\Calculator\\Calculator.iOS\\Calculator.iOS.csproj",
+      "projectUniqueName": "C:\\Users\\Flint\\Documents\\Calculator Stuff\\Calculator\\Calculator\\Calculator.iOS\\Calculator.iOS.csproj",
       "projectName": "Calculator.iOS",
-      "projectPath": "C:\\Users\\Flint\\Documents\\Calculator Stuff\\Backups\\Calculator v1.2.3\\Calculator\\Calculator.iOS\\Calculator.iOS.csproj",
+      "projectPath": "C:\\Users\\Flint\\Documents\\Calculator Stuff\\Calculator\\Calculator\\Calculator.iOS\\Calculator.iOS.csproj",
       "packagesPath": "C:\\Users\\Flint\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Flint\\Documents\\Calculator Stuff\\Backups\\Calculator v1.2.3\\Calculator\\Calculator.iOS\\obj\\",
+      "outputPath": "C:\\Users\\Flint\\Documents\\Calculator Stuff\\Calculator\\Calculator\\Calculator.iOS\\obj\\",
       "projectStyle": "PackageReference",
       "skipContentFileWrite": true,
       "configFilePaths": [
@@ -834,7 +1057,20 @@
       },
       "frameworks": {
         "xamarinios10": {
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Users\\Flint\\Documents\\C# Extensions\\System.Extensions\\System.Extensions.csproj": {
+              "projectPath": "C:\\Users\\Flint\\Documents\\C# Extensions\\System.Extensions\\System.Extensions.csproj"
+            },
+            "C:\\Users\\Flint\\Documents\\C# Extensions\\Xamarin.Forms.Extensions\\Xamarin.Forms.Extensions.csproj": {
+              "projectPath": "C:\\Users\\Flint\\Documents\\C# Extensions\\Xamarin.Forms.Extensions\\Xamarin.Forms.Extensions.csproj"
+            },
+            "C:\\Users\\Flint\\Documents\\Calculator Stuff\\Crunch.Engine\\Crunch.Engine.csproj": {
+              "projectPath": "C:\\Users\\Flint\\Documents\\Calculator Stuff\\Crunch.Engine\\Crunch.Engine.csproj"
+            },
+            "C:\\Users\\Flint\\Documents\\Calculator Stuff\\Crunch.GraphX\\Crunch.GraphX.csproj": {
+              "projectPath": "C:\\Users\\Flint\\Documents\\Calculator Stuff\\Crunch.GraphX\\Crunch.GraphX.csproj"
+            }
+          }
         }
       }
     },
@@ -843,11 +1079,11 @@
         "dependencies": {
           "Microsoft.CSharp": {
             "target": "Package",
-            "version": "[4.4.1, )"
+            "version": "[4.5.0, )"
           },
           "Xamarin.Forms": {
             "target": "Package",
-            "version": "[2.5.0.280555, )"
+            "version": "[3.1.0.583944, )"
           }
         }
       }

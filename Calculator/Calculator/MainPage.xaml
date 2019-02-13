@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:androidWidget="clr-namespace:Android.Widget;assembly=Mono.Android;targetPlatform=Android"
              xmlns:formsAndroid="clr-namespace:Xamarin.Forms;assembly=Xamarin.Forms.Platform.Android;targetPlatform=Android"
-             xmlns:custom="clr-namespace:Xamarin.Forms"
+             xmlns:custom="clr-namespace:Calculator"
              x:Class="Calculator.MainPage" >
     
     <ContentPage.Padding>
@@ -20,6 +20,42 @@
             </ScrollView>
 
             <custom:BannerAd x:Name="ad"/>
+            <Button IsVisible="False" Text="&#8801;" FontSize="50" AbsoluteLayout.LayoutBounds="0,0,50,50" AbsoluteLayout.LayoutFlags="PositionProportional" />
+            <StackLayout IsVisible="False" x:Name="menu" BackgroundColor="LightGray" Spacing="0" Orientation="Vertical" AbsoluteLayout.LayoutFlags="SizeProportional">
+                <StackLayout VerticalOptions="FillAndExpand">
+                    <TableView Intent="Settings">
+                        <TableRoot>
+                            <TableSection Title="Math">
+                                <ViewCell>
+                                    <StackLayout Padding="25,0,0,0" Orientation="Horizontal">
+                                        <Label Text="Decimal precision: " VerticalOptions="Center"/>
+                                        <Label x:Name="decimalPrecision" VerticalOptions="Center" />
+                                        <Stepper x:Name="stepper"
+                                                 Value="3"
+                                                 ValueChanged="SetDecimalPrecision"
+                                                 Minimum="1"
+                                                 Maximum="15"
+                                                 Increment="1" 
+                                                 HorizontalOptions="EndAndExpand"
+                                                 VerticalOptions="Center"/>
+                                    </StackLayout>
+                                </ViewCell>
+                            </TableSection>
+                            <TableSection Title="Defaults">
+                                <SwitchCell Text="Prefer decimal answers"/>
+                                <SwitchCell Text="Prefer radians"/>
+                            </TableSection>
+                            <TableSection Title="Other">
+                                <SwitchCell Text="Clear canvas warning" On="True"/>
+                                <SwitchCell Text="Left-handed"/>
+                                <custom:StepperCell ValueChanged="SetDecimalPrecision" ShowValue="True" Text="test" Minimum="1" />
+                            </TableSection>
+                        </TableRoot>
+                    </TableView>
+                </StackLayout>
+                <Button Text="Tips" FontSize="Large" VerticalOptions="End"/>
+                <Button Text="About" FontSize="Large" VerticalOptions="End"/>
+            </StackLayout>
         </AbsoluteLayout>
 
         <AbsoluteLayout x:Name="keyboardContainer">

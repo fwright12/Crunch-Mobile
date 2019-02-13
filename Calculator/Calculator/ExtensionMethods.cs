@@ -4,19 +4,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using Calculator;
-using Crunch.GraFX;
+using System.Extensions;
+using Xamarin.Forms;
+using Crunch.GraphX;
 
-namespace System
+namespace Calculator
 {
-    public static class StringClassification
+    public static class ExtensionMethods
     {
-        public static bool IsOpening(this char c) => c == '(' || c == '{' || c == '[';
-        public static bool IsClosing(this char c) => c == ')' || c == '}' || c == ']';
-        public static bool IsOperand(this string s) => s.Length == 1 && (s == "/" || s == "×" || s == "+" || s == "*" || s == "-" || s == "^");
-        public static bool IsNumber(this string s) => s.Length == 1 && ((s[0] >= 48 && s[0] <= 57) || s[0] == 46);
-    }
 
+    }
+}
+
+/*namespace System
+{
     public class print
     {
         public static void log(params object[] p)
@@ -32,9 +33,14 @@ namespace System
 
     public static class ExtensionMethods
     {
-        public static bool ToBool(this Crunch.TrieContains tc) => tc == Crunch.TrieContains.Full;
+        public static void Switch<T>(ref T a, ref T b)
+        {
+            var c = a;
+            a = b;
+            b = c;
+        }
 
-        public static T Last<T>(this List<T> list) => list[list.Count - 1];
+        public static T Last<T>(this IList<T> list) => list[list.Count - 1];
 
         public static TValue TryGet<TKey, TValue>(this Dictionary<TKey, TValue> dict, TKey key) where TValue : new()
         {
@@ -56,19 +62,10 @@ namespace System
             }
         }
 
-        public static int ToInt(this bool sender)
-        {
-            if (sender)
-            {
-                return 1;
-            }
-            else
-            {
-                return 0;
-            }
-        }
+        public static int ToInt(this bool sender) => sender ? 1 : 0;
+        public static bool ToBool(this int sender) => sender == 1 ? true : false;
 
-        public static bool IsWhole(this double value) => value == (int)value;
+        public static bool IsInt(this double value) => value == (int)value;
 
         public static int Bound(this int value, int low, int high)
         {
@@ -147,4 +144,4 @@ namespace Xamarin.Forms
             }
         }
     }
-}
+}*/

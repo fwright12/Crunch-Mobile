@@ -13,7 +13,7 @@ public class NativeContentAd_OnContentAdLoadedListenerImplementor
 		__md_methods = 
 			"n_onContentAdLoaded:(Lcom/google/android/gms/ads/formats/NativeContentAd;)V:GetOnContentAdLoaded_Lcom_google_android_gms_ads_formats_NativeContentAd_Handler:Android.Gms.Ads.Formats.NativeContentAd/IOnContentAdLoadedListenerInvoker, Xamarin.GooglePlayServices.Ads.Lite\n" +
 			"";
-		mono.android.Runtime.register ("Android.Gms.Ads.Formats.NativeContentAd+IOnContentAdLoadedListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", NativeContentAd_OnContentAdLoadedListenerImplementor.class, __md_methods);
+		mono.android.Runtime.register ("Android.Gms.Ads.Formats.NativeContentAd+IOnContentAdLoadedListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite", NativeContentAd_OnContentAdLoadedListenerImplementor.class, __md_methods);
 	}
 
 
@@ -21,7 +21,7 @@ public class NativeContentAd_OnContentAdLoadedListenerImplementor
 	{
 		super ();
 		if (getClass () == NativeContentAd_OnContentAdLoadedListenerImplementor.class)
-			mono.android.TypeManager.Activate ("Android.Gms.Ads.Formats.NativeContentAd+IOnContentAdLoadedListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", "", this, new java.lang.Object[] {  });
+			mono.android.TypeManager.Activate ("Android.Gms.Ads.Formats.NativeContentAd+IOnContentAdLoadedListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite", "", this, new java.lang.Object[] {  });
 	}
 
 

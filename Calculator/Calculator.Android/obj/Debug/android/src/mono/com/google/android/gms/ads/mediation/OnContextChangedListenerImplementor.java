@@ -13,7 +13,7 @@ public class OnContextChangedListenerImplementor
 		__md_methods = 
 			"n_onContextChanged:(Landroid/content/Context;)V:GetOnContextChanged_Landroid_content_Context_Handler:Android.Gms.Ads.Mediation.IOnContextChangedListenerInvoker, Xamarin.GooglePlayServices.Ads.Lite\n" +
 			"";
-		mono.android.Runtime.register ("Android.Gms.Ads.Mediation.IOnContextChangedListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", OnContextChangedListenerImplementor.class, __md_methods);
+		mono.android.Runtime.register ("Android.Gms.Ads.Mediation.IOnContextChangedListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite", OnContextChangedListenerImplementor.class, __md_methods);
 	}
 
 
@@ -21,7 +21,7 @@ public class OnContextChangedListenerImplementor
 	{
 		super ();
 		if (getClass () == OnContextChangedListenerImplementor.class)
-			mono.android.TypeManager.Activate ("Android.Gms.Ads.Mediation.IOnContextChangedListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", "", this, new java.lang.Object[] {  });
+			mono.android.TypeManager.Activate ("Android.Gms.Ads.Mediation.IOnContextChangedListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite", "", this, new java.lang.Object[] {  });
 	}
 
 

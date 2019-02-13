@@ -19,7 +19,7 @@ public class RewardedVideoAdListenerImplementor
 			"n_onRewardedVideoAdOpened:()V:GetOnRewardedVideoAdOpenedHandler:Android.Gms.Ads.Reward.IRewardedVideoAdListenerInvoker, Xamarin.GooglePlayServices.Ads.Lite\n" +
 			"n_onRewardedVideoStarted:()V:GetOnRewardedVideoStartedHandler:Android.Gms.Ads.Reward.IRewardedVideoAdListenerInvoker, Xamarin.GooglePlayServices.Ads.Lite\n" +
 			"";
-		mono.android.Runtime.register ("Android.Gms.Ads.Reward.IRewardedVideoAdListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", RewardedVideoAdListenerImplementor.class, __md_methods);
+		mono.android.Runtime.register ("Android.Gms.Ads.Reward.IRewardedVideoAdListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite", RewardedVideoAdListenerImplementor.class, __md_methods);
 	}
 
 
@@ -27,7 +27,7 @@ public class RewardedVideoAdListenerImplementor
 	{
 		super ();
 		if (getClass () == RewardedVideoAdListenerImplementor.class)
-			mono.android.TypeManager.Activate ("Android.Gms.Ads.Reward.IRewardedVideoAdListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", "", this, new java.lang.Object[] {  });
+			mono.android.TypeManager.Activate ("Android.Gms.Ads.Reward.IRewardedVideoAdListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite", "", this, new java.lang.Object[] {  });
 	}
 
 

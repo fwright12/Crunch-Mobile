@@ -13,7 +13,7 @@ public class NativeCustomTemplateAd_OnCustomClickListenerImplementor
 		__md_methods = 
 			"n_onCustomClick:(Lcom/google/android/gms/ads/formats/NativeCustomTemplateAd;Ljava/lang/String;)V:GetOnCustomClick_Lcom_google_android_gms_ads_formats_NativeCustomTemplateAd_Ljava_lang_String_Handler:Android.Gms.Ads.Formats.INativeCustomTemplateAdOnCustomClickListenerInvoker, Xamarin.GooglePlayServices.Ads.Lite\n" +
 			"";
-		mono.android.Runtime.register ("Android.Gms.Ads.Formats.INativeCustomTemplateAdOnCustomClickListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", NativeCustomTemplateAd_OnCustomClickListenerImplementor.class, __md_methods);
+		mono.android.Runtime.register ("Android.Gms.Ads.Formats.INativeCustomTemplateAdOnCustomClickListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite", NativeCustomTemplateAd_OnCustomClickListenerImplementor.class, __md_methods);
 	}
 
 
@@ -21,7 +21,7 @@ public class NativeCustomTemplateAd_OnCustomClickListenerImplementor
 	{
 		super ();
 		if (getClass () == NativeCustomTemplateAd_OnCustomClickListenerImplementor.class)
-			mono.android.TypeManager.Activate ("Android.Gms.Ads.Formats.INativeCustomTemplateAdOnCustomClickListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", "", this, new java.lang.Object[] {  });
+			mono.android.TypeManager.Activate ("Android.Gms.Ads.Formats.INativeCustomTemplateAdOnCustomClickListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite", "", this, new java.lang.Object[] {  });
 	}
 
 

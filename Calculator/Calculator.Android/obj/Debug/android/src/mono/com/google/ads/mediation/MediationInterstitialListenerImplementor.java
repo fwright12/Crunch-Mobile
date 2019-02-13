@@ -17,7 +17,7 @@ public class MediationInterstitialListenerImplementor
 			"n_onPresentScreen:(Lcom/google/ads/mediation/MediationInterstitialAdapter;)V:GetOnPresentScreen_Lcom_google_ads_mediation_MediationInterstitialAdapter_Handler:Google.Ads.Mediation.IMediationInterstitialListenerInvoker, Xamarin.GooglePlayServices.Ads.Lite\n" +
 			"n_onReceivedAd:(Lcom/google/ads/mediation/MediationInterstitialAdapter;)V:GetOnReceivedAd_Lcom_google_ads_mediation_MediationInterstitialAdapter_Handler:Google.Ads.Mediation.IMediationInterstitialListenerInvoker, Xamarin.GooglePlayServices.Ads.Lite\n" +
 			"";
-		mono.android.Runtime.register ("Google.Ads.Mediation.IMediationInterstitialListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", MediationInterstitialListenerImplementor.class, __md_methods);
+		mono.android.Runtime.register ("Google.Ads.Mediation.IMediationInterstitialListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite", MediationInterstitialListenerImplementor.class, __md_methods);
 	}
 
 
@@ -25,7 +25,7 @@ public class MediationInterstitialListenerImplementor
 	{
 		super ();
 		if (getClass () == MediationInterstitialListenerImplementor.class)
-			mono.android.TypeManager.Activate ("Google.Ads.Mediation.IMediationInterstitialListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", "", this, new java.lang.Object[] {  });
+			mono.android.TypeManager.Activate ("Google.Ads.Mediation.IMediationInterstitialListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite", "", this, new java.lang.Object[] {  });
 	}
 
 

@@ -15,7 +15,7 @@ namespace Calculator
         protected override void OnStart()
         {
             // Handle when your app starts
-            System.print.log("on start");
+            System.Diagnostics.Debug.WriteLine("on start");
         }
 
         protected override void OnSleep()

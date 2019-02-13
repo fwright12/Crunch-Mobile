@@ -13,7 +13,7 @@ public class OnImmersiveModeUpdatedListenerImplementor
 		__md_methods = 
 			"n_onImmersiveModeUpdated:(Z)V:GetOnImmersiveModeUpdated_ZHandler:Android.Gms.Ads.Mediation.IOnImmersiveModeUpdatedListenerInvoker, Xamarin.GooglePlayServices.Ads.Lite\n" +
 			"";
-		mono.android.Runtime.register ("Android.Gms.Ads.Mediation.IOnImmersiveModeUpdatedListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", OnImmersiveModeUpdatedListenerImplementor.class, __md_methods);
+		mono.android.Runtime.register ("Android.Gms.Ads.Mediation.IOnImmersiveModeUpdatedListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite", OnImmersiveModeUpdatedListenerImplementor.class, __md_methods);
 	}
 
 
@@ -21,7 +21,7 @@ public class OnImmersiveModeUpdatedListenerImplementor
 	{
 		super ();
 		if (getClass () == OnImmersiveModeUpdatedListenerImplementor.class)
-			mono.android.TypeManager.Activate ("Android.Gms.Ads.Mediation.IOnImmersiveModeUpdatedListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", "", this, new java.lang.Object[] {  });
+			mono.android.TypeManager.Activate ("Android.Gms.Ads.Mediation.IOnImmersiveModeUpdatedListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite", "", this, new java.lang.Object[] {  });
 	}
 
 

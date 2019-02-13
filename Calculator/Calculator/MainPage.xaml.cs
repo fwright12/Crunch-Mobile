@@ -4,35 +4,26 @@ using System.Linq;
 using System.Collections.ObjectModel;
 using System.IO;
 
-using Crunch.GraFX;
+using Xamarin.Forms.Extensions;
+using Crunch.GraphX;
 
 namespace Calculator
 {
+    //Color 560297
+    //&#8801; - hamburger menu ≡
+    //&#8942; - kabob menu ⋮
+
     public partial class MainPage : ContentPage
     {
-        public static MainPage VisiblePage => visiblePage;
-        private static MainPage visiblePage;
+        public static MainPage VisiblePage { get; private set; }
+        private static bool keyboardDocked = true;
 
         public Layout Canvas => canvas;
         public TouchScreen Page => page;
 
-        public static int cursorWidth;
-        public static double textHeight;
-        public static int textWidth;
-        public static int TextSize = 40;
-
-        public static bool isTouchingCanvas = false;
-        public static bool keyboardDocked = true;
-
         private BoxView phantomCursor;
-
         //How much extra space is in the lower right
         private int padding = 100;
-
-        public static readonly double fontSize = 33;
-
-        //Color 560297
-
         private static string tips
         {
             get
@@ -53,11 +44,21 @@ namespace Calculator
             }
         }
 
+        private void SetDecimalPrecision(object sender, ValueChangedEventArgs e)
+        {
+            Crunch.Engine.Math.DecimalPlaces = (int)e.NewValue;
+            decimalPrecision.Text = e.NewValue.ToString();
+        }
+
         public MainPage()
         {
             InitializeComponent();
 
             //Application.Current.Properties["test"] = 234;
+
+            AbsoluteLayout.SetLayoutBounds(menu, new Rectangle(0, 0, Device.Idiom == TargetIdiom.Tablet ? 0.3 : 0.8, 1));
+            SetDecimalPrecision(null, new ValueChangedEventArgs(0, 3));
+            //stepper.SizeChanged += (sender, e) => stepper.WidthRequest = stepper.Height * 2;
 
             Button dock;
             if (Device.Idiom == TargetIdiom.Tablet)
@@ -80,7 +81,6 @@ namespace Calculator
                     {
                         DockKeyboard(false);
                         keyboardContainer.BeginDrag(phantomCursorField.Bounds);
-                        
                     }
                 };
 
@@ -108,23 +108,23 @@ namespace Calculator
 
             //Measuring for cursor
             Label l = new Label();
-            l.FontSize = fontSize;
+            l.FontSize = Text.MaxFontSize;
             page.Children.Add(l);
             l.SizeChanged += delegate
             {
-                textHeight = l.Height;
+                Text.MaxTextHeight = l.Height;
                 page.Children.Remove(l);
 
-                Testing.Test(canvas);
+                takeMathTest();
             };
-
-            visiblePage = this;
+            
+            VisiblePage = this;
             Drag.Screen = page;
 
             //Button hookup
             left.Clicked += (sender, e) => SoftKeyboard.Left();
             right.Clicked += (sender, e) => SoftKeyboard.Right();
-            delete.Clicked += (sender, e) => SoftKeyboard.Delete();
+            delete.Clicked += delegate { SoftKeyboard.Delete(); Equation.Focus.SetAnswer(); };
             delete.LongClick += ClearCanvas;
             info.Clicked += (sender, e) => DisplayAlert("About Crunch",
                 "Thank you for using Crunch!\n\n" +
@@ -283,6 +283,7 @@ namespace Calculator
                             {
                                 keyboardScroll.ScrollToAsync(keypad, ScrollToPosition.End, false);
                             }
+                            Equation.Focus.SetAnswer();
                         };
                         (b as LongClickableButton).LongClick += EnterCursorMode;
                     }
@@ -319,7 +320,7 @@ namespace Calculator
             if (Equation.Focus != null)
             {
                 Equation.Focus.LayoutChanged -= Focus_SizeChanged;
-                if (Equation.Focus.LHS.ChildCount == 0)
+                if (Equation.Focus.LHS.ChildCount() == 0)
                 {
                     Equation.Focus.Remove();
                 }
@@ -336,7 +337,7 @@ namespace Calculator
 
         private void Focus_SizeChanged(object sender, EventArgs e)
         {
-            if (Device.Idiom == TargetIdiom.Tablet && keyboardDocked)
+            if (Device.Idiom == TargetIdiom.Tablet && keyboardDocked && Equation.Focus != null)
             {
                 StackLayout temp = Equation.Focus as StackLayout;
                 keyboardContainer.MoveTo(temp.X - canvasScroll.ScrollX, temp.Y + Equation.Focus.Height - canvasScroll.ScrollY);
@@ -350,7 +351,7 @@ namespace Calculator
                 return;
             }
 
-            Equation equation = setFocus(new Equation());
+            Equation equation = setFocus(new Equation() { RecognizeVariables = true });
             SoftKeyboard.MoveCursor(equation.LHS);
 
             equation.SizeChanged += delegate
@@ -468,11 +469,11 @@ namespace Calculator
 
                 //Get the coordinates of the cursor relative to the entire screen
                 Point loc = new Point(canvasScroll.ScrollX + phantomCursor.X + phantomCursor.Width / 2, canvasScroll.ScrollY + phantomCursor.Y + phantomCursor.Height / 2);
-                int leftOrRight = 0;
-                View view = GetViewAt(canvas, loc, ref leftOrRight);
+                View view = GetViewAt(canvas, ref loc);
 
                 if (view is Text || view is Expression)
                 {
+                    int leftOrRight = (int)Math.Round(loc.X / view.Width);
                     phantomCursor.HeightRequest = SoftKeyboard.Cursor.Height;
 
                     if (view.GetType() == typeof(Expression))
@@ -488,48 +489,61 @@ namespace Calculator
             }
         }
 
-        private View GetViewAt(Layout<View> parent, Point pos, ref int leftOrRight)
+        private View GetViewAt(Layout<View> parent, ref Point pos)
         {
             View ans = null;
 
-            for (int i = 0; i < parent.Children.Count; i++)
+            int i = 0;
+            for (; i < parent.Children.Count; i++)
             {
                 View child = parent.Children[i];
-
+                
                 //Is the point inside the bounds that this child occupies?
                 if (pos.X >= child.X && pos.X <= child.X + child.Width && pos.Y >= child.Y - child.Margin.Top + child.TranslationY && pos.Y <= child.Y + child.Height + child.TranslationY)
                 {
-                    //The child is a layout
+                    pos = pos.Add(new Point(-child.X, -(child.Y + child.TranslationY)));
+
                     if (child is Layout<View>)
                     {
-                        Layout<View> layout = child as Layout<View>;
-                        //bool isEditable = layout is Expression && (layout as Expression).Editable;
-
-                        //First check if I'm on one of the ends of an Expression
-                        if (layout.IsEditable() && ((layout.Padding.Left > 0 && pos.X <= layout.Padding.Left) || (layout.Padding.Right > 0 && pos.X >= layout.Width - layout.Padding.Right)))
-                        {
-                            ans = child;
-                        }
-                        //If not, see if I'm over one of this layout's children
-                        else
-                        {
-                            ans = GetViewAt(layout, pos.Add(new Point(-child.X, -(child.Y + child.TranslationY))), ref leftOrRight);
-                        }
+                        ans = GetViewAt(child as Layout<View>, ref pos);
                     }
-                    else if (parent.IsEditable())
+                    else if (parent.Editable())
                     {
                         ans = child;
                     }
 
-                    if (ans == child)
-                    {
-                        leftOrRight = (int)Math.Round((pos.X - ans.X) / ans.Width);
-                    }
                     break;
                 }
             }
 
+            if (i == parent.Children.Count && parent.Editable() && (pos.X <= parent.Padding.Left || pos.X >= parent.Width - parent.Padding.Right))
+            {
+                ans = parent;
+            }
+
             return ans;
+        }
+
+        private void takeMathTest()
+        {
+            System.Collections.Generic.List<string> testcases = Crunch.Engine.Testing.Test();
+
+            int num = testcases.Count;
+            if (num == 0) return;
+            int cutoff = 10;
+            for (int i = 0; i < num; i++)
+            {
+                string s = testcases[i];
+                if (s != "")
+                {
+                    var temp = new Equation(s);
+                    canvas.Children.Add(temp);
+                    temp.TranslationY = 50 + 100 * (i - cutoff * (i / cutoff));
+                    temp.TranslationX = 500 * (i / cutoff);
+                }
+            }
+            canvas.HeightRequest = 50 + num * 100;
+            canvas.WidthRequest = 500 * (num / cutoff + 1) + canvas.Children.Last().Width;
         }
     }
 }

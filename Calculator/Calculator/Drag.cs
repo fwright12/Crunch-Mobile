@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
+using Xamarin.Forms.Extensions;
 using Calculator;
 
 namespace Xamarin.Forms

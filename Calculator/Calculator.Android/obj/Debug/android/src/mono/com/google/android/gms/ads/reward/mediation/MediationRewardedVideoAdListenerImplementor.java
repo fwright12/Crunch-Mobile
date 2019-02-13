@@ -22,7 +22,7 @@ public class MediationRewardedVideoAdListenerImplementor
 			"n_onRewarded:(Lcom/google/android/gms/ads/reward/mediation/MediationRewardedVideoAdAdapter;Lcom/google/android/gms/ads/reward/RewardItem;)V:GetOnRewarded_Lcom_google_android_gms_ads_reward_mediation_MediationRewardedVideoAdAdapter_Lcom_google_android_gms_ads_reward_RewardItem_Handler:Android.Gms.Ads.Reward.Mediation.IMediationRewardedVideoAdListenerInvoker, Xamarin.GooglePlayServices.Ads.Lite\n" +
 			"n_onVideoStarted:(Lcom/google/android/gms/ads/reward/mediation/MediationRewardedVideoAdAdapter;)V:GetOnVideoStarted_Lcom_google_android_gms_ads_reward_mediation_MediationRewardedVideoAdAdapter_Handler:Android.Gms.Ads.Reward.Mediation.IMediationRewardedVideoAdListenerInvoker, Xamarin.GooglePlayServices.Ads.Lite\n" +
 			"";
-		mono.android.Runtime.register ("Android.Gms.Ads.Reward.Mediation.IMediationRewardedVideoAdListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", MediationRewardedVideoAdListenerImplementor.class, __md_methods);
+		mono.android.Runtime.register ("Android.Gms.Ads.Reward.Mediation.IMediationRewardedVideoAdListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite", MediationRewardedVideoAdListenerImplementor.class, __md_methods);
 	}
 
 
@@ -30,7 +30,7 @@ public class MediationRewardedVideoAdListenerImplementor
 	{
 		super ();
 		if (getClass () == MediationRewardedVideoAdListenerImplementor.class)
-			mono.android.TypeManager.Activate ("Android.Gms.Ads.Reward.Mediation.IMediationRewardedVideoAdListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", "", this, new java.lang.Object[] {  });
+			mono.android.TypeManager.Activate ("Android.Gms.Ads.Reward.Mediation.IMediationRewardedVideoAdListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite", "", this, new java.lang.Object[] {  });
 	}
 
 

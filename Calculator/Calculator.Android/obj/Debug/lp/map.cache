@@ -1,4 +1,7 @@
+Crunch.Engine
+Crunch.GraphX
 FormsViewGroup
+System.Extensions
 System.Runtime
 Xamarin.Android.Arch.Core.Common
 Xamarin.Android.Arch.Lifecycle.Common
@@ -20,6 +23,7 @@ Xamarin.Android.Support.v7.Palette
 Xamarin.Android.Support.v7.RecyclerView
 Xamarin.Android.Support.Vector.Drawable
 Xamarin.Forms.Core
+Xamarin.Forms.Extensions
 Xamarin.Forms.Platform.Android
 Xamarin.Forms.Platform
 Xamarin.Forms.Xaml
@@ -27,5 +31,5 @@ Xamarin.GooglePlayServices.Ads
 Xamarin.GooglePlayServices.Ads.Lite
 Xamarin.GooglePlayServices.Basement
 Xamarin.GooglePlayServices.Gass
-System.ComponentModel
-System.Reflection.Extensions
+Crunch.Machine
+netstandard

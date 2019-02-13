@@ -8,14 +8,14 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Calculator.Droid</RootNamespace>
     <AssemblyName>Calculator.Android</AssemblyName>
-    <TargetFrameworkVersion>v8.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v8.1</TargetFrameworkVersion>
     <AndroidApplication>True</AndroidApplication>
     <AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>
     <AndroidResgenClass>Resource</AndroidResgenClass>
     <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
     <MonoAndroidResourcePrefix>Resources</MonoAndroidResourcePrefix>
     <MonoAndroidAssetsPrefix>Assets</MonoAndroidAssetsPrefix>
-    <AndroidUseLatestPlatformSdk>true</AndroidUseLatestPlatformSdk>
+    <AndroidUseLatestPlatformSdk>false</AndroidUseLatestPlatformSdk>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>
@@ -29,6 +29,9 @@
     <WarningLevel>4</WarningLevel>
     <AndroidLinkMode>SdkOnly</AndroidLinkMode>
     <EnableProguard>true</EnableProguard>
+    <AotAssemblies>false</AotAssemblies>
+    <EnableLLVM>false</EnableLLVM>
+    <BundleAssemblies>false</BundleAssemblies>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -50,21 +53,21 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp">
-      <Version>4.4.1</Version>
+      <Version>4.5.0</Version>
     </PackageReference>
-    <PackageReference Include="Xamarin.Android.Support.Design" Version="26.1.0.1" />
-    <PackageReference Include="Xamarin.Android.Support.v7.AppCompat" Version="26.1.0.1" />
-    <PackageReference Include="Xamarin.Android.Support.v4" Version="26.1.0.1" />
-    <PackageReference Include="Xamarin.Android.Support.v7.CardView" Version="26.1.0.1" />
-    <PackageReference Include="Xamarin.Android.Support.v7.MediaRouter" Version="26.1.0.1" />
+    <PackageReference Include="Xamarin.Android.Support.Design" Version="27.0.2.1" />
+    <PackageReference Include="Xamarin.Android.Support.v7.AppCompat" Version="27.0.2.1" />
+    <PackageReference Include="Xamarin.Android.Support.v4" Version="27.0.2.1" />
+    <PackageReference Include="Xamarin.Android.Support.v7.CardView" Version="27.0.2.1" />
+    <PackageReference Include="Xamarin.Android.Support.v7.MediaRouter" Version="27.0.2.1" />
     <PackageReference Include="Xamarin.Forms">
-      <Version>2.5.0.280555</Version>
+      <Version>3.1.0.583944</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.GooglePlayServices.Ads">
-      <Version>60.1142.0</Version>
+      <Version>60.1142.1</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.GooglePlayServices.Ads.Lite">
-      <Version>60.1142.0</Version>
+      <Version>60.1142.1</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
@@ -90,7 +93,6 @@
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\icon.png" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <AndroidResource Include="Resources\drawable-hdpi\icon.png" />
   </ItemGroup>
@@ -99,6 +101,24 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable-xxhdpi\icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\C# Extensions\System.Extensions\System.Extensions.csproj">
+      <Project>{f2e94f0b-5217-44a2-8747-a28c1d8c7e4b}</Project>
+      <Name>System.Extensions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\C# Extensions\Xamarin.Forms.Extensions\Xamarin.Forms.Extensions.csproj">
+      <Project>{393a81a0-558d-4901-aeba-5d08e67f02af}</Project>
+      <Name>Xamarin.Forms.Extensions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Crunch.Engine\Crunch.Engine.csproj">
+      <Project>{65cc8523-2b41-4745-a678-a79bd46477db}</Project>
+      <Name>Crunch.Engine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Crunch.GraphX\Crunch.GraphX.csproj">
+      <Project>{6d33dd01-7d24-425f-af85-b998aa502195}</Project>
+      <Name>Crunch.GraphX</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="..\Calculator\Calculator.projitems" Label="Shared" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />

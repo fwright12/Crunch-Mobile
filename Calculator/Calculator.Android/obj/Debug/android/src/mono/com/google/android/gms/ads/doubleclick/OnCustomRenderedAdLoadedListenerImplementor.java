@@ -13,7 +13,7 @@ public class OnCustomRenderedAdLoadedListenerImplementor
 		__md_methods = 
 			"n_onCustomRenderedAdLoaded:(Lcom/google/android/gms/ads/doubleclick/CustomRenderedAd;)V:GetOnCustomRenderedAdLoaded_Lcom_google_android_gms_ads_doubleclick_CustomRenderedAd_Handler:Android.Gms.Ads.DoubleClick.IOnCustomRenderedAdLoadedListenerInvoker, Xamarin.GooglePlayServices.Ads.Lite\n" +
 			"";
-		mono.android.Runtime.register ("Android.Gms.Ads.DoubleClick.IOnCustomRenderedAdLoadedListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", OnCustomRenderedAdLoadedListenerImplementor.class, __md_methods);
+		mono.android.Runtime.register ("Android.Gms.Ads.DoubleClick.IOnCustomRenderedAdLoadedListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite", OnCustomRenderedAdLoadedListenerImplementor.class, __md_methods);
 	}
 
 
@@ -21,7 +21,7 @@ public class OnCustomRenderedAdLoadedListenerImplementor
 	{
 		super ();
 		if (getClass () == OnCustomRenderedAdLoadedListenerImplementor.class)
-			mono.android.TypeManager.Activate ("Android.Gms.Ads.DoubleClick.IOnCustomRenderedAdLoadedListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", "", this, new java.lang.Object[] {  });
+			mono.android.TypeManager.Activate ("Android.Gms.Ads.DoubleClick.IOnCustomRenderedAdLoadedListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite", "", this, new java.lang.Object[] {  });
 	}
 
 

@@ -16,7 +16,7 @@ namespace Calculator {
     public partial class MainPage : global::Xamarin.Forms.ContentPage {
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "0.0.0.0")]
-        private global::Calculator.TouchSpy page;
+        private global::Xamarin.Forms.TouchScreen page;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "0.0.0.0")]
         private global::Xamarin.Forms.AbsoluteLayout phantomCursorField;
@@ -25,16 +25,16 @@ namespace Calculator {
         private global::Xamarin.Forms.ScrollView canvasScroll;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "0.0.0.0")]
-        private global::Calculator.Canvas canvas;
+        private global::Xamarin.Forms.Canvas canvas;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "0.0.0.0")]
-        private global::Calculator.BannerAd ad;
+        private global::Xamarin.Forms.BannerAd ad;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "0.0.0.0")]
         private global::Xamarin.Forms.AbsoluteLayout keyboardContainer;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "0.0.0.0")]
-        private global::Calculator.Mask keyboard;
+        private global::Xamarin.Forms.StackLayout keyboard;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "0.0.0.0")]
         private global::Xamarin.Forms.ScrollView keyboardScroll;
@@ -49,19 +49,19 @@ namespace Calculator {
         private global::Xamarin.Forms.StackLayout permanentKeys;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "0.0.0.0")]
-        private global::Calculator.LongClickableButton info;
+        private global::Xamarin.Forms.LongClickableButton info;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "0.0.0.0")]
-        private global::Calculator.LongClickableButton delete;
+        private global::Xamarin.Forms.LongClickableButton delete;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "0.0.0.0")]
         private global::Xamarin.Forms.StackLayout arrowKeys;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "0.0.0.0")]
-        private global::Calculator.LongClickableButton left;
+        private global::Xamarin.Forms.LongClickableButton left;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "0.0.0.0")]
-        private global::Calculator.LongClickableButton right;
+        private global::Xamarin.Forms.LongClickableButton right;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "0.0.0.0")]
         private global::Xamarin.Forms.StackLayout keyboardMask;
@@ -69,22 +69,22 @@ namespace Calculator {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "0.0.0.0")]
         private void InitializeComponent() {
             global::Xamarin.Forms.Xaml.Extensions.LoadFromXaml(this, typeof(MainPage));
-            page = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Calculator.TouchSpy>(this, "page");
+            page = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.TouchScreen>(this, "page");
             phantomCursorField = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.AbsoluteLayout>(this, "phantomCursorField");
             canvasScroll = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.ScrollView>(this, "canvasScroll");
-            canvas = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Calculator.Canvas>(this, "canvas");
-            ad = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Calculator.BannerAd>(this, "ad");
+            canvas = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Canvas>(this, "canvas");
+            ad = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.BannerAd>(this, "ad");
             keyboardContainer = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.AbsoluteLayout>(this, "keyboardContainer");
-            keyboard = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Calculator.Mask>(this, "keyboard");
+            keyboard = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.StackLayout>(this, "keyboard");
             keyboardScroll = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.ScrollView>(this, "keyboardScroll");
             keypad = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Grid>(this, "keypad");
             parentheses = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.StackLayout>(this, "parentheses");
             permanentKeys = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.StackLayout>(this, "permanentKeys");
-            info = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Calculator.LongClickableButton>(this, "info");
-            delete = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Calculator.LongClickableButton>(this, "delete");
+            info = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.LongClickableButton>(this, "info");
+            delete = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.LongClickableButton>(this, "delete");
             arrowKeys = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.StackLayout>(this, "arrowKeys");
-            left = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Calculator.LongClickableButton>(this, "left");
-            right = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Calculator.LongClickableButton>(this, "right");
+            left = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.LongClickableButton>(this, "left");
+            right = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.LongClickableButton>(this, "right");
             keyboardMask = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.StackLayout>(this, "keyboardMask");
         }
     }

@@ -18,7 +18,7 @@ public class MediationBannerListenerImplementor
 			"n_onPresentScreen:(Lcom/google/ads/mediation/MediationBannerAdapter;)V:GetOnPresentScreen_Lcom_google_ads_mediation_MediationBannerAdapter_Handler:Google.Ads.Mediation.IMediationBannerListenerInvoker, Xamarin.GooglePlayServices.Ads.Lite\n" +
 			"n_onReceivedAd:(Lcom/google/ads/mediation/MediationBannerAdapter;)V:GetOnReceivedAd_Lcom_google_ads_mediation_MediationBannerAdapter_Handler:Google.Ads.Mediation.IMediationBannerListenerInvoker, Xamarin.GooglePlayServices.Ads.Lite\n" +
 			"";
-		mono.android.Runtime.register ("Google.Ads.Mediation.IMediationBannerListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", MediationBannerListenerImplementor.class, __md_methods);
+		mono.android.Runtime.register ("Google.Ads.Mediation.IMediationBannerListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite", MediationBannerListenerImplementor.class, __md_methods);
 	}
 
 
@@ -26,7 +26,7 @@ public class MediationBannerListenerImplementor
 	{
 		super ();
 		if (getClass () == MediationBannerListenerImplementor.class)
-			mono.android.TypeManager.Activate ("Google.Ads.Mediation.IMediationBannerListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", "", this, new java.lang.Object[] {  });
+			mono.android.TypeManager.Activate ("Google.Ads.Mediation.IMediationBannerListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite", "", this, new java.lang.Object[] {  });
 	}
 
 
