@@ -9,7 +9,7 @@ namespace Crunch.GraFX
 {
     public class Expression : StackLayout
     {
-        public bool Selectable = false;
+        public bool Editable = false;
 
         public new Expression Parent => base.Parent as Expression;
         public int ChildCount => Children.Count - this.HideCursor().ToInt();
@@ -31,12 +31,14 @@ namespace Crunch.GraFX
             Orientation = StackOrientation.Horizontal;
             HorizontalOptions = LayoutOptions.Center;
             VerticalOptions = LayoutOptions.Center;
+            HeightRequest = Input.textHeight;
             Spacing = 0;
-
+            
             if (GetType() == typeof(Expression))
             {
                 ChildAdded += delegate { this.CheckPadding(); };
                 ChildRemoved += delegate { this.CheckPadding(); };
+                this.CheckPadding();
             }
         }
 
@@ -84,16 +86,25 @@ namespace Crunch.GraFX
         protected override void OnRemoved(View view)
         {
             base.OnRemoved(view);
-            //CheckPadding();
+
+            if (Children.Count == 0)
+            {
+                HeightRequest = Input.textHeight;
+            }
         }
 
         protected override void OnAdded(View view)
         {
             base.OnAdded(view);
 
+            if (Children.Count == 1)
+            {
+                HeightRequest = -1;
+            }
+
             print.log("child added", view);
-            print.log("view is selectable: " + Selectable, FontSize);//, this == MainPage.focus, MainPage.focus.Selectable);
-            view.SetSelectable(Selectable);
+            //print.log("view is selectable: " + Selectable, FontSize);//, this == MainPage.focus, MainPage.focus.Selectable);
+            //view.SetSelectable(Selectable);
 
             if (view is Text)
             {
@@ -103,6 +114,7 @@ namespace Crunch.GraFX
             {
                 Expression e = view as Expression;
                 e.FontSize = e.Parent != null ? e.determineFontSize() : MainPage.fontSize;
+                e.Editable = Editable || e.Editable;
                 foreach (View v in e.Children)
                 {
                     e.OnAdded(v);

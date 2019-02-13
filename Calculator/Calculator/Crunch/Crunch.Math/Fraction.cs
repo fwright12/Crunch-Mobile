@@ -97,7 +97,7 @@ namespace Crunch
             //public Operand Multiply(Fraction f) => (Numerator * f.Numerator) / (Denominator * f.Denominator);
 
             /******************************* EXPONENTIATION *******************************/
-            public Fraction Exponentiate(Operand o)
+            public new Operand Exponentiate(Operand o)
             {
                 bool b = RemoveNegative(ref o);
                 if (b)
@@ -106,7 +106,7 @@ namespace Crunch
                     return Exponentiate(o);
                 }
 
-                return this;// new Fraction(numerator ^ o, denominator ^ o);
+                return numerator.Exponentiate(o) / denominator.Exponentiate(o);
             }
 
             /*public Operand Exponentiate(Constant c)

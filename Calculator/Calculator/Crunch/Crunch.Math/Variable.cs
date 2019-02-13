@@ -15,13 +15,14 @@ namespace Crunch
             };
 
             public Term Value => value;
+            public char Name => name;
 
-            private char Name;
+            private char name;
             private Term value;
 
             public Variable(char name, Term value = null)
             {
-                Name = name;
+                this.name = name;
                 this.value = Knowns.ContainsKey(name) ? new Term(Knowns[name]) : value;
             }
 

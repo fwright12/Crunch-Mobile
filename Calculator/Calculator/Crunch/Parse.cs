@@ -50,6 +50,8 @@ namespace Crunch
             return temp;
         }
 
+        public static HashSet<char> Variables = new HashSet<char>();
+
         /// <summary>
         /// Parse math
         /// </summary>
@@ -63,6 +65,7 @@ namespace Crunch
         {
             Operator negator = new Operator((o) => negate(o[0]), 1);
             LinkedList<Quantity> p = new LinkedList<Quantity>();
+            Variables.Clear();
 
             /*bool juxtapose = operations.Contains("*").ToBool();
             Action<Node<object>> checkForJuxtapose = (node) =>
@@ -190,16 +193,16 @@ namespace Crunch
                         }
                         i = operation - 1;
                     }
-                    else
+                    else if (s.IsNumber())
                     {
-                        if (s.IsNumber())
+                        while (i + 1 < str.Length && str[i + 1].ToString().IsNumber())
                         {
-                            while (i + 1 < str.Length && str[i + 1].ToString().IsNumber())
-                            {
-                                node.Value = node.Value.ToString() + str[++i];
-                            }
+                            node.Value = node.Value.ToString() + str[++i];
                         }
-                        //checkForJuxtapose(node);
+                    }
+                    else if (!Crunch.Math.Variable.Knowns.ContainsKey(c))
+                    {
+                        Variables.Add(c);
                     }
                 }
 

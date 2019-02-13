@@ -98,9 +98,10 @@ namespace Xamarin.Forms
 {
     public static class ExtensionMethods
     {
+        public static bool IsEditable(this Layout<View> layout) => layout is Expression && (layout as Expression).Editable;
+
         public static void Move(this View v, Action<View, Point> move, Rectangle bounds, Point increase)
         {
-            print.log(bounds, v.X, v.Y);
             Point p = new Point(
                 Math.Max(bounds.X, Math.Min(bounds.X + bounds.Width - v.Width, v.X + increase.X)),
                 Math.Max(bounds.Y, Math.Min(bounds.Y + bounds.Height - v.Height, v.Y + increase.Y))
@@ -131,7 +132,7 @@ namespace Xamarin.Forms
             }
             else if (view is Expression)
             {
-                return (view as Expression).Selectable;
+                return false;// (view as Expression).Selectable;
             }
             else
             {
@@ -147,7 +148,7 @@ namespace Xamarin.Forms
             }
             else if (view is Expression)
             {
-                (view as Expression).Selectable = selectable;
+                //(view as Expression).Selectable = selectable;
             }
         }
 

@@ -36,16 +36,14 @@
     <Compile Include="$(MSBuildThisFileDirectory)Cursor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ExtensionMethods.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graph.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Graphics.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GroupedDictionary.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Input.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Main.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)OrderedTrie.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Playground.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Quantity.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Crunch\Quantity.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SoftKeyboard.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Tips.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Touch.cs" />

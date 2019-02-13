@@ -76,6 +76,7 @@ namespace Crunch
 
             public override Operand Simplify()
             {
+                Operand answer = new Term(1);
                 Term ans = new Term(coefficient);
                 foreach(Pair pair in members.KeyValuePairs())
                 {
@@ -83,16 +84,23 @@ namespace Crunch
                     Operand o = pair.Value.Simplify();
                     Term t = !(o is Fraction) ? (Term)(o as dynamic) : null;
 
-                    if (v != null && v.Value != null && t != null && t.IsConstant)
+                    if (v != null && t != null && t.IsConstant && (v.Value != null || GraFX.Equation.substitutions.ContainsKey(v.Name)))
                     {
-                        ans.Multiply(new Term(System.Math.Pow(v.Value.Coefficient, t.Coefficient)));
+                        if (v.Value != null)
+                        {
+                            ans.Multiply(new Term(System.Math.Pow(v.Value.Coefficient, t.Coefficient)));
+                        }
+                        else if (GraFX.Equation.substitutions.ContainsKey(v.Name))
+                        {
+                            answer *= GraFX.Equation.substitutions[v.Name] ^ pair.Value;
+                        }
                     }
                     else
                     {
                         ans.multiply(pair.Key, pair.Value);
                     }
                 }
-                return ans;
+                return ans * answer;
             }
 
             public Term Copy()

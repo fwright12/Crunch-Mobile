@@ -149,12 +149,18 @@ namespace Calculator
             info.Clicked += (sender, e) => DisplayAlert("About Crunch",
                 "Thank you for using Crunch!\n\n" +
                 "A few tips about how to navigate the app: " + tips +
-                "\nClick the answer to see alternate formats.\n\n" +
+                "\nClick the answer to see alternate formats. Touch and drag the equals sign to move the equation " +
+                "on the canvas.\n\n" +
                 "If you find any bugs, please report them to GreenMountainLabs802@gmail.com. The more information " +
                 "you can provide (what you did to cause the error, screenshots, etc.) the easier it will be to fix.\n\n" +
+                "If you enjoy using Crunch, please rate it on the app store. Ratings help with visibility, so other " +
+                "people can find Crunch.\n\n" +
                 "Please also email me with any ideas you have about how the app can be improved, or features you " +
                 "would like to see in the future. I'm open to suggestions!",
                 "Dismiss");
+
+            //ℹ - &#8505;
+            //🛈 - &#128712;
 
             //Phantom cursor stuff
             phantomCursor = new CursorView();
@@ -578,9 +584,9 @@ namespace Calculator
             if (Equation.Focus != null)
             {
                 Equation.Focus.SizeChanged -= Focus_SizeChanged;
-                if (Equation.Focus.Children.Count == 0)
+                if (Equation.Focus.LHS.ChildCount == 0)
                 {
-                    Equation.Focus.Parent.Remove();
+                    Equation.Focus.Remove();
                 }
             }
 
@@ -646,6 +652,12 @@ namespace Calculator
                 canvas.Children.Clear();
                 canvas.WidthRequest = (canvas.Parent as View).Width;
                 canvas.HeightRequest = (canvas.Parent as View).Height;
+                if (Device.Idiom == TargetIdiom.Tablet)
+                {
+                    keyboardContainer.TranslationX = -1000;
+                    keyboardContainer.TranslationY = -1000;
+                    keyboardDocked = true;
+                }
             }
         }
 
@@ -737,7 +749,6 @@ namespace Calculator
             int leftOrRight = 0;
             View view = GetViewAt(canvas, loc, ref leftOrRight);
 
-            //if (viewLookup.Contains(view) && viewLookup[view].selectable && (viewLookup[view] is Text || viewLookup[view] is Expression))
             if (view is Text || view is Expression)
             {
                 phantomCursor.HeightRequest = SoftKeyboard.Cursor.Height;
@@ -746,7 +757,7 @@ namespace Calculator
                 if (view.GetType() == typeof(Expression))
                 {
                     Expression e = view as Expression;
-                    changed = SoftKeyboard.MoveCursor(e, e.Children.Count * leftOrRight);
+                    changed = SoftKeyboard.MoveCursor(e, Math.Min(e.Children.Count, e.Children.Count * leftOrRight));
                 }
                 else if (view is Text)
                 {
@@ -755,7 +766,6 @@ namespace Calculator
             }
         }
 
-        //Bad logic - rewrite
         private View GetViewAt(Layout<View> parent, Point pos, ref int leftOrRight)
         {
             View ans = null;
@@ -763,41 +773,40 @@ namespace Calculator
             for (int i = 0; i < parent.Children.Count; i++)
             {
                 View child = parent.Children[i];
-
-                if (((child is Expression && !(child is Answer)) || child is Text) && pos.X >= child.X && pos.X <= child.X + child.Width && pos.Y >= child.Y - child.Margin.Top + child.TranslationY && pos.Y <= child.Y + child.Height + child.TranslationY)
+                print.log(child.GetType(), parent.IsEditable());
+                //Is the point inside the bounds that this child occupies?
+                if (pos.X >= child.X && pos.X <= child.X + child.Width && pos.Y >= child.Y - child.Margin.Top + child.TranslationY && pos.Y <= child.Y + child.Height + child.TranslationY)
                 {
+                    //The child is a layout
                     if (child is Layout<View>)
                     {
-                        //See if I'm over one of this layout's children
-                        ans = GetViewAt(child as Layout<View>, pos.Add(new Point(-child.X, -child.Y - child.TranslationY)), ref leftOrRight);
+                        Layout<View> layout = child as Layout<View>;
+                        //bool isEditable = layout is Expression && (layout as Expression).Editable;
 
-                        var temp = child as Layout<View>;
-                        //I'm not over any of this layout's children, but maybe I'm on one of the ends
-                        if (ans == null && ((temp.Padding.Left > 0 && pos.X <= temp.Padding.Left) || (temp.Padding.Right > 0 && pos.X >= temp.Width - temp.Padding.Right)))
+                        //First check if I'm on one of the ends of an Expression
+                        if (layout.IsEditable() && ((layout.Padding.Left > 0 && pos.X <= layout.Padding.Left) || (layout.Padding.Right > 0 && pos.X >= layout.Width - layout.Padding.Right)))
                         {
                             ans = child;
-                            break;
                         }
-
-                        if (ans != null && ans is Text && ans.Parent is Equation)
+                        //If not, see if I'm over one of this layout's children
+                        else
                         {
-                            return null;
+                            ans = GetViewAt(layout, pos.Add(new Point(-child.X, -(child.Y + child.TranslationY))), ref leftOrRight);
                         }
-
-                        return ans;
                     }
-                    else
+                    else if (parent.IsEditable())
                     {
                         ans = child;
-                        break;
                     }
+
+                    if (ans == child)
+                    {
+                        leftOrRight = (int)Math.Round((pos.X - ans.X) / ans.Width);
+                    }
+                    break;
                 }
             }
 
-            if (ans != null)
-            {
-                leftOrRight = (int)Math.Round((pos.X - ans.X) / ans.Width);
-            }
             return ans;
         }
     }

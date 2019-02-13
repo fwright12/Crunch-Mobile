@@ -59,7 +59,7 @@ namespace Crunch.GraFX
                     RelativeLayout.SetYConstraint(v, Constraint.Constant(p.Y));
                 };
 
-                Parent.Move(move, Calculator.MainPage.VisiblePage.Canvas.Bounds, Calculator.MainPage.ScaleToPage(pos));
+                Parent.Parent.Move(move, Calculator.MainPage.VisiblePage.Canvas.Bounds, Calculator.MainPage.ScaleToPage(pos));
 
                 //RelativeLayout.SetXConstraint(Parent, Constraint.Constant(Parent.X + pos.X * Calculator.MainPage.Canvas.Width));
                 //RelativeLayout.SetYConstraint(Parent, Constraint.Constant(Parent.Y + pos.Y * Calculator.MainPage.Canvas.Height));

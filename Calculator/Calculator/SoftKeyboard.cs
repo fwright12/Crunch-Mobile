@@ -8,6 +8,7 @@ namespace Crunch.GraFX
 {
     public static class SoftKeyboard
     {
+        public static Expression Focus;
         public static CursorView Cursor => cursor;
 
         private static CursorView cursor;
@@ -153,7 +154,7 @@ namespace Crunch.GraFX
             else
             {
                 //Try to go up
-                if (parent.HasParent() && !(parent.Parent is Equation))
+                if (parent.HasParent() && parent.Parent.IsEditable())
                 {
                     index = parent.Index() + (direction + 1) / 2;
                     parent = parent.Parent;
@@ -175,9 +176,11 @@ namespace Crunch.GraFX
 
         public static void CheckPadding(this Expression e)
         {
-            if (e.Children.Count > 0)
+            if (true)//e.Editable)
             {
-                Point extraSpaceNeeded = new Point((e.Children[0] is Fraction).ToInt(), (e.Children[e.Children.Count - 1] is Expression).ToInt());
+                bool empty = e.Children.Count == 0;
+
+                Point extraSpaceNeeded = new Point((empty || e.Children[0] is Fraction).ToInt(), (empty || e.Children[e.Children.Count - 1] is Expression).ToInt());
                 int isOnlyChildFraction = (e.Parent is Fraction && e.ChildCount == 1 && e.ChildAfter(-1) is Fraction).ToInt();
 
                 e.Padding = new Thickness(

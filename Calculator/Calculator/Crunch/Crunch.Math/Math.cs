@@ -4,13 +4,10 @@ using System.Text;
 
 namespace Crunch
 {
-    using Resolver = Action<Quantity, Node<object>>;
-
     public static partial class Math
     {
         private static OrderedTrie<Operator> operations = new OrderedTrie<Operator>();
         static Func<object, object> negator = (o) => o.parse() * -1;
-        //static Func<object, object> negate = (o) => negator(o);
 
         static Math()
         {
@@ -29,7 +26,7 @@ namespace Crunch
             Term t = (Term)(o.Simplify() as dynamic);
             if (t.IsConstant)
             {
-                return f(t.Coefficient * System.Math.PI / 180);// * System.Math.PI / 180;
+                return f(t.Coefficient * System.Math.PI / 180);
             }
             else
             {
@@ -43,15 +40,6 @@ namespace Crunch
 
         public static Operand Evaluate(string str)
         {
-            bool test = false;
-            //test = true;
-            if (test)
-            {
-                Quantity q = Parse.Math(str, operations, negate: negator);
-                print.log("q is " + q, q.parse(), q.parse().GetType().ToString());
-                return q.parse();
-            }
-
             try
             {
                 Quantity q = Parse.Math(str, operations, negate: negator);

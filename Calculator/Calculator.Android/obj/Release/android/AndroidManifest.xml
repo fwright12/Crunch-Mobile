@@ -17,7 +17,6 @@
     <meta-data android:name="android.support.VERSION" android:value="26.1.0" />
     <!--Include the AdActivity and InAppPurchaseActivity configChanges and themes. -->
     <activity android:name="com.google.android.gms.ads.AdActivity" android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize" android:theme="@android:style/Theme.Translucent" android:exported="false" />
-    <!--Include the AdActivity and InAppPurchaseActivity configChanges and themes. -->
     <meta-data android:name="android.arch.lifecycle.VERSION" android:value="27.0.0-SNAPSHOT" />
   </application>
   <supports-screens android:resizeable="true" android:smallScreens="true" android:normalScreens="true" android:largeScreens="true" android:xlargeScreens="true" android:anyDensity="true" />

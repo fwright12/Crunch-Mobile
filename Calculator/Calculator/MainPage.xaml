@@ -40,13 +40,13 @@
                         <local:LongClickableButton Grid.Row="1" Grid.Column="5" Text="&#215;"/>
 
                         <local:LongClickableButton Grid.Row="2" Grid.Column="0" Text="tan" />
-                        <local:LongClickableButton Grid.Row="2" Grid.Column="1" Text="&#960;"/>
+                        <local:LongClickableButton Grid.Row="2" Grid.Column="1" Text="x"/>
                         <local:LongClickableButton Grid.Row="2" Grid.Column="2" Text="1" />
                         <local:LongClickableButton Grid.Row="2" Grid.Column="3" Text="2" />
                         <local:LongClickableButton Grid.Row="2" Grid.Column="4" Text="3" />
                         <local:LongClickableButton Grid.Row="2" Grid.Column="5" Text="-" />
 
-                        <local:LongClickableButton Grid.Row="3" Grid.Column="0" Text="" />
+                        <local:LongClickableButton Grid.Row="3" Grid.Column="0" Text="&#960;" />
                         <local:LongClickableButton Grid.Row="3" Grid.Column="1" Text="e" />
                         <local:LongClickableButton Grid.Row="3" Grid.Column="2" Text="0" />
                         <local:LongClickableButton Grid.Row="3" Grid.Column="3" Text="." />
