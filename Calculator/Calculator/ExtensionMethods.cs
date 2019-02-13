@@ -8,20 +8,45 @@ namespace Calculator
 {
     public class print
     {
-        public static void log(object p)
+        public static void log(params object[] p)
         {
-            System.Diagnostics.Debug.WriteLine(p);
+            string s = p[0].ToString();
+            for (int i = 1; i < p.Length; i++)
+                s += ", " + p[i];
+            System.Diagnostics.Debug.WriteLine(s);
         }
     }
 
     public static class ExtensionMethods
     {
+        public static void Remove(this Xamarin.Forms.View view)
+        {
+            try
+            {
+                (view.Parent as Xamarin.Forms.Layout<Xamarin.Forms.View>).Children.Remove(view);
+            }
+            catch
+            {
+                print.log("View did not have a parent that could be cast to Layout<View>");
+            }
+        }
+
         public static bool IsNumber(this string str)
         {
             char chr = str[0];
             return (chr >= 48 && chr <= 57) || chr == 46;
 
             //return str.Length == 1 && str[0] >= 97 && str[0] <= 122;
+        }
+
+        public static int Bound(this int value, int low, int high)
+        {
+            if (value < low)
+                value = low;
+            else if (value > high)
+                value = high;
+
+            return value;
         }
 
         public static bool IsBetween(this int value, int low, int high)

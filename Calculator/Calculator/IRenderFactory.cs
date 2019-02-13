@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Calculator;
 
-using Graphics;
+using Calculator.Graphics;
 
 namespace Calculator
 {

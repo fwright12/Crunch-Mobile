@@ -22,7 +22,6 @@ namespace Calculator
                 else
                 {
                     return default(TValue1);
-                    //throw new KeyNotFoundException();
                 }
             }
             set

@@ -4,33 +4,41 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using Graphics;
+using Calculator.Graphics;
 
 namespace Calculator
 {
     public static class Cursor
     {
-        public static Layout Parent
+        public static Container Parent
         {
-            get
-            {
-                return parent;
-            }
+            get { return parent; }
         }
+
         public static int Index
         {
-            get
-            {
-                return index;
-            }
+            get { return index; }
         }
 
-        public static Layout root;
+        private static Action updateGraphics;
 
-        private static Layout parent;
+        private static Container parent;
         private static int index;
 
-        public static bool Set(Layout parent, int index = 0)
+        public static void Initialize(Action action) => updateGraphics = action;
+
+        public static void Right() => move(1);
+        public static void Left() => move(-1);
+        public static bool Delete()
+        {
+            if (index == 0)
+                return false;
+
+            index--;
+            return true;
+        }
+
+        public static bool Set(Container parent, int index = 0)
         {
             if (Cursor.parent == parent && Cursor.index == index)
             {
@@ -43,9 +51,9 @@ namespace Calculator
             return true;
         }
 
-        private static void setParent(Layout newParent)
+        private static void setParent(Container newParent)
         {
-            parent = parent.Children[index] as Layout;
+            parent = parent.Children[index] as Container;
 
             if (!(parent is Expression))
             {
@@ -53,17 +61,19 @@ namespace Calculator
             }
         }
 
-        public static void Right() => checkIndex(1);
-        public static void Left() => checkIndex(-1);
-        public static void Delete() => index--;
+        private static void move(int direction)
+        {
+            checkIndex(direction);
+            updateGraphics();
+        }
 
         private static void checkIndex(int direction)
         {
             if ((index + direction).IsBetween(0, parent.Children.Count))
             {
-                if (parent.Children[index + (direction - 1) / 2] is Layout)
+                if (parent.Children[index + (direction - 1) / 2] is Container)
                 {
-                    parent = parent.Children[index + (direction - 1) / 2] as Layout;
+                    parent = parent.Children[index + (direction - 1) / 2] as Container;
                     index = parent.Children.Count * (direction - 1) / -2;
                 }
                 else
@@ -73,7 +83,7 @@ namespace Calculator
             }
             else
             {
-                if (parent.HasParent && parent != root)
+                if (parent.HasParent && parent != MainPage.focus)
                 {
                     index = parent.Parent.Children.IndexOf(parent) + (direction + 1) / 2;
                     parent = parent.Parent;

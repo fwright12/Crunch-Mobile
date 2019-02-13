@@ -3,146 +3,92 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Xamarin.Forms;
 
-using Graphics;
+using Calculator.Graphics;
 
 namespace Calculator
 {
-    public static class Input
+    public class Input
     {
-        public static IUserInterface UI;
-        
-        public static List<Symbol> adding = new List<Symbol>();
-        public static int minHeight;
-
-        //Stuff that should be somewhere else
         public static int cursorWidth;
         public static int textHeight;
         public static int textWidth;
         public static int TextSize = 40;
 
-        public static Dictionary<string, List<string>> supportedFunctions = new Dictionary<string, List<string>>()
-        {
-            { "Pythagorean Theorem", new List<string> {"(", "(", "a", ")", "^", "(", "2", ")", ")", "+", "(", "(", "b", ")", "^", "(", "2", ")", ")", "=", "(", "(", "c", ")", "^", "(", "2", ")", ")"} }
-        };
+        public static View phantomCursor;
+        public static IRenderFactory<View, Layout> renderFactory;
 
-        public static void AddEquation()
-        {
-            //Hide functionality menu, and show keyboard
-            UI.HideFunctionsMenu();
-            UI.ShowKeyboard();
+        public static Layout canvas;
 
-            //Input.Send("9", "+", "(", "7", "+", "6", ")", "/", "(", "8", "/", "4", ")");
+        private static MainPage graphics;
+
+        public static void Started(MainPage _graphics)
+        {
+            graphics = _graphics;
         }
 
-        public static void Send(params string[] s)
+        public static void Delete()
         {
-            /*if (selected != null)
+            if (Cursor.Delete())
             {
-                selected.Wrapper(s);
-                //selected.Insert(Wrap(s));
-            }*/
+                graphics.Remove(Cursor.Parent.Children[Cursor.Index]);
+                graphics.SetAnswer();
+            }
         }
 
-        public static void SetCursor(object test, int i = 0)
+        public static void KeyboardSwipe(int direction)
         {
-            
+            graphics.ChangeKeyboard(direction);
         }
 
-        /*public static Symbol Wrap(string s)
+        public static void CanvasTouch(Point pos)
         {
-            switch (s)
+            graphics.AddEquation(pos);
+        }
+
+        public static void LongClickDown(bool isDown) => graphics.CursorMode(isDown);
+
+        public static void CursorMoved(Point pos)
+        {
+            graphics.MovePhantomCursor(pos);
+        }
+
+        public static void Key(string key)
+        {            
+            Symbol node = default(Symbol);
+
+            switch (key)
             {
-                case "^":
-                case "*":
                 case "/":
-                case "-":
-                case "+":
-                    return new Operand(s);
-                case "(":
-                case ")":
-                    return new Symbol(s);
+                    node = new Fraction();
+                    break;
+                case "^":
+                    node = new Exponent();
+                    break;
                 default:
-                    if (Input.IsNumber(s))
+                    if (key.IsNumber())
                     {
-                        return new Number(double.Parse(s));
-                    }
-                    else if (Input.IsVariable(s))
-                    {
-                        return new Symbol(s);
+                        node = new Number(key);
                     }
                     else
                     {
-                        return new Function(s);
+                        node = new Text(key);
                     }
+
+                    break;
             }
-        }*/
 
-        //Parse inputed list of symbols for expressions, fractions, and exponents
-        /*public static List<Symbol> Parse(List<Symbol> sender)
-        {
-            List<Symbol> list = new List<Symbol>();
-            foreach (Symbol s in sender)
-                list.Add(s);
+            node.Add();
 
-            List<Symbol> result = new List<Symbol>();
-
-            //Search for and create expressions
-            for (int i = 0; i < list.Count; i++)
+            while (Fraction.Creator.Count > 0)
             {
-                if (list[i].text == "(")
-                {
-                    int index = MathText.findMatching(list[i] as Text, list);
-
-                    if (index < list.Count)
-                    {
-                        List<Symbol> temp = Parse(list.GetRange(i + 1, index - i - 1));
-                        print.log("aljsdfkl;ajsd;klfjakl;sdjfkl;ajsdfl; " + temp.Count);
-                        temp.Insert(0, list[i]);
-                        temp.Add(list[index]);
-
-                        list.RemoveRange(i, index - i + 1);
-
-                        if (temp.Count == 3 && (temp[1].GetType() == typeof(Fraction) || temp[1].GetType() == typeof(Exponent)))
-                        {
-                            list.Insert(i, temp[1]);
-                        }
-                        else
-                        {
-                            list.Insert(i, new Expression(temp));
-                        }
-                    }
-                }
+                Fraction.Creator.Dequeue()(node);
             }
 
-            for (int i = 0; i < list.Count; i++)
-            {
-                if (i + 1 < list.Count && list[i + 1].text == "/")
-                {
-                    result.Add(new Fraction(list[i], list[i + 2]));
-                    i += 2;
-                }
-                else if (i + 1 < list.Count && list[i + 1].text == "^")
-                {
-                    Exponent temp = new Exponent(list[i], list[i + 2]);
-                    //temp.format = new Format(gravity: "bottom");
-                    list[i + 2].format = new Format(padding: 50, gravity: "bottom");
-
-                    result.Add(temp);
-                    i += 2;
-                }
-                else
-                {
-                    result.Add(list[i]);
-                }
-            }
-
-            /*print.log("----parsed list-----");
-            foreach (Symbol s in result)
-                print.log(s + ", " + s.GetHashCode());
-            print.log("----parsed list-----");
-
-            return result;
-        }*/
+            graphics.SetText(node);
+            graphics.SetAnswer();
+            graphics.UpdateCursor();
+        }
     }
 }

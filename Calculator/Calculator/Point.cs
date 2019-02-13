@@ -22,6 +22,16 @@ namespace Calculator
             x = pos.x;
             y = pos.y;
         }
+        
+        public static Point operator +(Point p1, Point p2)
+        {
+            return new Point(p1.x + p2.x, p1.y + p2.y);
+        }
+
+        public static Point operator -(Point p1, Point p2)
+        {
+            return new Point(p1.x - p2.x, p1.y - p2.y);
+        }
 
         public override string ToString()
         {

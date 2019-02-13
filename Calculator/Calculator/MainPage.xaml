@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:androidWidget="clr-namespace:Android.Widget;assembly=Mono.Android;targetPlatform=Android"
+             xmlns:formsAndroid="clr-namespace:Xamarin.Forms;assembly=Xamarin.Forms.Platform.Android;targetPlatform=Android"
+             xmlns:local="clr-namespace:Calculator"
+             x:Class="Calculator.MainPage">
+    
+    <ContentPage.Padding>
+        <OnPlatform x:TypeArguments="Thickness">
+            <On Platform="iOS" Value="20, 40, 20, 20" />
+            <On Platform="Android, WinPhone, Windows" Value="10" />
+        </OnPlatform>
+    </ContentPage.Padding>
+    <StackLayout x:Name="page">
+        <ScrollView VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Orientation="Both">
+            <local:GestureRelativeLayout x:Name="canvas" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+            </local:GestureRelativeLayout>
+        </ScrollView>
+
+        <StackLayout>
+            <AbsoluteLayout x:Name="keyboard">
+                <Grid x:Name="keypad" IsVisible="True" ColumnSpacing="0" RowSpacing="0" >
+                    <local:LiveButton Text="-/" Grid.Row="0" Grid.Column="0" />
+                    <local:LiveButton Text="/" Grid.Row="0" Grid.Column="1" />
+                    <local:LiveButton Text="1" Grid.Row="0" Grid.Column="2" />
+                    <local:LiveButton Text="2" Grid.Row="0" Grid.Column="3" />
+                    <local:LiveButton Text="3" Grid.Row="0" Grid.Column="4" />
+                    <local:LiveButton Text="+" Grid.Row="0" Grid.Column="5" />
+                    
+                    <local:LiveButton Text="^2" Grid.Row="1" Grid.Column="0" />
+                    <local:LiveButton Text="*" Grid.Row="1" Grid.Column="1" />
+                    <local:LiveButton Text="4" Grid.Row="1" Grid.Column="2" />
+                    <local:LiveButton Text="5" Grid.Row="1" Grid.Column="3" />
+                    <local:LiveButton Text="6" Grid.Row="1" Grid.Column="4" />
+                    <local:LiveButton Text="-" Grid.Row="1" Grid.Column="5" />
+                    
+                    <local:LiveButton Text="pi" Grid.Row="2" Grid.Column="0" />
+                    <local:LiveButton Text="&lt;X" Grid.Row="2" Grid.Column="1" x:Name="delete" />
+                    <local:LiveButton Text="7" Grid.Row="2" Grid.Column="2" />
+                    <local:LiveButton Text="8" Grid.Row="2" Grid.Column="3" />
+                    <local:LiveButton Text="9" Grid.Row="2" Grid.Column="4" />
+                    <local:LiveButton Text="^" Grid.Row="2" Grid.Column="5" />
+                    
+                    <local:LiveButton Text="e" Grid.Row="3" Grid.Column="0" />
+                    <local:LiveButton Text="&lt;" Grid.Row="3" Grid.Column="1" x:Name="left" />
+                    <local:LiveButton Text="0" Grid.Row="3" Grid.Column="2" />
+                    <local:LiveButton Text="." Grid.Row="3" Grid.Column="3" />
+                    <local:LiveButton Text="-" Grid.Row="3" Grid.Column="4" />
+                    <local:LiveButton Text="&gt;" Grid.Row="3" Grid.Column="5" x:Name="right" />
+                </Grid>
+
+                <ListView x:Name="formulas" IsVisible="False" />
+
+                <BoxView x:Name="keyboardMask" IsVisible="False" BackgroundColor="Gray" Opacity=".75"
+                         AbsoluteLayout.LayoutBounds="0,0,1,1"
+                         AbsoluteLayout.LayoutFlags="All" />
+            </AbsoluteLayout>
+        </StackLayout>
+    </StackLayout>
+</ContentPage>
