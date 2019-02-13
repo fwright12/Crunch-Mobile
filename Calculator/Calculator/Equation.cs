@@ -14,6 +14,7 @@ namespace Calculator
         public List<Symbol> text1 = new List<Symbol>() { };
         public MathView mathView = new MathView();
         public MathText text = new MathText();
+        public GraphicsEngine graphicsEngine = new GraphicsEngine();
 
         public Text equals = new Text("=");
         public object root;
@@ -52,10 +53,11 @@ namespace Calculator
             print.log("end");
 
             List<Symbol> parsed = text.Parse();
-            
+
             //Crunch.Evaluate(new Expression(parsed));
 
-            mathView.SetText(parsed);
+            //mathView.SetText(parsed);
+            graphicsEngine.SetText(parsed);
         }
 
         private void insert(Symbol sender)

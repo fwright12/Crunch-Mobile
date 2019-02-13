@@ -17,6 +17,19 @@ using Android.Text;
 [assembly: Xamarin.Forms.Dependency(typeof(Calculator.Droid.MainActivity))]
 namespace Calculator.Droid
 {
+    public class test : tester
+    {
+        public test()
+        {
+            new TextView(Application.Context);
+        }
+
+        public override void testing()
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     [Activity (Label = "CalcuPad - Debug", MainLauncher = true, Icon = "@drawable/icon")]
 	public partial class MainActivity : Activity, IGraphicsHandler
     {
@@ -44,6 +57,7 @@ namespace Calculator.Droid
             Input.phantomCursor = AddCursor();
             Equation.canvas = canvas;
             Input.graphicsHandler = this;
+            GraphicsEngine<View, ViewGroup>.RenderFactory = this;
 
             //Disable system keyboard
             Window.SetSoftInputMode(SoftInput.StateAlwaysHidden);

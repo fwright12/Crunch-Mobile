@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Calculator
 {
-    public class SymbolView : Xamarin.Forms.View
+    public class SymbolView
     {
         public Symbol symbol;
         public OverlapListener overlapListener;
@@ -16,8 +16,8 @@ namespace Calculator
         {
             symbol = sender;
             overlapListener = new OverlapListener(checkOverlap);
-            UIObject = MathView.Create(sender as dynamic);
-            
+            //UIObject = GraphicsEngine.Create(sender as dynamic);
+
             Input.graphicsHandler.cursorMoved += overlapListener;
         }
 
@@ -29,9 +29,9 @@ namespace Calculator
 
         public void ChangeParents(object newParent, int index)
         {
-            Parent = (Xamarin.Forms.Element)newParent;
-            Input.graphicsHandler.RemoveChild(Parent, UIObject);
-            Input.graphicsHandler.AddChild(newParent, UIObject, index);
+            //Parent = (Xamarin.Forms.Element)newParent;
+            //Input.graphicsHandler.RemoveChild(Parent, UIObject);
+            //Input.graphicsHandler.AddChild(newParent, UIObject, index);
         }
     }
 }

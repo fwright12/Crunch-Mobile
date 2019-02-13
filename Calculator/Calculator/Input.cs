@@ -19,6 +19,11 @@ namespace Calculator
         public static object phantomCursor;
         public static List<Symbol> adding = new List<Symbol>();
 
+        public static void test(this Dictionary<Android.Views.View, Symbol> hi)
+        {
+
+        }
+
         public static void Send(string s)
         {
             if (selected != null)

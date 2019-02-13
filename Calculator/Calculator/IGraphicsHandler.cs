@@ -5,9 +5,31 @@ using System.Text;
 using System.Threading.Tasks;
 using Calculator;
 
+using Xamarin.Forms;
+
 namespace Calculator
 {
-    //public interface IGraphicsHandler : IGraphicsHandler<object, object> { }
+    public abstract class tester
+    {
+        public abstract void testing();
+    }
+
+    public interface IRenderer<TView, TLayout> where TLayout : TView
+    {
+        void Add(TLayout parent, TView child, int index);
+        void Remove(TView sender);
+
+        TView Create(Symbol sender);
+        TView Create(Number sender);
+        TLayout Create(Expression sender);
+        TLayout Create(Fraction sender);
+        TLayout Create(Exponent sender);
+        TLayout Create(Bar sender);
+
+        TLayout GetParent(TView sender);
+
+        //TLayout Create(Fraction sender);
+    }
 
     public interface IGraphicsHandler
     {

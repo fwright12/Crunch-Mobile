@@ -33,6 +33,7 @@
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="BiDictionary.cs" />
     <Compile Include="GraphicsEngine.cs" />
     <Compile Include="Input.cs" />
     <Compile Include="Equation.cs" />

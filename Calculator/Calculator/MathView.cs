@@ -18,6 +18,7 @@ namespace Calculator
         public object root;
 
         public Dictionary<Symbol, Graphic> views = new Dictionary<Symbol, Graphic>();
+        //public Dictionary<Symbol, SymbolView<dynamic>> views = new Dictionary<Symbol, SymbolView<dynamic>>();
         public Dictionary<object, Symbol> shown = new Dictionary<object, Symbol>();
 
         //private bool parendFlag = true;
@@ -29,7 +30,7 @@ namespace Calculator
         public void SetText(List<Symbol> list)
         {
             all = expand(list);
-
+            
             print.log("removing...");
             //Remove all views that are still being shown, but no longer should be
             List<Symbol> temp = views.Keys.ToList();

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Calculator
 {
-    public class Graphic : Xamarin.Forms.View
+    public class Graphic
     {
         public object parent;
         public object child;

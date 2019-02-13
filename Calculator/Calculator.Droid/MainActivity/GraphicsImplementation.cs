@@ -17,16 +17,93 @@ using System.Reflection;
 
 namespace Calculator.Droid
 {
-    public partial class MainActivity
+    public partial class MainActivity : IRenderer<View, ViewGroup>
     {
+        public void Add(ViewGroup parent, View child, int index)
+        {
+            if (child.Parent != null)
+            {
+                (child.Parent as ViewGroup).RemoveView(child);
+            }
+            parent.AddView(child, index);
+        }
+
+        public void Remove(View sender)
+        {
+            (sender.Parent as ViewGroup).RemoveView(sender);
+        }
+
+        public View Create(Symbol sender)
+        {
+            var temp = new TextView(this);
+            temp.TextSize = 40;
+            temp.Text = " " + sender.text + " ";
+            return temp;
+        }
+
+        public View Create(Number sender)
+        {
+            var temp = Create(sender as Symbol) as TextView;
+            temp.Text = sender.text;
+            return temp;
+        }
+
+        public ViewGroup Create(Expression sender)
+        {
+            return linearLayout();
+        }
+
+        public ViewGroup Create(Fraction sender)
+        {
+            var temp = linearLayout();
+            temp.Orientation = Android.Widget.Orientation.Vertical;
+            return temp;
+        }
+
+        public ViewGroup Create(Exponent sender)
+        {
+            var temp = linearLayout();
+            temp.SetPadding(0, 0, 0, 50);
+            return temp;
+        }
+
+        public ViewGroup Create(Bar sender)
+        {
+            var temp = new LinearLayout(this);
+            temp.SetPadding(0, 0, 0, 3);
+            temp.SetBackgroundColor(Color.White);
+            return temp;
+        }
+
+        public ViewGroup GetParent(View sender)
+        {
+            return sender.Parent as ViewGroup;
+        }
+
+        public LinearLayout linearLayout()
+        {
+            var temp = new LinearLayout(this);
+            temp.LayoutParameters = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WrapContent, ViewGroup.LayoutParams.WrapContent);
+            temp.SetGravity(GravityFlags.Center);
+            return temp;
+        }
+
+        public BiDictionary<Symbol, View> textLookup = new BiDictionary<Symbol, View>();
+        public BiDictionary<Symbol, ViewGroup> layoutLookup = new BiDictionary<Symbol, ViewGroup>();
+
+        public void Add(Symbol parent, Symbol child, int index)
+        {
+            layoutLookup[parent].AddView(textLookup[child], index);
+        }
+
+        public View Render(Xamarin.Forms.Label sender)
+        {
+            return new TextView(this);
+        }
+
         public object GetParent(object child)
         {
             return (child as View).Parent;
-        }
-
-        public ViewGroup GetParent(View child)
-        {
-            return child.Parent as ViewGroup;
         }
 
         public bool IsOverlapping(object first, object second)
