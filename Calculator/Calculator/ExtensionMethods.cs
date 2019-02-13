@@ -16,6 +16,19 @@ namespace Calculator
 
     public static class ExtensionMethods
     {
+        public static bool IsNumber(this string str)
+        {
+            char chr = str[0];
+            return (chr >= 48 && chr <= 57) || chr == 46;
+
+            //return str.Length == 1 && str[0] >= 97 && str[0] <= 122;
+        }
+
+        public static bool IsBetween(this int value, int low, int high)
+        {
+            return value >= low && value <= high;
+        }
+
         public static LinkedListNode<Graphics.Symbol> NodeAt(this LinkedList<Graphics.Symbol> list, int index)
         {
             return list.Find(list.ElementAt(index));

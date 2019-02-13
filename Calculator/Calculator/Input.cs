@@ -8,62 +8,40 @@ using Graphics;
 
 namespace Calculator
 {
-    public delegate void CursorListener(object sender);
-
-    public class Dimensions
-    {
-        public int Width;
-        public int Height;
-
-        public Dimensions(int width, int height)
-        {
-            Width = width;
-            Height = height;
-        }
-    }
-
     public static class Input
     {
-        public static GraphicsEngine selected;
         public static IUserInterface UI;
-
+        
         public static List<Symbol> adding = new List<Symbol>();
         public static int minHeight;
+
+        //Stuff that should be somewhere else
+        public static int cursorWidth;
+        public static int textHeight;
+        public static int textWidth;
+        public static int TextSize = 40;
 
         public static Dictionary<string, List<string>> supportedFunctions = new Dictionary<string, List<string>>()
         {
             { "Pythagorean Theorem", new List<string> {"(", "(", "a", ")", "^", "(", "2", ")", ")", "+", "(", "(", "b", ")", "^", "(", "2", ")", ")", "=", "(", "(", "c", ")", "^", "(", "2", ")", ")"} }
         };
 
-        public static void SetUp(IUserInterface ui, object canvas)
-        {
-            UI = ui;
-
-            GraphicsEngine.canvas = canvas;
-            GraphicsEngine.phantomCursor = UI.PhantomCursor();
-            GraphicsEngine.renderFactory.Add(canvas as dynamic, GraphicsEngine.phantomCursor as dynamic);
-
-            UI.KeyboardSetup();
-            UI.FunctionsMenuSetup();
-        }
-
-        public static void AddEquation(GraphicsEngine graphicsEngine)
+        public static void AddEquation()
         {
             //Hide functionality menu, and show keyboard
             UI.HideFunctionsMenu();
             UI.ShowKeyboard();
 
-            selected = graphicsEngine;
             //Input.Send("9", "+", "(", "7", "+", "6", ")", "/", "(", "8", "/", "4", ")");
         }
 
         public static void Send(params string[] s)
         {
-            if (selected != null)
+            /*if (selected != null)
             {
                 selected.Wrapper(s);
                 //selected.Insert(Wrap(s));
-            }
+            }*/
         }
 
         public static void SetCursor(object test, int i = 0)
@@ -166,27 +144,5 @@ namespace Calculator
 
             return result;
         }*/
-
-        public static bool IsNumber(string s)
-        {
-            char chr = s[0];
-
-            return (chr >= 48 && chr <= 57) || chr == 46;
-
-            try
-            {
-                double.Parse(s);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        public static bool IsVariable(string s)
-        {
-            return s.Length == 1 && s[0] >= 97 && s[0] <= 122;
-        }
     }
 }

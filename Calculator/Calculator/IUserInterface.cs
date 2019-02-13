@@ -6,9 +6,6 @@ using System.Threading.Tasks;
 
 namespace Calculator
 {
-    /// <summary>
-    /// Please include the following method calls where appropriate: 
-    /// </summary>
     public interface IUserInterface
     {
         //void CanvasTouched();

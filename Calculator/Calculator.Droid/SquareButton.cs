@@ -13,12 +13,12 @@ using Android.Util;
 
 namespace Calculator.Droid
 {
-    [Register("Cacluator.Droid.SquareButton")]
-    public class SquareButton : Button
+    //[Register("Cacluator.Droid.SquareButton")]
+    /*public class SquareButton : Button
     {
         //new public int MeasuredHeight { get { return MeasuredWidth; } }
 
-        public SquareButton(Context context) : base(context) { }
+        /*public SquareButton(Context context) : base(context) { }
 
         public SquareButton(Context context, IAttributeSet attrs) : base(context, attrs) { }
 
@@ -33,5 +33,5 @@ namespace Calculator.Droid
             int size = width > height ? height : width;
             SetMeasuredDimension(size, size); // make it square
         }
-    }
+    }*/
 }

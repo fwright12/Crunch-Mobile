@@ -100,7 +100,6 @@ class MonoPackageManager_Resources {
 		/* We need to ensure that "Calculator.Droid.dll" comes first in this list. */
 		"Calculator.Droid.dll",
 		"Calculator.dll",
-		"FormsViewGroup.dll",
 		"Xamarin.Android.Support.Animated.Vector.Drawable.dll",
 		"Xamarin.Android.Support.Design.dll",
 		"Xamarin.Android.Support.v4.dll",
@@ -109,31 +108,8 @@ class MonoPackageManager_Resources {
 		"Xamarin.Android.Support.v7.MediaRouter.dll",
 		"Xamarin.Android.Support.v7.RecyclerView.dll",
 		"Xamarin.Android.Support.Vector.Drawable.dll",
-		"Xamarin.Forms.Core.dll",
-		"Xamarin.Forms.Platform.Android.dll",
-		"Xamarin.Forms.Platform.dll",
-		"Xamarin.Forms.Xaml.dll",
-		"System.Runtime.dll",
-		"System.Dynamic.Runtime.dll",
-		"System.Collections.dll",
-		"System.Linq.Expressions.dll",
-		"System.Runtime.Extensions.dll",
-		"System.Linq.dll",
-		"System.Diagnostics.Debug.dll",
-		"System.Threading.Tasks.dll",
-		"System.ObjectModel.dll",
-		"System.Globalization.dll",
-		"System.ComponentModel.dll",
-		"System.Xml.ReaderWriter.dll",
-		"System.Reflection.dll",
-		"System.IO.dll",
-		"System.Threading.dll",
-		"System.Reflection.Extensions.dll",
-		"System.Text.RegularExpressions.dll",
-		"System.Collections.Concurrent.dll",
-		"System.Runtime.InteropServices.dll",
 	};
 	public static final String[] Dependencies = new String[]{
 	};
-	public static final String ApiPackageName = "Mono.Android.Platform.ApiLevel_24";
+	public static final String ApiPackageName = "Mono.Android.Platform.ApiLevel_22";
 }

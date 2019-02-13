@@ -22,7 +22,7 @@ namespace Graphics
             }
         }
 
-        public int Index
+        public virtual int Index
         {
             get
             {
@@ -46,14 +46,20 @@ namespace Graphics
             }
         }
 
+        public void Add()
+        {
+            Cursor.Parent.Add(this, Cursor.Index);
+            Cursor.Right();
+        }
+
         public void AddAfter(Symbol symbol)
         {
-            symbol.Parent.Add(this, symbol.Parent.Children.IndexOf(symbol) + 1);
+            symbol.Parent.Add(this, symbol.Index + 1);
         }
 
         public void AddBefore(Symbol symbol)
         {
-            symbol.Parent.Add(this, symbol.Parent.Children.IndexOf(symbol));
+            symbol.Parent.Add(this, symbol.Index);
         }
 
         public void Remove()
@@ -77,32 +83,50 @@ namespace Graphics
         }*/
     }
 
-    public class Cursor : Symbol
+    public class Cursora : Symbol
     {
-        /*new public Symbol Next;
-        new public Symbol Previous;
-
-        new public void AddBefore(Symbol symbol)
+        //new public int Index = 0;
+        public override int Index
         {
-            Previous = symbol.Previous;
-            Next = symbol;
+            get
+            {
+                return index;
+            }
         }
-        
-        new public void AddAfter(Symbol symbol)
+        private int index;
+
+        public void Right() => checkIndex(1);
+        public void Left() => checkIndex(-1);
+
+        private void checkIndex(int direction)
         {
-            Previous = symbol;
-            Next = symbol.Next;
-        }*/
+            index += direction;
+
+            if (index > Parent.Children.Count || index < 0)
+            {
+                if (Parent.HasParent)
+                {
+                    Parent = Parent.Parent;
+
+                    index = Parent.Children.IndexOf(Parent) + (direction + 1) / 2;
+                }
+                else
+                {
+                    index -= direction;
+                }
+            }
+        }
     }
 
     public class Text : Symbol
     {
         public string text;
-        public bool selectable = false;
+        public bool selectable = true;
 
-        public Text(string str)
+        public Text(string str, bool selectable = true)
         {
             text = str;
+            this.selectable = selectable;
         }
 
         public bool IsOperand()
@@ -113,7 +137,7 @@ namespace Graphics
 
     public class Number : Text
     {
-        public Number(string text) : base(text) { }
+        public Number(string text, bool selectable = true) : base(text, selectable) { }
 
         public static implicit operator Crunch.Number(Number n)
         {
@@ -145,8 +169,17 @@ namespace Graphics
             {
                 symbol.Parent.children.Remove(symbol);
             }
-            children.Insert(index, symbol);
             symbol.Parent = this;
+
+            //if (symbol != Control.cursor)
+            //{
+                children.Insert(index, symbol);
+
+                /*if (Control.cursor.Parent == symbol.Parent && index <= Control.cursor.Index)
+                {
+                    Control.cursor.Right();
+                }*/
+            //}
         }
 
         public void Remove(Symbol symbol)
@@ -159,9 +192,17 @@ namespace Graphics
     {
         public Expression(List<Symbol> children)
         {
-            foreach(Symbol s in children)
+            if (children.Count == 0)
             {
-                Add(s);
+                print.log("null constructor");
+                Cursor.Set(this);
+            }
+            else
+            {
+                foreach (Symbol s in children)
+                {
+                    Add(s);
+                }
             }
         }
 
@@ -201,40 +242,28 @@ namespace Graphics
 
         public Fraction()
         {
-            GraphicsEngine.Creator.Enqueue(delegate (Symbol text)
+            Control.Creator.Enqueue(delegate (Symbol text)
             {
-                print.log(text.Parent == null);
-                Add(new Expression(GetQuantity(text, false)));
-                Add(new Expression(GetQuantity(text, true)));
+                Add(new Expression(GetQuantity(text, -1)));
+                Add(new Expression(GetQuantity(text, 1)));
             });
         }
 
-        public List<Symbol> GetQuantity(Symbol start, bool forward)
+        public List<Symbol> GetQuantity(Symbol start, int direction)
         {
             List<Symbol> result = new List<Symbol>();
             List<Symbol> list = start.Parent.Children.ToList();
-            if (!forward)
-            {
-                list.Reverse();
-            }
 
             int index = list.IndexOf(start);
-            while (index + 1 < list.Count && (list[index + 1] is Number || list[index + 1] is Cursor))
+            while ((index + direction).IsBetween(0, list.Count - 1) && list[index + direction] is Number)
             {
-                result.Add(list[++index]);
-                if (result.Last() is Cursor)
-                {
-                    break;
-                }
+                index += direction;
+                result.Insert(result.Count * (direction + 1) / -2, list[index]);
             }
 
-            if (!forward)
-            {
-                list.Reverse();
-            }
             return result;
 
-            Func<Symbol, bool> condition = null;
+            /*Func<Symbol, bool> condition = null;
             Func<Symbol, Symbol> get = null;
 
             if (get(start) != null)
@@ -269,7 +298,7 @@ namespace Graphics
                 while (start != null && !condition(start));
             }
 
-            return result;
+            return result;*/
         }
 
         public bool IsExpressionStart(Symbol symbol)

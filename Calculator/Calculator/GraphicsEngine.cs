@@ -8,29 +8,24 @@ using Graphics;
 
 namespace Calculator
 {
-    public class GraphicsEngine
+    public class GraphicsEngine<TView, TLayout> where TLayout : TView
     {
-        public static RenderFactory renderFactory = new RenderFactory();
-        public static BiDictionary<Symbol, object> viewLookup = new BiDictionary<Symbol, object>();
-        public static object canvas;
-        public static object phantomCursor;
+        public static IRenderFactory<TView, TLayout> renderFactory;
+        public static BiDictionary<Symbol, TView> viewLookup = new BiDictionary<Symbol, TView>();
 
-        public static int cursorWidth;
-        public static int textHeight;
-        public static int textWidth;
-        public static int TextSize = 40;
+        public static TLayout canvas;
+        public static TView phantomCursor;
 
-        public Symbol cursor = new Cursor();
-        public object cursorObject
-        {
+        public static TView cursorObject;
+        /*{
             get
             {
-                return viewLookup[cursor];
+                return viewLookup[Control.cursor];
             }
-        }
+        }*/
 
-        public Expression root;
-        public object rootObject
+        private static Expression root;
+        public static TView rootObject
         {
             get
             {
@@ -39,60 +34,129 @@ namespace Calculator
         }
         //public Symbol answer;
 
-        public GraphicsEngine(object relativeLayout, bool hasFocus = true)
+        public static void EventHookUp()
         {
-            if (hasFocus)
-            {
-                Input.AddEquation(this);
-            }
+            Control.Initialize += Initialize;
+            Control.AddEquation += AddEquation;
+            Control.MoveCursor += MoveCursor;
+            Control.CursorMoved += CursorMoved;
+            Control.KeyboardInput += KeyboardInput;
+        }
 
-            print.log("initializing...");
+        private static void CursorMoved()
+        {
+
+        }
+
+        private static void KeyboardInput(Symbol node)
+        {
+            //SetText(renderFactory.GetParent(cursorObject as dynamic) as dynamic, node, renderFactory.GetIndex(viewLookup[cursor] as dynamic));
+            //SetText(node);
+
+            /*if (text.Length > 1)
+            {
+                SetText(renderFactory.GetParent(rootObject as dynamic), root);
+            }
+            else
+            {
+                SetText(renderFactory.GetParent(cursorObject as dynamic) as dynamic, node.Value, renderFactory.GetIndex(viewLookup[cursor.Value] as dynamic));
+            }*/
+
+            //SetAnswer(root);
+        }
+
+        private static void Initialize()
+        {
+            //phantomCursor = renderFactory.PhantomCursor();
+            //renderFactory.Initialize(ref canvas, phantomCursor);
+            //renderFactory.Add(canvas, phantomCursor);
+        }
+
+        private static void AddEquation(Point pos)
+        {
+            /*print.log("initializing...");
             //Add relative layout to main canvas
-            renderFactory.Add(canvas as dynamic, relativeLayout as dynamic);
-            //renderFactory.Add(relativeLayout as dynamic, phantomCursor as dynamic);
-            //(phantomCursor as Android.Views.View).Visibility = Android.Views.ViewStates.Visible;
+            TLayout background = renderFactory.AddEquation(pos);
+            renderFactory.Add(canvas, background);
 
             //Add layout for layout, equal sign, and answer to relative layout
-            var LayoutEqualsAnswer = renderFactory.BaseLayout();
-            renderFactory.Add(relativeLayout as dynamic, LayoutEqualsAnswer);
+            //TLayout root = renderFactory.BaseLayout();
+            SetText(background, new Expression(new Expression(), new Text("=")));
 
+            //renderFactory.Add(background, LayoutEqualsAnswer);
+            
             //Set up main layout where input will display
-            root = new Expression(cursor);
-            SetText(LayoutEqualsAnswer, root);
+            //SetText(LayoutEqualsAnswer, new Expression(Control.cursor));
 
             //print.log(renderFactory.GetParent(rootObject as dynamic).Equals(LayoutEqualsAnswer));
 
             //Add equal sign
-            renderFactory.Add(LayoutEqualsAnswer, renderFactory.Create(new Text("=")), 1);
+            //renderFactory.Add(LayoutEqualsAnswer, renderFactory.Create(new Text("=")), 1);
             //SetText(LayoutEqualsAnswer, new Text("error"), 2);
 
             //Create answer layout
             /*var right = renderFactory.BaseLayout();
             renderFactory.Add(LayoutEqualsAnswer, right as dynamic, 2);
-            viewLookup.Add(answer, right);*/
+            viewLookup.Add(answer, right);
 
             //var rootLayout = renderFactory.BaseLayout();
             //renderFactory.Add(layout, root);
 
-            //SetText(root, Equation.cursor.Value);
+            //SetText(root, Equation.cursor.Value);*/
         }
 
-        public void SetText(Symbol symbol)
+        private static Point lastPos = new Point(0, 0);
+        private static float increase = 1f;
+
+        private static void MoveCursor(Point pos, Action<Symbol, int> moveRealCursor)
         {
-            if (symbol.HasParent && viewLookup.Contains(symbol.Parent))
+            /*//Physically move the phantom cursor
+            var globalPos = renderFactory.MoveCursor(phantomCursor, new Point((pos.x - lastPos.x) * increase, (pos.y - lastPos.y) * increase));
+            lastPos = new Point(pos);
+
+            TView view = renderFactory.GetViewAt(canvas, globalPos);
+            var leftOrRight = renderFactory.LeftOrRight(view, globalPos.x);
+
+            if (viewLookup.Contains(view) && ((viewLookup[view] is Text && (viewLookup[view] as Text).selectable) || viewLookup[view] is Expression))
+            {
+                var symbol = viewLookup[view];
+
+                moveRealCursor(symbol, leftOrRight);
+
+                //SetText(Control.cursor);
+            }*/
+        }
+
+        /*public void CursorRight(int direction)
+        {
+            Cursor cursor = Control.cursor;
+
+            if (cursor.Index.IsBetween(0, cursor.Parent.Children.Count - 1))
+            {
+
+            }
+        }*/
+
+        /// <summary>
+        /// Assumes that the symbol being passed has a parent symbol and that the parent symbol has an associated view
+        /// </summary>
+        /// <param name="symbol"></param>
+        private static void SetText(Symbol symbol)
+        {
+            /*if (symbol.HasParent && viewLookup.Contains(symbol.Parent))
             {
                 SetText(viewLookup[symbol.Parent], symbol, symbol.Parent.Children.IndexOf(symbol));
             }
             else
             {
                 throw new Exception("The given symbol either is does not have a parent symbol, or the parent does not have an associated view. Alternatively, pass a parent and index");
-            }
+            }*/
         }
 
-        public void SetText(object parent, Symbol symbol, int index = 0, bool selectable = true)
+        private static void SetText(object parent, Symbol symbol, int index = 0, bool selectable = true)
         {
-            print.log("set text " + symbol + ", " + (symbol is Expression));
-            var view = default(object);
+            /*print.log("set text " + symbol);
+            var view = default(TView);
 
             if (viewLookup.Contains(symbol))
             {
@@ -113,149 +177,22 @@ namespace Calculator
             if (symbol is Layout)
             {
                 Layout layout = symbol as Layout;
-
+                
                 for (int i = 0; i < layout.Children.Count; i++)
                 {
-                    SetText(view, layout.Children.ElementAt(i), i);
+                    SetText(view, layout.Children[i], i);
                 }
-            }
-        }
-
-        public void CheckPadding(object parent)
-        {
-            Expression temp = viewLookup[parent] as Expression;
-            renderFactory.SetPadding(
-                parent as dynamic,
-                (temp.Children.First() is Layout && temp.Children.First().GetType() != typeof(Expression)).ToInt() * cursorWidth,
-                (temp.Children.Last() is Layout && temp.Children.Last().GetType() != typeof(Expression)).ToInt() * cursorWidth
-                );
-        }
-
-        public void MoveCursor(object view, int leftOrRight)
-        {
-            if (viewLookup.Contains(view) && ((viewLookup[view] is Text && (viewLookup[view] as Text).selectable) || viewLookup[view] is Expression))
-            {
-                Symbol symbol = viewLookup[view];
-
-                cursor.Remove();
-
-                if (symbol is Expression)
-                {
-                    Expression expression = symbol as Expression;
-
-                    if (expression.Children.Count == 0)
-                    {
-                        expression.Add(cursor);
-                    }
-                    else
-                    {
-                        symbol = expression.Children[(expression.Children.Count - 1) * leftOrRight];
-                    }
-                }
-
-                SetCursor(symbol.Parent, symbol.Index);
-
-                /*if (leftOrRight == 0)
-                {
-                    cursor.AddBefore(symbol);
-                }
-                else if (leftOrRight == 1)
-                {
-                    cursor.AddAfter(symbol);
-                }
-
-                SetText(cursor);*/
-            }
-        }
-
-        public void SetCursor(Layout parent, int index)
-        {
-            if (index == 0)
-            {
-                cursor.AddBefore(parent.Children[0]);
-            }
-            else
-            {
-                cursor.AddAfter(parent.Children[index - 1]);
-            }
-
-            SetText(cursor);
-        }
-
-        public void RightArrow(Symbol symbol)
-        {
-            int index = symbol.Parent.Children.IndexOf(symbol);
-
-
-        }
-
-        public void LeftArrow()
-        {
-
-        }
-
-        public static Queue<Action<Symbol>> Creator = new Queue<Action<Symbol>>();
-
-        public void Wrapper(params string[] text)
-        {
-            Symbol node = default(Symbol);
-
-            foreach (string str in text)
-            {
-                switch (str)
-                {
-                    case "/":
-                        node = new Fraction();
-                        break;
-                    default:
-                        if (Input.IsNumber(str))
-                        {
-                            node = new Number(str);
-                        }
-                        else
-                        {
-                            node = new Text(str);
-                        }
-                        break;
-                }
-
-                node.AddBefore(cursor);
-            }
-
-            while (Creator.Count > 0)
-            {
-                Creator.Dequeue()(node);
-            }
-
-            print.log("root children");
-            foreach (Symbol s in root.Children)
-                print.log(s);
-
-            //SetText(renderFactory.GetParent(cursorObject as dynamic) as dynamic, node, renderFactory.GetIndex(viewLookup[cursor] as dynamic));
-            SetText(node);
-
-            /*if (text.Length > 1)
-            {
-                SetText(renderFactory.GetParent(rootObject as dynamic), root);
-            }
-            else
-            {
-                SetText(renderFactory.GetParent(cursorObject as dynamic) as dynamic, node.Value, renderFactory.GetIndex(viewLookup[cursor.Value] as dynamic));
             }*/
-
-            SetAnswer(root);
         }
-
-        //private object answer;
 
         public void SetAnswer(Crunch.Term calculated)
         {
-            print.log("SDJFLSDJL " + calculated);
+            /*print.log("SDJFLSDJL " + calculated);
 
             try
             {
                 //renderFactory.Remove(answer as dynamic);
-                ((rootObject as Android.Views.View).Parent as Android.Views.ViewGroup).RemoveViewAt(2);
+                //((rootObject as Android.Views.View).Parent as Android.Views.ViewGroup).RemoveViewAt(2);
             }
             catch { }
             finally
@@ -280,7 +217,7 @@ namespace Calculator
             //print.log("LSKDJFLKSJDFLK " + answer.value +", "+ (answer as dynamic).GetType());
             //answer = calculated;
             //renderFactory.Remove()
-            //SetText(right, answer);
+            //SetText(right, answer);*/
         }
     }
 
