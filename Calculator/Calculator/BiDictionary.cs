@@ -15,7 +15,14 @@ namespace Calculator
         {
             get
             {
-                return value1List[value2List.IndexOf(Value2)];
+                if (value2List.Contains(Value2))
+                {
+                    return value1List[value2List.IndexOf(Value2)];
+                }
+                else
+                {
+                    throw new KeyNotFoundException();
+                }
             }
             set
             {
@@ -27,7 +34,14 @@ namespace Calculator
         {
             get
             {
-                return value2List[value1List.IndexOf(Value1)];
+                if (value1List.Contains(Value1))
+                {
+                    return value2List[value1List.IndexOf(Value1)];
+                }
+                else
+                {
+                    throw new KeyNotFoundException();
+                }
             }
             set
             {

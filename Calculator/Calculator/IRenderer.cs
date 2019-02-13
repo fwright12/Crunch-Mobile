@@ -9,38 +9,49 @@ using Graphics;
 
 namespace Calculator
 {
-    public delegate void OverlapListener();
-
-    public interface IRenderer
+    public interface IView
     {
-        //void Add(Layout parent, Symbol child, int index = 0);
-        void test();
+
+    }
+
+    public interface ILayout : IView
+    {
+        void Add(IView child, int index = 0);
+    }
+
+    public class AndroidView : IView
+    {
+        public Android.Views.View obj;
+    }
+
+    public class AndroidLayout : ILayout
+    {
+        public Android.Views.ViewGroup obj;
+
+        public AndroidLayout(Android.Views.ViewGroup Obj)
+        {
+            obj = Obj;
+        }
+
+        public void Add(IView child, int index = 0)
+        {
+            obj.AddView(child as dynamic, index);
+        }
     }
 
     public interface IRenderFactory<TView, TLayout>
     {
         void Add(TLayout parent, TView child, int index = 0);
         void Remove(TView sender);
-        
-        TView Create(Text sender);
-        TView Create(Number sender);
-        TLayout Create(Layout sender);
-        TLayout Create(Fraction sender);
-        //TLayout Create(Exponent sender);
-        TLayout Create(Bar sender);
-        TLayout Create(Equation sender);
-        //TLayout Create(Answer sender);
-        TLayout Create(Space sender);
-
-        TLayout CreateRoot();
 
         TLayout BaseLayout();
-
+        TView Create(Text sender);
+        TView Create(Number sender);
+        TLayout Create(Expression sender);
+        TLayout Create(Fraction sender);
+        TLayout Create(Bar sender);
         TView Create(Cursor sender);
-        void IsOverlapping(TView first, TView second, Symbol sender);
-        void SetPadding(TLayout sender, int size);
 
-        TLayout GetParent(TView sender);
-        int GetIndex(TView sender);
+        void SetPadding(TLayout sender, int left, int right);
     }
 }

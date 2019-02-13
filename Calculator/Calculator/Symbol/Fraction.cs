@@ -109,7 +109,7 @@ namespace Crunch
 
         public static Fraction operator +(Fraction f1, Fraction f2)
         {
-            throw new NotImplementedException();
+            return new Fraction(f1.numerator * f2.denominator + f1.denominator * f2.numerator, f1.denominator * f2.denominator);
         }
 
         public static Fraction operator *(Number n, Fraction f) { return f * n; }

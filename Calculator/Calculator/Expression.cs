@@ -242,12 +242,4 @@ namespace Calculator
             return answer;
         }
     }*/
-
-    public class print
-    {
-        public static void log(object p)
-        {
-            System.Diagnostics.Debug.WriteLine(p);
-        }
-    }
 }

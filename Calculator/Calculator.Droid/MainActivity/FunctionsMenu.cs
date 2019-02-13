@@ -14,17 +14,20 @@ namespace Calculator.Droid
 {
     public partial class MainActivity
     {
-        private LinearLayout functionsMenu;
+        //private LinearLayout functionsMenu;
 
-        private void FunctionMenuSetup()
+        public void FunctionsMenuSetup()
         {
-            functionsMenu = FindViewById<LinearLayout>(Resource.Id.FunctionalityLayout);
-            functionsMenu.Visibility = ViewStates.Gone;
+            //functionsMenu = FindViewById<LinearLayout>(Resource.Id.FunctionalityLayout);
+            //functionsMenu.Visibility = ViewStates.Gone;
 
-            FindViewById<Button>(Resource.Id.FunctionalityButton).Click += ShowFunctionsMenu;
+            /*FindViewById<Button>(Resource.Id.FunctionalityButton).Click += delegate
+            {
+                ShowFunctionsMenu();
+            };
 
             //Formatting for formulas in menu
-            foreach (string s in GraphicsEngine.supportedFunctions.Keys)
+            foreach (string s in Input.supportedFunctions.Keys)
             {
                 TextView temp = new TextView(this);
                 temp.Text = s;
@@ -36,7 +39,7 @@ namespace Calculator.Droid
                 temp.Touch += FunctionTouch;
 
                 FindViewById<LinearLayout>(Resource.Id.scrollingLinearLayout).AddView(temp);
-            }
+            }*/
         }
 
         private void FunctionTouch(object sender, View.TouchEventArgs e)
@@ -47,14 +50,14 @@ namespace Calculator.Droid
             temp.StartDrag(data, new View.DragShadowBuilder(temp), null, 0);
         }
 
-        private void ShowFunctionsMenu(object sender, EventArgs e)
+        public void ShowFunctionsMenu()
         {
-            functionsMenu.Visibility = ViewStates.Visible;
+            //functionsMenu.Visibility = ViewStates.Visible;
         }
 
-        private void HideFunctionsMenu()
+        public void HideFunctionsMenu()
         {
-            functionsMenu.Visibility = ViewStates.Gone;
+            //functionsMenu.Visibility = ViewStates.Gone;
         }
     }
 }

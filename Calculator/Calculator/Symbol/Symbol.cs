@@ -6,8 +6,211 @@ using System.Threading.Tasks;
 
 using Calculator;
 
+
 namespace Graphics
 {
+    public abstract class Symbol
+    {
+        public object view;
+        public Layout Parent;
+
+        public LinkedListNode<Symbol> Next
+        {
+            get
+            {
+                return Parent.Children.Find(this).Next;
+            }
+        }
+
+        public LinkedListNode<Symbol> Previous
+        {
+            get
+            {
+                return Parent.Children.Find(this).Previous;
+            }
+        }
+
+        public LinkedListNode<Symbol> Node
+        {
+            get
+            {
+                return Parent.Children.Find(this);
+            }
+        }
+
+        public static implicit operator Symbol(Crunch.Number n)
+        {
+            return new Number(n.value.ToString());
+        }
+
+        public static implicit operator Symbol(Crunch.Fraction f)
+        {
+            return new Fraction(new Expression(f.numerator as dynamic), new Expression(f.denominator as dynamic));
+        }
+
+        /*public static implicit operator Symbol(Crunch.Term t)
+        {
+            return new Number(t.value.ToString());
+        }*/
+    }
+
+    public class Cursor : Symbol { }
+    public class Bar : Symbol { }
+    public class Space : Symbol { }
+
+    public class Text : Symbol
+    {
+        public string text;
+
+        public Text(string str)
+        {
+            text = str;
+        }
+
+        public bool IsOperand()
+        {
+            return text == "+" || text == "*" || text == "-";
+        }
+    }
+
+    public class Number : Text
+    {
+        public Number(string text) : base(text) { }
+
+        public static implicit operator Crunch.Number(Number n)
+        {
+            return new Crunch.Number(double.Parse(n.text));
+        }
+    }
+
+    public abstract class Layout : Symbol
+    {
+        public LinkedList<Symbol> Children = new LinkedList<Symbol>();
+        public LinkedList<Symbol> List;
+
+        public void Add(Symbol symbol)
+        {
+            Add(symbol, Children.Count - 1);
+        }
+
+        public void Add(Symbol symbol, int index)
+        {
+
+            Children.AddAfter(Children.NodeAt(index).DetachNode(), symbol);
+            Parent = this;
+        }
+    }
+
+    public class Expression : Layout
+    {
+        public Expression(List<Symbol> children)
+        {
+            foreach(Symbol s in children)
+            {
+                Add(s);
+            }
+        }
+
+        public Expression(params Symbol[] children) : this(children.ToList()) { }
+
+        public static implicit operator Crunch.Term(Expression layout)
+        {
+            try
+            {
+                return Cruncher.Evaluate(layout.Children.ToList());
+            }
+            catch
+            {
+                return null;
+            }
+        }
+    }
+
+    public class Fraction : Layout
+    {
+        private Func<LinkedListNode<Symbol>, LinkedListNode<Symbol>> previous = delegate (LinkedListNode<Symbol> node) { return node.Previous; };
+        private Func<LinkedListNode<Symbol>, LinkedListNode<Symbol>> next = delegate (LinkedListNode<Symbol> node) { return node.Next; };
+
+        public Fraction(Expression Numerator, Expression Denominator)
+        {
+            Children.AddLast(Numerator);
+            Children.AddLast(new Bar());
+            Children.AddLast(Denominator);
+        }
+
+        public Fraction(LinkedListNode<Symbol> text)
+        {
+            GraphicsEngine.Creator.Enqueue(delegate ()
+            {
+                //print.log("SDFLKJSDKLJ: " + text.Value +", " + text.Previous.Value +", "+ text.Next.Value);
+                Children.AddLast(new Expression(GetQuantity(previous, text).ToList()));
+                Children.AddLast(new Bar());
+                //children.AddLast(new Layout(new LinkedListNode<Symbol>(new Space()), Input.selected.cursor.GetNode()));
+                Children.AddLast(new Expression(GetQuantity(next, text).ToList()));
+            });
+        }
+
+        public LinkedList<Symbol> GetQuantity(Func<LinkedListNode<Symbol>, LinkedListNode<Symbol>> get, LinkedListNode<Symbol> start)
+        {
+            LinkedList<Symbol> result = new LinkedList<Symbol>();
+            Func<Symbol, bool> condition = null;
+
+            if (get(start) != null)
+            {
+                start = get(start);
+
+                if (start.Value == Input.selected.cursor)
+                {
+                    result.AddFirst(start.DetachNode());
+                    return result;
+                }
+
+                if (get == previous && IsExpressionEnd(start.Value))
+                {
+                    condition = IsExpressionStart;
+                }
+                else if (get == next && IsExpressionStart(start.Value))
+                {
+                    condition = IsExpressionEnd;
+                }
+                else if (!IsNotNumber(start.Value))
+                {
+                    condition = IsNotNumber;
+                }
+
+                do
+                {
+                    var temp = get(start);
+                    result.AddFirst(start.DetachNode());
+                    start = temp;
+                }
+                while (start != null && !condition(start.Value));
+            }
+
+            return result;
+        }
+
+        public bool IsExpressionStart(Symbol symbol)
+        {
+            return symbol is Text && (symbol as Text).text == "(";
+        }
+
+        public bool IsExpressionEnd(Symbol symbol)
+        {
+            return symbol is Text && (symbol as Text).text == ")";
+        }
+
+        public bool IsNotNumber(Symbol symbol)
+        {
+            return !(symbol is Number);
+        }
+
+        public static implicit operator Crunch.Fraction(Fraction f)
+        {
+            return new Crunch.Fraction(f.Children.First.Value as dynamic, f.Children.Last.Value as dynamic);
+        }
+    }
+
     /*public partial class Symbol
     {
         public Symbol Left;
@@ -41,300 +244,45 @@ namespace Graphics
         {
             node.Left = null;
         }
-    }*/
-
-    public abstract class Symbol
-    {
-        public object view;
-
-        public static implicit operator Android.Views.View(Symbol s)
-        {
-            return s.view as Android.Views.View;
-        }
-
-        public static implicit operator Symbol(Crunch.Term t)
-        {
-            return new Text(t.value.ToString());
-        }
     }
 
-    /*public class Text : Symbol
+    public abstract class Group : Symbol
     {
-        public string text;
+        public Symbol First;
+        public Symbol Last;
 
-        public Text(string text)
-        {
-            this.text = text;
-        }
-
-        public static implicit operator Android.Widget.TextView(Text t)
-        {
-            return t.view as Android.Widget.TextView;
-        }
-    }*/
-
-    public class Text : Symbol
-    {
-        public string text;
-
-        public Text(string str)
-        {
-            text = str;
-        }
-
-        public bool IsOperand()
-        {
-            return text == "+" || text == "*" || text == "-";
-        }
-    }
-
-    public class Number : Text
-    {
-        public Number(string text) : base(text) { }
-
-        public static implicit operator Crunch.Number(Number n)
-        {
-            return new Crunch.Number(double.Parse(n.text));
-        }
-
-        public static implicit operator Number(Crunch.Number n)
-        {
-            return new Number(n.value.ToString());
-        }
-    }
-
-    public class Cursor : Symbol { }
-
-    /*public class Layout : Symbol
-    {
-        public static implicit operator Android.Widget.LinearLayout(Layout l)
-        {
-            return l.view as Android.Widget.LinearLayout;
-        }
-
-        public static implicit operator Crunch.Term(Layout e)
-        {
-            return new Crunch.Number(1);
-        }
-    }*/
-
-    public class Layout : Symbol
-    {
-        public LinkedList<Symbol> children = new LinkedList<Symbol>();
-
-        public Layout(params LinkedListNode<Symbol>[] Children)
-        {
-            foreach(LinkedListNode<Symbol> s in Children)
-            {
-                children.AddLast(s);
-            }
-        }
-
-        public Layout(LinkedList<Symbol> Children)
-        {
-            children = Children;
-        }
-
-        public static implicit operator Crunch.Term(Layout layout)
-        {
-            try
-            {
-                return Cruncher.Evaluate(layout.children.ToList());
-            }
-            catch
-            {
-                return null;
-            }
-        }
-    }
-
-    public class Bar : Symbol { }
-
-    public class Space : Symbol { }
-
-    public class Fraction : Layout
-    {
-        public Fraction(Layout Numerator, Layout Denominator)
-        {
-            children.AddLast(Numerator);
-            children.AddLast(new Bar());
-            children.AddLast(Denominator);
-        }
-
-        public Fraction(LinkedListNode<Symbol> text)
-        {
-            GraphicsEngine.Creator.Enqueue(delegate ()
-            {
-                print.log("SDFLKJSDKLJ: " + text.Value +", " + text.Previous.Value +", "+ text.Next.Value);
-                children.AddLast(new Layout(GetBefore(text.Previous)));
-                children.AddLast(new Bar());
-                children.AddLast(new Layout(new LinkedListNode<Symbol>(new Space()), Input.select.cursor.GetNode()));
-            });
-        }
-
-        //public List<IDisplayable> GetWhole(LinkedListNode<Text> start, Func<Text, bool> condition, Func<LinkedListNode<Text>> direction)
-        //{
-
-        //}
-
-        public LinkedList<Symbol> GetBefore(LinkedListNode<Symbol> start)
-        {
-            LinkedList<Symbol> result = new LinkedList<Symbol>();
-            Func<Symbol, bool> condition = null;
-
-            if (CheckForExpressionEnd(start.Value))
-            {
-                condition = CheckForExpressionStart;
-            }
-            else if (CheckForNumber(start.Value))
-            {
-                condition = CheckForNumber;
-            }
-
-            do
-            {
-                var temp = start.Previous;
-                result.AddFirst(start.GetNode());
-                start = temp;
-            }
-            while (condition(start.Value));
-
-            return result;
-        }
-
-        public bool CheckForExpressionStart(Symbol symbol)
-        {
-            return symbol is Text && (symbol as Text).text == "(";
-        }
-
-        public bool CheckForExpressionEnd(Symbol symbol)
-        {
-            return symbol is Text && (symbol as Text).text == ")";
-        }
-
-        public bool CheckForNumber(Symbol symbol)
-        {
-            return symbol is Number;
-        }
-
-        public static implicit operator Crunch.Fraction(Fraction f)
-        {
-            return new Crunch.Fraction(new Crunch.Number(1));
-            //return new Fraction(Evaluate(f.numerator)))
-        }
-        
-        public static implicit operator Fraction(Crunch.Fraction f)
-        {
-            return new Fraction(new Layout(new LinkedListNode<Symbol>(f.numerator as dynamic)), new Layout(new LinkedListNode<Symbol>(f.denominator as dynamic)));
-        }
-    }
-
-    /*public abstract class Group : Symbol
-{
-    public Symbol First;
-    public Symbol Last;
-
-    public new Symbol Left
-    {
-        get
-        {
-            return base.Left;
-        }
-        set
-        {
-            base.Left = value;
-            if (value == null)
-            {
-                First = this;
-            }
-        }
-    }
-
-    public new Symbol Right
-    {
-        get
-        {
-            return base.Right;
-        }
-        set
-        {
-            base.Right = value;
-            if (value == null)
-            {
-                Last = this;
-            }
-        }
-    }
-
-    public Group(string text) : base(text) { }
-}*/
-}
-namespace Calculatora
-{
-    public partial class Symbol
-    {
-        public static readonly Symbol Cursor = new Symbol();
-
-        public virtual string text
+        public new Symbol Left
         {
             get
             {
-                return _text;
+                return base.Left;
+            }
+            set
+            {
+                base.Left = value;
+                if (value == null)
+                {
+                    First = this;
+                }
             }
         }
-        private string _text;
 
-        //public Format format = new Format();
-
-        public Symbol() : this("") { }
-
-        public Symbol (string Text)
+        public new Symbol Right
         {
-            _text = Text;
+            get
+            {
+                return base.Right;
+            }
+            set
+            {
+                base.Right = value;
+                if (value == null)
+                {
+                    Last = this;
+                }
+            }
         }
 
-        public virtual Symbol Copy()
-        {
-            return new Symbol(text);
-        }
-
-        public virtual List<Symbol> GetText()
-        {
-            return new List<Symbol>() { this };
-        }
-    }
-
-    public class Answer : Symbol
-    {
-        private Symbol symbol;
-
-        public Answer(Symbol sender)
-        {
-            symbol = sender;
-        }
-
-        public override List<Symbol> GetText()
-        {
-            return new List<Symbol>() { symbol };
-        }
-    }
-
-    public class Operand : Symbol
-    {
-        public Operand(string s) : base(s) { }
-    }
-
-    public class Space : Symbol
-    {
-        public Symbol reference;
-
-        public Space() { }
-
-        public Space(Symbol Reference)
-        {
-            reference = Reference;
-        }
-    }
-
-    public class Bar : Symbol { }
+        public Group(string text) : base(text) { }
+    }*/
 }

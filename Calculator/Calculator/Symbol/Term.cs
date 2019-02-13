@@ -25,7 +25,7 @@ namespace Crunch
 
         public static Term operator -(Term t1, Term t2)
         {
-            return t1 + t2 * new Number(-1);
+            return (t2 as dynamic) * new Number(-1) + (t1 as dynamic);
         }
 
         public static Number operator *(Term t1, Term t2)

@@ -16,57 +16,52 @@ using Android.Text;
 
 using Crunch;
 
-[assembly: Xamarin.Forms.Dependency(typeof(Calculator.Droid.MainActivity))]
+//[assembly: Xamarin.Forms.Dependency(typeof(Calculator.Droid.MainActivity))]
 namespace Calculator.Droid
 {
     [Activity (Label = "CalcuPad - Debug", MainLauncher = true, Icon = "@drawable/icon")]
-	public partial class MainActivity : Activity
+	public partial class MainActivity : Activity, IUserInterface
     {
         public static string screenSize = "xLarge";
-        public static RelativeLayout canvas;
 
         protected override void OnCreate (Bundle bundle)
 		{
             //Bogus operation to remove later lag - problem with dynamic?
-            Input.FixDynamicLag("");
+            ExtensionMethods.FixDynamicLag("");
 
             base.OnCreate (bundle);
 
             SetContentView (Resource.Layout.Main);
 
-            //Assign all reference variables
-            canvas = FindViewById<RelativeLayout>(Resource.Id.canvas);
-
-            KeyboardSetup();
-            FunctionMenuSetup();
-
-            //Assign other necessary variables
-            //Input.graphicsHandler = this;
-            Input.cursor = GraphicsEngine.renderFactory.Cursor();
-            canvas.AddView(Input.cursor as View);
-            Input.minHeight = (Input.cursor as View).Height;
-            canvas.RemoveView(Input.cursor as View);
-            print.log("LSJDFL:JSDLJLSDKFJ " + Input.minHeight);
-
-            Input.phantomCursor = GraphicsEngine.renderFactory.Cursor();
-            Equation.canvas = canvas;
-            GraphicsEngine.canvas = canvas;
-            GraphicsEngine<View, ViewGroup>.canvas = canvas;
-            //GraphicsEngine<View, ViewGroup>.RenderFactory = this;
-
-            //Disable system keyboard
             Window.SetSoftInputMode(SoftInput.StateAlwaysHidden);
 
+            var canvas = FindViewById<RelativeLayout>(Resource.Id.canvas);
             canvas.Drag += dropEquation;
             canvas.Touch += canvasTouch;
-		}
-        
-        //Send key strokes to Editor class
-        private void KeyPress(object sender, EventArgs e)
+
+            //Measure cursor width
+            View temp = PhantomCursor() as View; // GraphicsEngine.renderFactory.Create(new Graphics.Text("")) as View;
+            temp.Measure((canvas.Parent as View).Width, (canvas.Parent as View).Height);
+            GraphicsEngine.cursorWidth = temp.MeasuredWidth;
+
+            //Measure text dimensions
+            temp = GraphicsEngine.renderFactory.Create(new Graphics.Number(" ")) as View;
+            temp.Measure((canvas.Parent as View).Width, (canvas.Parent as View).Height);
+            GraphicsEngine.textHeight = temp.MeasuredHeight;
+            GraphicsEngine.textWidth = temp.MeasuredWidth;
+
+            Input.SetUp(this, canvas);
+            (GraphicsEngine.phantomCursor as View).Visibility = ViewStates.Gone;
+        }
+
+        public object PhantomCursor()
         {
-            Button sent = (Button)sender;
-            print.log("key pressed");
-            Input.Send(sent.Text);
+            TextView temp = new TextView(Application.Context);
+            temp.TextSize = GraphicsEngine.TextSize;
+            temp.SetPadding(1, 0, 1, 0);
+            temp.SetBackgroundColor(Color.Red);
+
+            return temp;
         }
 
         private void dropEquation(object sender, View.DragEventArgs e)
@@ -118,7 +113,7 @@ namespace Calculator.Droid
                     param.SetMargins((int)e.Event.GetX(), (int)e.Event.GetY(), 0, 0);
                     layout.LayoutParameters = param;
                     layout.SetGravity(GravityFlags.Center);
-                    canvas.AddView(layout);
+                    //canvas.AddView(layout);
 
                     /*Input.selected = new Input(new MathView(layout));
                     Input.selected.text = Input.Wrap(MathView.supportedFunctions[data].ToArray());
@@ -136,11 +131,6 @@ namespace Calculator.Droid
             }
         }
 
-        private void toggleAnswer(object sender, EventArgs e)
-        {
-            //Expression.showDecimal = !Expression.showDecimal;
-        }
-
         private void LongClicked(object sender, View.LongClickEventArgs e)
         {
             Vibrator v = (Vibrator)GetSystemService(VibratorService);
@@ -151,57 +141,22 @@ namespace Calculator.Droid
 
         //Define what happens when canvas is touched
         private void canvasTouch(object sender, View.TouchEventArgs touchArgs) {
-            //Leave if touch is not being released
             MotionEvent e = touchArgs.Event;
-            if (!touchArgs.Event.Action.Equals(MotionEventActions.Up))
-                return;
-            Console.WriteLine("canvas touched");
 
-            //Hide functionality menu, and show keyboard
-            HideFunctionsMenu();
-            ShowKeyboard();
+            switch (e.Action)
+            {
+                case MotionEventActions.Up:
+                    Console.WriteLine("canvas touched");
 
-            //Try to remove focus from previous expression
-            //if (Input.selected != null)
-            //  Input.SendKeystroke("exit edit mode");
+                    RelativeLayout layout = new RelativeLayout(this);
+                    layout.SetX((int)e.GetX());
+                    layout.SetY((int)e.GetY());
+                    layout.SetGravity(GravityFlags.Center);
 
-            //Create new layout for expression
-            /*LinearLayout layout = new LinearLayout(this);
-            RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WrapContent, ViewGroup.LayoutParams.WrapContent);
-            param.SetMargins((int)e.GetX(), (int)e.GetY(), 0, 0);
-            layout.LayoutParameters = param;
-            layout.SetGravity(GravityFlags.Center);
-            canvas.AddView(layout);
+                    new GraphicsEngine(layout);
 
-            Input.selected = new Input(new MathView(layout));
-            Input.selected.mathView.SetText(Input.selected.text);*/
-
-            /*LinearLayout layout = Input.selected.root as LinearLayout;
-            RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WrapContent, ViewGroup.LayoutParams.WrapContent);
-            param.SetMargins((int)e.GetX(), (int)e.GetY(), 0, 0);
-            layout.LayoutParameters = param;*/
-
-            //RelativeLayout layout = temp.root as RelativeLayout;
-
-            RelativeLayout layout = new RelativeLayout(this);
-            layout.SetX((int)e.GetX());
-            layout.SetY((int)e.GetY());
-            layout.SetGravity(GravityFlags.Center);
-            //canvas.AddView(layout);
-
-            GraphicsEngine temp = new GraphicsEngine(layout);
-            //ViewGroup root = temp.graphicsEngine.AndroidGraphics.root;
-            //canvas.RemoveView(root);
-            //layout.AddView(root);
-            //LinearLayout root = linearLayout();
-            //layout.AddView(root);
-            //temp.graphicsEngine.AndroidGraphics.Initialize(layout);
-
-            //temp.graphicsEngine.AndroidGraphics.root = layout;
-            //temp.graphicsEngine.AndroidGraphics.root.AddView((View)(Input.cursor = Cursor()));
-
-            Input.Set(temp);
-            //Input.Send("9", "+", "7", "/", "8");
+                    break;
+            }
         }
 
         //Not sure if this will be needed yet

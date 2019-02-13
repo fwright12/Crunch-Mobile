@@ -8,7 +8,7 @@ using Graphics;
 
 namespace Calculator
 {
-    public class Str
+    /*public class Str
     {
         public Symbol symbol;
 
@@ -28,12 +28,12 @@ namespace Calculator
         {
             return new Str(s);
         }
-    }
+    }*/
 
-    public class Equation
+    /*public class Equation
     {
         public static Dictionary<object, Equation> all = new Dictionary<object, Equation>();
-        public static object canvas;
+        //public static object canvas;
 
         public List<Symbol> text1 = new List<Symbol>() { };
         public MathView mathView = new MathView();
@@ -57,7 +57,7 @@ namespace Calculator
                 answer = new Number((answer as Term).value);
             }
             return new List<Symbol>() { temp, equalsSign, new Answer(answer) };
-        }*/
+        }
 
         public Equation()
         {
@@ -75,7 +75,7 @@ namespace Calculator
             /*Input.graphicsHandler.AddChild(canvas, layout, 0);
             Input.graphicsHandler.AddChild(layout, Input.phantomCursor, 0);
             Input.graphicsHandler.AddChild(layout, root, 0);
-            Input.graphicsHandler.AddChild(root, Input.graphicsHandler.AddCursor(), 0);*/
+            Input.graphicsHandler.AddChild(root, Input.graphicsHandler.AddCursor(), 0);
 
             //mathView.root = root;
 
@@ -143,7 +143,7 @@ namespace Calculator
                 Creator.Dequeue()();
             }
 
-            graphicsEngine.Add(cursor.Value, node.Value);
+            //graphicsEngine.Add(cursor.Value, node.Value);
 
             print.log("End");
             foreach(Symbol s in layout.children)
@@ -242,7 +242,7 @@ namespace Calculator
                     
                     break;
             }
-        }*/
+        }
 
         private void insert(Symbol sender)
         {
@@ -294,7 +294,7 @@ namespace Calculator
             }
 
             //pos = text.IndexOf(Symbol.Cursor);
-            //pos++;*/
+            //pos++;
         }
 
         public void SetCursor(object sender)
@@ -332,7 +332,7 @@ namespace Calculator
                 }
             }
 
-            return index;*/
+            return index;
             return 1;
         }
 
@@ -358,5 +358,5 @@ namespace Calculator
         {
             parend(text.IndexOf(s), 1);
         }
-    }
+    }*/
 }

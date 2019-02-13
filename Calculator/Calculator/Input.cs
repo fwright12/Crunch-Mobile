@@ -10,76 +10,60 @@ namespace Calculator
 {
     public delegate void CursorListener(object sender);
 
-    public static partial class Input
+    public class Dimensions
     {
+        public int Width;
+        public int Height;
 
+        public Dimensions(int width, int height)
+        {
+            Width = width;
+            Height = height;
+        }
     }
 
-    public static partial class Input
+    public static class Input
     {
-        public static Equation selected;
-        public static GraphicsEngine select;
+        public static GraphicsEngine selected;
+        public static IUserInterface UI;
 
-        //public static IGraphicsHandler graphicsHandler;
-
-        public static object cursor;
-        public static object phantomCursor;
         public static List<Symbol> adding = new List<Symbol>();
         public static int minHeight;
 
-        public static List<Graphics.Symbol> GetBefore(this LinkedListNode<Graphics.Text> sender)
+        public static Dictionary<string, List<string>> supportedFunctions = new Dictionary<string, List<string>>()
         {
-            return new List<Graphics.Symbol>();
+            { "Pythagorean Theorem", new List<string> {"(", "(", "a", ")", "^", "(", "2", ")", ")", "+", "(", "(", "b", ")", "^", "(", "2", ")", ")", "=", "(", "(", "c", ")", "^", "(", "2", ")", ")"} }
+        };
+
+        public static void SetUp(IUserInterface ui, object canvas)
+        {
+            UI = ui;
+
+            GraphicsEngine.canvas = canvas;
+            GraphicsEngine.phantomCursor = UI.PhantomCursor();
+            GraphicsEngine.renderFactory.Add(canvas as dynamic, GraphicsEngine.phantomCursor as dynamic);
+
+            UI.KeyboardSetup();
+            UI.FunctionsMenuSetup();
         }
 
-        public static LinkedListNode<Graphics.Symbol> GetNode(this LinkedListNode<Graphics.Symbol> sender)
+        public static void AddEquation(GraphicsEngine graphicsEngine)
         {
-            if (sender.List != null)
-            {
-                sender.List.Remove(sender);
-            }
-            return sender;
-        }
+            //Hide functionality menu, and show keyboard
+            UI.HideFunctionsMenu();
+            UI.ShowKeyboard();
 
-        public static List<Symbol> Copy(this List<Symbol> sender, params Symbol[] add)
-        {
-            List<Symbol> temp = new List<Symbol>();
-            foreach (Symbol s in sender)
-                temp.Add(s);
-            foreach (Symbol s in add)
-                temp.Add(s);
-            return temp;
-        }
-
-        public static LinkedListNode<Graphics.Symbol> Next<T>(this LinkedListNode<Graphics.Symbol> sender)
-        {
-            LinkedListNode<Graphics.Symbol> main = sender.Next;
-
-            while (main.Value.GetType() != typeof(T))
-            {
-                main = main.List.First;
-            }
-
-            return main;
-        }
-
-        public static void FixDynamicLag(object o)
-        {
-            print.log(o as dynamic);
+            selected = graphicsEngine;
+            //Input.Send("9", "+", "(", "7", "+", "6", ")", "/", "(", "8", "/", "4", ")");
         }
 
         public static void Send(params string[] s)
         {
-            if (select != null)
+            if (selected != null)
             {
-                select.Wrapper(s);
+                selected.Wrapper(s);
                 //selected.Insert(Wrap(s));
             }
-        }
-
-        public static void Set(GraphicsEngine sender)
-        {
-            select = sender;
         }
 
         public static void SetCursor(object test, int i = 0)

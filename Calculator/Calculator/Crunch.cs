@@ -35,7 +35,92 @@ namespace Calculator
                 }*/
             }
 
-            var operands = new List<string>();
+            List<Term> terms = new List<Term>();
+            List<Graphics.Text> operands = new List<Graphics.Text>();
+
+            print.log("start");
+            foreach (Graphics.Symbol s in calculate)
+                print.log(s);
+            //var list = new List<Graphics.Symbol>();
+            foreach(Graphics.Symbol s in calculate)
+            {
+                print.log(s);
+                try
+                {
+                    //CheckForImplicitOperator(s as dynamic);
+                    terms.Add(s as dynamic);
+                }
+                catch
+                {
+                    print.log("threw error");
+                    if (s is Graphics.Text)
+                    {
+                        if ((s as Graphics.Text).IsOperand())
+                        {
+                            operands.Add(s as Graphics.Text);
+                        }
+                    }
+                }
+            }
+
+            foreach (Term t in terms)
+                print.log(t);
+            foreach (Graphics.Text t in operands)
+                print.log(t.text);
+
+            //Multiplication
+            for (int i = 0; i < operands.Count; i++)
+            {
+                if (operands[i].text == "*")
+                {
+                    operate("*", ref terms, ref operands, ref i);
+                }
+            }
+
+            //Addition and Subtraction
+            for (int i = 0; i < operands.Count; i++)
+            {
+                operate(operands[i].text, ref terms, ref operands, ref i);
+            }
+
+            /*for (int i = 0; i < list.Count; i++)
+            {
+                if (i % 2 == 0)
+                {
+                    terms.Add(list[i] as dynamic);
+                }
+                else
+                {
+                    operands.Add(list[i] as Graphics.Text);
+                }
+            }*/
+
+            /*print.log("end");
+            foreach (Graphics.Symbol s in list)
+                print.log(s.GetType());
+
+            //Multiplication
+            for (int i = 1; i < list.Count; i += 2)
+            {
+                if ((list[i] as Graphics.Text).text == "*")
+                {
+                    operate("*", ref list, ref i);
+                }
+            }
+            print.log("doing addition");
+            //Addition and Subtraction
+            for (int i = 1; i < list.Count; i += 2)
+            {
+                print.log(i);
+
+                operate((list[i] as Graphics.Text).text, ref list, ref i);
+
+                print.log("adding " + i);
+                foreach (Graphics.Symbol s in list)
+                    print.log(s.GetType());
+            }*/
+
+            /*var operands = new List<string>();
             var terms = new List<Term>();
 
             print.log("start");
@@ -66,12 +151,55 @@ namespace Calculator
                 {
                     //calculate[i - 1] = operate((calculate[i - 1] as Graphics.Number), (calculate[i] as Graphics.Text).text, (calculate[i + 1] as Graphics.Number));
                 }
-            }
+            }*/
 
-            return new Number(1);
+            print.log("reached return " + terms[0]);
+            return (terms[0] as dynamic) + new Number(0);
         }
 
-        private static Term operate(Term t1, string operation, Term t2)
+        private static void operate(string operation, ref List<Term> terms, ref List<Graphics.Text> operands, ref int i)
+        {
+            if (operation == "+")
+            {
+                terms[i] = (terms[i] as dynamic) + (terms[i + 1] as dynamic);
+            }
+            else if (operation == "-")
+            {
+                terms[i] = terms[i] - terms[i + 1];
+            }
+            else if (operation == "*")
+            {
+                terms[i] = (terms[i] as dynamic) * (terms[i + 1] as dynamic);
+            }
+
+            terms.RemoveAt(i + 1);
+            operands.RemoveAt(i--);
+
+            /*Term prev = list[i - 1] as dynamic;
+            Term next = list[i + 1] as dynamic;
+
+            print.log(next.GetType() + ", " + prev.GetType());
+
+            if (operation == "+")
+            {
+                list[i - 1] = (prev as dynamic) + (next as dynamic);
+            }
+            else if (operation == "-")
+            {
+                list[i - 1] = (prev as dynamic) - (next as dynamic);
+            }
+            else if (operation == "*")
+            {
+                list[i - 1] = (prev as dynamic) * (next as dynamic);
+            }
+            //print.log(answer.GetType());
+            //list[i - 1] = (answer as dynamic);
+            print.log("operated " + list[i - 1]);
+            list.RemoveRange(i, 2);
+            i -= 2;*/
+        }
+
+        /*private static Term operate(Term t1, string operation, Term t2)
         {
             if (operation == "+")
             {
@@ -85,7 +213,7 @@ namespace Calculator
             {
                 throw new NotSupportedException();
             }
-        }
+        }*/
 
         /*public static double radDegMode = 180 / Math.PI;
 
