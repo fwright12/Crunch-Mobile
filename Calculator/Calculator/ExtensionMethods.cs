@@ -5,9 +5,18 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Calculator;
+using Crunch.GraFX;
 
-namespace Xamarin.Forms
+namespace System
 {
+    public static class StringClassification
+    {
+        public static bool IsOpening(this char c) => c == '(' || c == '{' || c == '[';
+        public static bool IsClosing(this char c) => c == ')' || c == '}' || c == ']';
+        public static bool IsOperand(this string s) => s.Length == 1 && (s == "/" || s == "×" || s == "+" || s == "*" || s == "-");
+        public static bool IsNumber(this string s) => s.Length == 1 && ((s[0] >= 48 && s[0] <= 57) || s[0] == 46);
+    }
+
     public class print
     {
         public static void log(params object[] p)
@@ -15,10 +24,77 @@ namespace Xamarin.Forms
             string s = p[0].ToString();
             for (int i = 1; i < p.Length; i++)
                 s += ", " + p[i];
-            System.Diagnostics.Debug.WriteLine(s);
+            Diagnostics.Debug.WriteLine(s);
         }
     }
 
+    public static class ExtensionMethods
+    {
+        /// <summary>
+        /// Removes the last node of the LinkedList and returns it. Returns null if the list is empty
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        public static LinkedListNode<T> Pop<T>(this LinkedList<T> list)
+        {
+            LinkedListNode<T> temp = list.Last;
+            if (list.Count > 0)
+            {
+                list.RemoveLast();
+            }
+            return temp;
+        }
+
+        public static string Simple(this string str)
+        {
+            str = str.Trim();
+            switch (str)
+            {
+                case "÷": return "/";
+                case "×": return "*";
+                default: return str;
+            }
+        }
+
+        public static int ToInt(this bool sender)
+        {
+            if (sender)
+            {
+                return 1;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        public static int Bound(this int value, int low, int high)
+        {
+            if (value < low)
+                value = low;
+            else if (value > high)
+                value = high;
+
+            return value;
+        }
+
+        /// <summary>
+        /// Checks to see if value is between low and high (inclusive)
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="low"></param>
+        /// <param name="high"></param>
+        /// <returns></returns>
+        public static bool IsBetween(this int value, int low, int high)
+        {
+            return value >= low && value <= high;
+        }
+    }
+}
+
+namespace Xamarin.Forms
+{
     public static class ExtensionMethods
     {
         public static Element ParentElement(this View view)
@@ -61,10 +137,10 @@ namespace Xamarin.Forms
     
         public static int Index(this View view)
         {
-            if (view.Parent is Expression)
+            /*if (view.Parent is Expression)
             {
                 return (view.Parent as Expression).IndexOf(view);
-            }
+            }*/
             return (view.Parent as Layout<View>).Children.IndexOf(view);
         }
 
@@ -85,46 +161,6 @@ namespace Xamarin.Forms
                 print.log("View did not have a parent that could be cast to Layout<View>");
                 return false;
             }
-        }
-
-        public static int ToInt(this bool sender)
-        {
-            if (sender)
-            {
-                return 1;
-            }
-            else
-            {
-                return 0;
-            }
-        }
-
-        public static bool IsNumber(this string str)
-        {
-            char chr = str[0];
-            return (chr >= 48 && chr <= 57) || chr == 46;
-
-            //return str.Length == 1 && str[0] >= 97 && str[0] <= 122;
-        }
-
-        public static int Bound(this int value, int low, int high)
-        {
-            if (value < low)
-                value = low;
-            else if (value > high)
-                value = high;
-
-            return value;
-        }
-
-        public static bool IsBetween(this int value, int low, int high)
-        {
-            return value >= low && value <= high;
-        }
-
-        public static void FixDynamicLag(object o)
-        {
-            print.log(o as dynamic);
         }
     }
 }

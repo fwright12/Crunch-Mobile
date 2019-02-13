@@ -30,21 +30,21 @@
                         <local:LongClickableButton Grid.Row="0" Grid.Column="1" Text="7" />
                         <local:LongClickableButton Grid.Row="0" Grid.Column="2" Text="8" />
                         <local:LongClickableButton Grid.Row="0" Grid.Column="3" Text="9" />
-                        <local:LongClickableButton Grid.Row="0" Grid.Column="4" Text="&#247;" />
+                        <local:LongClickableButton Grid.Row="0" Grid.Column="4" Text="&#247;" StyleId="/" />
 
                         <local:LongClickableButton Grid.Row="1" Grid.Column="0" Text=")" />
                         <local:LongClickableButton Grid.Row="1" Grid.Column="1" Text="4" />
                         <local:LongClickableButton Grid.Row="1" Grid.Column="2" Text="5" />
                         <local:LongClickableButton Grid.Row="1" Grid.Column="3" Text="6" />
-                        <local:LongClickableButton Grid.Row="1" Grid.Column="4" Text="&#215;" />
+                        <local:LongClickableButton Grid.Row="1" Grid.Column="4" Text="&#215;"/>
 
-                        <local:LongClickableButton Grid.Row="2" Grid.Column="0" Text="x&#178;" />
+                        <local:LongClickableButton Grid.Row="2" Grid.Column="0" Text="x&#178;" StyleId="^2" />
                         <local:LongClickableButton Grid.Row="2" Grid.Column="1" Text="1" />
                         <local:LongClickableButton Grid.Row="2" Grid.Column="2" Text="2" />
                         <local:LongClickableButton Grid.Row="2" Grid.Column="3" Text="3" />
                         <local:LongClickableButton Grid.Row="2" Grid.Column="4" Text="-" />
 
-                        <local:LongClickableButton Grid.Row="3" Grid.Column="0" Text="x&#8319;" />
+                        <local:LongClickableButton Grid.Row="3" Grid.Column="0" Text="x&#8319;" StyleId="^" />
                         <local:LongClickableButton Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Text="0" />
                         <local:LongClickableButton Grid.Row="3" Grid.Column="3" Text="." />
                         <local:LongClickableButton Grid.Row="3" Grid.Column="4" Text="+" />

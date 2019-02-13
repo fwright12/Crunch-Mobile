@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 using Xamarin.Forms;
+using Crunch.GraFX;
 
 namespace Calculator
 {
@@ -19,14 +21,6 @@ namespace Calculator
         public static void Started(MainPage _graphics)
         {
             graphics = _graphics;
-        }
-
-        public static void Delete()
-        {
-            if (Cursor.Delete())
-            {
-
-            }
         }
 
         public static void CanvasTouch(Point pos)
@@ -59,63 +53,6 @@ namespace Calculator
         public static void MoveKeyboard(Point pos)
         {
             graphics.MoveKeyboard(pos);
-        }
-
-        public static Action Focus;
-
-        public static void Key(string key)
-        {
-            print.log("a " + key + " was pressed");
-            Expression backward = null;
-            Expression forward = null;
-            View node = parseKey(key, ref backward, ref forward);
-
-            Cursor.Add(node);
-            if (node is Expression)
-            {
-                (node as Expression).Build();
-            }
-
-            /*if (forward != null)
-            {
-                Grab(forward, node, 1);
-            }
-            if (backward != null)
-            {
-                Grab(backward, node, -1);
-            }*/
-
-            MainPage.SetAnswer();
-        }
-
-        private static View parseKey(string key, ref Expression backward, ref Expression forward)
-        {
-            switch (key)
-            {
-                case "÷":
-                    return new Fraction(new Expression(Cursor.Parent, -1), new Expression(Cursor.Parent, 0));
-                case "xⁿ":
-                    return new Exponent(Cursor.Parent, 0);
-                case "x²":
-                    return new Exponent(new Number("2"));
-                default:
-                    if (key.IsNumber())
-                    {
-                        return new Number(key);
-                    }
-                    else if (key == "-")
-                    {
-                        return new Minus();
-                    }
-                    else if (key == "(" || key == ")")
-                    {
-                        return new Text(key);
-                    }
-                    else
-                    {
-                        return new Text(" " + key + " ");
-                    }
-            }
         }
     }
 }

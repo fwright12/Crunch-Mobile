@@ -1,0 +1,191 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Crunch
+{
+    public class Node<T>
+    {
+        public T Value;
+        public Node<T> Next = null;
+        public Node<T> Previous = null;
+
+        public Node(T value)
+        {
+            Value = value;
+        }
+    }
+
+    public class Quantity
+    {
+        public LinkedList<Node<object>> e = new LinkedList<Node<object>>();
+        public LinkedList<Node<object>> d = new LinkedList<Node<object>>();
+        public LinkedList<Node<object>> m = new LinkedList<Node<object>>();
+        public LinkedList<Node<object>> a = new LinkedList<Node<object>>();
+        public LinkedList<Node<object>> s = new LinkedList<Node<object>>();
+
+        public Node<object> First => first;
+        public Node<object> Last => last;
+
+        protected Node<object> first = null;
+        protected Node<object> last = null;
+
+        public Quantity(params object[] list)
+        {
+            foreach(object o in list)
+            {
+                AddLast(o);
+            }
+        }
+
+        private Quantity(Node<object> first, Node<object> last)
+        {
+            if (first == null || last == null)
+            {
+                this.first = this.last = null;
+            }
+            else
+            {
+                first.Previous = null;
+                this.first = first;
+                last.Next = null;
+                this.last = last;
+            }
+        }
+
+        public void AddFirst(object o) => AddFirst(new Node<object>(o));
+        public void AddFirst(Node<object> node)
+        {
+            if (first == null)
+            {
+                first = last = node;
+            }
+            else
+            {
+                first.Previous = node;
+                node.Next = first;
+                first = node;
+            }
+        }
+
+        public void AddLast(object o) => AddLast(new Node<object>(o));
+        public void AddLast(Node<object> node)
+        {
+            if (last == null)
+            {
+                first = last = node;
+            }
+            else
+            {
+                last.Next = node;
+                node.Previous = last;
+                last = node;
+            }
+        }
+
+        /// <summary>
+        /// Splice in node after pos
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <param name="node"></param>
+        public void Splice(Node<object> pos, Node<object> node) => Splice(pos, node, node);
+
+        /// <summary>
+        /// Splice in the nodes from start to end after pos
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        public void Splice(Node<object> pos, Node<object> start, Node<object> end)
+        {
+            Node<object> endPos = (pos == null) ? first : pos.Next;
+
+            //Splice at beginning
+            if (pos == null)
+            {
+                first = start;
+            }
+            else
+            {
+                pos.Next = start;
+            }
+            start.Previous = pos;
+
+            //Splice at end
+            if (endPos == null)
+            {
+                last = end;
+            }
+            else
+            {
+                endPos.Previous = end;
+            }
+            end.Next = endPos;
+        }
+
+        public void Remove(Node<object> node) => Remove(node.Previous, node.Next);
+
+        /// <summary>
+        /// Remove everything between start and end
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        public void Remove(Node<object> start, Node<object> end)
+        {
+            if (start == null)
+            {
+                first = end;
+            }
+            else
+            {
+                start.Next = end;
+            }
+
+            if (end == null)
+            {
+                last = start;
+            }
+            else
+            {
+                end.Previous = start;
+            }
+        }
+
+        /// <summary>
+        /// Collapse everything between start and end into a single quantity
+        /// </summary>
+        /// <param name="previous"></param>
+        public Quantity Collapse(Node<object> start, Node<object> end)
+        {
+            Quantity q = new Quantity();
+
+            Node<object> begin = (start == null) ? first : start.Next;
+            Node<object> finish = (end == null) ? last : end.Previous;
+            //Check to make sure we're not trying to splice a null quantity
+            if (last != start && begin != null && finish != null)
+            {
+                q.Splice(null, begin, finish);
+                Remove(start, end);
+            }
+
+            Node<object> node = new Node<object>(q);
+            Splice(start, node);
+
+            return q;
+        }
+
+        bool forward = true;
+        public override string ToString()
+        {
+            string s = "(";
+            Node<object> temp = forward ? first : last;
+            while (temp != null)
+            {
+                s += temp.Value.ToString();
+                temp = forward ? temp.Next : temp.Previous;
+            }
+
+            return s + ")";
+        }
+    }
+}
