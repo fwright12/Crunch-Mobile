@@ -85,6 +85,12 @@ namespace Calculator
             }
             permanentKeys.Children.Add(dock);
 
+            //ad.IsVisible = false;
+            phantomCursorField.SizeChanged += delegate
+            {
+                ad.TranslationX = (phantomCursorField.Width - ad.Width) / 2;
+            };
+
             //Keyboard formatting
             buttonFormat(keyboard);
 
@@ -100,9 +106,9 @@ namespace Calculator
             };
 
             //Button hookup
-            left.Clicked += (sender, e) => Cursor.Left();
-            right.Clicked += (sender, e) => Cursor.Right();
-            delete.Clicked += (sender, e) => Cursor.Delete();
+            left.Clicked += (sender, e) => { if (Cursor.Parent != null) Cursor.Left(); };
+            right.Clicked += (sender, e) => { if (Cursor.Parent != null) Cursor.Right(); };
+            delete.Clicked += (sender, e) => { if (Cursor.Parent != null) Cursor.Delete(); };
             info.Clicked += (sender, e) => DisplayAlert("About Crunch",
                 "Thank you for using Crunch!\n\n" +
                 "A few tips about how to navigate the app: " + tips +
@@ -179,7 +185,7 @@ namespace Calculator
                     {
                         b.Clicked += delegate
                         {
-                            Input.Key(b.Text);
+                            if (Cursor.Parent != null) Input.Key(b.Text);
                             if (keypad.Children.IndexOf(b) % columns <= 0)
                             {
                                 keyboardScroll.ScrollToAsync(keypad, ScrollToPosition.End, false);
@@ -327,9 +333,18 @@ namespace Calculator
             if (focus != null)
             {
                 focus.SizeChanged -= Focus_SizeChanged;
+                if (focus.ChildCount == 0)
+                {
+                    focus.Parent.Remove();
+                }
             }
-            focus = e;
-            focus.SizeChanged += Focus_SizeChanged;
+
+            if (e != null)
+            {
+                focus = e;
+                focus.SizeChanged += Focus_SizeChanged;
+            }
+
             return focus;
         }
 
@@ -434,7 +449,7 @@ namespace Calculator
 
         private Point PositionOnCanvas(View view)
         {
-            if (view == canvas)
+            if (view == canvas || view is null)
             {
                 return Point.Zero;
             }

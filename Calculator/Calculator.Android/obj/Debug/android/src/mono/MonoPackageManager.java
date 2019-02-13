@@ -107,8 +107,6 @@ class MonoPackageManager_Resources {
 	public static final String[] Assemblies = new String[]{
 		/* We need to ensure that "Calculator.Android.dll" comes first in this list. */
 		"Calculator.Android.dll",
-		"Calculator.dll",
-		"ExifLib.dll",
 		"FormsViewGroup.dll",
 		"Xamarin.Android.Arch.Core.Common.dll",
 		"Xamarin.Android.Arch.Lifecycle.Common.dll",
@@ -133,6 +131,10 @@ class MonoPackageManager_Resources {
 		"Xamarin.Forms.Platform.Android.dll",
 		"Xamarin.Forms.Platform.dll",
 		"Xamarin.Forms.Xaml.dll",
+		"Xamarin.GooglePlayServices.Ads.dll",
+		"Xamarin.GooglePlayServices.Ads.Lite.dll",
+		"Xamarin.GooglePlayServices.Basement.dll",
+		"Xamarin.GooglePlayServices.Gass.dll",
 	};
 	public static final String[] Dependencies = new String[]{
 	};

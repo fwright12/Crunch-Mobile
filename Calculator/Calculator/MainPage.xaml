@@ -18,6 +18,8 @@
                 <local:GestureRelativeLayout x:Name="canvas">
                 </local:GestureRelativeLayout>
             </ScrollView>
+            
+            <local:BannerAd x:Name="ad"/>
         </local:ScrollSpy>
 
         <AbsoluteLayout x:Name="keyboardContainer">

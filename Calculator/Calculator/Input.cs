@@ -93,9 +93,9 @@ namespace Calculator
             switch (key)
             {
                 case "÷":
-                    return new Fraction(new Expression(Cursor.Parent, -1), new Expression(Cursor.Parent, 1));
+                    return new Fraction(new Expression(Cursor.Parent, -1), new Expression(Cursor.Parent, 0));
                 case "xⁿ":
-                    return new Exponent(Cursor.Parent, 1);
+                    return new Exponent(Cursor.Parent, 0);
                 case "x²":
                     return new Exponent(new Number("2"));
                 default:

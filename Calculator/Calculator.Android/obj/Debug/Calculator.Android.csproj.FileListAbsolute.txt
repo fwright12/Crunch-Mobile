@@ -1,115 +1,19 @@
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\Calculator.Android.csprojResolveAssemblyReference.cache
-C:\Calculator\Calculator\Calculator.Android\obj\Debug\Calculator.Android.csprojResolveAssemblyReference.cache
-C:\Calculator\Calculator\Calculator.Android\bin\Debug\Calculator.Android.dll.config
-C:\Calculator\Calculator\Calculator.Android\bin\Debug\Calculator.Android.dll
-C:\Calculator\Calculator\Calculator.Android\bin\Debug\Calculator.Android.pdb
-C:\Calculator\Calculator\Calculator.Android\bin\Debug\Crunch.Crunch.apk
-C:\Calculator\Calculator\Calculator.Android\bin\Debug\Crunch.Crunch-Signed.apk
-C:\Calculator\Calculator\Calculator.Android\bin\Debug\Calculator.dll
-C:\Calculator\Calculator\Calculator.Android\bin\Debug\ExifLib.dll
-C:\Calculator\Calculator\Calculator.Android\bin\Debug\FormsViewGroup.dll
-C:\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Android.Arch.Core.Common.dll
-C:\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Android.Arch.Lifecycle.Common.dll
-C:\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Android.Arch.Lifecycle.Runtime.dll
-C:\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Android.Support.Animated.Vector.Drawable.dll
-C:\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Android.Support.Annotations.dll
-C:\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Android.Support.Compat.dll
-C:\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Android.Support.Core.UI.dll
-C:\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Android.Support.Core.Utils.dll
-C:\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Android.Support.Design.dll
-C:\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Android.Support.Fragment.dll
-C:\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Android.Support.Media.Compat.dll
-C:\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Android.Support.Transition.dll
-C:\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Android.Support.v4.dll
-C:\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Android.Support.v7.AppCompat.dll
-C:\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Android.Support.v7.CardView.dll
-C:\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Android.Support.v7.MediaRouter.dll
-C:\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Android.Support.v7.Palette.dll
-C:\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Android.Support.v7.RecyclerView.dll
-C:\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Android.Support.Vector.Drawable.dll
-C:\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Forms.Core.dll
-C:\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Forms.Platform.Android.dll
-C:\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Forms.Platform.dll
-C:\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Forms.Xaml.dll
-C:\Calculator\Calculator\Calculator.Android\bin\Debug\Calculator.pdb
-C:\Calculator\Calculator\Calculator.Android\bin\Debug\Calculator.dll.config
-C:\Calculator\Calculator\Calculator.Android\bin\Debug\FormsViewGroup.pdb
-C:\Calculator\Calculator\Calculator.Android\bin\Debug\FormsViewGroup.dll.mdb
-C:\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Forms.Core.pdb
-C:\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Forms.Core.xml
-C:\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Forms.Core.dll.mdb
-C:\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Forms.Platform.Android.pdb
-C:\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Forms.Platform.Android.dll.mdb
-C:\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Forms.Xaml.pdb
-C:\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Forms.Xaml.xml
-C:\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Forms.Xaml.dll.mdb
-C:\Calculator\Calculator\Calculator.Android\obj\Debug\Calculator.Android.csproj.CoreCompileInputs.cache
-C:\Calculator\Calculator\Calculator.Android\obj\Debug\Calculator.Android.dll
-C:\Calculator\Calculator\Calculator.Android\obj\Debug\Calculator.Android.pdb
-C:\Calculator\Calculator\Calculator.Android\obj\Debug\android\bin\Crunch.Crunch.apk
-C:\Calculator\Calculator\Calculator.Android\obj\Debug\res\layout\tabbar.xml
-C:\Calculator\Calculator\Calculator.Android\obj\Debug\res\layout\toolbar.xml
-C:\Calculator\Calculator\Calculator.Android\obj\Debug\res\values\styles.xml
-C:\Calculator\Calculator\Calculator.Android\obj\Debug\res\values\colors.xml
-C:\Calculator\Calculator\Calculator.Android\obj\Debug\res\drawable\icon.png
-C:\Calculator\Calculator\Calculator.Android\obj\Debug\res\drawable-hdpi\icon.png
-C:\Calculator\Calculator\Calculator.Android\obj\Debug\res\drawable-xhdpi\icon.png
-C:\Calculator\Calculator\Calculator.Android\obj\Debug\res\drawable-xxhdpi\icon.png
-C:\Calculator\Calculator\Calculator.Android\obj\Debug\R.cs.flag
-C:\Calculator\Calculator\Calculator.Android\obj\Debug\uploadflags.txt
-C:\Calculator\Calculator\Calculator\bin\Debug\Calculator.dll
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\Calculator.Android.dll.config
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\Calculator.Android.dll
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\Calculator.Android.pdb
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\Crunch.Crunch.apk
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\Crunch.Crunch-Signed.apk
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\Calculator.dll
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\ExifLib.dll
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\FormsViewGroup.dll
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Android.Arch.Core.Common.dll
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Android.Arch.Lifecycle.Common.dll
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Android.Arch.Lifecycle.Runtime.dll
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Android.Support.Animated.Vector.Drawable.dll
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Android.Support.Annotations.dll
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Android.Support.Compat.dll
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Android.Support.Core.UI.dll
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Android.Support.Core.Utils.dll
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Android.Support.Design.dll
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Android.Support.Fragment.dll
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Android.Support.Media.Compat.dll
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Android.Support.Transition.dll
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Android.Support.v4.dll
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Android.Support.v7.AppCompat.dll
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Android.Support.v7.CardView.dll
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Android.Support.v7.MediaRouter.dll
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Android.Support.v7.Palette.dll
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Android.Support.v7.RecyclerView.dll
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Android.Support.Vector.Drawable.dll
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Forms.Core.dll
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Forms.Platform.Android.dll
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Forms.Platform.dll
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Forms.Xaml.dll
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\Calculator.pdb
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\Calculator.dll.config
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\Calculator.dll.mdb
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\FormsViewGroup.pdb
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\FormsViewGroup.dll.mdb
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Forms.Core.pdb
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Forms.Core.xml
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Forms.Core.dll.mdb
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Forms.Platform.Android.pdb
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Forms.Platform.Android.dll.mdb
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Forms.Xaml.pdb
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Forms.Xaml.xml
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Forms.Xaml.dll.mdb
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\com.GreenMountainLabs.Calculator.apk
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\com.GreenMountainLabs.Calculator-Signed.apk
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\Calculator.Android.csprojResolveAssemblyReference.cache
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\XbdMerge\Xamarin.GooglePlayServices.Basement.dll.stamp
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\XbdMerge\Xamarin.GooglePlayServices.Ads.Lite.dll.stamp
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\Calculator.Android.csproj.CoreCompileInputs.cache
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\Calculator.Droid.App.xaml.g.cs
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\Calculator.Droid.MainPage.xaml.g.cs
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\Calculator.Android.dll
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\Calculator.Android.pdb
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\android\bin\Crunch.Crunch.apk
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\android\bin\com.GreenMountainLabs.Calculator.apk
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\res\layout\tabbar.xml
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\res\layout\toolbar.xml
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\res\values\styles.xml
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\res\values\colors.xml
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\res\drawable\icon.png
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\res\drawable-hdpi\icon.png
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\res\drawable-xhdpi\icon.png
@@ -117,40 +21,46 @@ C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Andro
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\R.cs.flag
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\uploadflags.txt
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\Calculator.Android.dll.mdb
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\FormsViewGroup.dll.mdb
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Forms.Core.dll.mdb
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Forms.Platform.Android.dll.mdb
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Forms.Xaml.dll.mdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\android\assets\Calculator.Android.dll.mdb
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\android\assets\Calculator.dll.mdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\android\assets\FormsViewGroup.dll.mdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\android\assets\Xamarin.Forms.Core.dll.mdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\android\assets\Xamarin.Forms.Platform.Android.dll.mdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\android\assets\Xamarin.Forms.Xaml.dll.mdb
-bin\Debug\Calculator.dll.mdb
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\XbdMerge\Xamarin.GooglePlayServices.Gass.dll.stamp
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\XbdMerge\Xamarin.GooglePlayServices.Ads.dll.stamp
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\Calculator.Android.dll
+bin\Debug\FormsViewGroup.dll.mdb
+bin\Debug\Xamarin.Forms.Core.dll.mdb
+bin\Debug\Xamarin.Forms.Platform.Android.dll.mdb
+bin\Debug\Xamarin.Forms.Xaml.dll.mdb
+bin\Debug\Microsoft.CSharp.pdb
 bin\Debug\Mono.Android.pdb
-bin\Debug\Mono.Android.Export.pdb
 bin\Debug\mscorlib.pdb
 bin\Debug\System.Core.pdb
 bin\Debug\System.pdb
 bin\Debug\System.Xml.pdb
 bin\Debug\System.Xml.Linq.pdb
-bin\Debug\Microsoft.CSharp.pdb
 bin\Debug\System.Net.Http.pdb
 bin\Debug\System.Runtime.Serialization.pdb
 bin\Debug\System.ServiceModel.Internals.pdb
 bin\Debug\Mono.Security.pdb
 bin\Debug\System.ComponentModel.Composition.pdb
 obj\Debug\linksrc\Calculator.Android.dll.mdb
-obj\Debug\linksrc\Calculator.dll.mdb
 obj\Debug\linksrc\FormsViewGroup.dll.mdb
 obj\Debug\linksrc\Xamarin.Forms.Core.dll.mdb
 obj\Debug\linksrc\Xamarin.Forms.Platform.Android.dll.mdb
 obj\Debug\linksrc\Xamarin.Forms.Xaml.dll.mdb
+obj\Debug\linksrc\Microsoft.CSharp.pdb
 obj\Debug\linksrc\Mono.Android.pdb
-obj\Debug\linksrc\Mono.Android.Export.pdb
 obj\Debug\linksrc\mscorlib.pdb
 obj\Debug\linksrc\System.Core.pdb
 obj\Debug\linksrc\System.pdb
 obj\Debug\linksrc\System.Xml.pdb
 obj\Debug\linksrc\System.Xml.Linq.pdb
-obj\Debug\linksrc\Microsoft.CSharp.pdb
 obj\Debug\linksrc\System.Net.Http.pdb
 obj\Debug\linksrc\System.Runtime.Serialization.pdb
 obj\Debug\linksrc\System.ServiceModel.Internals.pdb

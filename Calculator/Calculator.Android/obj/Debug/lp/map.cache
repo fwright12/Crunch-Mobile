@@ -1,7 +1,4 @@
-Calculator
-ExifLib
 FormsViewGroup
-System.ObjectModel
 System.Runtime
 Xamarin.Android.Arch.Core.Common
 Xamarin.Android.Arch.Lifecycle.Common
@@ -26,8 +23,9 @@ Xamarin.Forms.Core
 Xamarin.Forms.Platform.Android
 Xamarin.Forms.Platform
 Xamarin.Forms.Xaml
-System.Resources.ResourceManager
-System.Diagnostics.Tools
-Xamarin.GooglePlayServices.Basement
 Xamarin.GooglePlayServices.Ads.Lite
+Xamarin.GooglePlayServices.Basement
+System.ComponentModel
+System.Reflection.Extensions
+Xamarin.GooglePlayServices.Ads
 Xamarin.GooglePlayServices.Gass

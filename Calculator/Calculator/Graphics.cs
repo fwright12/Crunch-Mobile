@@ -159,25 +159,29 @@ namespace Calculator
         {
             build = delegate
             {
-                Layout<View> temp = Cursor.Parent;
-                IList<View> list = temp.Children;
-                int index = temp.Children.IndexOf(MainPage.cursor) - 1;
+                Expression temp = Cursor.Parent;
+                IList<View> list = temp.children;
+                int index = list.IndexOf(MainPage.cursor) + direction * 2;
 
                 //Grab stuff while there is stuff to grab until we hit an operand, or we added the cursor last time
                 int imbalance = 0;
-                while ((index + direction).IsBetween(0, list.Count - 1) && !(list[index] is Cursor) && !(list[index + direction] is Text && (list[index + direction] as Text).IsOperand() && imbalance == 0))
+                View view = null;
+                while ((index).IsBetween(0, list.Count - 1) && !(view is Cursor) && !(list[index] is Text && (list[index] as Text).IsOperand() && imbalance == 0))
                 {
+                    view = list[index];
                     index += direction;
-                    if (list[index] is Text)
+
+                    if (view is Text)
                     {
-                        string s = (list[index] as Text).Text;
+                        string s = (view as Text).Text;
                         if (s == "(" || s == ")")
                         {
                             if (s == "(") imbalance++;
                             if (s == ")") imbalance--;
                         }
                     }
-                    Insert(ChildCount * (direction + 1) / -2, list[index]);
+
+                    Insert(ChildCount * (direction + 1), view);
                 }
 
                 if (ChildCount > 0 && ChildAt(ChildCount - 1) is Text && (ChildAt(ChildCount - 1) as Text).Text == ")" && ChildAt(0) is Text && (ChildAt(0) as Text).Text == "(")
@@ -326,7 +330,6 @@ namespace Calculator
             {
                 Expression e = view as Expression;
                 e.FontSize = e.Parent != null ? e.determineFontSize() : MainPage.fontSize;
-                e.MinimumHeightRequest = Input.textHeight * e.FontSize / MainPage.fontSize;
                 foreach(View v in e.children)
                 {
                     e.OnAdded(v);

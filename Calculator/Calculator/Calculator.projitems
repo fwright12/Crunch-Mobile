@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>{593F7D91-8A33-44A2-AA6E-8DA8D52505B4}</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Calculator</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)App.xaml" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)MainPage.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Crunch\Exponent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Crunch\Fraction.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Crunch\Math.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Crunch\Number.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Crunch\Term.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Cursor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ExtensionMethods.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graph.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Container.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Function.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Symbol.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Text.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Input.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Main.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MainPage.xaml.cs">
+      <DependentUpon>MainPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Playground.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TermConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Tips.xaml.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)desmos.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="$(MSBuildThisFileDirectory)Tips.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+</Project>

@@ -14,7 +14,7 @@ namespace Calculator
     {
         public Tips()
         {
-            InitializeComponent();
+            //InitializeComponent();
 
             CurrentPageChanged += delegate
             {

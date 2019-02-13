@@ -9,44 +9,40 @@ using Android.Graphics;
 using Android.Runtime;
 using Android.OS;
 
+using Android.Gms.Ads;
+
 [assembly: ExportRenderer(typeof(GestureRelativeLayout), typeof(AndroidRelativeLayoutRenderer))]
 [assembly: ExportRenderer(typeof(LongClickableButton), typeof(LongClickableButtonRenderer))]
 [assembly: ExportRenderer(typeof(Mask), typeof(MaskRenderer))]
 [assembly: ExportRenderer(typeof(ScrollSpy), typeof(ScrollSpyRenderer))]
 [assembly: ExportRenderer(typeof(Answer), typeof(TouchEnabledViewRenderer))]
 [assembly: ExportRenderer(typeof(DockButton), typeof(DockButtonRenderer))]
-//[assembly: ExportRenderer(typeof(BannerAd), typeof(BannerAdRenderer))]
+[assembly: ExportRenderer(typeof(BannerAd), typeof(BannerAdRenderer))]
 
 namespace Calculator.Droid
 {
-    /*public class BannerAdRenderer : ViewRenderer
+    public class BannerAdRenderer : ViewRenderer<BannerAd, AdView>
     {
-        string adUnitId = string.Empty;
         //Note you may want to adjust this, see further down.
-        AdSize adSize = AdSize.SmartBanner;
         AdView adView;
         AdView CreateNativeAdControl()
         {
             if (adView != null)
                 return adView;
 
-            // This is a string in the Resources/values/strings.xml that I added or you can modify it here. This comes from admob and contains a / in it
-            adUnitId = Forms.Context.Resources.GetString(Resource.String.banner_ad_unit_id);
-            adView = new AdView(Forms.Context);
-            adView.AdSize = adSize;
-            adView.AdUnitId = adUnitId;
+            adView = new AdView(Context);
+            adView.AdSize = AdSize.Banner;
+            adView.AdUnitId = "ca-app-pub-1795523054003202/4422905833";
 
-            var adParams = new LinearLayout.LayoutParams(LayoutParams.WrapContent, LayoutParams.WrapContent);
+            //var adParams = new Android.Widget.LinearLayout.LayoutParams(LayoutParams.WrapContent, LayoutParams.WrapContent);
 
-            adView.LayoutParameters = adParams;
+            //adView.LayoutParameters = adParams;
 
-            adView.LoadAd(new AdRequest
-                            .Builder()
-                            .Build());
+            adView.LoadAd(new AdRequest.Builder().Build());
             return adView;
         }
 
-        protected override void OnElementChanged(ElementChangedEventArgs<Controls.AdControlView> e)
+        protected override void OnElementChanged(ElementChangedEventArgs<BannerAd> e)
         {
             base.OnElementChanged(e);
             if (Control == null)
@@ -55,37 +51,7 @@ namespace Calculator.Droid
                 SetNativeControl(adView);
             }
         }
-    }*/
-
-    /*public class BannerAdRenderer : ViewRenderer
-    {
-        /// <summary>
-        /// Used for registration with dependency service
-        /// </summary>
-        public static void Init() { }
-
-        /// <summary>
-        /// reload the view and hit up google admob 
-        /// </summary>
-        /// <param name="e"></param>
-        protected override void OnElementChanged(ElementChangedEventArgs<Xamarin.Forms.View> e)
-        {
-            base.OnElementChanged(e);
-
-            //convert the element to the control we want
-            var adMobElement = Element as BannerAdRenderer;
-
-            if ((adMobElement != null) && (e.OldElement == null))
-            {
-                BannerAd ad = new BannerAd(Context);
-                ad.adSize = AdSize.Banner;
-                ad.AdUnitId = adMobElement.AdUnitId;
-                var requestbuilder = new AdRequest.Builder();
-                ad.LoadAd(requestbuilder.Build());
-                this.SetNativeControl(ad);
-            }
-        }
-    }*/
+    }
 
     public class DockButtonRenderer : ButtonRenderer
     {
@@ -151,7 +117,8 @@ namespace Calculator.Droid
             base.OnElementChanged(e);
 
             if (Control != null)
-            {                
+            {
+                Control.SetAllCaps(false);
                 Control.LongClick += (sender, args) => Input.LongClickDown(Element, MaskRenderer.point, true);
             }
         }
