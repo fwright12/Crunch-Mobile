@@ -4,11 +4,90 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Crunch;
+
 namespace Calculator
 {
-    public static class Crunch
+    public static class Cruncher
     {
-        public static double radDegMode = 180 / Math.PI;
+        public static Term Evaluate(List<Graphics.Symbol> calculate)
+        {
+            //Combine numbers
+            for (int i = 0; i < calculate.Count; i++)
+            {
+                if (calculate[i].GetType() == typeof(Graphics.Number))
+                {
+                    string number = "";
+
+                    int j = i;
+                    while (j < calculate.Count && calculate[j].GetType() == typeof(Graphics.Number))
+                    {
+                        number += (calculate[j] as Graphics.Number).text;
+                        j++;
+                    }
+
+                    calculate.RemoveRange(i, j - i);
+                    calculate.Insert(i, new Graphics.Number(number));
+                }
+                /*else if (calculate[i].GetType() != typeof(Graphics.Text) || calculate[i].GetType() != typeof(Graphics.Layout))
+                {
+                    calculate.RemoveAt(i--);
+                }*/
+            }
+
+            var operands = new List<string>();
+            var terms = new List<Term>();
+
+            print.log("start");
+            for (int i = 0; i < calculate.Count; i++)
+            {
+                print.log(calculate[i]);
+                try
+                {
+                    terms.Add(calculate[i] as dynamic);
+                }
+                catch
+                {
+                    print.log("threw error");
+                    if (calculate[i].GetType() == typeof(Graphics.Text) && (calculate[i] as Graphics.Text).IsOperand())
+                    {
+                        operands.Add((calculate[i] as Graphics.Text).text);
+                    }
+                }
+            }
+            foreach (Term t in terms)
+                print.log(t);
+            foreach (string s in operands)
+                print.log(s);
+
+            for (int i = 0; i < calculate.Count; i++)
+            {
+                if (calculate[i].GetType() == typeof(Graphics.Text) && calculate[i].GetType() != typeof(Graphics.Number))
+                {
+                    //calculate[i - 1] = operate((calculate[i - 1] as Graphics.Number), (calculate[i] as Graphics.Text).text, (calculate[i + 1] as Graphics.Number));
+                }
+            }
+
+            return new Number(1);
+        }
+
+        private static Term operate(Term t1, string operation, Term t2)
+        {
+            if (operation == "+")
+            {
+                return t1 + t2;
+            }
+            else if (operation == "*")
+            {
+                return t1 * t2;
+            }
+            else
+            {
+                throw new NotSupportedException();
+            }
+        }
+
+        /*public static double radDegMode = 180 / Math.PI;
 
         public static Term Evaluate(Expression sent)
         {
@@ -60,7 +139,7 @@ namespace Calculator
                 {
                     calculate[i] = ((Expression)calculate[i]).answer as Term;
                 }
-                else if (t == typeof(Text))
+                else if (t == typeof(Symbol))
                 {
                     calculate.RemoveAt(i--);
                 }
@@ -155,6 +234,6 @@ namespace Calculator
             }
 
             return answer;
-        }
+        }*/
     }
 }

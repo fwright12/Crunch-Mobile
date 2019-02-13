@@ -4,42 +4,82 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Graphics;
+
 namespace Calculator
 {
     public delegate void CursorListener(object sender);
 
-    public static class Input
+    public static partial class Input
+    {
+
+    }
+
+    public static partial class Input
     {
         public static Equation selected;
+        public static GraphicsEngine select;
 
         //public static IGraphicsHandler graphicsHandler;
-        public static IGraphicsHandler graphicsHandler;// = Xamarin.Forms.DependencyService.Get<IGraphicsHandler>();
 
         public static object cursor;
         public static object phantomCursor;
         public static List<Symbol> adding = new List<Symbol>();
+        public static int minHeight;
 
-        public static void test(this Dictionary<Android.Views.View, Symbol> hi)
+        public static List<Graphics.Symbol> GetBefore(this LinkedListNode<Graphics.Text> sender)
         {
-
+            return new List<Graphics.Symbol>();
         }
 
-        public static void Send(string s)
+        public static LinkedListNode<Graphics.Symbol> GetNode(this LinkedListNode<Graphics.Symbol> sender)
         {
-            if (selected != null)
+            if (sender.List != null)
             {
-                selected.Insert(Wrap(s));
+                sender.List.Remove(sender);
+            }
+            return sender;
+        }
+
+        public static List<Symbol> Copy(this List<Symbol> sender, params Symbol[] add)
+        {
+            List<Symbol> temp = new List<Symbol>();
+            foreach (Symbol s in sender)
+                temp.Add(s);
+            foreach (Symbol s in add)
+                temp.Add(s);
+            return temp;
+        }
+
+        public static LinkedListNode<Graphics.Symbol> Next<T>(this LinkedListNode<Graphics.Symbol> sender)
+        {
+            LinkedListNode<Graphics.Symbol> main = sender.Next;
+
+            while (main.Value.GetType() != typeof(T))
+            {
+                main = main.List.First;
+            }
+
+            return main;
+        }
+
+        public static void FixDynamicLag(object o)
+        {
+            print.log(o as dynamic);
+        }
+
+        public static void Send(params string[] s)
+        {
+            if (select != null)
+            {
+                select.Wrapper(s);
+                //selected.Insert(Wrap(s));
             }
         }
 
-        public static void Set(Equation sender)
+        public static void Set(GraphicsEngine sender)
         {
-            if (selected != null)
-            {
-                graphicsHandler.acursor -= selected.cursorListener;
-            }
-            graphicsHandler.acursor += sender.cursorListener;
-            selected = sender;
+            select = sender;
         }
 
         public static void SetCursor(object test, int i = 0)
@@ -47,7 +87,7 @@ namespace Calculator
             
         }
 
-        public static Symbol Wrap(string s)
+        /*public static Symbol Wrap(string s)
         {
             switch (s)
             {
@@ -59,7 +99,7 @@ namespace Calculator
                     return new Operand(s);
                 case "(":
                 case ")":
-                    return new Text(s);
+                    return new Symbol(s);
                 default:
                     if (Input.IsNumber(s))
                     {
@@ -67,14 +107,14 @@ namespace Calculator
                     }
                     else if (Input.IsVariable(s))
                     {
-                        return new Text(s);
+                        return new Symbol(s);
                     }
                     else
                     {
                         return new Function(s);
                     }
             }
-        }
+        }*/
 
         //Parse inputed list of symbols for expressions, fractions, and exponents
         /*public static List<Symbol> Parse(List<Symbol> sender)

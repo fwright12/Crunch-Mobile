@@ -18,23 +18,23 @@ namespace Calculator
             SetParent(index, Parent);
         }
 
-        public Graphic(object Parent, Symbol Text, int index)
+        /*public Graphic(object Parent, Symbol Text, int index)
         {
-            child = MathView.Create((dynamic)Text);
+            //child = MathView.Create((dynamic)Text);
 
             SetParent(index, Parent);
-        }
+        }*/
 
         public void SetParent(int index, object newParent)
         {
-            try
+            /*try
             {
                 Input.graphicsHandler.RemoveChild(parent, child);
             }
             catch { }
 
             Input.graphicsHandler.AddChild(newParent, child, index);
-            parent = newParent;
+            parent = newParent;*/
         }
     }
 }

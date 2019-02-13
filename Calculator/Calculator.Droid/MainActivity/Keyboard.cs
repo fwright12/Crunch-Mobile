@@ -15,8 +15,6 @@ namespace Calculator.Droid
 {
     public partial class MainActivity
     {
-        public event CursorListener acursor;
-
         private TableLayout keyboard;
         private LinearLayout arrowKeys;
 
@@ -65,7 +63,7 @@ namespace Calculator.Droid
         private DateTime startTime;
         private static int minDistance = 100;
 
-        public event OverlapListener cursorMoved;
+        public event OverlapListener checkOverlap;
 
         private void KeyTouch(object sender, View.TouchEventArgs e)
         {
@@ -81,8 +79,14 @@ namespace Calculator.Droid
                 case MotionEventActions.Up:
                     float endPosition = e.Event.GetX();
 
+                    if (arrowKeys.IsShown)
+                    {
+                        (Input.selected.graphicsEngine.AndroidGraphics.root.Parent as ViewGroup).RemoveView(Input.phantomCursor as View);
+
+                        arrowKeys.Visibility = ViewStates.Gone;
+                    }
                     //Check for swipe to dismiss keyboard
-                    if (endPosition < startPosition && Math.Abs(endPosition - startPosition) > minDistance && (DateTime.Now - startTime).TotalMilliseconds < 500)
+                    else if (endPosition < startPosition && Math.Abs(endPosition - startPosition) > minDistance)// && (DateTime.Now - startTime).TotalMilliseconds < 500)
                     {
                         HideKeyboard();
                     }
@@ -94,18 +98,21 @@ namespace Calculator.Droid
                         int[] window = new int[2];
                         keyboard.GetLocationInWindow(window);
 
-                        float expand = 1.25f;
+                        float expand = 1.5f;
                         float x = Math.Max(0, Math.Min(1, e.Event.RawX / keyboard.Width * expand - (expand - 1f) / 2f));
                         float y = Math.Max(0, Math.Min(1, (e.Event.RawY - window[1]) / keyboard.Height * expand - (expand - 1f) / 2f));
 
                         View s = sender as View;
-                        View v = Input.selected.layout as View;
+                        ViewGroup v = Input.selected.graphicsEngine.AndroidGraphics.root.GetChildAt(0) as ViewGroup;
                         View c = Input.phantomCursor as View;
+
                         c.SetX(Math.Min(x * v.Width, v.Width - c.Width));
                         c.SetY(Math.Min(y * v.Height, v.Height - c.Height));
 
-                        cursorMoved();
-                        
+                        Input.selected.graphicsEngine.AndroidGraphics.CheckOverlap();
+
+                        //checkOverlap();
+
                         /*View child;
                         try
                         {
@@ -146,6 +153,8 @@ namespace Calculator.Droid
             arrowKeys.SetBackgroundColor(new Color(72, 72, 72, 225));
             arrowKeys.LayoutParameters = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, keyboard.Height);
             arrowKeys.Visibility = ViewStates.Visible;
+
+            (Input.selected.graphicsEngine.AndroidGraphics.root.Parent as ViewGroup).AddView(Input.phantomCursor as View);
 
             Vibrator v = (Vibrator)GetSystemService(VibratorService);
             v.Vibrate(100);

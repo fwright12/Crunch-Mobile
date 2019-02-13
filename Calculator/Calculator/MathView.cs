@@ -6,16 +6,9 @@ using System.Threading.Tasks;
 
 namespace Calculator
 {
-    public delegate void OverlapListener();
-
     public class MathView
     {
-        public static Dictionary<string, List<string>> supportedFunctions = new Dictionary<string, List<string>>()
-        {
-            { "Pythagorean Theorem", new List<string> {"(", "(", "a", ")", "^", "(", "2", ")", ")", "+", "(", "(", "b", ")", "^", "(", "2", ")", ")", "=", "(", "(", "c", ")", "^", "(", "2", ")", ")"} }
-        };
-
-        public object root;
+        /*public object root;
 
         public Dictionary<Symbol, Graphic> views = new Dictionary<Symbol, Graphic>();
         //public Dictionary<Symbol, SymbolView<dynamic>> views = new Dictionary<Symbol, SymbolView<dynamic>>();
@@ -150,6 +143,6 @@ namespace Calculator
         public static object Create(Bar sender)
         {
             return Input.graphicsHandler.AddBar();
-        }
+        }*/
     }
 }

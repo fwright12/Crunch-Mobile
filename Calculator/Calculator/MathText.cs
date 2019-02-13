@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Graphics;
+
 namespace Calculator
 {
     public class MathText : List<Symbol>
@@ -19,6 +21,12 @@ namespace Calculator
                 return base.IndexOf(sender);
             }
         }*/
+
+        public new void Insert(int index, Symbol sender)
+        {
+            base.Insert(index, sender);
+            //Input.adding.Add(sender);
+        }
 
         //Parse inputed list of symbols for expressions, fractions, and exponents
         public List<Symbol> Parse()
@@ -37,9 +45,9 @@ namespace Calculator
             //Search for and create expressions
             for (int i = 0; i < list.Count; i++)
             {
-                if (list[i].text == "(")
+                if ("" == "(")
                 {
-                    Text other = findMatching(list[i] as Text);
+                    Symbol other = null;// findMatching(list[i] as Symbol);
 
                     if (list.Contains(other))
                     {
@@ -50,19 +58,19 @@ namespace Calculator
                         //Remove the parentheses and everything in between
                         list.RemoveRange(i, index - i + 1);
 
-                        if (temp.Count == 1 && (temp[0].GetType() == typeof(Fraction) || temp[0].GetType() == typeof(Exponent)))
+                        /*if (temp.Count == 1 && (temp[0].GetType() == typeof(Fraction) || temp[0].GetType() == typeof(Exponent)))
                         {
                             list.Insert(i, temp[0]);
                         }
                         else
                         {
-                            list.Insert(i, new Expression(temp));
-                        }
+                            //list.Insert(i, new Expression(temp));
+                        }*/
                     }
                 }
             }
 
-            for (int i = 0; i < list.Count; i++)
+            /*for (int i = 0; i < list.Count; i++)
             {
                 if (i + 1 < list.Count && list[i + 1].text == "/")
                 {
@@ -82,7 +90,7 @@ namespace Calculator
                 {
                     result.Add(list[i]);
                 }
-            }
+            }*/
 
             /*print.log("----parsed list-----");
             foreach (Symbol s in result)
@@ -92,11 +100,11 @@ namespace Calculator
             return result;
         }
 
-        public Text findMatching(Text first)
+        /*public Symbol findMatching(Symbol first)
         {
             int dir = 1;
-            if (first.text == ")")
-                dir = -1;
+            //if (first.text == ")")
+              //  dir = -1;
 
             int count = 0;
 
@@ -118,12 +126,12 @@ namespace Calculator
 
             if (index < Count)
             {
-                return this[index] as Text;
+                return this[index] as Symbol;
             }
             else
             {
                 return null;
             }
-        }
+        }*/
     }
 }

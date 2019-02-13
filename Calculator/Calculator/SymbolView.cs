@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Calculator
 {
-    public class SymbolView
+    /*public class SymbolView
     {
         public Symbol symbol;
         public OverlapListener overlapListener;
@@ -18,7 +18,7 @@ namespace Calculator
             overlapListener = new OverlapListener(checkOverlap);
             //UIObject = GraphicsEngine.Create(sender as dynamic);
 
-            Input.graphicsHandler.cursorMoved += overlapListener;
+            //Input.graphicsHandler.cursorMoved += overlapListener;
         }
 
         public void checkOverlap()
@@ -33,5 +33,5 @@ namespace Calculator
             //Input.graphicsHandler.RemoveChild(Parent, UIObject);
             //Input.graphicsHandler.AddChild(newParent, UIObject, index);
         }
-    }
+    }*/
 }

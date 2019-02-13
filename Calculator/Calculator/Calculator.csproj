@@ -33,21 +33,29 @@
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="AndroidGraphics.cs" />
     <Compile Include="BiDictionary.cs" />
-    <Compile Include="GraphicsEngine.cs" />
+    <Compile Include="Graphics.cs" />
     <Compile Include="Input.cs" />
     <Compile Include="Equation.cs" />
     <Compile Include="Expression.cs" />
     <Compile Include="Format.cs" />
     <Compile Include="Graphic.cs" />
-    <Compile Include="IGraphicsHandler.cs" />
+    <Compile Include="IRenderer.cs" />
     <Compile Include="Inputa.cs" />
     <Compile Include="Crunch.cs" />
     <Compile Include="MathText.cs" />
     <Compile Include="MathView.cs" />
+    <Compile Include="OperatorOverloads.cs" />
+    <Compile Include="Playground.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Symbol.cs" />
+    <Compile Include="Symbol\Function.cs" />
+    <Compile Include="Symbol\Symbol.cs" />
     <Compile Include="SymbolView.cs" />
+    <Compile Include="Symbol\Fraction.cs" />
+    <Compile Include="Symbol\Exponent.cs" />
+    <Compile Include="Symbol\Number.cs" />
+    <Compile Include="Symbol\Term.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Mono.Android">

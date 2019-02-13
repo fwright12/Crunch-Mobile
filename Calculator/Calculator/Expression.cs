@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Calculator
 {
-    public class Expression : Symbol
+    /*public class Expression : Symbol
     {
         public static bool showDecimal = false;
 
@@ -26,21 +26,21 @@ namespace Calculator
             {
                 try
                 {
-                    return evaluate();
+                    return Crunch.Evaluate(this);
                 }
                 catch
                 {
-                    if (parts.Count == 0)
-                        return new Text("");
-                    else
-                        return new Text("error");
+                    //if (parts.Count == 0)
+                        return new Symbol("");
+                    //else
+                    //    return new Text("error");
                 }
             }
         }
 
         public Expression()
         {
-            parts = new List<Symbol> { new Space() };
+            parts = new List<Symbol> { };
         }
 
         public Expression(params Symbol[] list)
@@ -97,7 +97,7 @@ namespace Calculator
                 {
                     calculate[i] = ((Expression)calculate[i]).answer as Term;
                 }
-                else if (t == typeof(Text))
+                else if (t == typeof(Symbol))
                 {
                     calculate.RemoveAt(i--);
                 }
@@ -241,7 +241,7 @@ namespace Calculator
 
             return answer;
         }
-    }
+    }*/
 
     public class print
     {

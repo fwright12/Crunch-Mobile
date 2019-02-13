@@ -24,7 +24,7 @@ namespace Calculator.Droid
             FindViewById<Button>(Resource.Id.FunctionalityButton).Click += ShowFunctionsMenu;
 
             //Formatting for formulas in menu
-            foreach (string s in MathView.supportedFunctions.Keys)
+            foreach (string s in GraphicsEngine.supportedFunctions.Keys)
             {
                 TextView temp = new TextView(this);
                 temp.Text = s;

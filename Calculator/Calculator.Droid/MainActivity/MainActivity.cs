@@ -14,24 +14,13 @@ using Android.Graphics.Drawables;
 using System.Collections.Specialized;
 using Android.Text;
 
+using Crunch;
+
 [assembly: Xamarin.Forms.Dependency(typeof(Calculator.Droid.MainActivity))]
 namespace Calculator.Droid
 {
-    public class test : tester
-    {
-        public test()
-        {
-            new TextView(Application.Context);
-        }
-
-        public override void testing()
-        {
-            throw new NotImplementedException();
-        }
-    }
-
     [Activity (Label = "CalcuPad - Debug", MainLauncher = true, Icon = "@drawable/icon")]
-	public partial class MainActivity : Activity, IGraphicsHandler
+	public partial class MainActivity : Activity
     {
         public static string screenSize = "xLarge";
         public static RelativeLayout canvas;
@@ -39,7 +28,7 @@ namespace Calculator.Droid
         protected override void OnCreate (Bundle bundle)
 		{
             //Bogus operation to remove later lag - problem with dynamic?
-            new Expression().FixWeirdError();
+            Input.FixDynamicLag("");
 
             base.OnCreate (bundle);
 
@@ -53,11 +42,17 @@ namespace Calculator.Droid
 
             //Assign other necessary variables
             //Input.graphicsHandler = this;
-            Input.cursor = AddCursor();
-            Input.phantomCursor = AddCursor();
+            Input.cursor = GraphicsEngine.renderFactory.Cursor();
+            canvas.AddView(Input.cursor as View);
+            Input.minHeight = (Input.cursor as View).Height;
+            canvas.RemoveView(Input.cursor as View);
+            print.log("LSJDFL:JSDLJLSDKFJ " + Input.minHeight);
+
+            Input.phantomCursor = GraphicsEngine.renderFactory.Cursor();
             Equation.canvas = canvas;
-            Input.graphicsHandler = this;
-            GraphicsEngine<View, ViewGroup>.RenderFactory = this;
+            GraphicsEngine.canvas = canvas;
+            GraphicsEngine<View, ViewGroup>.canvas = canvas;
+            //GraphicsEngine<View, ViewGroup>.RenderFactory = this;
 
             //Disable system keyboard
             Window.SetSoftInputMode(SoftInput.StateAlwaysHidden);
@@ -143,7 +138,7 @@ namespace Calculator.Droid
 
         private void toggleAnswer(object sender, EventArgs e)
         {
-            Expression.showDecimal = !Expression.showDecimal;
+            //Expression.showDecimal = !Expression.showDecimal;
         }
 
         private void LongClicked(object sender, View.LongClickEventArgs e)
@@ -162,12 +157,7 @@ namespace Calculator.Droid
                 return;
             Console.WriteLine("canvas touched");
 
-            if (selected != null)
-            {
-                selected.SetBackgroundColor(Color.Transparent);
-            }
-
-            //Hide functionality menu, add show keyboard
+            //Hide functionality menu, and show keyboard
             HideFunctionsMenu();
             ShowKeyboard();
 
@@ -186,15 +176,32 @@ namespace Calculator.Droid
             Input.selected = new Input(new MathView(layout));
             Input.selected.mathView.SetText(Input.selected.text);*/
 
-            Input.Set(new Equation());
             /*LinearLayout layout = Input.selected.root as LinearLayout;
             RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WrapContent, ViewGroup.LayoutParams.WrapContent);
             param.SetMargins((int)e.GetX(), (int)e.GetY(), 0, 0);
             layout.LayoutParameters = param;*/
-            RelativeLayout layout = Input.selected.layout as RelativeLayout;
+
+            //RelativeLayout layout = temp.root as RelativeLayout;
+
+            RelativeLayout layout = new RelativeLayout(this);
             layout.SetX((int)e.GetX());
             layout.SetY((int)e.GetY());
             layout.SetGravity(GravityFlags.Center);
+            //canvas.AddView(layout);
+
+            GraphicsEngine temp = new GraphicsEngine(layout);
+            //ViewGroup root = temp.graphicsEngine.AndroidGraphics.root;
+            //canvas.RemoveView(root);
+            //layout.AddView(root);
+            //LinearLayout root = linearLayout();
+            //layout.AddView(root);
+            //temp.graphicsEngine.AndroidGraphics.Initialize(layout);
+
+            //temp.graphicsEngine.AndroidGraphics.root = layout;
+            //temp.graphicsEngine.AndroidGraphics.root.AddView((View)(Input.cursor = Cursor()));
+
+            Input.Set(temp);
+            //Input.Send("9", "+", "7", "/", "8");
         }
 
         //Not sure if this will be needed yet
