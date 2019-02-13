@@ -140,7 +140,7 @@ namespace Crunch.GraFX
             {
                 s += v.ToString().Simple().Trim();
             }
-            return s;
+            return "(" + s + ")";
         }
     }
 }

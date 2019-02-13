@@ -269,9 +269,10 @@ namespace Crunch
 
             private void exponentiate(Operand o)
             {
-                if (o is Term && (o as Term).IsConstant)
+                Term t = !(o is Fraction) ? (Term)(o as dynamic) : null;
+                if (t != null && t.IsConstant)
                 {
-                    coefficient = System.Math.Pow(coefficient, (o as Term).coefficient);
+                    coefficient = System.Math.Pow(coefficient, t.coefficient);
                 }
 
                 var temp = new List<object>(members.Count);

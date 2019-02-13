@@ -43,7 +43,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)OrderedDictionary.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OrderedTrie.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Playground.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Quantity.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SoftKeyboard.cs" />

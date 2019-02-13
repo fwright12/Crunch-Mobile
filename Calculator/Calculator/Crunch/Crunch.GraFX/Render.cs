@@ -6,25 +6,20 @@ using Xamarin.Forms;
 
 namespace Crunch.GraFX
 {
-    using Resolver = Action<Quantity, Node<object>>;
-
     public static class Render
     {
-        private static OrderedDictionary<string, Resolver> operations = new OrderedDictionary<string, Resolver>();
+        private static OrderedTrie<Operator> operations = new OrderedTrie<Operator>();
 
         static Render()
         {
-            Resolver exponent = (q, n) => Parse.BinaryOperator(q, n, (o1, o2) => new Quantity(o1, new Exponent(o2.Wrap())));
-            Resolver fraction = (q, n) => Parse.BinaryOperator(q, n, (o1, o2) => new Fraction(new Expression(o1.Wrap()), new Expression(o2.Wrap())));
-
-            operations.Add("^", exponent);
-            operations.Add("/", fraction);
+            operations.Add("^", Parse.BinaryOperator((o1, o2) => new Quantity(o1, new Exponent(o2.Wrap()))));
+            operations.Add("/", Parse.BinaryOperator((o1, o2) => new Fraction(new Expression(o1.Wrap()), new Expression(o2.Wrap()))));
         }
 
         public static View[] Math(string str)
         {
             Action<Quantity> parentheses = (q) => { q.AddFirst("("); q.AddLast(")"); };
-            Func<object, object> negate = (o) => "-" + o.ToString();
+            Func<object, object> negate = (o) => new Quantity("-", o);
             /*Resolver negate = (q, n) =>
             {
                 //if (n.Previous != null && n.Next != null && (n.Previous.Value is string && operations.ContainsKey(n.Previous.Value.ToString())))

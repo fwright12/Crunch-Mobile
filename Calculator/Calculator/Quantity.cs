@@ -10,9 +10,24 @@ namespace Crunch
         public Node<T> Next = null;
         public Node<T> Previous = null;
 
+        private static Func<Node<T>, Node<T>> next = (node) => node.Next;
+        private static Func<Node<T>, Node<T>> previous = (node) => node.Previous;
+
         public Node(T value)
         {
             Value = value;
+        }
+
+        public static Node<T> operator +(Node<T> node, int i) => iterate(i < 0 ? previous : next, node, i);
+        //public static Node<T> operator -(Node<T> node, int i) => iterate(previous, node, i);
+
+        private static Node<T> iterate(Func<Node<T>, Node<T>> iterator, Node<T> node, int iterations)
+        {
+            for(int i = 0; i < System.Math.Abs(iterations); i++)
+            {
+                node = iterator(node);
+            }
+            return node;
         }
     }
 
@@ -85,6 +100,8 @@ namespace Crunch
             }
         }
 
+        public void Replace(Node<object> node, Node<object> replacement) => Replace(node, node, replacement);
+
         /// <summary>
         /// Replace the nodes from start to end with replacement
         /// </summary>
@@ -141,7 +158,14 @@ namespace Crunch
             end.Next = endPos;
         }
 
-        public void Remove(Node<object> node) => Remove(node.Previous, node.Next);
+        public Node<object> Remove(Node<object> node)
+        {
+            if (node != null)
+            {
+                Remove(node?.Previous, node?.Next);
+            }
+            return node;
+        }
 
         /// <summary>
         /// Remove everything between start and end
@@ -176,7 +200,7 @@ namespace Crunch
             Node<object> temp = forward ? first : last;
             while (temp != null)
             {
-                s += temp.Value.ToString();
+                s += temp.Value?.ToString() ?? "null";
                 temp = forward ? temp.Next : temp.Previous;
             }
 

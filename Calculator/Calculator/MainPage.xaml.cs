@@ -128,26 +128,10 @@ namespace Calculator
                 page.Children.Remove(l);
 
                 //test();
-
-                //Expression a = new Expression(Render.Math("6-(3/2+4^(7-5))/(8^2*4)+2^(2+3)"));
-                //Expression a = Render.Math("8/8/8+2^2^2");
-                //Expression a = new Expression(Render.Math("3+476576/9878-56^2876"));
-                //Expression a = new Expression(Render.Math("6+(8-3)*(3/9)/5+2^2"));
-                //Expression a = new Expression(Render.Math("-1--4/5+2^-2+4/-5+5*-6-"));
-                /*Expression a = new Expression(Render.Math(Crunch.Math.Evaluate("2^-1^2").ToString()));
-                (canvas as Layout<View>).Children.Add(a);
-                a.TranslationY = 200;
-                a.BackgroundColor = Color.Transparent;*/
             };
 
             visiblePage = this;
             page.Touch += (point) => Drag.UpdatePosition(point);
-
-            /*Crunch.Math.Constant a = new Crunch.Math.Constant(345);
-            Crunch.Math.Constant b = new Crunch.Math.Constant(345);
-            Crunch.Math.Constant c = new Crunch.Math.Constant(335);
-            print.log(a.GetHashCode(), b.GetHashCode(), c.GetHashCode(), a == b, a == c, b == c);
-            throw new Exception();*/
 
             //print.log(";lakjsdflk;jasld;kfj;alskdfj", ((string)new Text()) == null);
             /*print.log(Crunch.Parse.Math("^3234+4^(6-85^"));
@@ -189,9 +173,44 @@ namespace Calculator
         {
             System.Collections.Generic.List<string> testcases = new System.Collections.Generic.List<string>();
 
-            testcases.Add("2^2");
+            testcases.Add("sin(30)");
+            testcases.Add("sin30");
+            testcases.Add("sin5/4");
+            testcases.Add("sin(30)");
+            testcases.Add("si(30)");
+            testcases.Add("s(30)");
+            testcases.Add("in(30)");
+            testcases.Add("sin(30)+cos(30)");
+            testcases.Add("sin(cos(60))");
+            testcases.Add("cossin60");
+            testcases.Add("5(x+1)");
+            testcases.Add("(x+1)5");
+            testcases.Add("6sin30");
+            testcases.Add("5/4sin30");
+            testcases.Add("sin30cos30");
+            testcases.Add("esin30");
+            testcases.Add("e^2sin30+cos30e^2");
+
+            /*testcases.Add("6-(3/2+4^(7-5))/(8^2*4)+2^(2+3)");
+            testcases.Add("8/8/8+2^2^2");
+            testcases.Add("6+(8-3)*3/(9/5)+2^2");
+            testcases.Add("-1--4/5+2^-2+4/-5+5*-6");
+            testcases.Add("-9*6");
+            testcases.Add("6+-9");
+            testcases.Add("6*-(1+2)");
+            testcases.Add("-(1+2)");
+            testcases.Add("6/-9");
+            testcases.Add("(6+6)-9");
+            testcases.Add("2*(6+6)-9");
+            testcases.Add("(-5)");
+            testcases.Add("2^-3");
+            testcases.Add("2^-1^2");*/
+
+            //testcases.Add("3+476576/9878-56^2876");
+
+            /*testcases.Add("2^2");
             testcases.Add("7^24x*8");
-            /*testcases.Add("e");
+            testcases.Add("e");
             testcases.Add("e*e");
             testcases.Add("e*π");
             testcases.Add("e+e");
@@ -205,7 +224,7 @@ namespace Calculator
             testcases.Add("5xe^2+4x^3e");
             testcases.Add("5x^3e^2+4x^3e");*/
 
-            testcases.Add("5/3");
+            /*testcases.Add("5/3");
             testcases.Add("8/3/7");
             testcases.Add("8/(3/7)");
             testcases.Add("9/2/7/5");
@@ -215,7 +234,7 @@ namespace Calculator
             testcases.Add("e/e");
             testcases.Add("e/π");
             testcases.Add("(e+π)/(π+e)");
-            testcases.Add("(x+y)/(y+x)");
+            testcases.Add("(x+y)/(y+x)");*/
 
             /*testcases.Add("6*8");
             testcases.Add("6*8/5");
@@ -234,6 +253,7 @@ namespace Calculator
             testcases.Add("6x*y/z");
             testcases.Add("x*1/z");
             testcases.Add("(x+1)5");
+            testcases.Add("5(x+1)");
             testcases.Add("(x+1)*x");
             testcases.Add("(x+1)*6x");
             testcases.Add("(x+1)*(x+2)");
@@ -393,7 +413,7 @@ namespace Calculator
                     {
                         b.SizeChanged += delegate { b.FontSize = Math.Floor(33 * b.Height / 75); };
                     }
-                    else if (b == info || b == delete)
+                    else if (b.Text?.Length > 1) //b == info || b == delete)
                     {
                         b.SizeChanged += delegate { b.FontSize = Math.Floor(33 * b.Width / 75 * 5 / (4 + b.Text.Length)); };
                     }
@@ -407,7 +427,7 @@ namespace Calculator
                         b.Clicked += delegate
                         {
                             SoftKeyboard.Type(b.StyleId ?? b.Text);
-                            if (keypad.Children.IndexOf(b) % columns <= 0)
+                            if (keypad.Children.IndexOf(b) % (columns - 1) <= columns - columnsOnScreen)
                             {
                                 keyboardScroll.ScrollToAsync(keypad, ScrollToPosition.End, false);
                             }
@@ -441,7 +461,7 @@ namespace Calculator
         }
 
         private int rows = 4;
-        private int columns = 5;
+        private int columns = 7;
         private readonly int columnsOnScreen = 5;
         private readonly int undockedButtonSize = 75;
         private readonly double permanentKeysIncrease = 1.25;
@@ -502,7 +522,7 @@ namespace Calculator
             }
 
             //Button width
-            for (int i = 0; i < columns; i++)
+            for (int i = 0; i < columns - 1; i++)
             {
                 keypad.ColumnDefinitions.Add(new ColumnDefinition { Width = width });
             }

@@ -8,42 +8,54 @@ namespace Crunch
 
     public static partial class Math
     {
-        private static OrderedDictionary<string, Resolver> operations = new OrderedDictionary<string, Resolver>();
+        private static OrderedTrie<Operator> operations = new OrderedTrie<Operator>();
         static Func<object, object> negator = (o) => o.parse() * -1;
-        static Func<object, object> negate = (o) => negator(o);
+        //static Func<object, object> negate = (o) => negator(o);
 
         static Math()
         {
-            Resolver juxtapose = (q, n) =>
-            {
-                Node<object> node = new Node<object>("*");
-                q.Splice(n.Previous, node);
-                q.operations.TryGet("*").Push(node);
-            };
-
-            operations.Add("", juxtapose);
-            operations.Add("^", (q, n) => Parse.BinaryOperator(q, n, (o1, o2) => o1.parse() ^ o2.parse()));
-            operations.Add("/", (q, n) => Parse.BinaryOperator(q, n, (o1, o2) => o1.parse() / o2.parse()));
-            operations.Add("*", (q, n) => Parse.BinaryOperator(q, n, (o1, o2) => o1.parse() * o2.parse()));
-            operations.Add("+", (q, n) => Parse.BinaryOperator(q, n, (o1, o2) => o1.parse() + o2.parse()));
-            operations.Add("-", (q, n) => Parse.BinaryOperator(q, n, (o1, o2) => o1.parse() - o2.parse()));
+            operations.Add("sin", UnaryOperator((o) => trig(System.Math.Sin, o)));
+            operations.Add("cos", UnaryOperator((o) => trig(System.Math.Cos, o)));
+            operations.Add("tan", UnaryOperator((o) => trig(System.Math.Tan, o)));
+            operations.Add("^", BinaryOperator((o1, o2) => o1 ^ o2));
+            operations.Add("/", BinaryOperator((o1, o2) => o1 / o2));
+            operations.Add("*", BinaryOperator((o1, o2) => o1 * o2));
+            operations.Add("-", BinaryOperator((o1, o2) => o1 - o2));
+            operations.Add("+", BinaryOperator((o1, o2) => o1 + o2));
         }
+
+        private static double trig(Func<double, double> f, Operand o)
+        {
+            Term t = (Term)(o.Simplify() as dynamic);
+            if (t.IsConstant)
+            {
+                return f(t.Coefficient * System.Math.PI / 180);// * System.Math.PI / 180;
+            }
+            else
+            {
+                throw new Exception("Cannot operate on non-constant value");
+            }
+        }
+
+        public static Operator BinaryOperator(Func<Operand, Operand, Operand> f) => Parse.BinaryOperator((o1, o2) => f(o1.parse(), o2.parse()));
+
+        public static Operator UnaryOperator(Func<Operand, Operand> f) => new Operator((o) => f(o[0].parse()), 1);
 
         public static Operand Evaluate(string str)
         {
-            bool a = false;
-            //a = true;
-            if (a)
+            bool test = false;
+            //test = true;
+            if (test)
             {
                 Quantity q = Parse.Math(str, operations, negate: negator);
-                print.log("q is " + q, q.parse().GetType().ToString());
+                print.log("q is " + q, q.parse(), q.parse().GetType().ToString());
                 return q.parse();
             }
 
             try
             {
                 Quantity q = Parse.Math(str, operations, negate: negator);
-                print.log("q is " + q, q.parse().GetType().ToString());
+                print.log("q is " + q);
                 return q.parse();
             }
             catch (Exception e)
@@ -71,7 +83,7 @@ namespace Crunch
             }
             else
             {
-                if (s.Length > 1 || operations.ContainsKey(s))
+                if (s.Length > 1 || operations.Contains(s).ToBool())
                 {
                     throw new Exception();
                 }

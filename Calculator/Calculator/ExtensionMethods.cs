@@ -28,8 +28,14 @@ namespace System
         }
     }
 
+    public enum Direction { Forward = 1, Backward = -1 };
+
     public static class ExtensionMethods
     {
+        public static bool ToBool(this Crunch.TrieContains tc) => tc == Crunch.TrieContains.Full;
+
+        public static T Last<T>(this List<T> list) => list[list.Count - 1];
+
         public static TValue TryGet<TKey, TValue>(this Dictionary<TKey, TValue> dict, TKey key) where TValue : new()
         {
             if (!dict.ContainsKey(key))

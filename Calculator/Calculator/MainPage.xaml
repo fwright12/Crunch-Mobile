@@ -25,32 +25,36 @@
             <local:Mask x:Name="keyboard" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" Orientation="Horizontal" Spacing="0">
                 <ScrollView x:Name="keyboardScroll" Orientation="Horizontal">
                     <Grid x:Name="keypad" ColumnSpacing="0" RowSpacing="0" >
-                        <local:LongClickableButton Grid.Row="0" Grid.Column="0" Text="x&#178;" StyleId="^2" />
-                        <local:LongClickableButton Grid.Row="0" Grid.Column="1" Text="7" />
-                        <local:LongClickableButton Grid.Row="0" Grid.Column="2" Text="8" />
-                        <local:LongClickableButton Grid.Row="0" Grid.Column="3" Text="9" />
-                        <local:LongClickableButton Grid.Row="0" Grid.Column="4" Text="&#247;" StyleId="/" />
+                        <local:LongClickableButton Grid.Row="0" Grid.Column="0" Text="sin" />
+                        <local:LongClickableButton Grid.Row="0" Grid.Column="1" Text="x&#178;" StyleId="^2" />
+                        <local:LongClickableButton Grid.Row="0" Grid.Column="2" Text="7" />
+                        <local:LongClickableButton Grid.Row="0" Grid.Column="3" Text="8" />
+                        <local:LongClickableButton Grid.Row="0" Grid.Column="4" Text="9" />
+                        <local:LongClickableButton Grid.Row="0" Grid.Column="5" Text="&#247;" StyleId="/" />
 
-                        <local:LongClickableButton Grid.Row="1" Grid.Column="0" Text="x&#8319;" StyleId="^" />
-                        <local:LongClickableButton Grid.Row="1" Grid.Column="1" Text="4" />
-                        <local:LongClickableButton Grid.Row="1" Grid.Column="2" Text="5" />
-                        <local:LongClickableButton Grid.Row="1" Grid.Column="3" Text="6" />
-                        <local:LongClickableButton Grid.Row="1" Grid.Column="4" Text="&#215;"/>
+                        <local:LongClickableButton Grid.Row="1" Grid.Column="0" Text="cos" />
+                        <local:LongClickableButton Grid.Row="1" Grid.Column="1" Text="x&#8319;" StyleId="^" />
+                        <local:LongClickableButton Grid.Row="1" Grid.Column="2" Text="4" />
+                        <local:LongClickableButton Grid.Row="1" Grid.Column="3" Text="5" />
+                        <local:LongClickableButton Grid.Row="1" Grid.Column="4" Text="6" />
+                        <local:LongClickableButton Grid.Row="1" Grid.Column="5" Text="&#215;"/>
 
-                        <local:LongClickableButton Grid.Row="2" Grid.Column="0" Text="&#960;"/>
-                        <local:LongClickableButton Grid.Row="2" Grid.Column="1" Text="1" />
-                        <local:LongClickableButton Grid.Row="2" Grid.Column="2" Text="2" />
-                        <local:LongClickableButton Grid.Row="2" Grid.Column="3" Text="3" />
-                        <local:LongClickableButton Grid.Row="2" Grid.Column="4" Text="-" />
+                        <local:LongClickableButton Grid.Row="2" Grid.Column="0" Text="tan" />
+                        <local:LongClickableButton Grid.Row="2" Grid.Column="1" Text="&#960;"/>
+                        <local:LongClickableButton Grid.Row="2" Grid.Column="2" Text="1" />
+                        <local:LongClickableButton Grid.Row="2" Grid.Column="3" Text="2" />
+                        <local:LongClickableButton Grid.Row="2" Grid.Column="4" Text="3" />
+                        <local:LongClickableButton Grid.Row="2" Grid.Column="5" Text="-" />
 
-                        <local:LongClickableButton Grid.Row="3" Grid.Column="0" Text="e" />
-                        <local:LongClickableButton Grid.Row="3" Grid.Column="1" Text="0" />
-                        <local:LongClickableButton Grid.Row="3" Grid.Column="2" Text="." />
-                        <StackLayout x:Name="parentheses" Grid.Row="3" Grid.Column="3" Orientation="Horizontal" Spacing="0">
+                        <local:LongClickableButton Grid.Row="3" Grid.Column="0" Text="" />
+                        <local:LongClickableButton Grid.Row="3" Grid.Column="1" Text="e" />
+                        <local:LongClickableButton Grid.Row="3" Grid.Column="2" Text="0" />
+                        <local:LongClickableButton Grid.Row="3" Grid.Column="3" Text="." />
+                        <StackLayout x:Name="parentheses" Grid.Row="3" Grid.Column="4" Orientation="Horizontal" Spacing="0">
                             <local:LongClickableButton Text="("/>
                             <local:LongClickableButton Text=")"/>
                         </StackLayout>
-                        <local:LongClickableButton Grid.Row="3" Grid.Column="4" Text="+" />
+                        <local:LongClickableButton Grid.Row="3" Grid.Column="5" Text="+" />
                     </Grid>
                 </ScrollView>
 
@@ -61,7 +65,6 @@
                         <local:LongClickableButton x:Name="left" Text="&#10216;"/>
                         <local:LongClickableButton x:Name="right" Text="&#10217;"/>
                     </StackLayout>
-                    <!--<local:DockButton x:Name="dock"/>-->
                 </StackLayout>
             </local:Mask>
 

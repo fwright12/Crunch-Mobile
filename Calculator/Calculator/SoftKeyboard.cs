@@ -36,7 +36,8 @@ namespace Crunch.GraFX
                 index -= (list[0] as Fraction).Numerator.Children.Count;
             }
             
-            cursor.Parent.InsertRange(index++, list);
+            cursor.Parent.InsertRange(index, list);
+            index += list.Length;
 
             if (list[list.Length - 1] is Fraction && (list[list.Length - 1] as Fraction).Denominator.Children.Count == 0)
             {
@@ -206,7 +207,11 @@ namespace Crunch.GraFX
                     string s = (view as Text).Text;
                     if (s == "(" || s == ")")
                     {
-                        if (s == "(") imbalance++;
+                        if (s == "(")
+                        {
+                            if (imbalance == 0) break;
+                            imbalance++;
+                        }
                         if (s == ")") imbalance--;
                     }
                 }

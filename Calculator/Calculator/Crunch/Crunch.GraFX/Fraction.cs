@@ -39,7 +39,7 @@ namespace Crunch.GraFX
 
         public override string ToString()
         {
-            return "(" + Numerator.ToString() + ")/(" + Denominator.ToString() + ")";
+            return "(" + Numerator.ToString() + "/" + Denominator.ToString() + ")";
         }
     }
 }

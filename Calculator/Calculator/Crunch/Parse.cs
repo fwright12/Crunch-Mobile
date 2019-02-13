@@ -4,32 +4,27 @@ using System.Text;
 
 namespace Crunch
 {
-    using Resolver = Action<Quantity, Node<object>>;
+    public delegate object Operation(params object[] operands);
+
+    public class Operator
+    {
+        public Operation Operate;
+        public int[] Targets;
+        public Operator(Operation operate, params int[] targets) { Operate = operate; Targets = targets; }
+    }
 
     public static class Parse
     {
         public static readonly HashSet<char> Reserved = new HashSet<char>() { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '-', '*', '×', '/', '(', ')', '.' };
 
-        public static bool IsNegativeSign(this Node<object> node) => (node != null && node.Value is string && node.Value.ToString() == "-") && (node.Previous == null || (node.Previous.Value is string && node.Previous.Value.ToString().IsOperand()));
+        public static Operator BinaryOperator(Func<object, object, object> f) => new Operator((o) => f(o[0], o[1]), -1, 1);
 
-        private static Node<object> Next(this Node<object> node, Quantity q)
-        {
-            if (node.Next.IsEqualTo("-"))
-            {
-                q.Remove(node.Next.Next);
-            }
-            return node.Next;
-        }
-
-        public static void BinaryOperator(Quantity q, Node<object> n, Func<object, object, object> f) => q.Replace(n.Previous, n.Next, new Node<object>(f(n.Previous?.Value, n.Next?.Value)));
-
-        public static void UnaryOperator(Quantity q, Node<object> n, Func<object, object> f) => q.Replace(n, n.Next, new Node<object>(f(n.Next?.Value)));
-        
         public static bool IsEqualTo<T>(this Node<T> node, string str) => node != null && node.Value is string && node.Value.ToString() == str;
 
         public static void Push<T>(this LinkedList<Node<T>> list, Node<T> node)
         {
-            if (node.IsEqualTo("^"))
+            string text = node != null && node.Value is string ? node.Value.ToString() : "";
+            if (text == "^" || text == "sin" || text == "cos" || text == "tan")
             {
                 list.AddLast(node);
             }
@@ -55,9 +50,31 @@ namespace Crunch
             return temp;
         }
 
-        public static Quantity Math(string str, OrderedDictionary<string, Resolver> operations, Func<object, object> negate = null, Action<Quantity> parentheses = null)
+        /// <summary>
+        /// Parse math
+        /// </summary>
+        /// <param name="str"><summary>string to be parsed</summary></param>
+        /// <param name="operations"><summary>operations to execute. Add strings that should be recognized as operations, and the corresponding operation that should occur</summary></param>
+        /// <param name="negate">include if you would like negative signs (ie 6+-4) to be recognized</param>
+        /// <param name="parentheses"></param>
+        /// <param name="juxtapose">set true if you would like juxtaposition (ie 6(1+2)) to be recognized</param>
+        /// <returns></returns>
+        public static Quantity Math(string str, OrderedTrie<Operator> operations, Func<object, object> negate = null, Action<Quantity> parentheses = null)
         {
+            Operator negator = new Operator((o) => negate(o[0]), 1);
             LinkedList<Quantity> p = new LinkedList<Quantity>();
+
+            /*bool juxtapose = operations.Contains("*").ToBool();
+            Action<Node<object>> checkForJuxtapose = (node) =>
+            {
+                //Check backwards
+                if (juxtapose && node?.Previous != null && (!(node.Previous.Value is string) || !operations.Contains(node.Previous.Value.ToString()).ToBool()))
+                {
+                    Node<object> n = new Node<object>("*");
+                    p.Last.Value.Splice(node.Previous, n);
+                    p.Last.Value.operations.TryGet("*").Push(n);
+                }
+            };*/
 
             str = "(" + str + ")";
 
@@ -83,36 +100,44 @@ namespace Crunch
 
                             while (stack.Count > 0)
                             {
-                                Node<object> n = stack.Pop().Value;
+                                Node<object> node = stack.Pop().Value;
+                                Operator op = (node.IsEqualTo("-") && node.Previous == null) ? negator : operations[j].Value;
 
-                                //This node is no longer in the list, skip it
-                                //if (n.Previous == null && n.Next == null) continue;
-
-                                /*if (n.Next.IsEqualTo("-"))
+                                List<object> operands = new List<object>();
+                                foreach (int num in op.Targets)
                                 {
-                                    print.log(";laskjdflk;jask;ldf");
-                                    Node<object> temp = n.Next;
-                                    UnaryOperator(q, n.Next, negate);
-                                    temp.Previous = null;
-                                    temp.Next = null;
-                                }*/
+                                    Node<object> operand = node + num;
 
-                                bool flag = true;
-                                if (n.Value is string && (n.Value.ToString()[0] == ' ' || (n.Previous == null && n.Value.ToString() == "-")))
-                                {
-                                    n.Next.Value = negate(n.Next.Value);
-                                    flag = n.Value.ToString() != "-";
+                                    if (operand == node.Next && operand.IsEqualTo("-"))
+                                    {
+                                        operand.Next.Value = negate(operand.Next.Value);
+                                        q.Remove(operand);
+                                        operand = node.Next;
+                                    }
+
+                                    operands.Add(q.Remove(operand)?.Value);
                                 }
 
-                                if (flag) operations[j].Value(q, n);
-                                else q.Remove(n);
+                                node.Value = op.Operate(operands.ToArray());
+                            }
+                        }
 
-                                /*object result = operations[key](n.Previous?.Value, n.Next?.Value);
+                        if (key == "*")
+                        {
+                            Node<object> node = q.First;
+                            Operator juxtapose = operations[j].Value;
 
-                                //Replace node and the things on either side of it with the resolved result
-                                Node<object> before = n.Previous?.Previous;
-                                q.Remove(n.Previous?.Previous, n.Next?.Next);
-                                q.Splice(before, new Node<object>(result));*/
+                            while (node != null && node.Next != null)
+                            {
+                                if (node.IsEqualTo("+") || node.IsEqualTo("-") || node.Next.IsEqualTo("+") || node.Next.IsEqualTo("-"))
+                                {
+                                    node = node.Next;
+                                }
+                                else
+                                {
+                                    node.Value = juxtapose.Operate(node.Value, node.Next.Value);
+                                    q.Remove(node.Next);
+                                }
                             }
                         }
                     }
@@ -127,24 +152,43 @@ namespace Crunch
                     }
 
                     parentheses?.Invoke(q);
+                    //q.AddFirst("(");
+                    //q.AddLast(")");
                     p.Last.Value.AddLast(q);
+                    //checkForJuxtapose(p.Last.Value.Last);
                 }
                 else
                 {
-                    string s = c.ToString();
+                    //Keep track of the end position of the longest possible operation we find
+                    int operation = i;
+                    for (int j = i; j < str.Length; j++)
+                    {
+                        TrieContains search = operations.Contains(str.Substring(i, j - i + 1));
+                        //At this point there is no operation that starts like this
+                        if (search == TrieContains.No)
+                        {
+                            break;
+                        }
+                        //We found an operation, but it might not be the longest one
+                        if (search == TrieContains.Full)
+                        {
+                            operation = j + 1;
+                        }
+                    }
+
+                    string s = operation > i ? str.Substring(i, operation - i) : c.ToString();
                     Node<object> node = new Node<object>(s);
                     p.Last.Value.AddLast(node);
 
-                    if (operations.ContainsKey(s))
+                    if (operation > i)
                     {
-                        p.Last.Value.operations.TryGet(s).Push(node);
+                        bool isNegativeSign = s == "-" && node.Previous != null && node.Previous.Value is string && operations.Contains(node.Previous.Value.ToString()).ToBool();
 
-                        //Next thing is a minus sign (so it's really a negative)
-                        if (i + 1 < str.Length && str[i + 1] == '-')
+                        if (!isNegativeSign)
                         {
-                            i++;
-                            node.Value = " " + s;
+                            p.Last.Value.operations.TryGet(s).Push(node);
                         }
+                        i = operation - 1;
                     }
                     else
                     {
@@ -155,10 +199,7 @@ namespace Crunch
                                 node.Value = node.Value.ToString() + str[++i];
                             }
                         }
-                        if (node.Previous != null && (!(node.Previous.Value is string) || !operations.ContainsKey(node.Previous.Value.ToString().Trim())))
-                        {
-                            p.Last.Value.operations.TryGet("").Push(node);
-                        }
+                        //checkForJuxtapose(node);
                     }
                 }
 
