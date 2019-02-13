@@ -20,7 +20,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Calculation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Equation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CustomViews.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ExtensionMethods.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graph.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Keyboard.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MainPage.xaml.cs">

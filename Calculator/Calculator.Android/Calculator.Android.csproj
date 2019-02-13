@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Calculator.Droid</RootNamespace>
     <AssemblyName>Calculator.Android</AssemblyName>
-    <TargetFrameworkVersion>v8.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v9.0</TargetFrameworkVersion>
     <AndroidApplication>True</AndroidApplication>
     <AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>
     <AndroidResgenClass>Resource</AndroidResgenClass>
@@ -37,6 +37,7 @@
     <LangVersion>7.3</LangVersion>
     <AndroidLinkSkip>
     </AndroidLinkSkip>
+    <AndroidEnableMultiDex>true</AndroidEnableMultiDex>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -66,11 +67,11 @@
     <PackageReference Include="Microsoft.CSharp">
       <Version>4.5.0</Version>
     </PackageReference>
-    <PackageReference Include="Xamarin.Android.Support.Design" Version="27.0.2.1" />
-    <PackageReference Include="Xamarin.Android.Support.v7.AppCompat" Version="27.0.2.1" />
-    <PackageReference Include="Xamarin.Android.Support.v4" Version="27.0.2.1" />
-    <PackageReference Include="Xamarin.Android.Support.v7.CardView" Version="27.0.2.1" />
-    <PackageReference Include="Xamarin.Android.Support.v7.MediaRouter" Version="27.0.2.1" />
+    <PackageReference Include="Xamarin.Android.Support.Design" Version="28.0.0" />
+    <PackageReference Include="Xamarin.Android.Support.v7.AppCompat" Version="28.0.0" />
+    <PackageReference Include="Xamarin.Android.Support.v4" Version="28.0.0" />
+    <PackageReference Include="Xamarin.Android.Support.v7.CardView" Version="28.0.0" />
+    <PackageReference Include="Xamarin.Android.Support.v7.MediaRouter" Version="28.0.0" />
     <PackageReference Include="Xamarin.Forms">
       <Version>3.4.0.1008975</Version>
     </PackageReference>
@@ -122,13 +123,13 @@
       <Project>{393a81a0-558d-4901-aeba-5d08e67f02af}</Project>
       <Name>Xamarin.Forms.Extensions</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Crunch.Engine\Crunch.Engine.csproj">
+    <ProjectReference Include="..\..\..\Crunch.Engine\Crunch.csproj">
       <Project>{65cc8523-2b41-4745-a678-a79bd46477db}</Project>
-      <Name>Crunch.Engine</Name>
+      <Name>Crunch</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Crunch.GraphX\Crunch.GraphX.csproj">
+    <ProjectReference Include="..\..\..\Crunch.GraphX\Xamarin.Forms.Math.csproj">
       <Project>{6d33dd01-7d24-425f-af85-b998aa502195}</Project>
-      <Name>Crunch.GraphX</Name>
+      <Name>Xamarin.Forms.Math</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

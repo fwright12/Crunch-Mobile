@@ -1,5 +1,4 @@
 Crunch.Engine
-Crunch.GraphX
 FormsViewGroup
 System.Extensions
 System.Runtime
@@ -24,6 +23,7 @@ Xamarin.Android.Support.v7.RecyclerView
 Xamarin.Android.Support.Vector.Drawable
 Xamarin.Forms.Core
 Xamarin.Forms.Extensions
+Xamarin.Forms.Math
 Xamarin.Forms.Platform.Android
 Xamarin.Forms.Platform
 Xamarin.Forms.Xaml

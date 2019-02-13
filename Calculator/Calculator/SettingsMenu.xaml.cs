@@ -78,10 +78,10 @@ namespace Calculator
             math.Add(new LabeledCell("Logarithm Base:", LogBase));
 
             //Answer Defaults
-            Numbers = new Toggle(Enum.GetNames(typeof(Crunch.Engine.Numbers)));
-            Numbers.Toggled += (selected) => Settings.Numbers = (Crunch.Engine.Numbers)selected;
-            Trig = new Toggle(Enum.GetNames(typeof(Crunch.Engine.Trigonometry)));
-            Trig.Toggled += (selected) => Settings.Trigonometry = (Crunch.Engine.Trigonometry)selected;
+            Numbers = new Toggle(Enum.GetNames(typeof(Crunch.Numbers)));
+            Numbers.Toggled += (selected) => Settings.Numbers = (Crunch.Numbers)selected;
+            Trig = new Toggle(Enum.GetNames(typeof(Crunch.Trigonometry)));
+            Trig.Toggled += (selected) => Settings.Trigonometry = (Crunch.Trigonometry)selected;
 
             TableSection answerDefaults = new TableSection() { Title = "Answer Defaults" };
             answerDefaults.Add(new LabeledCell("Numerical values:", Numbers));

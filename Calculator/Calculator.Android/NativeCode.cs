@@ -9,7 +9,7 @@ using Android.Graphics;
 using Android.Runtime;
 using Android.OS;
 
-using Crunch.GraphX;
+using Xamarin.Forms.Math;
 using Android.Gms.Ads;
 using Xamarin.Forms.Extensions;
 

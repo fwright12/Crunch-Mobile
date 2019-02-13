@@ -65,8 +65,8 @@ namespace Xamarin.Forms
         {
             Action<View, Point> move = v.Parent is AbsoluteLayout ? MoveOnAbsoluteLayout : MoveOnLayout;
             Point p = new Point(
-                Math.Max(bounds.X, Math.Min(bounds.X + bounds.Width - v.Width, destination.X)),
-                Math.Max(bounds.Y, Math.Min(bounds.Y + bounds.Height - v.Height, destination.Y))
+                System.Math.Max(bounds.X, System.Math.Min(bounds.X + bounds.Width - v.Width, destination.X)),
+                System.Math.Max(bounds.Y, System.Math.Min(bounds.Y + bounds.Height - v.Height, destination.Y))
                 );
             move(v, p);
         }

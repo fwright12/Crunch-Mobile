@@ -4,7 +4,7 @@ using System.Text;
 
 using System.Extensions;
 using Xamarin.Forms;
-using Crunch.Engine;
+using Crunch;
 
 namespace Calculator
 {
@@ -14,13 +14,13 @@ namespace Calculator
 
         public static int DecimalPlaces
         {
-            get { return Crunch.Engine.Math.DecimalPlaces; }
-            set { Crunch.Engine.Math.DecimalPlaces = value; }
+            get { return Crunch.Math.DecimalPlaces; }
+            set { Crunch.Math.DecimalPlaces = value; }
         }
         public static double LogarithmBase
         {
-            get { return Crunch.Engine.Math.ImplicitLogarithmBase; }
-            set { Crunch.Engine.Math.ImplicitLogarithmBase = value; }
+            get { return Crunch.Math.ImplicitLogarithmBase; }
+            set { Crunch.Math.ImplicitLogarithmBase = value; }
         }
 
         public static Polynomials Polynomials;

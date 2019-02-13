@@ -108,7 +108,6 @@ class MonoPackageManager_Resources {
 		/* We need to ensure that "Calculator.Android.dll" comes first in this list. */
 		"Calculator.Android.dll",
 		"Crunch.Engine.dll",
-		"Crunch.GraphX.dll",
 		"FormsViewGroup.dll",
 		"System.Extensions.dll",
 		"Xamarin.Android.Arch.Core.Common.dll",
@@ -132,6 +131,7 @@ class MonoPackageManager_Resources {
 		"Xamarin.Android.Support.Vector.Drawable.dll",
 		"Xamarin.Forms.Core.dll",
 		"Xamarin.Forms.Extensions.dll",
+		"Xamarin.Forms.Math.dll",
 		"Xamarin.Forms.Platform.Android.dll",
 		"Xamarin.Forms.Platform.dll",
 		"Xamarin.Forms.Xaml.dll",

@@ -4,9 +4,9 @@ using System.Text;
 
 using System.Extensions;
 using Xamarin.Forms;
+using Xamarin.Forms.Math;
 using Xamarin.Forms.Extensions;
-using Crunch.Engine;
-using Crunch.GraphX;
+using Crunch;
 
 namespace Calculator
 {
@@ -38,24 +38,24 @@ namespace Calculator
             SetAnswer();
         }
 
-        public RestrictedHashSet<char> SetAnswer() => SetAnswer(new Dictionary<char, Operand>());
+        public HashSet<char> SetAnswer() => SetAnswer(new Dictionary<char, Operand>());
 
-        public RestrictedHashSet<char> SetAnswer(Dictionary<char, Operand> substitutions)
+        public HashSet<char> SetAnswer(Dictionary<char, Operand> substitutions)
         {
             print.log("Entered: " + LHS.ToString());
 
             Dictionary<char, Operand> updatedUnknowns = new Dictionary<char, Operand>();
-            Operand answer = Crunch.Engine.Math.Evaluate(LHS.ToString(), ref updatedUnknowns);
+            Operand answer = Crunch.Math.Evaluate(LHS.ToString(), ref updatedUnknowns);
 
-            if (answer != null)
+            /*if (answer != null)
             {
                 answer.Knowns = substitutions;
-            }
-            RHS.Update(answer);
+            }*/
+            RHS.Update(answer, substitutions);
 
             print.log("*************************");
 
-            return answer == null ? new RestrictedHashSet<char>() : answer.Unknowns;
+            return answer == null ? new HashSet<char>() : answer.Unknowns;
         }
 
         public override void Lyse() => Lyse(LHS);

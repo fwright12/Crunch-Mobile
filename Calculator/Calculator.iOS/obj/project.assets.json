@@ -137,31 +137,17 @@
           "build/Xamarin.Forms.targets": {}
         }
       },
-      "Crunch.Engine/1.0.0": {
+      "Crunch/1.0.0": {
         "type": "project",
         "dependencies": {
           "Crunch.Machine": "1.0.0",
           "System.Extensions": "1.0.0"
         },
         "compile": {
-          "bin/placeholder/Crunch.Engine.dll": {}
+          "bin/placeholder/Crunch.dll": {}
         },
         "runtime": {
-          "bin/placeholder/Crunch.Engine.dll": {}
-        }
-      },
-      "Crunch.GraphX/1.0.0": {
-        "type": "project",
-        "dependencies": {
-          "Crunch.Machine": "1.0.0",
-          "System.Extensions": "1.0.0",
-          "Xamarin.Forms.Extensions": "1.0.0"
-        },
-        "compile": {
-          "bin/placeholder/Crunch.GraphX.dll": {}
-        },
-        "runtime": {
-          "bin/placeholder/Crunch.GraphX.dll": {}
+          "bin/placeholder/Crunch.dll": {}
         }
       },
       "Crunch.Machine/1.0.0": {
@@ -192,6 +178,20 @@
         },
         "runtime": {
           "bin/placeholder/Xamarin.Forms.Extensions.dll": {}
+        }
+      },
+      "Xamarin.Forms.Math/1.0.0": {
+        "type": "project",
+        "dependencies": {
+          "Crunch.Machine": "1.0.0",
+          "System.Extensions": "1.0.0",
+          "Xamarin.Forms.Extensions": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Xamarin.Forms.Math.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Xamarin.Forms.Math.dll": {}
         }
       }
     },
@@ -331,31 +331,17 @@
           "build/Xamarin.Forms.targets": {}
         }
       },
-      "Crunch.Engine/1.0.0": {
+      "Crunch/1.0.0": {
         "type": "project",
         "dependencies": {
           "Crunch.Machine": "1.0.0",
           "System.Extensions": "1.0.0"
         },
         "compile": {
-          "bin/placeholder/Crunch.Engine.dll": {}
+          "bin/placeholder/Crunch.dll": {}
         },
         "runtime": {
-          "bin/placeholder/Crunch.Engine.dll": {}
-        }
-      },
-      "Crunch.GraphX/1.0.0": {
-        "type": "project",
-        "dependencies": {
-          "Crunch.Machine": "1.0.0",
-          "System.Extensions": "1.0.0",
-          "Xamarin.Forms.Extensions": "1.0.0"
-        },
-        "compile": {
-          "bin/placeholder/Crunch.GraphX.dll": {}
-        },
-        "runtime": {
-          "bin/placeholder/Crunch.GraphX.dll": {}
+          "bin/placeholder/Crunch.dll": {}
         }
       },
       "Crunch.Machine/1.0.0": {
@@ -386,6 +372,20 @@
         },
         "runtime": {
           "bin/placeholder/Xamarin.Forms.Extensions.dll": {}
+        }
+      },
+      "Xamarin.Forms.Math/1.0.0": {
+        "type": "project",
+        "dependencies": {
+          "Crunch.Machine": "1.0.0",
+          "System.Extensions": "1.0.0",
+          "Xamarin.Forms.Extensions": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Xamarin.Forms.Math.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Xamarin.Forms.Math.dll": {}
         }
       }
     },
@@ -525,31 +525,17 @@
           "build/Xamarin.Forms.targets": {}
         }
       },
-      "Crunch.Engine/1.0.0": {
+      "Crunch/1.0.0": {
         "type": "project",
         "dependencies": {
           "Crunch.Machine": "1.0.0",
           "System.Extensions": "1.0.0"
         },
         "compile": {
-          "bin/placeholder/Crunch.Engine.dll": {}
+          "bin/placeholder/Crunch.dll": {}
         },
         "runtime": {
-          "bin/placeholder/Crunch.Engine.dll": {}
-        }
-      },
-      "Crunch.GraphX/1.0.0": {
-        "type": "project",
-        "dependencies": {
-          "Crunch.Machine": "1.0.0",
-          "System.Extensions": "1.0.0",
-          "Xamarin.Forms.Extensions": "1.0.0"
-        },
-        "compile": {
-          "bin/placeholder/Crunch.GraphX.dll": {}
-        },
-        "runtime": {
-          "bin/placeholder/Crunch.GraphX.dll": {}
+          "bin/placeholder/Crunch.dll": {}
         }
       },
       "Crunch.Machine/1.0.0": {
@@ -580,6 +566,20 @@
         },
         "runtime": {
           "bin/placeholder/Xamarin.Forms.Extensions.dll": {}
+        }
+      },
+      "Xamarin.Forms.Math/1.0.0": {
+        "type": "project",
+        "dependencies": {
+          "Crunch.Machine": "1.0.0",
+          "System.Extensions": "1.0.0",
+          "Xamarin.Forms.Extensions": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Xamarin.Forms.Math.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Xamarin.Forms.Math.dll": {}
         }
       }
     },
@@ -719,31 +719,17 @@
           "build/Xamarin.Forms.targets": {}
         }
       },
-      "Crunch.Engine/1.0.0": {
+      "Crunch/1.0.0": {
         "type": "project",
         "dependencies": {
           "Crunch.Machine": "1.0.0",
           "System.Extensions": "1.0.0"
         },
         "compile": {
-          "bin/placeholder/Crunch.Engine.dll": {}
+          "bin/placeholder/Crunch.dll": {}
         },
         "runtime": {
-          "bin/placeholder/Crunch.Engine.dll": {}
-        }
-      },
-      "Crunch.GraphX/1.0.0": {
-        "type": "project",
-        "dependencies": {
-          "Crunch.Machine": "1.0.0",
-          "System.Extensions": "1.0.0",
-          "Xamarin.Forms.Extensions": "1.0.0"
-        },
-        "compile": {
-          "bin/placeholder/Crunch.GraphX.dll": {}
-        },
-        "runtime": {
-          "bin/placeholder/Crunch.GraphX.dll": {}
+          "bin/placeholder/Crunch.dll": {}
         }
       },
       "Crunch.Machine/1.0.0": {
@@ -774,6 +760,20 @@
         },
         "runtime": {
           "bin/placeholder/Xamarin.Forms.Extensions.dll": {}
+        }
+      },
+      "Xamarin.Forms.Math/1.0.0": {
+        "type": "project",
+        "dependencies": {
+          "Crunch.Machine": "1.0.0",
+          "System.Extensions": "1.0.0",
+          "Xamarin.Forms.Extensions": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Xamarin.Forms.Math.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Xamarin.Forms.Math.dll": {}
         }
       }
     }
@@ -993,15 +993,10 @@
         "xamarin.forms.nuspec"
       ]
     },
-    "Crunch.Engine/1.0.0": {
+    "Crunch/1.0.0": {
       "type": "project",
-      "path": "../../../Crunch.Engine/Crunch.Engine.csproj",
-      "msbuildProject": "../../../Crunch.Engine/Crunch.Engine.csproj"
-    },
-    "Crunch.GraphX/1.0.0": {
-      "type": "project",
-      "path": "../../../Crunch.GraphX/Crunch.GraphX.csproj",
-      "msbuildProject": "../../../Crunch.GraphX/Crunch.GraphX.csproj"
+      "path": "../../../Crunch.Engine/Crunch.csproj",
+      "msbuildProject": "../../../Crunch.Engine/Crunch.csproj"
     },
     "Crunch.Machine/1.0.0": {
       "type": "project",
@@ -1017,16 +1012,21 @@
       "type": "project",
       "path": "../../../../C# Extensions/Xamarin.Forms.Extensions/Xamarin.Forms.Extensions.csproj",
       "msbuildProject": "../../../../C# Extensions/Xamarin.Forms.Extensions/Xamarin.Forms.Extensions.csproj"
+    },
+    "Xamarin.Forms.Math/1.0.0": {
+      "type": "project",
+      "path": "../../../Crunch.GraphX/Xamarin.Forms.Math.csproj",
+      "msbuildProject": "../../../Crunch.GraphX/Xamarin.Forms.Math.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "Xamarin.iOS,Version=v1.0": [
-      "Crunch.Engine >= 1.0.0",
-      "Crunch.GraphX >= 1.0.0",
+      "Crunch >= 1.0.0",
       "Microsoft.CSharp >= 4.5.0",
       "System.Extensions >= 1.0.0",
       "Xamarin.Forms >= 3.4.0.1008975",
-      "Xamarin.Forms.Extensions >= 1.0.0"
+      "Xamarin.Forms.Extensions >= 1.0.0",
+      "Xamarin.Forms.Math >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -1062,11 +1062,11 @@
             "C:\\Users\\Flint\\Documents\\C# Extensions\\Xamarin.Forms.Extensions\\Xamarin.Forms.Extensions.csproj": {
               "projectPath": "C:\\Users\\Flint\\Documents\\C# Extensions\\Xamarin.Forms.Extensions\\Xamarin.Forms.Extensions.csproj"
             },
-            "C:\\Users\\Flint\\Documents\\Calculator Stuff\\Crunch.Engine\\Crunch.Engine.csproj": {
-              "projectPath": "C:\\Users\\Flint\\Documents\\Calculator Stuff\\Crunch.Engine\\Crunch.Engine.csproj"
+            "C:\\Users\\Flint\\Documents\\Calculator Stuff\\Crunch.Engine\\Crunch.csproj": {
+              "projectPath": "C:\\Users\\Flint\\Documents\\Calculator Stuff\\Crunch.Engine\\Crunch.csproj"
             },
-            "C:\\Users\\Flint\\Documents\\Calculator Stuff\\Crunch.GraphX\\Crunch.GraphX.csproj": {
-              "projectPath": "C:\\Users\\Flint\\Documents\\Calculator Stuff\\Crunch.GraphX\\Crunch.GraphX.csproj"
+            "C:\\Users\\Flint\\Documents\\Calculator Stuff\\Crunch.GraphX\\Xamarin.Forms.Math.csproj": {
+              "projectPath": "C:\\Users\\Flint\\Documents\\Calculator Stuff\\Crunch.GraphX\\Xamarin.Forms.Math.csproj"
             }
           }
         }

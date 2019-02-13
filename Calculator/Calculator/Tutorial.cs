@@ -187,7 +187,7 @@ namespace Calculator
 
         private void Welcome()
         {
-            canvas.Children.Add(new Label() { Text = "Welcome to Crunch!", FontSize = 25, HorizontalTextAlignment = TextAlignment.Center }, new Rectangle(0.5, 0.5, AbsoluteLayout.AutoSize, AbsoluteLayout.AutoSize), AbsoluteLayoutFlags.PositionProportional);
+            canvas.Children.Add(new Label() { Text = "Welcome to Crunch!", FontSize = 25, HorizontalTextAlignment = TextAlignment.Center }, new Rectangle(0.5, 1.0 / 3.0, AbsoluteLayout.AutoSize, AbsoluteLayout.AutoSize), AbsoluteLayoutFlags.PositionProportional);
             canvas.Children.Add(new Label() { Text = "The calculator designed for your " + (Device.Idiom == TargetIdiom.Phone ? "smartphone" : "tablet"), FontSize = 15, HorizontalTextAlignment = TextAlignment.Center }, new Rectangle(0.5, 2.0 / 3.0, AbsoluteLayout.AutoSize, AbsoluteLayout.AutoSize), AbsoluteLayoutFlags.PositionProportional);
         }
     }

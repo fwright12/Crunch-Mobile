@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 using Xamarin.Forms;
-using Crunch.GraphX;
+using Xamarin.Forms.Math;
 
 namespace Calculator
 {

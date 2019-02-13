@@ -6,7 +6,7 @@ using System.IO;
 
 using System.Extensions;
 using Xamarin.Forms.Extensions;
-using Crunch.GraphX;
+using Xamarin.Forms.Math;
 using Xamarin.Forms.Xaml;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,22 +22,19 @@ namespace Calculator
     //Radical - right half is about 1/2 of horizontal, bottom left takes up about 1/2 of vertical, thickness is 0.1, horizontal bar is about 1/3 of horizontal
 
     /* To do:
-     * v2.1.1
-     * Error trying to grab minus signs
-     * Not all buttons cause keyboard to scroll back
-     * Choice for how to interpret logarithms (base 2 or 10)
-     * Threshold for displaying in scientific notation
-     * Reset answer defaults
-     * 
-     * v2.1.2
+     * v2.1.3
      * Sorting for terms and expressions
-     * Choice for expanded/scrolling keyboard
+     * General refactoring of Operand/Expression/Term
      * 
      * v2.2
      * Drag and drop equations
      * Make substituted variables equations
      * 
      * v?
+     * Weirdness with complex fractions (ie (x+y)/z) - how to display (fraction vs expression), simplifying
+     * More checking in Operand for identities
+     * e^x rounding
+     * Choice for expanded/scrolling keyboard
      * rendering issue for nested exponents (x^2)^2 ?
      * simplify exponentiated terms 2^(2x) = 4^x
      * change inverse trig interpretations?
@@ -308,7 +305,7 @@ namespace Calculator
         {
             if (oldFocus != null)
             {
-                oldFocus.LayoutChanged -= AdjustKeyboardPosition;
+                oldFocus.SizeChanged -= AdjustKeyboardPosition;
                 if (oldFocus.Main.LHS.ChildCount() == 0)
                 {
                     oldFocus.Remove();
@@ -317,7 +314,7 @@ namespace Calculator
 
             if (newFocus != null)
             {
-                newFocus.LayoutChanged += AdjustKeyboardPosition;
+                newFocus.SizeChanged += AdjustKeyboardPosition;
             }
         }
 
@@ -531,8 +528,12 @@ namespace Calculator
 
         private void takeMathTest()
         {
-            Crunch.Engine.MathTest testcases = Crunch.Engine.Testing.Test();
-
+            bool backup = Crunch.Testing.Debug;
+            
+            Crunch.Testing.Debug = false;
+            Crunch.MathTest testcases = Crunch.Testing.Test();
+            Crunch.Testing.Debug = backup;
+            
             int num = testcases.Questions.Count;
             if (num == 0) return;
 
@@ -542,13 +543,14 @@ namespace Calculator
             for (int i = 0; i < num; i++)
             {
                 string question = testcases.Questions[i];
+                Crunch.Testing.Debug = false;
                 bool needToShowWork = !testcases.CheckQuestion(i, question);
-
-                if (Crunch.Engine.Testing.DisplayCorrectAnswers || needToShowWork)
+                Crunch.Testing.Debug = backup;
+                if (Crunch.Testing.DisplayCorrectAnswers || needToShowWork)
                 {
-                    Crunch.Engine.Testing.ShowWork = needToShowWork;
+                    Crunch.Testing.ShowWork = needToShowWork;
                     Equation e = new Equation(question);
-                    Crunch.Engine.Testing.ShowWork = false;
+                    Crunch.Testing.ShowWork = false;
                     canvas.Children.Add(e);
 
                     if (needToShowWork)

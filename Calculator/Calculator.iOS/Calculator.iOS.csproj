@@ -147,13 +147,13 @@
       <Project>{393a81a0-558d-4901-aeba-5d08e67f02af}</Project>
       <Name>Xamarin.Forms.Extensions</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Crunch.Engine\Crunch.Engine.csproj">
+    <ProjectReference Include="..\..\..\Crunch.Engine\Crunch.csproj">
       <Project>{65cc8523-2b41-4745-a678-a79bd46477db}</Project>
-      <Name>Crunch.Engine</Name>
+      <Name>Crunch</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Crunch.GraphX\Crunch.GraphX.csproj">
+    <ProjectReference Include="..\..\..\Crunch.GraphX\Xamarin.Forms.Math.csproj">
       <Project>{6d33dd01-7d24-425f-af85-b998aa502195}</Project>
-      <Name>Crunch.GraphX</Name>
+      <Name>Xamarin.Forms.Math</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />

@@ -1,6 +1,5 @@
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\81\android\assets\Calculator.Android.dll
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\81\android\assets\Crunch.Engine.dll
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\81\android\assets\Crunch.GraphX.dll
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\81\android\assets\FormsViewGroup.dll
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\81\android\assets\Java.Interop.dll
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\81\android\assets\Microsoft.CSharp.dll
@@ -32,6 +31,7 @@ C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Andro
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\81\android\assets\Xamarin.Android.Support.Vector.Drawable.dll
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\81\android\assets\Xamarin.Forms.Core.dll
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\81\android\assets\Xamarin.Forms.Extensions.dll
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\81\android\assets\Xamarin.Forms.Math.dll
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\81\android\assets\Xamarin.Forms.Platform.Android.dll
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\81\android\assets\Xamarin.Forms.Platform.dll
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\81\android\assets\Xamarin.Forms.Xaml.dll

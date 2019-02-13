@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Extensions;
-using Crunch.Engine;
-using Crunch.GraphX;
+using Crunch;
+using Xamarin.Forms.Math;
 
 namespace Calculator
 {
@@ -20,6 +20,7 @@ namespace Calculator
 
         public Calculation(Equation main)
         {
+            //BackgroundColor = Color.Aquamarine;
             Orientation = StackOrientation.Vertical;
             Spacing = 0;
 
@@ -45,15 +46,15 @@ namespace Calculator
 
                 if (s != "")
                 {
-                    Operand temp = Crunch.Engine.Math.Evaluate(s);
-                    if (temp != null)
+                    Operand temp = Crunch.Math.Evaluate(s);
+                    if (temp != null && !s.Contains(pair.Key))
                     {
                         substitutions.Add(pair.Key, temp);
                     }
                 }
             }
 
-            RestrictedHashSet<char> unknowns = Main.SetAnswer(substitutions);
+            HashSet<char> unknowns = Main.SetAnswer(substitutions);
 
             if (RecognizeVariables)
             {
@@ -65,18 +66,15 @@ namespace Calculator
                     }
                 }
 
-                if (unknowns.Count > 0)
+                foreach (char c in unknowns)
                 {
-                    foreach (char c in unknowns)
+                    if (!Substitutions.ContainsKey(c))
                     {
-                        if (!Substitutions.ContainsKey(c))
-                        {
-                            Substitutions.Add(c, AddUnknown(c));
-                        }
-                        else
-                        {
-                            (Substitutions[c].Parent as View).IsVisible = true;
-                        }
+                        Substitutions.Add(c, AddUnknown(c));
+                    }
+                    else
+                    {
+                        (Substitutions[c].Parent as View).IsVisible = true;
                     }
                 }
             }

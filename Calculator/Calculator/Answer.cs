@@ -6,8 +6,8 @@ using System.Text;
 using System.Extensions;
 using Xamarin.Forms;
 using Xamarin.Forms.Extensions;
-using Crunch.GraphX;
-using Crunch.Engine;
+using Xamarin.Forms.Math;
+using Crunch;
 
 namespace Calculator
 {
@@ -77,15 +77,19 @@ namespace Calculator
             clicks = Enum.GetNames(typeof(Polynomials)).Length + Enum.GetNames(typeof(Numbers)).Length;
         }
 
-        public void Update(Operand answer)
+        private Dictionary<char, Operand> Knowns;
+
+        public void Update(Operand answer, Dictionary<char, Operand> knowns)
         {
             Children.Clear();
 
             this.answer = answer;
+            Knowns = knowns;
             allFormats = new Expression[2, 2, 2];
 
             if (answer != null)
             {
+                PolynomialChoice = answer.GetPolynomials;
                 SwitchToNextValidFormat(PolynomialChoice, NumberChoice, false);
             }
         }
@@ -119,7 +123,7 @@ namespace Calculator
 
                     try
                     {
-                        o = answer.Format(polynomials, numbers, TrigChoice);
+                        o = answer.Format(polynomials, numbers, TrigChoice, Knowns);
                     }
                     catch (Exception ex)
                     {
