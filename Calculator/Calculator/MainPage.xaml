@@ -12,41 +12,44 @@
             <On Platform="Android, WinPhone, Windows" Value="10" />
         </OnPlatform>
     </ContentPage.Padding>
-    <StackLayout x:Name="page">
-        <local:ScrollSpy x:Name="phantomCursorField" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+    <local:TouchSpy x:Name="page">
+        <AbsoluteLayout x:Name="phantomCursorField" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
             <ScrollView x:Name="canvasScroll" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" Orientation="Both">
-                <local:GestureRelativeLayout x:Name="canvas">
-                </local:GestureRelativeLayout>
+                <local:Canvas x:Name="canvas" />
             </ScrollView>
             
             <local:BannerAd x:Name="ad"/>
-        </local:ScrollSpy>
+        </AbsoluteLayout>
 
         <AbsoluteLayout x:Name="keyboardContainer">
             <local:Mask x:Name="keyboard" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" Orientation="Horizontal" Spacing="0">
                 <ScrollView x:Name="keyboardScroll" Orientation="Horizontal">
                     <Grid x:Name="keypad" ColumnSpacing="0" RowSpacing="0" >
-                        <local:LongClickableButton Grid.Row="0" Grid.Column="0" Text="(" />
+                        <local:LongClickableButton Grid.Row="0" Grid.Column="0" Text="x&#178;" StyleId="^2" />
                         <local:LongClickableButton Grid.Row="0" Grid.Column="1" Text="7" />
                         <local:LongClickableButton Grid.Row="0" Grid.Column="2" Text="8" />
                         <local:LongClickableButton Grid.Row="0" Grid.Column="3" Text="9" />
                         <local:LongClickableButton Grid.Row="0" Grid.Column="4" Text="&#247;" StyleId="/" />
 
-                        <local:LongClickableButton Grid.Row="1" Grid.Column="0" Text=")" />
+                        <local:LongClickableButton Grid.Row="1" Grid.Column="0" Text="x&#8319;" StyleId="^" />
                         <local:LongClickableButton Grid.Row="1" Grid.Column="1" Text="4" />
                         <local:LongClickableButton Grid.Row="1" Grid.Column="2" Text="5" />
                         <local:LongClickableButton Grid.Row="1" Grid.Column="3" Text="6" />
-                        <local:LongClickableButton Grid.Row="1" Grid.Column="4" Text="&#215;" StyleId="*" />
+                        <local:LongClickableButton Grid.Row="1" Grid.Column="4" Text="&#215;"/>
 
-                        <local:LongClickableButton Grid.Row="2" Grid.Column="0" Text="x&#178;" StyleId="^2" />
+                        <local:LongClickableButton Grid.Row="2" Grid.Column="0" Text="&#960;"/>
                         <local:LongClickableButton Grid.Row="2" Grid.Column="1" Text="1" />
                         <local:LongClickableButton Grid.Row="2" Grid.Column="2" Text="2" />
                         <local:LongClickableButton Grid.Row="2" Grid.Column="3" Text="3" />
                         <local:LongClickableButton Grid.Row="2" Grid.Column="4" Text="-" />
 
-                        <local:LongClickableButton Grid.Row="3" Grid.Column="0" Text="x&#8319;" StyleId="^" />
-                        <local:LongClickableButton Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Text="0" />
-                        <local:LongClickableButton Grid.Row="3" Grid.Column="3" Text="." />
+                        <local:LongClickableButton Grid.Row="3" Grid.Column="0" Text="e" />
+                        <local:LongClickableButton Grid.Row="3" Grid.Column="1" Text="0" />
+                        <local:LongClickableButton Grid.Row="3" Grid.Column="2" Text="." />
+                        <StackLayout x:Name="parentheses" Grid.Row="3" Grid.Column="3" Orientation="Horizontal" Spacing="0">
+                            <local:LongClickableButton Text="("/>
+                            <local:LongClickableButton Text=")"/>
+                        </StackLayout>
                         <local:LongClickableButton Grid.Row="3" Grid.Column="4" Text="+" />
                     </Grid>
                 </ScrollView>
@@ -66,5 +69,5 @@
                          AbsoluteLayout.LayoutBounds="0,0,1,1"
                          AbsoluteLayout.LayoutFlags="All" />
         </AbsoluteLayout>
-    </StackLayout>
+    </local:TouchSpy>
 </ContentPage>

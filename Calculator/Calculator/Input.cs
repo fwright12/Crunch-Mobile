@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 using Xamarin.Forms;
+using Crunch.GraFX;
 
 namespace Calculator
 {
@@ -21,22 +23,9 @@ namespace Calculator
             graphics = _graphics;
         }
 
-        public static void Delete()
-        {
-            if (Cursor.Delete())
-            {
-
-            }
-        }
-
         public static void CanvasTouch(Point pos)
         {
             graphics.AddEquation(pos);
-        }
-
-        public static void ViewTouched(Answer answer)
-        {
-            answer.SwitchFormat();
         }
 
         public static void LongClickDown(Element element, Point pos, bool isDown) => graphics.LongClickDown(element, pos, isDown);
@@ -59,17 +48,6 @@ namespace Calculator
         public static void MoveKeyboard(Point pos)
         {
             graphics.MoveKeyboard(pos);
-        }
-
-        public static Action Focus;
-
-        static List<IMathList> list;
-        public static void Key(string key)
-        {
-            print.log("a " + key + " was pressed");
-
-            Cursor.Insert(key);
-            MainPage.SetAnswer();
         }
     }
 }

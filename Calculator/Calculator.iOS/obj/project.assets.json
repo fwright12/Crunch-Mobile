@@ -2,9 +2,6 @@
   "version": 3,
   "targets": {
     "Xamarin.iOS,Version=v1.0": {
-      "Java/1.0.0": {
-        "type": "package"
-      },
       "Microsoft.CSharp/4.4.1": {
         "type": "package",
         "frameworkAssemblies": [
@@ -142,9 +139,6 @@
       }
     },
     "Xamarin.iOS,Version=v1.0/win": {
-      "Java/1.0.0": {
-        "type": "package"
-      },
       "Microsoft.CSharp/4.4.1": {
         "type": "package",
         "frameworkAssemblies": [
@@ -282,9 +276,6 @@
       }
     },
     "Xamarin.iOS,Version=v1.0/win-x64": {
-      "Java/1.0.0": {
-        "type": "package"
-      },
       "Microsoft.CSharp/4.4.1": {
         "type": "package",
         "frameworkAssemblies": [
@@ -422,9 +413,6 @@
       }
     },
     "Xamarin.iOS,Version=v1.0/win-x86": {
-      "Java/1.0.0": {
-        "type": "package"
-      },
       "Microsoft.CSharp/4.4.1": {
         "type": "package",
         "frameworkAssemblies": [
@@ -563,16 +551,6 @@
     }
   },
   "libraries": {
-    "Java/1.0.0": {
-      "sha512": "tYAfi95gN2IvPzXlZ9LW4TN55Qv0ybvTFurnZZP1S327tEesyBP5+07mMkPlmBFG+icqMg2E8m1k8bmn9fbLCg==",
-      "type": "package",
-      "path": "java/1.0.0",
-      "files": [
-        "java.1.0.0.nupkg.sha512",
-        "java.nuspec",
-        "microsoft.jscript.dll"
-      ]
-    },
     "Microsoft.CSharp/4.4.1": {
       "sha512": "A5hI3gk6WpcBI0QGZY6/d5CCaYUxJgi7iENn1uYEng+Olo8RfI5ReGVkjXjeu3VR3srLvVYREATXa2M0X7FYJA==",
       "type": "package",
@@ -826,7 +804,6 @@
   },
   "projectFileDependencyGroups": {
     "Xamarin.iOS,Version=v1.0": [
-      "Java >= 1.0.0",
       "Microsoft.CSharp >= 4.4.1",
       "Xamarin.Forms >= 2.5.0.280555"
     ]
@@ -864,10 +841,6 @@
     "frameworks": {
       "xamarinios10": {
         "dependencies": {
-          "Java": {
-            "target": "Package",
-            "version": "[1.0.0, )"
-          },
           "Microsoft.CSharp": {
             "target": "Package",
             "version": "[4.4.1, )"

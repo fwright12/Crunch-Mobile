@@ -9,6 +9,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calculator.iOS", "Calculato
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Calculator", "Calculator\Calculator\Calculator.shproj", "{593F7D91-8A33-44A2-AA6E-8DA8D52505B4}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{435BE422-7914-4D35-A8E1-9FE296E2AD93}"
+	ProjectSection(SolutionItems) = preProject
+		Calculator\Calculator\math.docx = Calculator\Calculator\math.docx
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Calculator\Calculator\Calculator.projitems*{593f7d91-8a33-44a2-aa6e-8da8d52505b4}*SharedItemsImports = 13

@@ -2,9 +2,6 @@
   "version": 3,
   "targets": {
     "MonoAndroid,Version=v8.0": {
-      "Java/1.0.0": {
-        "type": "package"
-      },
       "Microsoft.CSharp/4.4.1": {
         "type": "package",
         "frameworkAssemblies": [
@@ -433,16 +430,6 @@
     }
   },
   "libraries": {
-    "Java/1.0.0": {
-      "sha512": "tYAfi95gN2IvPzXlZ9LW4TN55Qv0ybvTFurnZZP1S327tEesyBP5+07mMkPlmBFG+icqMg2E8m1k8bmn9fbLCg==",
-      "type": "package",
-      "path": "java/1.0.0",
-      "files": [
-        "java.1.0.0.nupkg.sha512",
-        "java.nuspec",
-        "microsoft.jscript.dll"
-      ]
-    },
     "Microsoft.CSharp/4.4.1": {
       "sha512": "A5hI3gk6WpcBI0QGZY6/d5CCaYUxJgi7iENn1uYEng+Olo8RfI5ReGVkjXjeu3VR3srLvVYREATXa2M0X7FYJA==",
       "type": "package",
@@ -992,7 +979,6 @@
   },
   "projectFileDependencyGroups": {
     "MonoAndroid,Version=v8.0": [
-      "Java >= 1.0.0",
       "Microsoft.CSharp >= 4.4.1",
       "Xamarin.Android.Support.Design >= 26.1.0.1",
       "Xamarin.Android.Support.v4 >= 26.1.0.1",
@@ -1037,10 +1023,6 @@
     "frameworks": {
       "monoandroid80": {
         "dependencies": {
-          "Java": {
-            "target": "Package",
-            "version": "[1.0.0, )"
-          },
           "Microsoft.CSharp": {
             "target": "Package",
             "version": "[4.4.1, )"

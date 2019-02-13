@@ -9,18 +9,75 @@ using Android.Graphics;
 using Android.Runtime;
 using Android.OS;
 
+using Crunch.GraFX;
 using Android.Gms.Ads;
 
-[assembly: ExportRenderer(typeof(GestureRelativeLayout), typeof(AndroidRelativeLayoutRenderer))]
+[assembly: ExportRenderer(typeof(Calculator.Canvas), typeof(CanvasRenderer))]
 [assembly: ExportRenderer(typeof(LongClickableButton), typeof(LongClickableButtonRenderer))]
 [assembly: ExportRenderer(typeof(Mask), typeof(MaskRenderer))]
 [assembly: ExportRenderer(typeof(ScrollSpy), typeof(ScrollSpyRenderer))]
-[assembly: ExportRenderer(typeof(Answer), typeof(TouchEnabledViewRenderer))]
+[assembly: ExportRenderer(typeof(Answer), typeof(TouchEnabledLayoutRenderer))]
 [assembly: ExportRenderer(typeof(DockButton), typeof(DockButtonRenderer))]
 [assembly: ExportRenderer(typeof(BannerAd), typeof(BannerAdRenderer))]
+[assembly: ExportRenderer(typeof(EqualSign), typeof(TextRenderer))]
+[assembly: ExportRenderer(typeof(TouchSpy), typeof(LayoutRenderer))]
 
 namespace Calculator.Droid
 {
+    public static class ExtensionMethods
+    {
+        public static Xamarin.Forms.Point GetPoint(this Android.Views.View view, MotionEvent e)
+        {
+            //print.log(new Xamarin.Forms.Point(e.RawX / view.Width, e.RawY / view.Height));
+            return new Xamarin.Forms.Point(e.RawX / view.Width, e.RawY / view.Height);
+        }
+    }
+
+    public class LayoutRenderer : VisualElementRenderer<StackLayout>
+    {
+
+        public override bool OnTouchEvent(MotionEvent e)
+        {
+            (Element as TouchSpy).Touched(RootView.GetPoint(e));
+            //Calculator.Drag.UpdatePosition(new Xamarin.Forms.Point(0.5, 0.1));
+            
+            if (e.Action == MotionEventActions.Up)
+            {
+                Calculator.Drag.EndDrag();
+            }
+
+            return Calculator.Drag.ShouldIntercept;
+        }
+
+        public override bool OnInterceptTouchEvent(MotionEvent e)
+        {
+            return Calculator.Drag.ShouldIntercept;
+        }
+    }
+
+    public class TextRenderer : LabelRenderer
+    {
+        public override bool OnTouchEvent(MotionEvent e)
+        {
+            //var data = Android.Content.ClipData.NewPlainText("canvas", temp.Text);
+            //StartDrag(null, new DragShadowBuilder(this), null, 0);
+
+            (Element as EqualSign).Touched(RootView.GetPoint(e));
+
+            if (e.Action == MotionEventActions.Down)
+            {
+                //RelativeLayout.SetXConstraint(Equation.Focus, Constraint.Constant(0));
+                //Calculator.Drag.Touch = Xamarin.Forms.Point.Zero;
+                Calculator.Drag.StartDrag();
+                //ScrollSpyRenderer.OnTouch = (point) => (Element as EqualSign).Touched(point);
+            }
+
+            //(Element as EqualSign).Touched(new Xamarin.Forms.Point());
+
+            return true;
+        }
+    }
+
     public class BannerAdRenderer : ViewRenderer<BannerAd, AdView>
     {
         //Note you may want to adjust this, see further down.
@@ -74,15 +131,15 @@ namespace Calculator.Droid
         }
     }
 
-    public class TouchEnabledViewRenderer : VisualElementRenderer<Xamarin.Forms.View>
+    public class TouchEnabledLayoutRenderer : VisualElementRenderer<StackLayout>
     {
-        public TouchEnabledViewRenderer()
+        public TouchEnabledLayoutRenderer()
         {
             Touch += (sender, e) =>
             {
                 if (e.Event.Action == MotionEventActions.Up)
                 {
-                    Input.ViewTouched(Element as Answer);
+                    (Element as Answer).Touched();
                 }
             };
         }
@@ -90,23 +147,32 @@ namespace Calculator.Droid
 
     public class ScrollSpyRenderer : VisualElementRenderer<AbsoluteLayout>
     {
+        public static Action<Xamarin.Forms.Point> OnTouch = null;
+
         public override bool OnTouchEvent(MotionEvent e)
         {
-            return false;
+            OnTouch(new Xamarin.Forms.Point(e.GetX() / Width, e.GetY() / Height));
+            
+            if (e.Action == MotionEventActions.Up)
+            {
+                OnTouch = null;
+            }
+
+            return OnTouch != null;
         }
 
-        public override bool OnInterceptTouchEvent(MotionEvent ev)
+        public override bool OnInterceptTouchEvent(MotionEvent e)
         {
-            if (ev.Action == MotionEventActions.Down)
+            if (e.Action == MotionEventActions.Down)
             {
                 MainPage.isTouchingCanvas = true;
             }
-            else if (ev.Action == MotionEventActions.Up)
+            else if (e.Action == MotionEventActions.Up)
             {
                 MainPage.isTouchingCanvas = false;
             }
 
-            return false;
+            return OnTouch != null;
         }
     }
 
@@ -163,9 +229,9 @@ namespace Calculator.Droid
         }
     }
 
-    public class AndroidRelativeLayoutRenderer : VisualElementRenderer<Xamarin.Forms.RelativeLayout>
+    public class CanvasRenderer : VisualElementRenderer<Xamarin.Forms.RelativeLayout>
     {
-        public AndroidRelativeLayoutRenderer()
+        public CanvasRenderer()
         {
             Touch += (sender, e) =>
             {
@@ -176,6 +242,55 @@ namespace Calculator.Droid
                     //Input.CanvasTouch(new Point(e.Event.GetX(), e.Event.GetY()));
                 }
             };
+
+            Drag += dropEquation;
+        }
+
+        private void dropEquation(object sender, DragEventArgs e)
+        {
+            var evt = e.Event;
+
+            switch (evt.Action)
+            {
+                case DragAction.Started:
+                    /* To register your view as a potential drop zone for the current view being dragged
+                     * you need to set the event as handled
+                     */
+                    e.Handled = true;
+
+                    /* An important thing to know is that drop zones need to be visible (i.e. their Visibility)
+                     * property set to something other than Gone or Invisible) in order to be considered. A nice workaround
+                     * if you need them hidden initially is to have their layout_height set to 1.
+                     */
+
+                    break;
+                case DragAction.Entered:
+                case DragAction.Exited:
+                    /* These two states allows you to know when the dragged view is contained atop your drop zone.
+                     * Traditionally you will use that tip to display a focus ring or any other similar mechanism
+                     * to advertise your view as a drop zone to the user.
+                     */
+
+                    break;
+                case DragAction.Drop:
+                    /* This state is used when the user drops the view on your drop zone. If you want to accept the drop,
+                     *  set the Handled value to true like before.
+                     */
+                    e.Handled = true;
+                    /* It's also probably time to get a bit of the data associated with the drag to know what
+                     * you want to do with the information.
+                     */
+
+                    print.log("dropped");
+
+                    break;
+                case DragAction.Ended:
+                    /* This is the final state, where you still have possibility to cancel the drop happened.
+                     * You will generally want to set Handled to true.
+                     */
+                    e.Handled = true;
+                    break;
+            }
         }
     }
 

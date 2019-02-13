@@ -5,10 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Calculator;
+using Crunch.GraFX;
 
 namespace System
 {
-    public enum Direction { Backward = -1, Forward = 0 };
+    public static class StringClassification
+    {
+        public static bool IsOpening(this char c) => c == '(' || c == '{' || c == '[';
+        public static bool IsClosing(this char c) => c == ')' || c == '}' || c == ']';
+        public static bool IsOperand(this string s) => s.Length == 1 && (s == "/" || s == "×" || s == "+" || s == "*" || s == "-" || s == "^");
+        public static bool IsNumber(this string s) => s.Length == 1 && ((s[0] >= 48 && s[0] <= 57) || s[0] == 46);
+    }
 
     public class print
     {
@@ -23,6 +30,26 @@ namespace System
 
     public static class ExtensionMethods
     {
+        public static TValue TryGet<TKey, TValue>(this Dictionary<TKey, TValue> dict, TKey key) where TValue : new()
+        {
+            if (!dict.ContainsKey(key))
+            {
+                dict.Add(key, new TValue());
+            }
+            return dict[key];
+        }
+
+        public static string Simple(this string str)
+        {
+            str = str.Trim();
+            switch (str)
+            {
+                case "÷": return "/";
+                case "×": return "*";
+                default: return str;
+            }
+        }
+
         public static int ToInt(this bool sender)
         {
             if (sender)
@@ -35,18 +62,7 @@ namespace System
             }
         }
 
-        public static bool IsNumber(this string str)
-        {
-            char chr = str[0];
-            return (chr >= 48 && chr <= 57) || chr == 46;
-
-            //return str.Length == 1 && str[0] >= 97 && str[0] <= 122;
-        }
-
-        public static bool IsOperand(this string str)
-        {
-            return str.Trim() == "+" || str.Trim() == "*" || str.Trim() == "-";
-        }
+        public static bool IsWhole(this double value) => value == (int)value;
 
         public static int Bound(this int value, int low, int high)
         {
@@ -58,6 +74,13 @@ namespace System
             return value;
         }
 
+        /// <summary>
+        /// Checks to see if value is between low and high (inclusive)
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="low"></param>
+        /// <param name="high"></param>
+        /// <returns></returns>
         public static bool IsBetween(this int value, int low, int high)
         {
             return value >= low && value <= high;
@@ -69,14 +92,34 @@ namespace Xamarin.Forms
 {
     public static class ExtensionMethods
     {
-        public static Element ParentElement(this View view)
+        public static void Move(this View v, Action<View, Point> move, Rectangle bounds, Point increase)
         {
-            return view.Parent;
+            print.log(bounds, v.X, v.Y);
+            Point p = new Point(
+                Math.Max(bounds.X, Math.Min(bounds.X + bounds.Width - v.Width, v.X + increase.X)),
+                Math.Max(bounds.Y, Math.Min(bounds.Y + bounds.Height - v.Height, v.Y + increase.Y))
+                );
+            move(v, p);
+        }
+
+        public static Point PositionOn(this View child, View parent)
+        {
+            if (child == parent || child is null)
+            {
+                return Point.Zero;
+            }
+
+            return child.ParentView().PositionOn(parent).Add(new Point(child.X, child.Y + child.TranslationY));
+        }
+
+        public static View ParentView(this View view)
+        {
+            return view.Parent as View;
         }
 
         public static bool Selectable(this View view)
         {
-            /*if (view is Text)
+            if (view is Text)
             {
                 return (view as Text).Selectable;
             }
@@ -87,28 +130,24 @@ namespace Xamarin.Forms
             else
             {
                 return false;
-            }*/
-
-            return true;
+            }
         }
 
         public static void SetSelectable(this View view, bool selectable)
         {
-            /*if (view is Text)
+            if (view is Text)
             {
                 (view as Text).Selectable = selectable;
             }
             else if (view is Expression)
             {
                 (view as Expression).Selectable = selectable;
-            }*/
+            }
         }
 
-        public static Point Add(this Point p1, Point p2)
-        {
-            return new Point(p1.X + p2.X, p1.Y + p2.Y);
-        }
-    
+        public static Point Add(this Point p1, Point p2) => new Point(p1.X + p2.X, p1.Y + p2.Y);
+        public static Point Subtract(this Point p1, Point p2) => new Point(p1.X - p2.X, p1.Y - p2.Y);
+
         public static int Index(this View view)
         {
             /*if (view.Parent is Expression)
