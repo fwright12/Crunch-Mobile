@@ -11,7 +11,7 @@ using Crunch.Engine;
 
 namespace Calculator
 {
-    public class FormEnumertor : IEnumerator<Operand.Form>
+    /*public class FormEnumertor : IEnumerator<Operand.Form>
     {
         private Operand.Form form;
 
@@ -38,7 +38,7 @@ namespace Calculator
         {
             throw new NotImplementedException();
         }
-    }
+    }*/
 
     public class Answer : StackLayout // Expression, ITouchable
     {
@@ -53,7 +53,6 @@ namespace Calculator
         private Expression[,,] allFormats = new Expression[2,2,2];
         private List<Operand> formats = new List<Operand>();
         
-        private int displayed = 0;
         private TouchableStackLayout DegRadLabel;
         private int clicks;
 

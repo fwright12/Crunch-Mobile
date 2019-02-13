@@ -12,13 +12,7 @@ namespace Playground
     {
         public Test()
         {
-            double a = 1;
-            Constant b = 2;
-            Term c = 3;
-            Expression d = 4;
-            Operand e = 5;
 
-            print.log(d + e);
         }
     }
 

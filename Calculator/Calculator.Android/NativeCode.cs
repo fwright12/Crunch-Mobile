@@ -192,21 +192,18 @@ namespace Calculator.Droid
     public class BannerAdRenderer : ViewRenderer<BannerAd, AdView>
     {
         //Note you may want to adjust this, see further down.
-        AdView adView;
-        AdView CreateNativeAdControl()
+        private AdView adView;
+        private AdView CreateNativeAdControl()
         {
             if (adView != null)
                 return adView;
 
             adView = new AdView(Context);
-            adView.AdSize = AdSize.Banner;
+            adView.AdSize = new AdSize(MainPage.MaxBannerWidth, (int)Math.Ceiling(MainPage.MaxBannerWidth * 50.0 / 320.0));
             adView.AdUnitId = "ca-app-pub-1795523054003202/4422905833";
 
-            //var adParams = new Android.Widget.LinearLayout.LayoutParams(LayoutParams.WrapContent, LayoutParams.WrapContent);
-
-            //adView.LayoutParameters = adParams;
-
             adView.LoadAd(new AdRequest.Builder().Build());
+
             return adView;
         }
 
@@ -215,6 +212,7 @@ namespace Calculator.Droid
             base.OnElementChanged(e);
             if (Control == null)
             {
+                //MainPage.LoadAd = CreateNativeAdControl;
                 CreateNativeAdControl();
                 SetNativeControl(adView);
             }

@@ -17,6 +17,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Answer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Calculation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Equation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CustomViews.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ExtensionMethods.cs" />
@@ -27,6 +28,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Playground.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)print.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Settings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CrunchStyle.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Tips.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drag.cs" />
   </ItemGroup>

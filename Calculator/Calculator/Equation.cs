@@ -12,20 +12,22 @@ namespace Calculator
 {
     public class Equation : TouchableStackLayout
     {
-        new public static Equation Focus;
-
-        public Expression LHS;
-        public Answer RHS;
-        public bool RecognizeVariables = false;
-
-        private Dictionary<char, Expression> unknowns = new Dictionary<char, Expression>();
+        public Expression LHS { get; private set; }
+        public Answer RHS { get; private set; }
 
         public Equation(string text = "")
         {
-            Orientation = StackOrientation.Vertical;
-
+            Orientation = StackOrientation.Horizontal;
+            Spacing = 0;
+            VerticalOptions = LayoutOptions.Center;
+            
             LHS = text == "" ? new Expression() : new Expression(Render.Math(text));
             LHS.Editable = true;
+
+            //LHS.Children.Add(new BoxView { Color = Color.Blue, WidthRequest = 5, HeightRequest = 0 });
+            /*LHS.Children.Add(new Image { Source = "leftParenthesis.png", HeightRequest = 0, WidthRequest = MainPage.parenthesesWidth, Aspect = Aspect.Fill });
+            LHS.Children.Add(new Image { Source = "rightParenthesis.png", HeightRequest = 0, WidthRequest = MainPage.parenthesesWidth, Aspect = Aspect.Fill });
+            LHS.Children.Add(new Image { Source = "radical.png", HeightRequest = 0, WidthRequest = MainPage.parenthesesWidth, Aspect = Aspect.Fill });*/
 
             Text equals = new Text(" = ") { FontSize = Text.MaxFontSize };
             Touch += (point, state) =>
@@ -36,34 +38,18 @@ namespace Calculator
                 }
             };
 
-            StackLayout layout = new StackLayout { Orientation = StackOrientation.Horizontal, Spacing = 0, VerticalOptions = LayoutOptions.Center };
-            layout.Children.AddRange(LHS, equals, RHS = new Answer());
+            Children.AddRange(LHS, equals, RHS = new Answer());
 
-            Children.Add(layout);
-            Children[0].HorizontalOptions = LayoutOptions.Start;
-            
             SetAnswer();
         }
 
-        public void SetAnswer()
+        public RestrictedHashSet<char> SetAnswer() => SetAnswer(new Dictionary<char, Operand>());
+
+        public RestrictedHashSet<char> SetAnswer(Dictionary<char, Operand> substitutions)
         {
             print.log("Entered: " + LHS.ToString());
 
-            Dictionary<char, Operand> substitutions = new Dictionary<char, Operand>();
-            for (int i = 1; i < Children.Count; i++)
-            {
-                string s = (Children[i] as Expression).Children[1].ToString();
-                if (s != "()")
-                {
-                    Operand temp = Crunch.Engine.Math.Evaluate(s);
-                    if (temp != null)
-                    {
-                        substitutions.Add(((Children[i] as Expression).Children[0] as Text).Text[0], temp);
-                    }
-                }
-            }
-
-            Dictionary<char, Operand> updatedUnknowns = new Dictionary<char, Operand>(); 
+            Dictionary<char, Operand> updatedUnknowns = new Dictionary<char, Operand>();
             Operand answer = Crunch.Engine.Math.Evaluate(LHS.ToString(), ref updatedUnknowns);
 
             if (answer != null)
@@ -72,41 +58,9 @@ namespace Calculator
             }
             RHS.Update(answer);
 
-            if (RecognizeVariables)
-            {
-                foreach (char c in unknowns.Keys)
-                {
-                    if (answer == null || !answer.Unknowns.Contains(c))
-                    {
-                        unknowns[c].Parent.IsVisible = false;
-                    }
-                }
-
-                if (answer != null)
-                {
-                    foreach (char c in answer.Unknowns)
-                    {
-                        if (!unknowns.ContainsKey(c))
-                        {
-                            unknowns.Add(c, AddVariable(c));
-                        }
-                        else
-                        {
-                            unknowns[c].Parent.IsVisible = true;
-                        }
-                    }
-                }
-            }
-
             print.log("*************************");
-        }
 
-        private Expression AddVariable(char c)
-        {
-            Expression e = new Expression(new Text(c + " = "), new Expression() { Editable = true });
-            e.HorizontalOptions = LayoutOptions.Start;
-            Children.Add(e);
-            return e.Children[1] as Expression;
+            return answer == null ? new RestrictedHashSet<char>() : answer.Unknowns;
         }
 
         public string ToLatex()

@@ -56,7 +56,6 @@ namespace Calculator
             HorizontalOptions = LayoutOptions.FillAndExpand;
             VerticalOptions = LayoutOptions.FillAndExpand;
             Padding = new Thickness(25, 5, 10, 5);
-            Orientation = Device.Idiom == TargetIdiom.Tablet ? StackOrientation.Horizontal : StackOrientation.Vertical;
 
             Children.Add(label);
             Children.Add(layout);

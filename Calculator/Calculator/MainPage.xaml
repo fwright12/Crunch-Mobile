@@ -21,7 +21,7 @@
                     <custom:Canvas x:Name="canvas" />
                 </ScrollView>
 
-                <custom:BannerAd x:Name="ad"/>
+                <!--<StackLayout BackgroundColor="Red" AbsoluteLayout.LayoutBounds="0.5,0.33,0.9,0.15" AbsoluteLayout.LayoutFlags="All">-->
             </AbsoluteLayout>
 
             <AbsoluteLayout x:Name="keyboardContainer">
@@ -77,14 +77,14 @@
             </AbsoluteLayout>
         </custom:TouchScreen>
 
-        <AbsoluteLayout AbsoluteLayout.LayoutBounds="0,0,50,50" AbsoluteLayout.LayoutFlags="None">
-            <Button IsVisible="True" BorderRadius="0" x:Name="menuButton" Clicked="MenuClicked" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" />
+        <AbsoluteLayout AbsoluteLayout.LayoutFlags="None">
+            <Button x:Name="settingsMenuButton" BorderWidth="0" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" />
             <custom:UntouchableBoxView BackgroundColor="Black" AbsoluteLayout.LayoutBounds="0.5,0.25,0.6,0.075" AbsoluteLayout.LayoutFlags="All"/>
             <custom:UntouchableBoxView BackgroundColor="Black" AbsoluteLayout.LayoutBounds="0.5,0.5,0.6,0.075" AbsoluteLayout.LayoutFlags="All"/>
             <custom:UntouchableBoxView BackgroundColor="Black" AbsoluteLayout.LayoutBounds="0.5,0.75,0.6,0.075" AbsoluteLayout.LayoutFlags="All"/>
         </AbsoluteLayout>
         
-        <StackLayout IsVisible="False" x:Name="menu" BackgroundColor="LightGray" Spacing="0" Orientation="Vertical" AbsoluteLayout.LayoutFlags="SizeProportional">
+        <StackLayout IsVisible="True" x:Name="settingsMenu" TranslationX="-1000" BackgroundColor="LightGray" Spacing="0" Orientation="Vertical" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="HeightProportional">
             <StackLayout VerticalOptions="FillAndExpand">
                 <TableView Intent="Settings" HasUnevenRows="True">
                     <TableRoot>
@@ -96,13 +96,13 @@
                                         <Label x:Name="decimalPrecision" VerticalOptions="Center" />
                                     </StackLayout>
                                     <Stepper x:Name="decimalPrecisionStepper"
-                                             Value="3"
-                                             ValueChanged="SetDecimalPrecision"
-                                             Minimum="1"
-                                             Maximum="10"
-                                             Increment="1" 
-                                             HorizontalOptions="Center"
-                                             VerticalOptions="Center"/>
+                                                 Value="3"
+                                                 ValueChanged="SetDecimalPrecision"
+                                                 Minimum="1"
+                                                 Maximum="10"
+                                                 Increment="1" 
+                                                 HorizontalOptions="Center"
+                                                 VerticalOptions="Center"/>
                                 </StackLayout>
                             </ViewCell>
                         </TableSection>
@@ -118,6 +118,19 @@
             </StackLayout>
             <Button x:Name="tips" Text="Tips" FontSize="Large" VerticalOptions="End"/>
             <Button x:Name="about" Text="About" FontSize="Large" VerticalOptions="End"/>
+        </StackLayout>
+        
+        <AbsoluteLayout IsVisible="False" AbsoluteLayout.LayoutBounds="1,0,50,50" AbsoluteLayout.LayoutFlags="PositionProportional">
+            <Button x:Name="equationsButton" BorderWidth="0" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" />
+            <extensions:TouchableLabel Text="f(x)" FontSize="Large" TextColor="Black" AbsoluteLayout.LayoutBounds="0.5,0.5,-1,-1" AbsoluteLayout.LayoutFlags="PositionProportional"/>
+        </AbsoluteLayout>
+        
+        <StackLayout IsVisible="False" x:Name="equationsMenu" BackgroundColor="LightGray" Spacing="0" Orientation="Vertical" AbsoluteLayout.LayoutFlags="All">
+            <StackLayout VerticalOptions="FillAndExpand">
+                <ListView x:Name="equations" />
+            </StackLayout>
+            <Button x:Name="addEquation" Text="Add Equation" FontSize="Large" VerticalOptions="End"/>
+            <Button x:Name="defineVariable" Text="Define Variable" FontSize="Large" VerticalOptions="End"/>
         </StackLayout>
     </AbsoluteLayout>
 </ContentPage>

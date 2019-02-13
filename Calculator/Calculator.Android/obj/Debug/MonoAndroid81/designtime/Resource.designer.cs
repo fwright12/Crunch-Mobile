@@ -3698,6 +3698,9 @@ namespace Calculator.Droid
 			// aapt resource value: 0x7F090104
 			public const int ic_vol_type_tv_light = 2131296516;
 			
+			// aapt resource value: 0x7F010003
+			public const int leftParenthesis = 2130771971;
+			
 			// aapt resource value: 0x7F090105
 			public const int mr_button_connected_dark = 2131296517;
 			
@@ -3931,6 +3934,12 @@ namespace Calculator.Droid
 			
 			// aapt resource value: 0x1
 			public const int quantum_ic_volume_up_white_36 = 1;
+			
+			// aapt resource value: 0x7F010004
+			public const int radical = 2130771972;
+			
+			// aapt resource value: 0x7F010005
+			public const int rightParenthesis = 2130771973;
 			
 			// aapt resource value: 0x7F090069
 			public const int tooltip_frame_dark = 2131296361;
