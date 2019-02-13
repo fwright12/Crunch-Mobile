@@ -6,9 +6,9 @@ using Xamarin.Forms;
 
 namespace Crunch.GraFX
 {
-    public class Answer : Expression
+    public class Answer : Expression, ITouchable
     {
-        public event Calculator.TouchEventArgs Touch;
+        public event TouchEventHandler Touch;
 
         private View[] raw;
         private View[] value = null;
@@ -47,6 +47,14 @@ namespace Crunch.GraFX
             Trim();
         }
 
-        public void Touched() => Touch(Point.Zero);
+        public void OnTouch(Point point, TouchState state)
+        {
+            if (state == TouchState.Up)
+            {
+                SwitchFormat();
+            }
+
+            Touch?.Invoke(point, state);
+        }
     }
 }

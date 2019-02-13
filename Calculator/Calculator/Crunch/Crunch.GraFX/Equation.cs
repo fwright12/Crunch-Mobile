@@ -13,25 +13,30 @@ namespace Crunch.GraFX
         public Answer RHS;
 
         private Expression main;
-        private EqualSign equals;
         private Dictionary<char, Expression> unknowns = new Dictionary<char, Expression>();
-
-        private bool isDecimal = true;
 
         public Equation(string text = "") : base()
         {
             Orientation = StackOrientation.Vertical;
+
             LHS = text == "" ? new Expression() : new Expression(Render.Math(text));
             LHS.Editable = true;
-            main = new Expression(LHS, new EqualSign(), RHS = new Answer());
+
+            Text equals = new Text(" = ");
+            equals.Touch += (point, state) =>
+            {
+                if (state == TouchState.Down)
+                {
+                    this.BeginDrag(Calculator.MainPage.VisiblePage.Canvas.Bounds);
+                }
+            };
+
+            main = new Expression(LHS, equals, RHS = new Answer());
             main.HorizontalOptions = LayoutOptions.Start;
+            
             Children.Add(main);
-            //main.Orientation = Xamarin.Forms.StackOrientation.Horizontal;
-            //print.log(Orientation, main.Orientation);
-            //AddVariable(new Math.Variable('x'));
 
             SetAnswer();
-            RHS.Touch += delegate { RHS.SwitchFormat(); };
         }
 
         public void SetAnswer()
@@ -84,6 +89,8 @@ namespace Crunch.GraFX
                 RHS.Update(o);
                 substitutions.Clear();
             }
+
+            print.log("*************************");
         }
 
         public static Dictionary<char, Math.Operand> substitutions = new Dictionary<char, Math.Operand>();

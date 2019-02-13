@@ -996,11 +996,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Flint\\Documents\\Calculator Stuff\\Calculator\\Calculator\\Calculator.Android\\Calculator.Android.csproj",
+      "projectUniqueName": "C:\\Users\\Flint\\Documents\\Calculator Stuff\\Backups\\Calculator v1.2.3\\Calculator\\Calculator.Android\\Calculator.Android.csproj",
       "projectName": "Calculator.Android",
-      "projectPath": "C:\\Users\\Flint\\Documents\\Calculator Stuff\\Calculator\\Calculator\\Calculator.Android\\Calculator.Android.csproj",
+      "projectPath": "C:\\Users\\Flint\\Documents\\Calculator Stuff\\Backups\\Calculator v1.2.3\\Calculator\\Calculator.Android\\Calculator.Android.csproj",
       "packagesPath": "C:\\Users\\Flint\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Flint\\Documents\\Calculator Stuff\\Calculator\\Calculator\\Calculator.Android\\obj\\",
+      "outputPath": "C:\\Users\\Flint\\Documents\\Calculator Stuff\\Backups\\Calculator v1.2.3\\Calculator\\Calculator.Android\\obj\\",
       "projectStyle": "PackageReference",
       "skipContentFileWrite": true,
       "configFilePaths": [

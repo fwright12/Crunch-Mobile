@@ -16,7 +16,7 @@ namespace Crunch.GraFX
 
         static SoftKeyboard()
         {
-            cursor = new CursorView();
+            cursor = new CursorView() { Color = Color.Gray };
         }
 
         public static void Type(string str)
@@ -90,7 +90,7 @@ namespace Crunch.GraFX
             }
 
             Equation.Focus.SetAnswer();
-
+            
             return true;
         }
 
@@ -203,7 +203,6 @@ namespace Crunch.GraFX
                 view = input[index];
 
                 input.RemoveAt(index);
-                e.Children.Insert(0, view);
 
                 if (view is Text)
                 {
@@ -218,6 +217,8 @@ namespace Crunch.GraFX
                         if (s == ")") imbalance--;
                     }
                 }
+
+                e.Children.Insert(0, view);
 
                 index--;
             }

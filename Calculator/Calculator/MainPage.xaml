@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:androidWidget="clr-namespace:Android.Widget;assembly=Mono.Android;targetPlatform=Android"
              xmlns:formsAndroid="clr-namespace:Xamarin.Forms;assembly=Xamarin.Forms.Platform.Android;targetPlatform=Android"
-             xmlns:local="clr-namespace:Calculator"
+             xmlns:custom="clr-namespace:Xamarin.Forms"
              x:Class="Calculator.MainPage" >
     
     <ContentPage.Padding>
@@ -12,65 +12,66 @@
             <On Platform="Android, WinPhone, Windows" Value="10" />
         </OnPlatform>
     </ContentPage.Padding>
-    <local:TouchSpy x:Name="page">
+    
+    <custom:TouchScreen x:Name="page">
         <AbsoluteLayout x:Name="phantomCursorField" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
             <ScrollView x:Name="canvasScroll" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" Orientation="Both">
-                <local:Canvas x:Name="canvas" />
+                <custom:Canvas x:Name="canvas" />
             </ScrollView>
-            
-            <local:BannerAd x:Name="ad"/>
+
+            <custom:BannerAd x:Name="ad"/>
         </AbsoluteLayout>
 
         <AbsoluteLayout x:Name="keyboardContainer">
-            <local:Mask x:Name="keyboard" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" Orientation="Horizontal" Spacing="0">
+            <StackLayout x:Name="keyboard" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" Orientation="Horizontal" Spacing="0">
                 <ScrollView x:Name="keyboardScroll" Orientation="Horizontal">
                     <Grid x:Name="keypad" ColumnSpacing="0" RowSpacing="0" >
-                        <local:LongClickableButton Grid.Row="0" Grid.Column="0" Text="sin" />
-                        <local:LongClickableButton Grid.Row="0" Grid.Column="1" Text="x&#178;" StyleId="^2" />
-                        <local:LongClickableButton Grid.Row="0" Grid.Column="2" Text="7" />
-                        <local:LongClickableButton Grid.Row="0" Grid.Column="3" Text="8" />
-                        <local:LongClickableButton Grid.Row="0" Grid.Column="4" Text="9" />
-                        <local:LongClickableButton Grid.Row="0" Grid.Column="5" Text="&#247;" StyleId="/" />
+                        <custom:LongClickableButton Grid.Row="0" Grid.Column="0" Text="sin" />
+                        <custom:LongClickableButton Grid.Row="0" Grid.Column="1" Text="x&#178;" StyleId="^2" />
+                        <custom:LongClickableButton Grid.Row="0" Grid.Column="2" Text="7" />
+                        <custom:LongClickableButton Grid.Row="0" Grid.Column="3" Text="8" />
+                        <custom:LongClickableButton Grid.Row="0" Grid.Column="4" Text="9" />
+                        <custom:LongClickableButton Grid.Row="0" Grid.Column="5" Text="&#247;" StyleId="/" />
 
-                        <local:LongClickableButton Grid.Row="1" Grid.Column="0" Text="cos" />
-                        <local:LongClickableButton Grid.Row="1" Grid.Column="1" Text="x&#8319;" StyleId="^" />
-                        <local:LongClickableButton Grid.Row="1" Grid.Column="2" Text="4" />
-                        <local:LongClickableButton Grid.Row="1" Grid.Column="3" Text="5" />
-                        <local:LongClickableButton Grid.Row="1" Grid.Column="4" Text="6" />
-                        <local:LongClickableButton Grid.Row="1" Grid.Column="5" Text="&#215;"/>
+                        <custom:LongClickableButton Grid.Row="1" Grid.Column="0" Text="cos" />
+                        <custom:LongClickableButton Grid.Row="1" Grid.Column="1" Text="x&#8319;" StyleId="^" />
+                        <custom:LongClickableButton Grid.Row="1" Grid.Column="2" Text="4" />
+                        <custom:LongClickableButton Grid.Row="1" Grid.Column="3" Text="5" />
+                        <custom:LongClickableButton Grid.Row="1" Grid.Column="4" Text="6" />
+                        <custom:LongClickableButton Grid.Row="1" Grid.Column="5" Text="&#215;"/>
 
-                        <local:LongClickableButton Grid.Row="2" Grid.Column="0" Text="tan" />
-                        <local:LongClickableButton Grid.Row="2" Grid.Column="1" Text="x"/>
-                        <local:LongClickableButton Grid.Row="2" Grid.Column="2" Text="1" />
-                        <local:LongClickableButton Grid.Row="2" Grid.Column="3" Text="2" />
-                        <local:LongClickableButton Grid.Row="2" Grid.Column="4" Text="3" />
-                        <local:LongClickableButton Grid.Row="2" Grid.Column="5" Text="-" />
+                        <custom:LongClickableButton Grid.Row="2" Grid.Column="0" Text="tan" />
+                        <custom:LongClickableButton Grid.Row="2" Grid.Column="1" Text="x"/>
+                        <custom:LongClickableButton Grid.Row="2" Grid.Column="2" Text="1" />
+                        <custom:LongClickableButton Grid.Row="2" Grid.Column="3" Text="2" />
+                        <custom:LongClickableButton Grid.Row="2" Grid.Column="4" Text="3" />
+                        <custom:LongClickableButton Grid.Row="2" Grid.Column="5" Text="-" />
 
-                        <local:LongClickableButton Grid.Row="3" Grid.Column="0" Text="&#960;" />
-                        <local:LongClickableButton Grid.Row="3" Grid.Column="1" Text="e" />
-                        <local:LongClickableButton Grid.Row="3" Grid.Column="2" Text="0" />
-                        <local:LongClickableButton Grid.Row="3" Grid.Column="3" Text="." />
+                        <custom:LongClickableButton Grid.Row="3" Grid.Column="0" Text="&#960;" />
+                        <custom:LongClickableButton Grid.Row="3" Grid.Column="1" Text="e" />
+                        <custom:LongClickableButton Grid.Row="3" Grid.Column="2" Text="0" />
+                        <custom:LongClickableButton Grid.Row="3" Grid.Column="3" Text="." />
                         <StackLayout x:Name="parentheses" Grid.Row="3" Grid.Column="4" Orientation="Horizontal" Spacing="0">
-                            <local:LongClickableButton Text="("/>
-                            <local:LongClickableButton Text=")"/>
+                            <custom:LongClickableButton Text="("/>
+                            <custom:LongClickableButton Text=")"/>
                         </StackLayout>
-                        <local:LongClickableButton Grid.Row="3" Grid.Column="5" Text="+" />
+                        <custom:LongClickableButton Grid.Row="3" Grid.Column="5" Text="+" />
                     </Grid>
                 </ScrollView>
 
                 <StackLayout x:Name="permanentKeys" Orientation="Vertical" Spacing="0">
-                    <local:LongClickableButton x:Name="info" Text="INFO"/>
-                    <local:LongClickableButton x:Name="delete" Text="DEL"/>
+                    <custom:LongClickableButton x:Name="info" Text="INFO"/>
+                    <custom:LongClickableButton x:Name="delete" Text="DEL"/>
                     <StackLayout x:Name="arrowKeys" Orientation="Horizontal" Spacing="0">
-                        <local:LongClickableButton x:Name="left" Text="&#10216;"/>
-                        <local:LongClickableButton x:Name="right" Text="&#10217;"/>
+                        <custom:LongClickableButton x:Name="left" Text="&#10216;"/>
+                        <custom:LongClickableButton x:Name="right" Text="&#10217;"/>
                     </StackLayout>
                 </StackLayout>
-            </local:Mask>
+            </StackLayout>
 
             <StackLayout x:Name="keyboardMask" InputTransparent="True" IsVisible="False" BackgroundColor="Gray" Opacity="0.75"
                          AbsoluteLayout.LayoutBounds="0,0,1,1"
                          AbsoluteLayout.LayoutFlags="All" />
         </AbsoluteLayout>
-    </local:TouchSpy>
+    </custom:TouchScreen>
 </ContentPage>

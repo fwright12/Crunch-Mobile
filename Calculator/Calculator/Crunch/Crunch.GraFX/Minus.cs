@@ -18,13 +18,13 @@ namespace Crunch.GraFX
         protected override void OnParentSet()
         {
             base.OnParentSet();
-
+            
             if (parent != null)
             {
                 parent.ChildAdded -= Parent_ChildAdded;
                 parent.ChildRemoved -= Parent_ChildAdded;
             }
-
+            
             change();
 
             if (Parent != null)

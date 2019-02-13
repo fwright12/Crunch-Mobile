@@ -7,8 +7,11 @@ using Calculator;
 
 namespace Crunch.GraFX
 {
+    public delegate void HeightChangedEventHandler(Expression e);
+
     public class Expression : StackLayout
     {
+        public event HeightChangedEventHandler HeightChanged;
         public bool Editable = false;
 
         public new Expression Parent => base.Parent as Expression;
@@ -22,7 +25,9 @@ namespace Crunch.GraFX
 
         public double FontSize = MainPage.fontSize;
 
-        public readonly float fontSizeDecrease = 4f / 5f;
+        public static readonly float fontSizeDecrease = 4f / 5f;
+
+        public double lastHeight = -1;
 
         public Expression()
         {
@@ -31,7 +36,7 @@ namespace Crunch.GraFX
             Orientation = StackOrientation.Horizontal;
             HorizontalOptions = LayoutOptions.Center;
             VerticalOptions = LayoutOptions.Center;
-            HeightRequest = Input.textHeight;
+            HeightRequest = MainPage.textHeight;
             Spacing = 0;
             
             if (GetType() == typeof(Expression))
@@ -81,6 +86,19 @@ namespace Crunch.GraFX
             Children.Insert(index, view);
         }
 
+        public void PaddingForExponents(double top)
+        {
+            Thickness pad = new Thickness(0, top, 0, 0);
+            if (Parent?.Parent is Equation)
+            {
+                Parent.Parent.Margin = pad;
+            }
+            else
+            {
+                Margin = pad;
+            }
+        }
+
         protected virtual double determineFontSize() => Parent.FontSize;
 
         protected override void OnRemoved(View view)
@@ -89,7 +107,7 @@ namespace Crunch.GraFX
 
             if (Children.Count == 0)
             {
-                HeightRequest = Input.textHeight;
+                HeightRequest = MainPage.textHeight;
             }
         }
 
@@ -122,10 +140,21 @@ namespace Crunch.GraFX
             }
             else if (view == SoftKeyboard.Cursor)
             {
-                SoftKeyboard.Cursor.HeightRequest = Input.TextSize * FontSize / MainPage.fontSize;
+                SoftKeyboard.Cursor.HeightRequest = MainPage.TextSize * FontSize / MainPage.fontSize;
             }
 
             //CheckPadding();
+        }
+
+        protected override void OnSizeAllocated(double width, double height)
+        {
+            base.OnSizeAllocated(width, height);
+            
+            if (lastHeight != Height)
+            {
+                lastHeight = Height;
+                HeightChanged?.Invoke(this);
+            }
         }
 
         public virtual string ToLatex()

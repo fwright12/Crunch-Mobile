@@ -98,16 +98,20 @@ namespace Xamarin.Forms
 {
     public static class ExtensionMethods
     {
-        public static bool IsEditable(this Layout<View> layout) => layout is Expression && (layout as Expression).Editable;
-
-        public static void Move(this View v, Action<View, Point> move, Rectangle bounds, Point increase)
+        public static void MoveTo(this View view, Point position) => MoveTo(view, position.X, position.Y);
+        public static void MoveTo(this View view, double x, double y)
         {
-            Point p = new Point(
-                Math.Max(bounds.X, Math.Min(bounds.X + bounds.Width - v.Width, v.X + increase.X)),
-                Math.Max(bounds.Y, Math.Min(bounds.Y + bounds.Height - v.Height, v.Y + increase.Y))
-                );
-            move(v, p);
+            if (view.Parent is AbsoluteLayout)
+            {
+                AbsoluteLayout.SetLayoutBounds(view, new Rectangle(x, y, -1, -1));
+            }
+            else
+            {
+                throw new Exception("View is not a child of an absolute layout");
+            }
         }
+
+        public static bool IsEditable(this Layout<View> layout) => layout is Expression && (layout as Expression).Editable;
 
         public static Point PositionOn(this View child, View parent)
         {
@@ -119,55 +123,15 @@ namespace Xamarin.Forms
             return child.ParentView().PositionOn(parent).Add(new Point(child.X, child.Y + child.TranslationY));
         }
 
-        public static View ParentView(this View view)
-        {
-            return view.Parent as View;
-        }
-
-        public static bool Selectable(this View view)
-        {
-            if (view is Text)
-            {
-                return (view as Text).Selectable;
-            }
-            else if (view is Expression)
-            {
-                return false;// (view as Expression).Selectable;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        public static void SetSelectable(this View view, bool selectable)
-        {
-            if (view is Text)
-            {
-                (view as Text).Selectable = selectable;
-            }
-            else if (view is Expression)
-            {
-                //(view as Expression).Selectable = selectable;
-            }
-        }
+        public static View ParentView(this View view) => view.Parent as View;
 
         public static Point Add(this Point p1, Point p2) => new Point(p1.X + p2.X, p1.Y + p2.Y);
         public static Point Subtract(this Point p1, Point p2) => new Point(p1.X - p2.X, p1.Y - p2.Y);
+        public static Point Multiply(this Point p1, double d) => new Point(p1.X * d, p1.Y * d);
 
-        public static int Index(this View view)
-        {
-            /*if (view.Parent is Expression)
-            {
-                return (view.Parent as Expression).IndexOf(view);
-            }*/
-            return (view.Parent as Layout<View>).Children.IndexOf(view);
-        }
+        public static int Index(this View view) => (view.Parent as Layout<View>).Children.IndexOf(view);
 
-        public static bool HasParent(this Element element)
-        {
-            return element.Parent != null;
-        }
+        public static bool HasParent(this Element element) => element.Parent != null;
 
         public static bool Remove(this View view)
         {

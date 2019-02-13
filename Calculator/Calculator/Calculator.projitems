@@ -30,14 +30,15 @@
     <Compile Include="$(MSBuildThisFileDirectory)Crunch\Crunch.Math\Fraction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Crunch\Crunch.Math\Operand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Crunch\Crunch.Math\Term.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Crunch\Crunch.Math\Testing.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Crunch\Crunch.Math\Variable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Crunch\Crunch.Math\Math.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Crunch\Parse.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Cursor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CursorView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CustomViews.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ExtensionMethods.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graph.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GroupedDictionary.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Input.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -46,7 +47,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Crunch\Quantity.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SoftKeyboard.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Tips.xaml.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Touch.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Drag.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="$(MSBuildThisFileDirectory)desmos.html" />

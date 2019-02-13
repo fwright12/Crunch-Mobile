@@ -12,101 +12,56 @@ using Android.OS;
 using Crunch.GraFX;
 using Android.Gms.Ads;
 
-[assembly: ExportRenderer(typeof(Calculator.Canvas), typeof(CanvasRenderer))]
+[assembly: ExportRenderer(typeof(Xamarin.Forms.Canvas), typeof(CanvasRenderer))]
 [assembly: ExportRenderer(typeof(LongClickableButton), typeof(LongClickableButtonRenderer))]
-[assembly: ExportRenderer(typeof(Mask), typeof(MaskRenderer))]
-[assembly: ExportRenderer(typeof(ScrollSpy), typeof(ScrollSpyRenderer))]
-[assembly: ExportRenderer(typeof(Answer), typeof(TouchEnabledLayoutRenderer))]
+[assembly: ExportRenderer(typeof(Answer), typeof(StackLayoutRenderer))]
 [assembly: ExportRenderer(typeof(DockButton), typeof(DockButtonRenderer))]
 [assembly: ExportRenderer(typeof(BannerAd), typeof(BannerAdRenderer))]
-[assembly: ExportRenderer(typeof(EqualSign), typeof(TextRenderer))]
-[assembly: ExportRenderer(typeof(TouchSpy), typeof(LayoutRenderer))]
+[assembly: ExportRenderer(typeof(Text), typeof(TextRenderer))]
+[assembly: ExportRenderer(typeof(TouchScreen), typeof(TouchScreenRenderer))]
 
 namespace Calculator.Droid
 {
     public static class ExtensionMethods
     {
-        public static Xamarin.Forms.Point GetPoint(this Android.Views.View view, MotionEvent e)
+        public static void RelayTouch(this Xamarin.Forms.View shared, Android.Views.View native, MotionEvent e)
         {
-            //print.log(new Xamarin.Forms.Point(e.RawX / view.Width, e.RawY / view.Height));
-            return new Xamarin.Forms.Point(e.RawX / view.Width, e.RawY / view.Height);
+            shared.TryToTouch(native.ScaleTouch(shared, e), (int)e.Action);
+        }
+
+        public static Xamarin.Forms.Point ScaleTouch(this Android.Views.View native, Xamarin.Forms.View shared, MotionEvent e)
+        {
+            return new Xamarin.Forms.Point(shared.Width * e.GetX() / native.Width, shared.Height * e.GetY() / native.Height);
         }
     }
 
-    public class LayoutRenderer : VisualElementRenderer<StackLayout>
+    public class TouchScreenRenderer : VisualElementRenderer<StackLayout>
     {
-
         public override bool OnTouchEvent(MotionEvent e)
         {
-            (Element as TouchSpy).Touched(RootView.GetPoint(e));
-            //Calculator.Drag.UpdatePosition(new Xamarin.Forms.Point(0.5, 0.1));
-            
-            if (e.Action == MotionEventActions.Up)
-            {
-                Calculator.Drag.EndDrag();
-            }
-
-            return Calculator.Drag.ShouldIntercept;
+            Element.RelayTouch(this, e);
+            return true;
         }
 
         public override bool OnInterceptTouchEvent(MotionEvent e)
         {
-            return Calculator.Drag.ShouldIntercept;
+            if (e.Action == MotionEventActions.Down)
+            {
+                TouchScreen.LastDownEvent = this.ScaleTouch(Element, e);
+            }
+            if (Xamarin.Forms.Drag.ShouldIntercept)
+            {
+                OnTouchEvent(e);
+            }
+            return Xamarin.Forms.Drag.ShouldIntercept;
         }
     }
 
     public class TextRenderer : LabelRenderer
     {
-        public override bool OnTouchEvent(MotionEvent e)
+        public TextRenderer()
         {
-            //var data = Android.Content.ClipData.NewPlainText("canvas", temp.Text);
-            //StartDrag(null, new DragShadowBuilder(this), null, 0);
-
-            (Element as EqualSign).Touched(RootView.GetPoint(e));
-
-            if (e.Action == MotionEventActions.Down)
-            {
-                //RelativeLayout.SetXConstraint(Equation.Focus, Constraint.Constant(0));
-                //Calculator.Drag.Touch = Xamarin.Forms.Point.Zero;
-                Calculator.Drag.StartDrag();
-                //ScrollSpyRenderer.OnTouch = (point) => (Element as EqualSign).Touched(point);
-            }
-
-            //(Element as EqualSign).Touched(new Xamarin.Forms.Point());
-
-            return true;
-        }
-    }
-
-    public class BannerAdRenderer : ViewRenderer<BannerAd, AdView>
-    {
-        //Note you may want to adjust this, see further down.
-        AdView adView;
-        AdView CreateNativeAdControl()
-        {
-            if (adView != null)
-                return adView;
-
-            adView = new AdView(Context);
-            adView.AdSize = AdSize.Banner;
-            adView.AdUnitId = "ca-app-pub-1795523054003202/4422905833";
-
-            //var adParams = new Android.Widget.LinearLayout.LayoutParams(LayoutParams.WrapContent, LayoutParams.WrapContent);
-
-            //adView.LayoutParameters = adParams;
-
-            adView.LoadAd(new AdRequest.Builder().Build());
-            return adView;
-        }
-
-        protected override void OnElementChanged(ElementChangedEventArgs<BannerAd> e)
-        {
-            base.OnElementChanged(e);
-            if (Control == null)
-            {
-                CreateNativeAdControl();
-                SetNativeControl(adView);
-            }
+            Touch += (sender, e) => Element.RelayTouch(sender as Android.Views.View, e.Event);
         }
     }
 
@@ -114,65 +69,31 @@ namespace Calculator.Droid
     {
         public override bool OnTouchEvent(MotionEvent e)
         {
-            Input.MoveKeyboard(new Xamarin.Forms.Point(e.RawX / RootView.Width, e.RawY / RootView.Height));
-
-            return false;
-        }
-
-        public override bool OnInterceptTouchEvent(MotionEvent ev)
-        {
-            if (ev.Action == MotionEventActions.Move)
-            {
-                Input.UndockKeyboard(new Xamarin.Forms.Point(ev.RawX / RootView.Width, ev.RawY / RootView.Height));
-                return true;
-            }
-
-            return false;
-        }
-    }
-
-    public class TouchEnabledLayoutRenderer : VisualElementRenderer<StackLayout>
-    {
-        public TouchEnabledLayoutRenderer()
-        {
-            Touch += (sender, e) =>
-            {
-                if (e.Event.Action == MotionEventActions.Up)
-                {
-                    (Element as Answer).Touched();
-                }
-            };
-        }
-    }
-
-    public class ScrollSpyRenderer : VisualElementRenderer<AbsoluteLayout>
-    {
-        public static Action<Xamarin.Forms.Point> OnTouch = null;
-
-        public override bool OnTouchEvent(MotionEvent e)
-        {
-            OnTouch(new Xamarin.Forms.Point(e.GetX() / Width, e.GetY() / Height));
-            
-            if (e.Action == MotionEventActions.Up)
-            {
-                OnTouch = null;
-            }
-
-            return OnTouch != null;
+            Element.RelayTouch(this, e);
+            return true;
         }
 
         public override bool OnInterceptTouchEvent(MotionEvent e)
         {
-            if (e.Action == MotionEventActions.Down)
+            if (e.Action == MotionEventActions.Move)
             {
-                MainPage.isTouchingCanvas = true;
-            }
-            else if (e.Action == MotionEventActions.Up)
-            {
-                MainPage.isTouchingCanvas = false;
+                return OnTouchEvent(e);
             }
 
-            return OnTouch != null;
+            return false;
+        }
+    }
+
+    public class StackLayoutRenderer : VisualElementRenderer<StackLayout>
+    {
+        public StackLayoutRenderer()
+        {
+            Touch += (sender, e) => Element.RelayTouch(sender as Android.Views.View, e.Event);
+        }
+
+        public override bool OnInterceptTouchEvent(MotionEvent ev)
+        {
+            return true;
         }
     }
 
@@ -185,64 +106,16 @@ namespace Calculator.Droid
             if (Control != null)
             {
                 Control.SetAllCaps(false);
-                Control.LongClick += (sender, args) => Input.LongClickDown(Element, MaskRenderer.point, true);
+                Control.LongClick += (sender, args) => (Element as LongClickableButton).OnLongClick();
             }
         }
     }
 
-    public class MaskRenderer : VisualElementRenderer<StackLayout>
-    {
-        public static Xamarin.Forms.Point point;
-
-        public override bool OnTouchEvent(MotionEvent e)
-        {
-            if (e.Action == MotionEventActions.Move)
-            {
-                Input.MoveCursor(new Xamarin.Forms.Point(e.RawX / RootView.Width, e.RawY / RootView.Height));
-                //Input.MoveCursor(new Xamarin.Forms.Point(e.GetX() / Width, e.GetY() / Height));
-            }
-            else if (e.Action == MotionEventActions.Up)
-            {
-                Input.LongClickDown(null, Xamarin.Forms.Point.Zero, false);
-            }
-
-            return false;
-        }
-
-        public override bool OnInterceptTouchEvent(MotionEvent ev)
-        {
-            point = new Xamarin.Forms.Point(ev.RawX / RootView.Width, ev.RawY / RootView.Height);
-
-            if (MainPage.IsInCursorMode)
-            {
-                if (ev.Action == MotionEventActions.Move)
-                {
-                    return true;
-                }
-                else if (ev.Action == MotionEventActions.Up)
-                {
-                    Input.LongClickDown(null, Xamarin.Forms.Point.Zero, false);
-                }
-            }
-
-            return false;
-        }
-    }
-
-    public class CanvasRenderer : VisualElementRenderer<Xamarin.Forms.RelativeLayout>
+    public class CanvasRenderer : VisualElementRenderer<AbsoluteLayout>
     {
         public CanvasRenderer()
         {
-            Touch += (sender, e) =>
-            {
-                if (e.Event.Action == MotionEventActions.Up)
-                {
-                    print.log(e.Event.GetX(), e.Event.GetY(), e.Event.RawX, e.Event.RawY);
-                    Input.CanvasTouch(new Xamarin.Forms.Point(e.Event.GetX() / (sender as Android.Views.View).Width, e.Event.GetY() / (sender as Android.Views.View).Height));
-                    //Input.CanvasTouch(new Point(e.Event.GetX(), e.Event.GetY()));
-                }
-            };
-
+            Touch += (sender, e) => Element.RelayTouch(sender as Android.Views.View, e.Event);
             Drag += dropEquation;
         }
 
@@ -290,6 +163,38 @@ namespace Calculator.Droid
                      */
                     e.Handled = true;
                     break;
+            }
+        }
+    }
+
+    public class BannerAdRenderer : ViewRenderer<BannerAd, AdView>
+    {
+        //Note you may want to adjust this, see further down.
+        AdView adView;
+        AdView CreateNativeAdControl()
+        {
+            if (adView != null)
+                return adView;
+
+            adView = new AdView(Context);
+            adView.AdSize = AdSize.Banner;
+            adView.AdUnitId = "ca-app-pub-1795523054003202/4422905833";
+
+            //var adParams = new Android.Widget.LinearLayout.LayoutParams(LayoutParams.WrapContent, LayoutParams.WrapContent);
+
+            //adView.LayoutParameters = adParams;
+
+            adView.LoadAd(new AdRequest.Builder().Build());
+            return adView;
+        }
+
+        protected override void OnElementChanged(ElementChangedEventArgs<BannerAd> e)
+        {
+            base.OnElementChanged(e);
+            if (Control == null)
+            {
+                CreateNativeAdControl();
+                SetNativeControl(adView);
             }
         }
     }

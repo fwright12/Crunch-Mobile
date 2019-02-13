@@ -814,11 +814,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Flint\\Documents\\Calculator Stuff\\Calculator\\Calculator\\Calculator.iOS\\Calculator.iOS.csproj",
+      "projectUniqueName": "C:\\Users\\Flint\\Documents\\Calculator Stuff\\Backups\\Calculator v1.2.3\\Calculator\\Calculator.iOS\\Calculator.iOS.csproj",
       "projectName": "Calculator.iOS",
-      "projectPath": "C:\\Users\\Flint\\Documents\\Calculator Stuff\\Calculator\\Calculator\\Calculator.iOS\\Calculator.iOS.csproj",
+      "projectPath": "C:\\Users\\Flint\\Documents\\Calculator Stuff\\Backups\\Calculator v1.2.3\\Calculator\\Calculator.iOS\\Calculator.iOS.csproj",
       "packagesPath": "C:\\Users\\Flint\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Flint\\Documents\\Calculator Stuff\\Calculator\\Calculator\\Calculator.iOS\\obj\\",
+      "outputPath": "C:\\Users\\Flint\\Documents\\Calculator Stuff\\Backups\\Calculator v1.2.3\\Calculator\\Calculator.iOS\\obj\\",
       "projectStyle": "PackageReference",
       "skipContentFileWrite": true,
       "configFilePaths": [
