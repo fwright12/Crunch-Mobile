@@ -133,8 +133,6 @@ C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Andro
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\MonoAndroid81\android\assets\Xamarin.Forms.Platform.Android.pdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\MonoAndroid81\android\assets\Xamarin.Forms.Xaml.pdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\Calculator.Android.dll
-C:\Users\Flint\Documents\Calculator Stuff\Crunch.GraphX\bin\Debug\Crunch.GraphX.dll
-C:\Users\Flint\Documents\C# Extensions\Xamarin.Forms.Extensions\bin\Debug\Xamarin.Forms.Extensions.dll
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\MonoAndroid81\linksrc\Microsoft.CSharp.pdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\MonoAndroid81\linksrc\Mono.Android.pdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\MonoAndroid81\linksrc\mscorlib.pdb
@@ -153,8 +151,6 @@ C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Andro
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\MonoAndroid81\linksrc\System.ServiceModel.Internals.pdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\MonoAndroid81\linksrc\System.Web.Services.pdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\MonoAndroid81\linksrc\Mono.Security.pdb
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\Crunch.GraphX.dll.mdb
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\Xamarin.Forms.Extensions.dll.mdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\MonoAndroid81\linksrc\Calculator.Android.dll.mdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\MonoAndroid81\linksrc\Crunch.Engine.dll.mdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\MonoAndroid81\linksrc\Crunch.GraphX.dll.mdb

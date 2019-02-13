@@ -33,8 +33,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)SettingsMenu.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Tips.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drag.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Tutorial.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="$(MSBuildThisFileDirectory)desmos.html" />
@@ -43,8 +43,5 @@
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)SettingsMenu.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
-    <Page Include="$(MSBuildThisFileDirectory)Tips.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
 </Project>

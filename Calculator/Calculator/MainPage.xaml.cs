@@ -8,6 +8,8 @@ using System.Extensions;
 using Xamarin.Forms.Extensions;
 using Crunch.GraphX;
 using Xamarin.Forms.Xaml;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Calculator
 {
@@ -122,7 +124,7 @@ namespace Calculator
                 Render.CreateRadical = () => new Image() { Source = "radical.png", HeightRequest = 0, WidthRequest = parenthesesWidth * 2, Aspect = Aspect.Fill };
 
                 page.Children.Remove(l);
-
+                
                 takeMathTest();
             };
 
@@ -132,10 +134,14 @@ namespace Calculator
             //Phantom cursor stuff
             phantomCursor = new CursorView() { Color = Color.Red, IsVisible = false };
             SoftKeyboard.Cursor.SizeChanged += delegate { phantomCursor.HeightRequest = SoftKeyboard.Cursor.Height; };
-            phantomCursorField.Children.Add(phantomCursor);
 
             FixDynamicLag("");
             print.log("main page constructor finished");
+
+            if (Settings.Tutorial)
+            {
+                Tutorial();
+            }
         }
 
         void FixDynamicLag(object o) => print.log(o as dynamic);
@@ -175,10 +181,10 @@ namespace Calculator
             }
             else if (Device.Idiom == TargetIdiom.Tablet)
             {
-                ContentView settings = new SettingsMenu() { BackgroundColor = Color.LightGray };
+                SettingsMenu settings = new SettingsMenu() { BackgroundColor = Color.LightGray };
                 screen.Children.Add(settings, new Rectangle(0, 0, SettingsMenuWidth, 1), AbsoluteLayoutFlags.HeightProportional);
                 screen.Children.Add(settingsMenuButton, new Rectangle(0, 0, MenuButtonWidth, MenuButtonWidth), AbsoluteLayoutFlags.None);
-                phantomCursorField.Children.Add(new BannerAd(), new Rectangle(0.5, 0, AbsoluteLayout.AutoSize, AbsoluteLayout.AutoSize), AbsoluteLayoutFlags.PositionProportional);
+                screen.Children.Add(new BannerAd(), new Rectangle(0.5, 0, AbsoluteLayout.AutoSize, AbsoluteLayout.AutoSize), AbsoluteLayoutFlags.PositionProportional);
 
                 Action<bool> setVisibility = (visible) =>
                 {
@@ -195,6 +201,7 @@ namespace Calculator
                         Settings.Save();
                     }
                 };
+                settings.SetVisible = setVisibility;
 
                 settingsMenuButton.Clicked += (sender, e) => setVisibility(settings.TranslationX < 0);
                 page.InterceptedTouch += (point, state) => setVisibility(false);
@@ -227,7 +234,13 @@ namespace Calculator
                             CalculationFocus.SetAnswer();
                         }
                     };
-                    key.LongClick += ClearCanvas;
+                    key.LongClick += async delegate
+                    {
+                        if (!Settings.ClearCanvasWarning || await DisplayAlert("Wait!", "Are you sure you want to clear the canvas?", "Yes", "No"))
+                        {
+                            ClearCanvas();
+                        }
+                    };
                 }
                 else if (text == Key.DOCK)
                 {
@@ -268,7 +281,7 @@ namespace Calculator
 
         protected override void OnSizeAllocated(double width, double height)
         {
-            page.Orientation = height > width ? StackOrientation.Vertical : StackOrientation.Horizontal;
+            page.Orientation = height > width || Device.Idiom == TargetIdiom.Tablet ? StackOrientation.Vertical : StackOrientation.Horizontal;
 
             base.OnSizeAllocated(width, height);
             
@@ -354,21 +367,18 @@ namespace Calculator
             canvas.Children.Add(calculation, point);
         }
 
-        private async void ClearCanvas()
+        private void ClearCanvas()
         {
-            if (!Settings.ClearCanvasWarning || await DisplayAlert("Wait!", "Are you sure you want to clear the canvas?", "Yes", "No"))
+            canvas.Children.Clear();
+            canvas.WidthRequest = (canvas.Parent as View).Width;
+            canvas.HeightRequest = (canvas.Parent as View).Height;
+            if (Device.Idiom == TargetIdiom.Tablet)
             {
-                canvas.Children.Clear();
-                canvas.WidthRequest = (canvas.Parent as View).Width;
-                canvas.HeightRequest = (canvas.Parent as View).Height;
-                if (Device.Idiom == TargetIdiom.Tablet)
-                {
-                    KeyboardView.MoveTo(-1000, -1000);
-                    keyboardDocked = true;
-                }
-
-                FocusOnCalculation(null);
+                KeyboardView.MoveTo(-1000, -1000);
+                keyboardDocked = true;
             }
+
+            FocusOnCalculation(null);
         }
 
         private void SetCursorMode(bool onOrOff)
@@ -382,6 +392,11 @@ namespace Calculator
             if (CalculationFocus == null)
             {
                 return;
+            }
+
+            if (phantomCursor.Parent == null)
+            {
+                phantomCursorField.Children.Add(phantomCursor);
             }
 
             if (Device.Idiom == TargetIdiom.Tablet && !keyboardDocked)
@@ -424,7 +439,7 @@ namespace Calculator
             page.Touch -= MoveCursor;
         }
 
-        private System.Threading.Thread thread;
+        private Thread thread;
         private int shouldScrollX => (int)Math.Truncate(phantomCursor.X / (canvasScroll.Width - phantomCursor.Width) * 2 - 1);
         private int shouldScrollY => (int)Math.Truncate(phantomCursor.Y / (canvasScroll.Height - phantomCursor.Height) * 2 - 1);
         private readonly double scrollSpeed = 0.025;
@@ -453,7 +468,7 @@ namespace Calculator
 
                 if ((thread == null || !thread.IsAlive) && shouldScrollX + shouldScrollY != 0)
                 {
-                    thread = new System.Threading.Thread(scrollCanvas);
+                    thread = new Thread(scrollCanvas);
                     thread.Start();
                 }
 

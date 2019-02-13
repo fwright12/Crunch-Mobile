@@ -6,11 +6,9 @@
     
   <ContentView.Content>
         <StackLayout x:Name="page" Orientation="Vertical">
-            <Button x:Name="reset" Text="Reset to Default" FontSize="Large" VerticalOptions="End" HorizontalOptions="Center" />
-            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
-                <Button x:Name="tips" Text="Tips" FontSize="Large" HorizontalOptions="FillAndExpand"/>
-                <Button x:Name="about" Text="About" FontSize="Large" HorizontalOptions="FillAndExpand"/>
-            </StackLayout>
+            <Button x:Name="reset" Text="Reset to Default" VerticalOptions="End" HorizontalOptions="Center" />
+            <Button x:Name="tutorial" Text="Show Tutorial" VerticalOptions="End" HorizontalOptions="Center"/>
+            <Button x:Name="about" Text="About" VerticalOptions="End" HorizontalOptions="Center"/>
         </StackLayout>
     </ContentView.Content>
 </ContentView>

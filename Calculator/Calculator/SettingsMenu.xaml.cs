@@ -12,7 +12,7 @@ namespace Calculator
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class SettingsMenu : ContentView
     {
-        private static string CanvasLocation
+        /*private static string CanvasLocation
         {
             get
             {
@@ -40,7 +40,9 @@ namespace Calculator
                     return "Additional operations can be accessed by scrolling the keyboard to the right";
                 }
             }
-        }
+        }*/
+
+        public Action<bool> SetVisible;
 
         private Stepper DecimalPlaces;
         private Toggle LogBase;
@@ -112,11 +114,28 @@ namespace Calculator
                 }
             };
 
-            tips.Clicked += (sender, e) => Application.Current.MainPage.DisplayAlert("Tips",
+            tutorial.Clicked += async delegate
+            {
+                if (Device.Idiom == TargetIdiom.Phone)
+                {
+                    await Navigation.PopAsync();
+                }
+                else
+                {
+                    SetVisible(false);
+                }
+
+                if (!Settings.Tutorial)
+                {
+                    (App.VisiblePage as MainPage).Tutorial();
+                }
+            };
+
+            /*tips.Clicked += (sender, e) => Application.Current.MainPage.DisplayAlert("Tips",
                     "A few tips about how to navigate the app:\n\n" + CanvasLocation +
                     "\n\nCrunch allows you to view your answer in multiple forms, when possible. Tap the answer to cycle through them, or in the case of degrees and radians, tap the label. The answer can also be moved on the canvas by simply touching and dragging the equals sign.\n\n" +
                     "There is also additional functionality attached to the keyboard keys. Long pressing DEL will clear the canvas, and long pressing any other button gives you the ability to move the cursor.\n" + AdditionalKeyboardFunctionality,
-                    "Dismiss");
+                    "Dismiss");*/
 
             about.Clicked += (sender, e) => Application.Current.MainPage.DisplayAlert("About Crunch",
                 "Thank you for using Crunch!\n\n" +

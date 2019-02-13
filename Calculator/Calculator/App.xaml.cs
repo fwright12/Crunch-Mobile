@@ -6,6 +6,8 @@ namespace Calculator
 {
     public partial class App : Application
     {
+        public static Page VisiblePage => (Current.MainPage as NavigationPage)?.CurrentPage ?? Current.MainPage;
+
         public App()
         {
             InitializeComponent();

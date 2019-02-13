@@ -25,7 +25,8 @@ namespace Calculator
 
             Children.Add(Main = main);
 
-            (Main.Children[1] as Text).Touch += (point, state) =>
+            //(Main.Children[1] as Text)
+            Main.Touch += (point, state) =>
             {
                 if (state == TouchState.Down)
                 {

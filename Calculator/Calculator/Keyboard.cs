@@ -74,14 +74,14 @@ namespace Calculator
 
         private ScrollView Scroll;
         private Grid Keypad;
-        private StackLayout Mask;
+        private AbsoluteLayout Mask;
 
         private StackLayout Parentheses;
         private StackLayout PermanentKeys;
         private StackLayout ArrowKeys;
 
         //white down-pointing triangle
-        private Key Dock => Device.Idiom == TargetIdiom.Tablet ? new Key("\u25BD", Key.DOCK) : new Key("");
+        private LongClickableButton Dock => Device.Idiom == TargetIdiom.Tablet ? new Key("\u25BD", Key.DOCK) : new LongClickableButton();
 
         public Keyboard()
         {
@@ -133,12 +133,15 @@ namespace Calculator
             PermanentKeys.Children.Add(ArrowKeys);
             PermanentKeys.Children.Add(Dock);
 
-            Mask = new StackLayout() { IsVisible = false, BackgroundColor = Color.Gray, Opacity = 0.75 };
+            Mask = new AbsoluteLayout() { IsVisible = false, BackgroundColor = Color.Gray, Opacity = 0.875 };
 
             Children.Add(PermanentKeys);
             Children.Add(Scroll);
             Children.Add(Mask);
         }
+
+        public void ClearOverlay() => Mask.Children.Clear();
+        public void Overlay(View view, Rectangle bounds, AbsoluteLayoutFlags flags = AbsoluteLayoutFlags.None) => Mask.Children.Add(view, bounds, flags);
 
         public void MaskKeys(bool onOrOff) => Mask.IsVisible = onOrOff;
 
@@ -168,21 +171,11 @@ namespace Calculator
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-        private double ButtonSize;
-        private bool ShowingFullKeyboard
-        {
-            get
-            {
-                return ShouldShowFullKeyboard && CanShowFullKeyboard;
-            }
-            set
-            {
-                ShouldShowFullKeyboard = value;
-                InvalidateMeasure();
-            }
-        }
-        private bool CanShowFullKeyboard = false;
+        public bool ShowingFullKeyboard => ShouldShowFullKeyboard && CanShowFullKeyboard;
         public bool ShouldShowFullKeyboard = true;
+
+        private double ButtonSize;
+        private bool CanShowFullKeyboard = false;
 
         private bool IdealOrientation;
         private T Orient<T>(T ifHorizontal, T ifVertical) => IdealOrientation ? ifHorizontal : ifVertical;

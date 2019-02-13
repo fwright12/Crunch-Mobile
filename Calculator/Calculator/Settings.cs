@@ -27,6 +27,7 @@ namespace Calculator
         public static Numbers Numbers = Numbers.Exact;
         public static Trigonometry Trigonometry = Trigonometry.Degrees;
 
+        public static bool Tutorial = true;
         public static bool ClearCanvasWarning = true;
         public static bool LeftHanded = false;
 
@@ -35,6 +36,7 @@ namespace Calculator
         private static readonly string NUMBER_FORM = "number form";
         private static readonly string TRIG_FORM = "trig form";
         private static readonly string CLEAR_CANVAS_WARNING = "clear canvas warning";
+        private static readonly string TUTORIAL = "tutorial";
 
         public static void Load()
         {
@@ -45,6 +47,7 @@ namespace Calculator
             Trigonometry = Storage.TryGet(TRIG_FORM, Trigonometry.Degrees);
 
             ClearCanvasWarning = Storage.TryGet(CLEAR_CANVAS_WARNING, true);
+            Tutorial = Storage.TryGet(TUTORIAL, true);
         }
 
         public static async void Save()
@@ -54,6 +57,7 @@ namespace Calculator
             Storage[NUMBER_FORM] = (int)Numbers;
             Storage[TRIG_FORM] = (int)Trigonometry;
             Storage[CLEAR_CANVAS_WARNING] = ClearCanvasWarning;
+            Storage[TUTORIAL] = false;
 
             await Application.Current.SavePropertiesAsync();
         }

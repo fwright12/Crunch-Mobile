@@ -18,7 +18,7 @@
         <custom:TouchScreen x:Name="page" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All">
             <AbsoluteLayout x:Name="phantomCursorField" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
                 <ScrollView x:Name="canvasScroll" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" Orientation="Both">
-                    <custom:Canvas x:Name="canvas" />
+                    <custom:Canvas x:Name="canvas" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
                 </ScrollView>
 
                 <!--<StackLayout BackgroundColor="Red" AbsoluteLayout.LayoutBounds="0.5,0.33,0.9,0.15" AbsoluteLayout.LayoutFlags="All">-->
