@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 using Xamarin.Forms;
-using Crunch.GraFX;
 
 namespace Calculator
 {
@@ -21,6 +19,14 @@ namespace Calculator
         public static void Started(MainPage _graphics)
         {
             graphics = _graphics;
+        }
+
+        public static void Delete()
+        {
+            if (Cursor.Delete())
+            {
+
+            }
         }
 
         public static void CanvasTouch(Point pos)
@@ -53,6 +59,17 @@ namespace Calculator
         public static void MoveKeyboard(Point pos)
         {
             graphics.MoveKeyboard(pos);
+        }
+
+        public static Action Focus;
+
+        static List<IMathList> list;
+        public static void Key(string key)
+        {
+            print.log("a " + key + " was pressed");
+
+            Cursor.Insert(key);
+            MainPage.SetAnswer();
         }
     }
 }

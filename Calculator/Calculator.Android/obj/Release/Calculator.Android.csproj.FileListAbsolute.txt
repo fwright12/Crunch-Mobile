@@ -2,6 +2,7 @@ C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Andro
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Release\Calculator.Android.pdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Release\com.GreenMountainLabs.Calculator.apk
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Release\com.GreenMountainLabs.Calculator-Signed.apk
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Release\Calculator.Android.csprojResolveAssemblyReference.cache
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Release\XbdMerge\Xamarin.GooglePlayServices.Basement.dll.stamp
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Release\XbdMerge\Xamarin.GooglePlayServices.Gass.dll.stamp
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Release\XbdMerge\Xamarin.GooglePlayServices.Ads.Lite.dll.stamp
@@ -21,7 +22,6 @@ C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Andro
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Release\res\drawable-xxhdpi\icon.png
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Release\R.cs.flag
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Release\uploadflags.txt
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Release\Calculator.Android.csprojResolveAssemblyReference.cache
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Release\Calculator.Android.dll.mdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Release\FormsViewGroup.dll.mdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Release\Xamarin.Forms.Core.dll.mdb
@@ -32,12 +32,6 @@ C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Andro
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Release\android\assets\Xamarin.Forms.Core.dll.mdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Release\android\assets\Xamarin.Forms.Platform.Android.dll.mdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Release\android\assets\Xamarin.Forms.Xaml.dll.mdb
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Release\XbdMerge\proguard\dc663e480.txt
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Release\XbdMerge\dc663e48.proguard.stamp
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Release\XbdMerge\d87effcf.proguard.stamp
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Release\XbdMerge\proguard\e843ef2a0.txt
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Release\XbdMerge\e843ef2a.proguard.stamp
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Release\XbdMerge\d99a9fda.proguard.stamp
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Release\Calculator.Android.dll
 bin\Release\FormsViewGroup.dll.mdb
 bin\Release\Xamarin.Forms.Core.dll.mdb

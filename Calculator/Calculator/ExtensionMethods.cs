@@ -5,17 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Calculator;
-using Crunch.GraFX;
 
 namespace System
 {
-    public static class StringClassification
-    {
-        public static bool IsOpening(this char c) => c == '(' || c == '{' || c == '[';
-        public static bool IsClosing(this char c) => c == ')' || c == '}' || c == ']';
-        public static bool IsOperand(this string s) => s.Length == 1 && (s == "/" || s == "×" || s == "+" || s == "*" || s == "-");
-        public static bool IsNumber(this string s) => s.Length == 1 && ((s[0] >= 48 && s[0] <= 57) || s[0] == 46);
-    }
+    public enum Direction { Backward = -1, Forward = 0 };
 
     public class print
     {
@@ -30,33 +23,6 @@ namespace System
 
     public static class ExtensionMethods
     {
-        /// <summary>
-        /// Removes the last node of the LinkedList and returns it. Returns null if the list is empty
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="list"></param>
-        /// <returns></returns>
-        public static LinkedListNode<T> Pop<T>(this LinkedList<T> list)
-        {
-            LinkedListNode<T> temp = list.Last;
-            if (list.Count > 0)
-            {
-                list.RemoveLast();
-            }
-            return temp;
-        }
-
-        public static string Simple(this string str)
-        {
-            str = str.Trim();
-            switch (str)
-            {
-                case "÷": return "/";
-                case "×": return "*";
-                default: return str;
-            }
-        }
-
         public static int ToInt(this bool sender)
         {
             if (sender)
@@ -69,6 +35,19 @@ namespace System
             }
         }
 
+        public static bool IsNumber(this string str)
+        {
+            char chr = str[0];
+            return (chr >= 48 && chr <= 57) || chr == 46;
+
+            //return str.Length == 1 && str[0] >= 97 && str[0] <= 122;
+        }
+
+        public static bool IsOperand(this string str)
+        {
+            return str.Trim() == "+" || str.Trim() == "*" || str.Trim() == "-";
+        }
+
         public static int Bound(this int value, int low, int high)
         {
             if (value < low)
@@ -79,13 +58,6 @@ namespace System
             return value;
         }
 
-        /// <summary>
-        /// Checks to see if value is between low and high (inclusive)
-        /// </summary>
-        /// <param name="value"></param>
-        /// <param name="low"></param>
-        /// <param name="high"></param>
-        /// <returns></returns>
         public static bool IsBetween(this int value, int low, int high)
         {
             return value >= low && value <= high;
@@ -104,7 +76,7 @@ namespace Xamarin.Forms
 
         public static bool Selectable(this View view)
         {
-            if (view is Text)
+            /*if (view is Text)
             {
                 return (view as Text).Selectable;
             }
@@ -115,19 +87,21 @@ namespace Xamarin.Forms
             else
             {
                 return false;
-            }
+            }*/
+
+            return true;
         }
 
         public static void SetSelectable(this View view, bool selectable)
         {
-            if (view is Text)
+            /*if (view is Text)
             {
                 (view as Text).Selectable = selectable;
             }
             else if (view is Expression)
             {
                 (view as Expression).Selectable = selectable;
-            }
+            }*/
         }
 
         public static Point Add(this Point p1, Point p2)

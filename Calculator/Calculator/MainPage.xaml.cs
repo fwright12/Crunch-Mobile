@@ -17,8 +17,12 @@ namespace Calculator
 
     public partial class MainPage : ContentPage
     {
+        public static Crunch.GraFX.Equation focus;
+
         public static bool isTouchingCanvas = false;
         public static bool keyboardDocked = true;
+
+        public static View cursor;
 
         private BoxView phantomCursor;
 
@@ -28,7 +32,7 @@ namespace Calculator
         public static readonly double fontSize = 33;
         private static double buttonFontSize = -1;
 
-        //Color 560297
+        //Color #560297
 
         private static string tips
         {
@@ -91,7 +95,7 @@ namespace Calculator
 
             //Keyboard formatting
             buttonFormat(keyboard);
-
+            
             //Measuring for cursor
             Label l = new Label();
             l.FontSize = fontSize;
@@ -99,32 +103,14 @@ namespace Calculator
             l.SizeChanged += delegate
             {
                 Input.textHeight = l.Height;
-                //cursor = new Cursor(true);
+                cursor = new Cursor(true);
                 page.Children.Remove(l);
-
-                //Expression a = new Expression(Render.Math("6-(3/2+4^(7-5))/(8^2*4)+2^(2+3)"));
-                //Expression a = Render.Math("8/8/8+2^2^2");
-                //Expression a = new Expression(Render.Math("3+476576/9878-56^2876"));
-                //Expression a = new Expression(Render.Math("6+(8-3)*(3/9)/5+2^2"));
-                /*Expression a = new Expression(Render.Math("(3)+(9^(4*(8)+1^5"));
-                (canvas as Layout<View>).Children.Add(a);
-                a.TranslationY = 200;
-                a.BackgroundColor = Color.Transparent;*/
             };
 
-            //print.log(";lakjsdflk;jasld;kfj;alskdfj", ((string)new Text()) == null);
-            /*print.log(Crunch.Parse.Math("^3234+4^(6-85^"));
-            print.log(Crunch.Parse.Math("(3)+(9^(4*(8)+1^5"));
-            print.log(Crunch.Parse.Math("((1^3)-1^9)+(43^2*(6-9))-8+(234^4*(7))"));
-            print.log(Crunch.Parse.Math("3^1^2^3^4-95)+7)+(4*(6-9))-8+(4*17)"));
-            print.log(Crunch.Parse.Math("(4+3()2+1^8^0)(4)+(6)"));
-            print.log(Crunch.Parse.Math("()4+()*8()"));
-            throw new Exception();*/
-
             //Button hookup
-            left.Clicked += (sender, e) => { SoftKeyboard.Left(); };
-            right.Clicked += (sender, e) => { SoftKeyboard.Right(); };
-            delete.Clicked += (sender, e) => { SoftKeyboard.Delete(); };
+            left.Clicked += (sender, e) => { if (Cursor.Parent != null) Cursor.Left(); };
+            right.Clicked += (sender, e) => { if (Cursor.Parent != null) Cursor.Right(); };
+            delete.Clicked += (sender, e) => { if (Cursor.Parent != null) Cursor.Delete(); };
             info.Clicked += (sender, e) => DisplayAlert("About Crunch",
                 "Thank you for using Crunch!\n\n" +
                 "A few tips about how to navigate the app: " + tips +
@@ -136,17 +122,16 @@ namespace Calculator
                 "Dismiss");
 
             //Phantom cursor stuff
-            phantomCursor = new CursorView();
+            phantomCursor = new Cursor();
             phantomCursor.Color = Color.Red;
             phantomCursorField.Children.Add(phantomCursor);
             phantomCursor.IsVisible = false;
 
-            FixDynamicLag("");
+            //ExtensionMethods.FixDynamicLag("");
+            print.log(("") as dynamic);
             Input.Started(this);
             print.log("main page constructor finished");
         }
-
-        void FixDynamicLag(object o) => print.log(o as dynamic);
 
         public void DockKeyboard(bool isDocked)
         {
@@ -185,7 +170,7 @@ namespace Calculator
                 {
                     Button b = v as Button;
 
-                    //Dynamic sizing for some buttons
+                    //Dynamic sizing for specific buttons
                     if (b.Parent == arrowKeys)
                     {
                         b.SizeChanged += delegate { b.FontSize = Math.Floor(33 * b.Height / 75); };
@@ -203,7 +188,8 @@ namespace Calculator
                     {
                         b.Clicked += delegate
                         {
-                            SoftKeyboard.Type(b.StyleId ?? b.Text);
+                            //if (Cursor.Parent != null)
+                            Input.Key(b.StyleId ?? b.Text);
                             if (keypad.Children.IndexOf(b) % columns <= 0)
                             {
                                 keyboardScroll.ScrollToAsync(keypad, ScrollToPosition.End, false);
@@ -346,33 +332,33 @@ namespace Calculator
             lastKeyboardPos = pos;
         }
 
-        public Equation setFocus(Equation e)
+        public Crunch.GraFX.Equation setFocus(Crunch.GraFX.Equation e)
         {
-            if (Equation.Focus != null)
+            if (focus != null)
             {
-                Equation.Focus.SizeChanged -= Focus_SizeChanged;
-                if (Equation.Focus.Children.Count == 0)
+                focus.SizeChanged -= Focus_SizeChanged;
+                if (focus.Children.Count == 0)
                 {
-                    Equation.Focus.Parent.Remove();
+                    focus.Remove();
                 }
             }
 
             if (e != null)
             {
-                Equation.Focus = e;
-                Equation.Focus.SizeChanged += Focus_SizeChanged;
+                focus = e;
+                focus.SizeChanged += Focus_SizeChanged;
             }
 
-            return Equation.Focus;
+            return focus;
         }
 
         private void Focus_SizeChanged(object sender, EventArgs e)
         {
             if (Device.Idiom == TargetIdiom.Tablet && keyboardDocked)
             {
-                StackLayout temp = Equation.Focus as StackLayout;
+                StackLayout temp = focus.Parent as StackLayout;
                 keyboardContainer.TranslationX = temp.X - canvasScroll.ScrollX;
-                keyboardContainer.TranslationY = temp.Y + Equation.Focus.Height - canvasScroll.ScrollY;
+                keyboardContainer.TranslationY = temp.Y + focus.Height - canvasScroll.ScrollY;
             }
         }
 
@@ -380,16 +366,16 @@ namespace Calculator
         {
             Point position = new Point((float)(touchPercent.X * canvas.Width), (float)(touchPercent.Y * canvas.Height));
 
-            Equation equation = setFocus(new Equation());
-            SoftKeyboard.MoveCursor(equation.LHS);
-            
             //Make a generic equation
             //Expression e = new Expression(setFocus(new Expression(cursor)), new Text(" = "));
-            //e.Selectable = true;
-            //e.Children[1].SetSelectable(false);
-            equation.SizeChanged += delegate
+            /*e.Selectable = true;
+            e.Build();
+            e.ChildAt(1).SetSelectable(false);*/
+
+            Equation layout = setFocus(new Equation());
+            layout.SizeChanged += delegate
             {
-                Point p = position.Add(new Point(equation.Width, equation.Height));
+                Point p = position.Add(new Point(layout.Width, layout.Height));
 
                 if (canvas.Width - p.X < padding)
                 {
@@ -401,6 +387,10 @@ namespace Calculator
                 }
             };
 
+            Cursor.MoveTo(layout.LHS);
+            //Cursor.parent = layout.LHS;
+            //(layout.Children[0] as StackLayout).Children.Add(cursor);
+
             /*StackLayout layout = e;
             if (Device.Idiom == TargetIdiom.Tablet)
             {
@@ -409,7 +399,7 @@ namespace Calculator
                 e.HorizontalOptions = LayoutOptions.Start;
             }*/
 
-            canvas.Children.Add(equation, Constraint.Constant(position.X), Constraint.Constant(position.Y));
+            canvas.Children.Add(layout, Constraint.Constant(position.X), Constraint.Constant(position.Y));
         }
 
         public async void clearCanvas()
@@ -431,11 +421,11 @@ namespace Calculator
                 if (Device.Idiom == TargetIdiom.Tablet && !keyboardDocked)
                 {
                     phantomCursor.TranslationX = pos.X * page.Width;
-                    phantomCursor.TranslationY = keyboardContainer.TranslationY - SoftKeyboard.Cursor.Height;
+                    phantomCursor.TranslationY = keyboardContainer.TranslationY - cursor.Height;
                 }
                 else
                 {
-                    Point temp = PositionOnCanvas(SoftKeyboard.Cursor).Add(new Point(-canvasScroll.ScrollX, -canvasScroll.ScrollY));
+                    Point temp = PositionOnCanvas(cursor).Add(new Point(-canvasScroll.ScrollX, -canvasScroll.ScrollY));
                     if (temp.X >= 0 && temp.X <= canvasScroll.Width && temp.Y >= 0 && temp.Y <= canvas.Height)
                     {
                         phantomCursor.TranslationX = temp.X;
@@ -444,21 +434,21 @@ namespace Calculator
                 }
 
                 lastPos = pos;
-                phantomCursor.HeightRequest = SoftKeyboard.Cursor.Height;
+                phantomCursor.HeightRequest = cursor.Height;
             }
             else
             {
                 //Climb up to the top of the tree structure
-                Element root = SoftKeyboard.Cursor;
-                while (!(root is Equation))
+                Element root = cursor;
+                while (root.HasParent() && root.Parent.HasParent() && root.Parent.Parent is Crunch.GraFX.Expression)
                 {
                     root = root.Parent;
                 }
 
                 //Focus has changed
-                if (root != Equation.Focus)
+                if (root != focus)
                 {
-                    setFocus(root as Equation);
+                    //setFocus(root as CrunchGraFX.Expression);
                 }
             }
 
@@ -477,7 +467,7 @@ namespace Calculator
             return PositionOnCanvas(view.Parent as View).Add(new Point(view.X, view.Y + view.TranslationY));
         }
 
-        private System.Threading.Thread thread;
+        private Java.Lang.Thread thread;
         private int shouldScrollX => (int)Math.Truncate(phantomCursor.TranslationX / (canvasScroll.Width - phantomCursor.Width) * 2 - 1);
         private int shouldScrollY => (int)Math.Truncate(phantomCursor.TranslationY / (canvasScroll.Height - phantomCursor.Height) * 2 - 1);
         private readonly double scrollSpeed = 0.025;
@@ -509,7 +499,7 @@ namespace Calculator
             if ((thread == null || !thread.IsAlive) && shouldScrollX + shouldScrollY != 0)
             {
                 //canvasScroll.ScrollToAsync(canvasScroll.ScrollX + shouldScrollX, canvasScroll.ScrollY + shouldScrollY, false);
-                thread = new System.Threading.Thread(scrollCanvas);
+                thread = new Java.Lang.Thread(scrollCanvas);
                 thread.Start();
             }
 
@@ -519,21 +509,21 @@ namespace Calculator
             Point loc = new Point(canvasScroll.ScrollX + phantomCursor.TranslationX + phantomCursor.Width / 2, canvasScroll.ScrollY + phantomCursor.TranslationY + phantomCursor.Height / 2);
             int leftOrRight = 0;
             View view = GetViewAt(canvas, loc, ref leftOrRight);
-
+            
             //if (viewLookup.Contains(view) && viewLookup[view].selectable && (viewLookup[view] is Text || viewLookup[view] is Expression))
             if (view is Text || view is Expression)
             {
-                phantomCursor.HeightRequest = SoftKeyboard.Cursor.Height;
+                phantomCursor.HeightRequest = cursor.Height;
 
                 bool changed = false;
                 if (view.GetType() == typeof(Expression))
                 {
                     Expression e = view as Expression;
-                    changed = SoftKeyboard.MoveCursor(e, e.Children.Count * leftOrRight);
+                    //changed = Cursor.Move(e, e.ChildCount * leftOrRight);
                 }
                 else if (view is Text)
                 {
-                    changed = SoftKeyboard.MoveCursor((view as Text).Parent, (view.Parent as Expression).IndexOf(view) + leftOrRight);
+                    //changed = Cursor.Move((view as Text).Parent, view.Index() + leftOrRight);
                 }
             }
         }
@@ -547,7 +537,7 @@ namespace Calculator
             {
                 View child = parent.Children[i];
 
-                if (((child is Expression && !(child is Answer)) || child is Text) && pos.X >= child.X && pos.X <= child.X + child.Width && pos.Y >= child.Y - child.Margin.Top + child.TranslationY && pos.Y <= child.Y + child.Height + child.TranslationY)
+                if (child.Selectable() && pos.X >= child.X && pos.X <= child.X + child.Width && pos.Y >= child.Y - child.Margin.Top + child.TranslationY && pos.Y <= child.Y + child.Height + child.TranslationY)
                 {
                     if (child is Layout<View>)
                     {
@@ -560,11 +550,6 @@ namespace Calculator
                         {
                             ans = child;
                             break;
-                        }
-
-                        if (ans != null && ans is Text && ans.Parent is Equation)
-                        {
-                            return null;
                         }
 
                         return ans;
@@ -582,6 +567,55 @@ namespace Calculator
                 leftOrRight = (int)Math.Round((pos.X - ans.X) / ans.Width);
             }
             return ans;
+        }
+
+        public static void SetAnswer()
+        {
+            /*Expression root = focus.Parent;
+
+            Answer answer = null;
+            //Remove the old answer if it exists
+            if (root.ChildCount == 2)
+            {
+                answer = new Answer(new Crunch.Number(0));
+                root.Add(answer);
+                answer.SetSelectable(false);
+                answer.Build();
+            }
+            else
+            {
+                answer = root.ChildAt(2) as Answer;
+            }
+
+            //Try to add the new answer
+            try
+            {
+                answer.IsVisible = true;
+                //answer.SwitchFormat(Crunch.Math.Evaluate(focus));
+                /*var answer = new Answer(Crunch.Math.Evaluate(focus));
+                root.Insert(2, answer);
+                answer.SetSelectable(false);
+                answer.Build();*/
+
+                /*if (isDecimal || answer.GetType() == typeof(Crunch.Number))
+                {
+                    answer = new Crunch.Number(Math.Round(answer.value, decimalPlaces));
+                }
+
+                //answer.selectable = false;
+
+                //answer.AddAfter(root.Children[1]);
+                //SetText(answer);
+                //viewLookup[answer] delegate { isDecimal = !isDecimal; SetAnswer(focus as dynamic); });
+
+                print.log("adding answer");
+                root.Insert(2, answer.ToView());
+            }
+            catch (Exception e)
+            {
+                answer.IsVisible = false;
+                print.log(e.Message);
+            }*/
         }
     }
 }

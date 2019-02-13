@@ -1,6 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Paths>
   <Jars>
+    <Jar>obj\Release\lp\0\jl\formsviewgroup.jar</Jar>
+    <Jar>obj\Release\lp\2\jl\arch-core-common.jar</Jar>
+    <Jar>obj\Release\lp\3\jl\arch-lifecycle-common.jar</Jar>
+    <Jar>obj\Release\lp\6\jl\support-annotations.jar</Jar>
     <Jar>C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Release\lp\0\jl\formsviewgroup.jar</Jar>
     <Jar>C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Release\lp\10\jl\bin\classes.jar</Jar>
     <Jar>C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Release\lp\11\jl\bin\classes.jar</Jar>

@@ -36,7 +36,7 @@
                         <local:LongClickableButton Grid.Row="1" Grid.Column="1" Text="4" />
                         <local:LongClickableButton Grid.Row="1" Grid.Column="2" Text="5" />
                         <local:LongClickableButton Grid.Row="1" Grid.Column="3" Text="6" />
-                        <local:LongClickableButton Grid.Row="1" Grid.Column="4" Text="&#215;"/>
+                        <local:LongClickableButton Grid.Row="1" Grid.Column="4" Text="&#215;" StyleId="*" />
 
                         <local:LongClickableButton Grid.Row="2" Grid.Column="0" Text="x&#178;" StyleId="^2" />
                         <local:LongClickableButton Grid.Row="2" Grid.Column="1" Text="1" />

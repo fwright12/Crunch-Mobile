@@ -9,7 +9,6 @@ using Android.Graphics;
 using Android.Runtime;
 using Android.OS;
 
-using Crunch.GraFX;
 using Android.Gms.Ads;
 
 [assembly: ExportRenderer(typeof(GestureRelativeLayout), typeof(AndroidRelativeLayoutRenderer))]

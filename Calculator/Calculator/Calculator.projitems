@@ -16,34 +16,26 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Crunch\Crunch.GraFX\Answer.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Crunch\Crunch.GraFX\Equation.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Crunch\Crunch.GraFX\Fraction.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Crunch\Crunch.GraFX\Exponent.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Crunch\Crunch.GraFX\Expression.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Crunch\Crunch.GraFX\Minus.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Crunch\Crunch.GraFX\Render.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Crunch\Crunch.GraFX\Text.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Crunch\Crunch.Math\Constant.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Crunch\Crunch.Math\Expression.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Crunch\Crunch.Math\Fraction.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Crunch\Crunch.Math\Operand.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Crunch\Crunch.Math\Term.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Crunch\Crunch.Math\Variable.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Crunch\Crunch.Math\Math.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Crunch\Parse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Crunch\Constant.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Crunch\Expression.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Crunch\Fraction.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Crunch\Operand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Crunch\Term.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Crunch\Variable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Cursor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ExtensionMethods.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Field.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graph.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Graphics.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Answer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Equation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Expression.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Text.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Input.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Main.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Playground.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Quantity.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)SoftKeyboard.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Tips.xaml.cs" />
   </ItemGroup>
   <ItemGroup>
