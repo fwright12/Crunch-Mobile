@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:Crunch="clr-namespace:Calculator"
+             x:Class="Calculator.SettingsMenu">
+    
+  <ContentView.Content>
+        <StackLayout x:Name="page" Orientation="Vertical">
+            <Button x:Name="reset" Text="Reset to Default" FontSize="Large" VerticalOptions="End" HorizontalOptions="Center" />
+            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                <Button x:Name="tips" Text="Tips" FontSize="Large" HorizontalOptions="FillAndExpand"/>
+                <Button x:Name="about" Text="About" FontSize="Large" HorizontalOptions="FillAndExpand"/>
+            </StackLayout>
+        </StackLayout>
+    </ContentView.Content>
+</ContentView>

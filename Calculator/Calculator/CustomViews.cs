@@ -7,8 +7,6 @@ using Xamarin.Forms.Extensions;
 
 namespace Calculator
 {
-    public delegate void ToggledEventHandler(int selected);
-
     public class AnythingButton : TouchableAbsoluteLayout
     {
         public event EventHandler Clicked;
@@ -48,58 +46,7 @@ namespace Calculator
         public override string ToString() => Text;
     }
 
-    public class Toggle : StackLayout
-    {
-        public static Color NoColor = new Color(-1, -1, -1, -1);
-        public event ToggledEventHandler Toggled;
-
-        private List<Button> Options;
-        private Button selected;
-
-        public void Select(Button b)
-        {
-            if (selected != null)
-            {
-                selected.BackgroundColor = NoColor;
-            }
-
-            b.BackgroundColor = Color.MediumPurple;
-            selected = b;
-
-            Toggled?.Invoke(Options.IndexOf(b));
-        }
-
-        public Toggle(string description, int selected, params string[] list)
-        {
-            Options = new List<Button>(list.Length);
-
-            Label label = new Label { VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.StartAndExpand, Text = description };
-            StackLayout layout = new StackLayout { Orientation = StackOrientation.Horizontal, Spacing = 0, VerticalOptions = LayoutOptions.CenterAndExpand, HorizontalOptions = LayoutOptions.Center };
-
-            for (int i = 0; i < list.Length; i++)
-            {
-                Button b = new Button { Text = list[i], BorderColor = Color.Black, BorderWidth = 1, CornerRadius = 5 };
-                b.Clicked += (o, e) => Select(o as Button);
-
-                Options.Add(b);
-                layout.Children.Add(Options[i]);
-
-                if (i == selected)
-                {
-                    Select(Options[i]);
-                }
-            }
-            
-            HorizontalOptions = LayoutOptions.FillAndExpand;
-            VerticalOptions = LayoutOptions.FillAndExpand;
-            Padding = new Thickness(25, 5, 10, 5);
-            
-            Children.Add(label);
-            Children.Add(layout);
-        }
-    }
-
-    public class StepperCell : ViewCell
+    /*public class StepperCell : ViewCell
     {
         public static readonly BindableProperty TextProperty = BindableProperty.Create("Text", typeof(string), typeof(StepperCell), propertyChanged: (bindable, old, value) => (bindable as StepperCell).text.Text = value.ToString());
 
@@ -139,7 +86,7 @@ namespace Calculator
             
             View = layout;
         }
-    }
+    }*/
 
     public class TouchScreen : StackLayout, ITouchable
     {
@@ -165,12 +112,6 @@ namespace Calculator
     }
 
     public class Canvas : AbsoluteLayout, ITouchable
-    {
-        public event TouchEventHandler Touch;
-        public void OnTouch(Point point, TouchState state) => Touch?.Invoke(point, state);
-    }
-
-    public class DockButton : Button, ITouchable
     {
         public event TouchEventHandler Touch;
         public void OnTouch(Point point, TouchState state) => Touch?.Invoke(point, state);

@@ -22,6 +22,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)CustomViews.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ExtensionMethods.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graph.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Keyboard.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -29,6 +30,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)print.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Settings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CrunchStyle.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SettingsMenu.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Tips.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drag.cs" />
   </ItemGroup>
@@ -36,6 +40,9 @@
     <Content Include="$(MSBuildThisFileDirectory)desmos.html" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)SettingsMenu.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
     <Page Include="$(MSBuildThisFileDirectory)Tips.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

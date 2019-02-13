@@ -15,14 +15,6 @@ public class BannerAdRenderer
 	}
 
 
-	public BannerAdRenderer (android.content.Context p0)
-	{
-		super (p0);
-		if (getClass () == BannerAdRenderer.class)
-			mono.android.TypeManager.Activate ("Calculator.Droid.BannerAdRenderer, Calculator.Android", "Android.Content.Context, Mono.Android", this, new java.lang.Object[] { p0 });
-	}
-
-
 	public BannerAdRenderer (android.content.Context p0, android.util.AttributeSet p1, int p2)
 	{
 		super (p0, p1, p2);
@@ -36,6 +28,14 @@ public class BannerAdRenderer
 		super (p0, p1);
 		if (getClass () == BannerAdRenderer.class)
 			mono.android.TypeManager.Activate ("Calculator.Droid.BannerAdRenderer, Calculator.Android", "Android.Content.Context, Mono.Android:Android.Util.IAttributeSet, Mono.Android", this, new java.lang.Object[] { p0, p1 });
+	}
+
+
+	public BannerAdRenderer (android.content.Context p0)
+	{
+		super (p0);
+		if (getClass () == BannerAdRenderer.class)
+			mono.android.TypeManager.Activate ("Calculator.Droid.BannerAdRenderer, Calculator.Android", "Android.Content.Context, Mono.Android", this, new java.lang.Object[] { p0 });
 	}
 
 	private java.util.ArrayList refList;

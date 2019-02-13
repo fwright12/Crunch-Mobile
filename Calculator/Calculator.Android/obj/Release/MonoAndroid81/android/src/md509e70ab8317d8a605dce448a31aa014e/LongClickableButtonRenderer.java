@@ -10,16 +10,10 @@ public class LongClickableButtonRenderer
 	public static final String __md_methods;
 	static {
 		__md_methods = 
+			"n_onTouchEvent:(Landroid/view/MotionEvent;)Z:GetOnTouchEvent_Landroid_view_MotionEvent_Handler\n" +
+			"n_onInterceptTouchEvent:(Landroid/view/MotionEvent;)Z:GetOnInterceptTouchEvent_Landroid_view_MotionEvent_Handler\n" +
 			"";
 		mono.android.Runtime.register ("Calculator.Droid.LongClickableButtonRenderer, Calculator.Android", LongClickableButtonRenderer.class, __md_methods);
-	}
-
-
-	public LongClickableButtonRenderer (android.content.Context p0)
-	{
-		super (p0);
-		if (getClass () == LongClickableButtonRenderer.class)
-			mono.android.TypeManager.Activate ("Calculator.Droid.LongClickableButtonRenderer, Calculator.Android", "Android.Content.Context, Mono.Android", this, new java.lang.Object[] { p0 });
 	}
 
 
@@ -37,6 +31,30 @@ public class LongClickableButtonRenderer
 		if (getClass () == LongClickableButtonRenderer.class)
 			mono.android.TypeManager.Activate ("Calculator.Droid.LongClickableButtonRenderer, Calculator.Android", "Android.Content.Context, Mono.Android:Android.Util.IAttributeSet, Mono.Android", this, new java.lang.Object[] { p0, p1 });
 	}
+
+
+	public LongClickableButtonRenderer (android.content.Context p0)
+	{
+		super (p0);
+		if (getClass () == LongClickableButtonRenderer.class)
+			mono.android.TypeManager.Activate ("Calculator.Droid.LongClickableButtonRenderer, Calculator.Android", "Android.Content.Context, Mono.Android", this, new java.lang.Object[] { p0 });
+	}
+
+
+	public boolean onTouchEvent (android.view.MotionEvent p0)
+	{
+		return n_onTouchEvent (p0);
+	}
+
+	private native boolean n_onTouchEvent (android.view.MotionEvent p0);
+
+
+	public boolean onInterceptTouchEvent (android.view.MotionEvent p0)
+	{
+		return n_onInterceptTouchEvent (p0);
+	}
+
+	private native boolean n_onInterceptTouchEvent (android.view.MotionEvent p0);
 
 	private java.util.ArrayList refList;
 	public void monodroidAddReference (java.lang.Object obj)

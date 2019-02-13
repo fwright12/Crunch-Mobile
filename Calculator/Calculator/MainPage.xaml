@@ -14,7 +14,7 @@
         </OnPlatform>
     </ContentPage.Padding>
 
-    <AbsoluteLayout>
+    <AbsoluteLayout x:Name="screen" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
         <custom:TouchScreen x:Name="page" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All">
             <AbsoluteLayout x:Name="phantomCursorField" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
                 <ScrollView x:Name="canvasScroll" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" Orientation="Both">
@@ -24,7 +24,8 @@
                 <!--<StackLayout BackgroundColor="Red" AbsoluteLayout.LayoutBounds="0.5,0.33,0.9,0.15" AbsoluteLayout.LayoutFlags="All">-->
             </AbsoluteLayout>
 
-            <AbsoluteLayout x:Name="keyboardContainer">
+            <!--<custom:Keyboard x:Name="keyboard" />-->
+            <!--<AbsoluteLayout x:Name="keyboardContainer">
                 <StackLayout x:Name="keyboard" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" Orientation="Horizontal" Spacing="0">
                     <ScrollView x:Name="keyboardScroll" Orientation="Horizontal">
                         <Grid x:Name="keypad" ColumnSpacing="0" RowSpacing="0" >
@@ -34,7 +35,7 @@
                             <extensions:LongClickableButton Grid.Row="0" Grid.Column="3" Text="7" />
                             <extensions:LongClickableButton Grid.Row="0" Grid.Column="4" Text="8" />
                             <extensions:LongClickableButton Grid.Row="0" Grid.Column="5" Text="9" />
-                            <extensions:LongClickableButton Grid.Row="0" Grid.Column="6" Text="&#247;" StyleId="/" />
+                            <extensions:LongClickableButton Grid.Row="0" Grid.Column="6" Text="U+00F7" StyleId="/" />
 
                             <extensions:LongClickableButton Grid.Row="1" Grid.Column="0" Text="cos" />
                             <extensions:LongClickableButton Grid.Row="1" Grid.Column="1" Text="log" StyleId="log_"/>
@@ -78,51 +79,15 @@
                 <StackLayout x:Name="keyboardMask" InputTransparent="True" IsVisible="False" BackgroundColor="Gray" Opacity="0.75"
                              AbsoluteLayout.LayoutBounds="0,0,1,1"
                              AbsoluteLayout.LayoutFlags="All" />
-            </AbsoluteLayout>
+            </AbsoluteLayout>-->
         </custom:TouchScreen>
 
-        <custom:AnythingButton x:Name="settingsMenuButton" AbsoluteLayout.LayoutFlags="None">
+        <!--<custom:AnythingButton x:Name="settingsMenuButton">
             <BoxView BackgroundColor="Black" AbsoluteLayout.LayoutBounds="0.5,0.25,0.6,0.075" AbsoluteLayout.LayoutFlags="All"/>
             <BoxView BackgroundColor="Black" AbsoluteLayout.LayoutBounds="0.5,0.5,0.6,0.075" AbsoluteLayout.LayoutFlags="All"/>
             <BoxView BackgroundColor="Black" AbsoluteLayout.LayoutBounds="0.5,0.75,0.6,0.075" AbsoluteLayout.LayoutFlags="All"/>
-        </custom:AnythingButton>
+        </custom:AnythingButton>-->
 
-        <StackLayout IsVisible="True" x:Name="settingsMenu" TranslationX="-1000" BackgroundColor="LightGray" Spacing="0" Orientation="Vertical" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="HeightProportional">
-            <StackLayout VerticalOptions="FillAndExpand">
-                <TableView Intent="Settings" HasUnevenRows="True">
-                    <TableRoot>
-                        <TableSection Title="Math">
-                            <ViewCell>
-                                <StackLayout Padding="25,0,0,0" Orientation="Horizontal">
-                                    <StackLayout Orientation="Horizontal" HorizontalOptions="StartAndExpand">
-                                        <Label Text="Decimal precision: " VerticalOptions="Center"/>
-                                        <Label x:Name="decimalPrecision" VerticalOptions="Center" />
-                                    </StackLayout>
-                                    <Stepper x:Name="decimalPrecisionStepper"
-                                                 Value="3"
-                                                 ValueChanged="SetDecimalPrecision"
-                                                 Minimum="1"
-                                                 Maximum="10"
-                                                 Increment="1" 
-                                                 HorizontalOptions="Center"
-                                                 VerticalOptions="Center"/>
-                                </StackLayout>
-                            </ViewCell>
-                        </TableSection>
-                        <TableSection Title="Answer Defaults">
-                            <ViewCell x:Name="fractiondecimal" />
-                            <ViewCell x:Name="degrad" />
-                        </TableSection>
-                        <TableSection Title="Other">
-                            <SwitchCell x:Name="clearCanvasWarningSwitch" Text="Clear canvas warning" On="True" OnChanged="ClearCanvasWarning" />
-                        </TableSection>
-                    </TableRoot>
-                </TableView>
-            </StackLayout>
-            <Button x:Name="tips" Text="Tips" FontSize="Large" VerticalOptions="End"/>
-            <Button x:Name="about" Text="About" FontSize="Large" VerticalOptions="End"/>
-        </StackLayout>
-        
         <AbsoluteLayout IsVisible="False" AbsoluteLayout.LayoutBounds="1,0,50,50" AbsoluteLayout.LayoutFlags="PositionProportional">
             <Button x:Name="equationsButton" BorderWidth="0" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" />
             <extensions:TouchableLabel Text="f(x)" FontSize="Large" TextColor="Black" AbsoluteLayout.LayoutBounds="0.5,0.5,-1,-1" AbsoluteLayout.LayoutFlags="PositionProportional"/>

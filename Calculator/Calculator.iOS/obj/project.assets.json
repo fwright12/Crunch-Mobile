@@ -14,7 +14,7 @@
           "lib/xamarinios10/_._": {}
         }
       },
-      "Xamarin.Forms/3.3.0.912540": {
+      "Xamarin.Forms/3.4.0.1008975": {
         "type": "package",
         "compile": {
           "lib/Xamarin.iOS10/Xamarin.Forms.Core.dll": {},
@@ -208,7 +208,7 @@
           "lib/xamarinios10/_._": {}
         }
       },
-      "Xamarin.Forms/3.3.0.912540": {
+      "Xamarin.Forms/3.4.0.1008975": {
         "type": "package",
         "compile": {
           "lib/Xamarin.iOS10/Xamarin.Forms.Core.dll": {},
@@ -402,7 +402,7 @@
           "lib/xamarinios10/_._": {}
         }
       },
-      "Xamarin.Forms/3.3.0.912540": {
+      "Xamarin.Forms/3.4.0.1008975": {
         "type": "package",
         "compile": {
           "lib/Xamarin.iOS10/Xamarin.Forms.Core.dll": {},
@@ -596,7 +596,7 @@
           "lib/xamarinios10/_._": {}
         }
       },
-      "Xamarin.Forms/3.3.0.912540": {
+      "Xamarin.Forms/3.4.0.1008975": {
         "type": "package",
         "compile": {
           "lib/Xamarin.iOS10/Xamarin.Forms.Core.dll": {},
@@ -846,10 +846,10 @@
         "version.txt"
       ]
     },
-    "Xamarin.Forms/3.3.0.912540": {
-      "sha512": "Vm3JZ2Vd6u77eIw7XYQY6Ok89DghibebbdrUX/I1z6aJ9ZMJFBJjqwsIlYbpN4BNCm08UqaieG8BrqArJpIMnQ==",
+    "Xamarin.Forms/3.4.0.1008975": {
+      "sha512": "036/h8HtzRFgTrfhY57IeHoYRsPTO2XTA6uUFdmZzw2QR1sdszfofhI9HrCJTRx6fCzmjPg5Cxk5chYrjKarNw==",
       "type": "package",
-      "path": "xamarin.forms/3.3.0.912540",
+      "path": "xamarin.forms/3.4.0.1008975",
       "files": [
         ".signature.p7s",
         "build/Xamarin.Forms.DefaultItems.props",
@@ -987,7 +987,7 @@
         "lib/uap10.0/Xamarin.Forms.Platform.dll",
         "lib/uap10.0/Xamarin.Forms.Xaml.dll",
         "lib/uap10.0/Xamarin.Forms.Xaml.xml",
-        "xamarin.forms.3.3.0.912540.nupkg.sha512",
+        "xamarin.forms.3.4.0.1008975.nupkg.sha512",
         "xamarin.forms.nuspec"
       ]
     },
@@ -1023,7 +1023,7 @@
       "Crunch.GraphX >= 1.0.0",
       "Microsoft.CSharp >= 4.5.0",
       "System.Extensions >= 1.0.0",
-      "Xamarin.Forms >= 3.3.0.912540",
+      "Xamarin.Forms >= 3.4.0.1008975",
       "Xamarin.Forms.Extensions >= 1.0.0"
     ]
   },
@@ -1079,7 +1079,7 @@
           },
           "Xamarin.Forms": {
             "target": "Package",
-            "version": "[3.3.0.912540, )"
+            "version": "[3.4.0.1008975, )"
           }
         }
       }

@@ -17,7 +17,7 @@ using Xamarin.Forms.Extensions;
 [assembly: ExportRenderer(typeof(LongClickableButton), typeof(LongClickableButtonRenderer))]
 [assembly: ExportRenderer(typeof(TouchableStackLayout), typeof(TouchableStackLayoutRenderer))]
 [assembly: ExportRenderer(typeof(TouchableAbsoluteLayout), typeof(TouchableAbsoluteLayoutRenderer))]
-[assembly: ExportRenderer(typeof(DockButton), typeof(DockButtonRenderer))]
+//[assembly: ExportRenderer(typeof(DockButton), typeof(DockButtonRenderer))]
 [assembly: ExportRenderer(typeof(BannerAd), typeof(BannerAdRenderer))]
 [assembly: ExportRenderer(typeof(TouchableLabel), typeof(TouchableLabelRenderer))]
 [assembly: ExportRenderer(typeof(TouchScreen), typeof(TouchScreenRenderer))]
@@ -132,6 +132,22 @@ namespace Calculator.Droid
                 Control.LongClick += (sender, args) => (Element as LongClickableButton).OnLongClick();
             }
         }
+
+        public override bool OnTouchEvent(MotionEvent e)
+        {
+            Element.RelayTouch(this, e);
+            return true;
+        }
+
+        public override bool OnInterceptTouchEvent(MotionEvent e)
+        {
+            if (e.Action == MotionEventActions.Move)
+            {
+                return OnTouchEvent(e);
+            }
+
+            return false;
+        }
     }
 
     public class CanvasRenderer : VisualElementRenderer<AbsoluteLayout>
@@ -200,6 +216,7 @@ namespace Calculator.Droid
                 return adView;
 
             adView = new AdView(Context);
+            //adView.AdSize = AdSize.Banner;
             adView.AdSize = new AdSize(MainPage.MaxBannerWidth, (int)Math.Ceiling(MainPage.MaxBannerWidth * 50.0 / 320.0));
             adView.AdUnitId = "ca-app-pub-1795523054003202/4422905833";
 

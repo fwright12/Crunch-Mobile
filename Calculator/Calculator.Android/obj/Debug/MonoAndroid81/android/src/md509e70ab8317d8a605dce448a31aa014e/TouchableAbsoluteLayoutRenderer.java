@@ -16,14 +16,6 @@ public class TouchableAbsoluteLayoutRenderer
 	}
 
 
-	public TouchableAbsoluteLayoutRenderer (android.content.Context p0)
-	{
-		super (p0);
-		if (getClass () == TouchableAbsoluteLayoutRenderer.class)
-			mono.android.TypeManager.Activate ("Calculator.Droid.TouchableAbsoluteLayoutRenderer, Calculator.Android", "Android.Content.Context, Mono.Android", this, new java.lang.Object[] { p0 });
-	}
-
-
 	public TouchableAbsoluteLayoutRenderer (android.content.Context p0, android.util.AttributeSet p1, int p2)
 	{
 		super (p0, p1, p2);
@@ -37,6 +29,14 @@ public class TouchableAbsoluteLayoutRenderer
 		super (p0, p1);
 		if (getClass () == TouchableAbsoluteLayoutRenderer.class)
 			mono.android.TypeManager.Activate ("Calculator.Droid.TouchableAbsoluteLayoutRenderer, Calculator.Android", "Android.Content.Context, Mono.Android:Android.Util.IAttributeSet, Mono.Android", this, new java.lang.Object[] { p0, p1 });
+	}
+
+
+	public TouchableAbsoluteLayoutRenderer (android.content.Context p0)
+	{
+		super (p0);
+		if (getClass () == TouchableAbsoluteLayoutRenderer.class)
+			mono.android.TypeManager.Activate ("Calculator.Droid.TouchableAbsoluteLayoutRenderer, Calculator.Android", "Android.Content.Context, Mono.Android", this, new java.lang.Object[] { p0 });
 	}
 
 
