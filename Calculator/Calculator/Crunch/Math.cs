@@ -4,60 +4,82 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Calculator.Crunch
+using Xamarin.Forms;
+using Calculator;
+
+namespace Crunch
 {
+    public class UnrecognizedSymbolException : Exception
+    {
+        public UnrecognizedSymbolException(Type t) : base("Could not recognize symbol of type" + t) { }
+    }
+
     public static class Math
     {
-        public static Term Evaluate(Graphics.Expression expression)
+        public static Term Evaluate(Expression expression)
         {
-            List<Graphics.Symbol> calculate = expression.Children.ToList();
-
+            List<View> calculate = (expression as StackLayout).Children.ToList();
+            
             List<Term> terms = new List<Term>();
-            List<Graphics.Text> operands = new List<Graphics.Text>();
+            List<string> operands = new List<string>();
 
-            //Parse Graphics stuff to Crunch stuff
+            //Parse
             for (int i = 0; i < calculate.Count; i++)
             {
                 Type type = calculate[i].GetType();
 
                 //Numbers need to be combined
-                if (type == typeof(Graphics.Number))
+                if (type == typeof(Calculator.Number))
                 {
                     string number = "";
 
                     int j = i;
-                    while (j < calculate.Count && calculate[j].GetType() == typeof(Graphics.Number))
+                    while (j < calculate.Count && calculate[j].GetType() == typeof(Calculator.Number))
                     {
-                        number += (calculate[j] as Graphics.Number).text;
+                        number += (calculate[j] as Calculator.Number).Text;
                         j++;
                     }
 
-                    terms.Add(new Graphics.Number(number));
+                    terms.Add(new Number(double.Parse(number)));
                     i = j - 1; //One less because i will be incremented by the loop
                 }
-                else if (type == typeof(Graphics.Exponent))
+                else if (type == typeof(Calculator.Exponent))
                 {
-                    terms[terms.Count - 1] = new Exponent(terms[terms.Count - 1], calculate[i] as dynamic);
+                    terms[terms.Count - 1] = new Number(new Exponent(terms[terms.Count - 1], Evaluate(calculate[i] as Calculator.Exponent)).value);
                 }
-                else if (type == typeof(Graphics.Text))
+                else if (type == typeof(Text) || type == typeof(Minus))
                 {
-                    operands.Add(calculate[i] as Graphics.Text);
+                    if ((calculate[i] as Text).Text == "-")
+                    {
+                        operands.Add("*");
+                        terms.Add(new Number(-1));
+                    }
+                    else
+                    {
+                        operands.Add((calculate[i] as Text).Text.Trim());
+                    }
                 }
                 //These types have implicit operators defined
-                else if (type == typeof(Graphics.Number) || type == typeof(Graphics.Fraction))
+                else if (type == typeof(Calculator.Fraction))
                 {
-                    terms.Add(calculate[i] as dynamic);
+                    Calculator.Fraction f = calculate[i] as Calculator.Fraction;
+                    terms.Add(new Fraction(Evaluate(f.Numerator), Evaluate(f.Denominator)).Simplify());
                 }
-                else
+                else if (type != typeof(Cursor))
                 {
-                    throw new Exception("unrecognized symbol");
+                    throw new UnrecognizedSymbolException(type);
                 }
             }
 
+            return evaluate(terms, operands);
+        }
+
+        private static Term evaluate(List<Term> terms, List<string> operands)
+        {
             //Multiplication
             for (int i = 0; i < operands.Count; i++)
             {
-                if (operands[i].text == "*")
+                if (operands[i] == "*")
                 {
                     operate("*", ref terms, ref operands, ref i);
                 }
@@ -66,13 +88,14 @@ namespace Calculator.Crunch
             //Addition and Subtraction
             for (int i = 0; i < operands.Count; i++)
             {
-                operate(operands[i].text, ref terms, ref operands, ref i);
+                operate(operands[i], ref terms, ref operands, ref i);
             }
 
-            return terms[0];
+            print.log(terms[0]);
+            return terms[0].Simplify();
         }
 
-        private static void operate(string operation, ref List<Term> terms, ref List<Graphics.Text> operands, ref int i)
+        private static void operate(string operation, ref List<Term> terms, ref List<string> operands, ref int i)
         {
             if (operation == "+")
             {

@@ -5,72 +5,79 @@ using Calculator.Droid;
 using Android.Views;
 using Android.Views.InputMethods;
 using System;
+using Android.Graphics;
+using Android.Runtime;
+using Android.OS;
 
 [assembly: ExportRenderer(typeof(GestureRelativeLayout), typeof(AndroidRelativeLayoutRenderer))]
 [assembly: ExportRenderer(typeof(SoftKeyboardDisabledEntry), typeof(SoftkeyboardDisabledEntryRenderer))]
-[assembly: ExportRenderer(typeof(LiveButton), typeof(LiveButtonRenderer))]
+[assembly: ExportRenderer(typeof(LongClickableButton), typeof(LongClickableButtonRenderer))]
+[assembly: ExportRenderer(typeof(Mask), typeof(MaskRenderer))]
+[assembly: ExportRenderer(typeof(ScrollSpy), typeof(ScrollSpyRenderer))]
 
 namespace Calculator.Droid
 {
-    public class LiveButtonRenderer : ButtonRenderer
+    public class ScrollSpyRenderer : VisualElementRenderer<AbsoluteLayout>
     {
-        private Point startPosition;
-        private DateTime startTime;
-        private static int minDistance = 100;
+        public override bool OnTouchEvent(MotionEvent e)
+        {
+            print.log("touch");
+            return false;
+        }
 
+        public override bool OnInterceptTouchEvent(MotionEvent ev)
+        {
+            print.log("intercepted");
+            if (ev.Action == MotionEventActions.Down)
+            {
+                MainPage.isTouchingCanvas = true;
+            }
+            else if (ev.Action == MotionEventActions.Up)
+            {
+                MainPage.isTouchingCanvas = false;
+            }
+            print.log(MainPage.isTouchingCanvas);
+            return false;
+        }
+    }
+
+    public class LongClickableButtonRenderer : ButtonRenderer
+    {
         protected override void OnElementChanged(ElementChangedEventArgs<Button> e)
         {
             base.OnElementChanged(e);
 
             if (Control != null)
             {
-                Control.LongClick += (sender, args) => Input.LongClickDown(true);
-                Control.Touch += (sender, args) =>
-                {
-                    switch (args.Event.Action)
-                    {
-                        case MotionEventActions.Down:
-                            startPosition = new Point(args.Event.GetX(), args.Event.GetY());
-                            startTime = DateTime.Now;
-
-                            break;
-                        case MotionEventActions.Up:
-                            Input.LongClickDown(false);
-
-                            Point endPosition = new Point(args.Event.GetX(), args.Event.GetY());
-
-                            if ((DateTime.Now - startTime).TotalMilliseconds < 500)
-                            {
-                                //Check for swipe to dismiss keyboard
-                                if (Math.Abs(endPosition.y - startPosition.y) > minDistance && endPosition.y > startPosition.y)
-                                {
-                                    print.log("swipe down");
-                                }
-                                else if (Math.Abs(endPosition.x - startPosition.x) > minDistance)
-                                {
-                                    if (endPosition.x < startPosition.x)
-                                    {
-                                        print.log("swipe left");
-                                        Input.KeyboardSwipe(-1);
-                                    }
-                                    else if (endPosition.x > startPosition.x)
-                                    {
-                                        print.log("swipe right");
-                                        Input.KeyboardSwipe(1);
-                                    }
-                                }
-                            }
-
-                            break;
-                        case MotionEventActions.Move:
-                            Input.CursorMoved(new Point(args.Event.RawX, args.Event.RawY));
-
-                            break;
-                    }
-
-                    args.Handled = false;
-                };
+                Control.LongClick += (sender, args) => Input.LongClickDown(Control.Text, true);
             }
+        }
+    }
+
+    public class MaskRenderer : VisualElementRenderer<StackLayout>
+    {
+        public override bool OnTouchEvent(MotionEvent e)
+        {
+            if (e.Action == MotionEventActions.Move)
+            {
+                Input.MoveCursor(new Xamarin.Forms.Point(e.RawX, e.RawY));
+            }
+            else if (e.Action == MotionEventActions.Up)
+            {
+                Input.LongClickDown("ending long click", false);
+            }
+
+            return false;
+        }
+
+        public override bool OnInterceptTouchEvent(MotionEvent ev)
+        {
+            if (MainPage.IsInCursorMode && ev.Action == MotionEventActions.Move)
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 
@@ -83,7 +90,7 @@ namespace Calculator.Droid
                 if (e.Event.Action == MotionEventActions.Up)
                 {
                     print.log(e.Event.GetX(), e.Event.GetY(), e.Event.RawX, e.Event.RawY);
-                    Input.CanvasTouch(new Point(e.Event.GetX() / (sender as Android.Views.View).Width, e.Event.GetY() / (sender as Android.Views.View).Height));
+                    Input.CanvasTouch(new Xamarin.Forms.Point(e.Event.GetX() / (sender as Android.Views.View).Width, e.Event.GetY() / (sender as Android.Views.View).Height));
                     //Input.CanvasTouch(new Point(e.Event.GetX(), e.Event.GetY()));
                 }
             };
@@ -92,9 +99,34 @@ namespace Calculator.Droid
 
     public class SoftkeyboardDisabledEntryRenderer : EntryRenderer
     {
+        public SoftkeyboardDisabledEntryRenderer()
+        {
+            //LayoutParameters = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WrapContent, ViewGroup.LayoutParams.MatchParent);
+            //temp.TextSize = Control.TextSize;
+            //Control.SetPadding(1, 0, 1, 0);
+            //Control.Background = null;
+            //Control.SetCursorVisible(true);
+            //temp.Gravity = GravityFlags.Center;
+
+            //Control.ViewAttachedToWindow += delegate { Control.RequestFocus(); };
+        }
+
+        private void focus()
+        {
+            Control.RequestFocus();
+        }
+
         protected override void OnElementChanged(ElementChangedEventArgs<Entry> e)
         {
             base.OnElementChanged(e);
+            Input.Focus = focus;
+            //Control.RequestFocus();
+            print.log("here");
+            Control.SetPadding(1, 0, 1, 0);
+            Control.Background = null;
+            Control.SetCursorVisible(true);
+
+            return;
 
             if (e.NewElement != null)
             {

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Calculator
 {
-    public class Point
+    /*public class Point
     {
         public float x;
         public float y;
@@ -37,5 +37,5 @@ namespace Calculator
         {
             return "(" + x + ", " + y + ")";
         }
-    }
+    }*/
 }

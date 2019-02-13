@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Calculator
+using Calculator;
+
+namespace Xamarin.Forms
 {
     public class print
     {
@@ -19,15 +21,76 @@ namespace Calculator
 
     public static class ExtensionMethods
     {
-        public static void Remove(this Xamarin.Forms.View view)
+        public static bool Selectable(this View view)
+        {
+            if (view is Text)
+            {
+                return (view as Text).Selectable;
+            }
+            else if (view is Expression)
+            {
+                return (view as Expression).Selectable;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public static void SetSelectable(this View view, bool selectable)
+        {
+            if (view is Text)
+            {
+                (view as Text).Selectable = selectable;
+            }
+            else if (view is Expression)
+            {
+                (view as Expression).Selectable = selectable;
+            }
+        }
+
+        public static Point Add(this Point p1, Point p2)
+        {
+            return new Point(p1.X + p2.X, p1.Y + p2.Y);
+        }
+    
+        public static int Index(this View view)
+        {
+            if (view.Parent is Expression)
+            {
+                return (view.Parent as Expression).IndexOf(view);
+            }
+            return (view.Parent as Layout<View>).Children.IndexOf(view);
+        }
+
+        public static bool HasParent(this Element element)
+        {
+            return element.Parent != null;
+        }
+
+        public static bool Remove(this View view)
         {
             try
             {
-                (view.Parent as Xamarin.Forms.Layout<Xamarin.Forms.View>).Children.Remove(view);
+                (view.Parent as Layout<View>).Children.Remove(view);
+                return true;
             }
             catch
             {
                 print.log("View did not have a parent that could be cast to Layout<View>");
+                return false;
+            }
+        }
+
+        public static int ToInt(this bool sender)
+        {
+            if (sender)
+            {
+                return 1;
+            }
+            else
+            {
+                return 0;
             }
         }
 
@@ -52,55 +115,6 @@ namespace Calculator
         public static bool IsBetween(this int value, int low, int high)
         {
             return value >= low && value <= high;
-        }
-
-        public static LinkedListNode<Graphics.Symbol> NodeAt(this LinkedList<Graphics.Symbol> list, int index)
-        {
-            return list.Find(list.ElementAt(index));
-        }
-
-        public static List<Graphics.Symbol> GetBefore(this LinkedListNode<Graphics.Text> sender)
-        {
-            return new List<Graphics.Symbol>();
-        }
-
-        public static int ToInt(this bool sender)
-        {
-            if (sender)
-                return 1;
-            else
-                return 0;
-        }
-
-        public static LinkedListNode<Graphics.Symbol> DetachNode(this LinkedListNode<Graphics.Symbol> sender)
-        {
-            if (sender.List != null)
-            {
-                sender.List.Remove(sender);
-            }
-            return sender;
-        }
-
-        public static List<Graphics.Symbol> Copy(this List<Graphics.Symbol> sender, params Graphics.Symbol[] add)
-        {
-            List<Graphics.Symbol> temp = new List<Graphics.Symbol>();
-            foreach (Graphics.Symbol s in sender)
-                temp.Add(s);
-            foreach (Graphics.Symbol s in add)
-                temp.Add(s);
-            return temp;
-        }
-
-        public static LinkedListNode<Graphics.Symbol> Next<T>(this LinkedListNode<Graphics.Symbol> sender)
-        {
-            LinkedListNode<Graphics.Symbol> main = sender.Next;
-
-            while (main.Value.GetType() != typeof(T))
-            {
-                main = main.List.First;
-            }
-
-            return main;
         }
 
         public static void FixDynamicLag(object o)

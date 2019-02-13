@@ -5,21 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
-using Calculator.Graphics;
-
 namespace Calculator
 {
     public class Input
     {
         public static int cursorWidth;
-        public static int textHeight;
+        public static double textHeight;
         public static int textWidth;
         public static int TextSize = 40;
-
-        public static View phantomCursor;
-        public static IRenderFactory<View, Layout> renderFactory;
-
-        public static Layout canvas;
 
         private static MainPage graphics;
 
@@ -32,14 +25,9 @@ namespace Calculator
         {
             if (Cursor.Delete())
             {
-                graphics.Remove(Cursor.Parent.Children[Cursor.Index]);
+                Cursor.Parent.RemoveAt(Cursor.Index);
                 graphics.SetAnswer();
             }
-        }
-
-        public static void KeyboardSwipe(int direction)
-        {
-            graphics.ChangeKeyboard(direction);
         }
 
         public static void CanvasTouch(Point pos)
@@ -47,48 +35,107 @@ namespace Calculator
             graphics.AddEquation(pos);
         }
 
-        public static void LongClickDown(bool isDown) => graphics.CursorMode(isDown);
+        public static void LongClickDown(string text, bool isDown)
+        {
+            print.log("long click");
 
-        public static void CursorMoved(Point pos)
+            if (text == "<X")
+            {
+                graphics.clearCanvas();
+            }
+            else
+            {
+                graphics.CursorMode(isDown);
+            }
+        }
+
+        public static void CursorMode(bool isCursorMode)
+        {
+            graphics.CursorMode(isCursorMode);
+        }
+
+        public static void MoveCursor(Point pos)
         {
             graphics.MovePhantomCursor(pos);
         }
 
-        public static void Key(string key)
-        {            
-            Symbol node = default(Symbol);
+        public static Action Focus;
 
+        public static void Key(string key)
+        {
+            print.log("a " + key + " was pressed");
+            Expression backward = null;
+            Expression forward = null;
+            View node = parseKey(key, ref backward, ref forward);
+
+            Cursor.Add(node);
+            if (forward != null)
+            {
+                Grab(forward, node, 1);
+            }
+            if (backward != null)
+            {
+                Grab(backward, node, -1);
+            }
+
+            graphics.SetAnswer();
+        }
+
+        /// <summary>
+        /// Populate this expresssion with the value in <paramref name="parent"/> that precedes or follows
+        /// the value at the index <paramref name="index"/>
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <param name="index"></param>
+        /// <param name="direction"></param>
+        private static void Grab(Expression target, View adding, int direction)
+        {
+            Layout<View> temp = adding.Parent as Layout<View>;
+            IList<View> list = temp.Children;
+            int index = temp.Children.IndexOf(adding);
+
+            if ((index + direction).IsBetween(0, list.Count - 1))
+            {
+                View view = list[index + direction];
+
+                if (view is Number)
+                {
+                    print.log("grabbing " + (view as Number).Text);
+                    while ((index + direction).IsBetween(0, list.Count - 1) && list[index + direction] is Number)
+                    {
+                        index += direction;
+                        target.Insert(target.ChildCount * (direction + 1) / -2, list[index]);
+                    }
+                }
+                else if (view is BoxView || view is Fraction)
+                {
+                    target.Add(view);
+                }
+            }
+        }
+
+        private static View parseKey(string key, ref Expression backward, ref Expression forward)
+        {
             switch (key)
             {
                 case "/":
-                    node = new Fraction();
-                    break;
+                    return new Fraction(backward = new Expression(), forward = new Expression());
                 case "^":
-                    node = new Exponent();
-                    break;
+                    return forward = new Exponent();
                 default:
                     if (key.IsNumber())
                     {
-                        node = new Number(key);
+                        return new Number(key);
+                    }
+                    else if (key == "-")
+                    {
+                        return new Minus();
                     }
                     else
                     {
-                        node = new Text(key);
+                        return new Text(key);
                     }
-
-                    break;
             }
-
-            node.Add();
-
-            while (Fraction.Creator.Count > 0)
-            {
-                Fraction.Creator.Dequeue()(node);
-            }
-
-            graphics.SetText(node);
-            graphics.SetAnswer();
-            graphics.UpdateCursor();
         }
     }
 }

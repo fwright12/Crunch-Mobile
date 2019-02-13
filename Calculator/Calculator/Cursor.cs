@@ -4,96 +4,111 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using Calculator.Graphics;
+using Xamarin.Forms;
 
 namespace Calculator
 {
-    public static class Cursor
+    public class Cursor : BoxView
     {
-        public static Container Parent
-        {
-            get { return parent; }
-        }
-
-        public static int Index
-        {
-            get { return index; }
-        }
-
-        private static Action updateGraphics;
-
-        private static Container parent;
-        private static int index;
-
-        public static void Initialize(Action action) => updateGraphics = action;
+        public static new Expression Parent { get => (instance as BoxView).Parent as Expression; }
+        public static int Index { get => index; }
 
         public static void Right() => move(1);
         public static void Left() => move(-1);
+
+        private static Cursor instance;
+        private static int index;
+
+        public Cursor(bool isMain = false)
+        {
+            Color = Color.Gray;
+            HeightRequest = Input.textHeight;
+            WidthRequest = 1;
+            VerticalOptions = LayoutOptions.Center;
+
+            if (isMain)
+            {
+                instance = this;
+            }
+        }
+
         public static bool Delete()
         {
             if (index == 0)
+            {
                 return false;
+            }
 
             index--;
             return true;
         }
 
-        public static bool Set(Container parent, int index = 0)
+        public static bool Move(Expression parent, int _index = 0)
         {
-            if (Cursor.parent == parent && Cursor.index == index)
+            if (parent == Parent && index == _index)
             {
                 return false;
             }
 
-            Cursor.parent = parent;
-            Cursor.index = index;
+            index = _index;
+            parent.Insert(index, instance);
 
             return true;
         }
 
-        private static void setParent(Container newParent)
+        public static void Add(View view)
         {
-            parent = parent.Children[index] as Container;
-
-            if (!(parent is Expression))
-            {
-                Right();
-            }
+            Parent.Insert(index++, view);
         }
+
+        public static void UpdateIndex() => index = Parent.IndexOf(instance);
 
         private static void move(int direction)
         {
-            checkIndex(direction);
-            updateGraphics();
+            checkIndex(direction, Parent).Insert(index, instance);
         }
 
-        private static void checkIndex(int direction)
+        private static Expression checkIndex(int direction, Expression parent)
         {
-            if ((index + direction).IsBetween(0, parent.Children.Count))
+            //Stepping once in this direction will keep me in my current expression
+            if ((index + direction).IsBetween(0, parent.ChildCount))
             {
-                if (parent.Children[index + (direction - 1) / 2] is Container)
+                //Step into a new parent
+                if (parent.ChildAt(index + (direction - 1) / 2) is Expression)
                 {
-                    parent = parent.Children[index + (direction - 1) / 2] as Container;
-                    index = parent.Children.Count * (direction - 1) / -2;
+                    parent = parent.ChildAt(index + (direction - 1) / 2) as Expression;
+                    //I either want to be at the very beginning or the very end of the new expression,
+                    //depending on which direction I'm going
+                    index = parent.ChildCount * (direction - 1) / -2;
                 }
                 else
                 {
                     index += direction;
                 }
             }
+            //I'm stepping out of this parent
             else
             {
-                if (parent.HasParent && parent != MainPage.focus)
+                //Try to go up
+                if (parent.HasParent() && parent != MainPage.focus)
                 {
-                    index = parent.Parent.Children.IndexOf(parent) + (direction + 1) / 2;
+                    index = parent.Index() + (direction + 1) / 2;
                     parent = parent.Parent;
                 }
             }
 
-            if (!(parent is Expression))
+            //I'm somewhere I shouldn't be (like a fraction); keep going
+            if (parent.GetType() != typeof(Expression) && parent.GetType() != typeof(Exponent))
             {
-                checkIndex(direction);
+                parent = checkIndex(direction, parent);
             }
+
+            return parent;
+        }
+
+        public override string ToString()
+        {
+            return "|";
         }
     }
 }

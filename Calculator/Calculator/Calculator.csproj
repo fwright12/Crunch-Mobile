@@ -39,30 +39,28 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="BiDictionary.cs" />
-    <Compile Include="Crunch\Converter.cs" />
-    <Compile Include="Crunch\Terms\Fraction.cs" />
+    <Compile Include="Crunch\Fraction.cs" />
+    <Compile Include="Graphics.cs" />
     <Compile Include="Graphics\Container.cs" />
-    <Compile Include="Graphics\Expression.cs" />
     <Compile Include="Input.cs" />
     <Compile Include="Crunch\Math.cs" />
     <Compile Include="Cursor.cs" />
     <Compile Include="ExtensionMethods.cs" />
-    <Compile Include="IRenderFactory.cs" />
     <Compile Include="IUserInterface.cs" />
+    <Compile Include="Main.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Playground.cs" />
     <Compile Include="Point.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RenderFactory.cs" />
-    <Compile Include="SymbolView.cs" />
-    <Compile Include="Crunch\Terms\Exponent.cs" />
+    <Compile Include="Crunch\Exponent.cs" />
     <Compile Include="Graphics\Function.cs" />
-    <Compile Include="Crunch\Terms\Number.cs" />
+    <Compile Include="Crunch\Number.cs" />
     <Compile Include="Graphics\Symbol.cs" />
-    <Compile Include="Crunch\Terms\Term.cs" />
+    <Compile Include="Crunch\Term.cs" />
     <Compile Include="Graphics\Text.cs" />
+    <Compile Include="TermConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="MainPage.xaml">
@@ -94,6 +92,9 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="desmos.html" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <Import Project="..\..\packages\Xamarin.Forms.2.5.0.77107\build\portable-win+net45+wp80+win81+wpa81\Xamarin.Forms.targets" Condition="Exists('..\..\packages\Xamarin.Forms.2.5.0.77107\build\portable-win+net45+wp80+win81+wpa81\Xamarin.Forms.targets')" />

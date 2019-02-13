@@ -2,45 +2,44 @@
 using Xamarin.Forms;
 using System.Linq;
 using System.Collections.ObjectModel;
-
-using Calculator.Graphics;
+using System.IO;
 
 namespace Calculator
 {
     public class GestureRelativeLayout : RelativeLayout { }
     public class SoftKeyboardDisabledEntry : Entry { }
-    public class LiveButton : Button { }
+    public class LongClickableButton : Button { }
+    public class Mask : StackLayout { }
+    public class ScrollSpy : AbsoluteLayout { }
 
     public partial class MainPage : ContentPage
     {
         public static Expression focus;
 
-        private static BiDictionary<Symbol, View> viewLookup = new BiDictionary<Symbol, View>();
+        public static bool isTouchingCanvas = false;
         private static bool isDecimal = false;
 
-        private View[] keyboards;
-        private Entry cursor;
+        public static View cursor;
+
         private BoxView phantomCursor;
-        private int keyboardPage = 0;
 
+        //How much extra space is in the lower right
         private int padding = 100;
+        private int decimalPlaces = 3;
 
-        //For laying out keyboard
+        //Keyboard
+        private bool isDocked = true;
         private int rows = 4;
-        private int columns = 6;
-        private int buttonSize = 80;
-        private int columnsShown;
+        private int columns = 5;
+        private int buttonSize;
+        private readonly int undockedButtonSize = 60;
+        private int columnsShown = 4;
 
-        private int fontSize
-        {
-            get { return 40; }
-        }
+        public static readonly int fontSize = 33;
 
         public MainPage()
         {
             InitializeComponent();
-
-            page.LayoutChanged += OnRender;
 
             formulas.ItemSelected += (sender, e) =>
             {
@@ -60,35 +59,98 @@ namespace Calculator
             formulas.ItemTapped += (sender, e) =>
             {
                 print.log(sender.GetType());
-                return;
-                if ((sender as ListView).SelectedItem.ToString() == "<- back"){
-                    ChangeKeyboard(-1);
-                }
             };
 
-            //canvas.HeightRequest = 1000;
-            //canvas.WidthRequest = 1000;
+            dock.Clicked += (sender, e) => {
+                keyboardScroll.MinimumWidthRequest = 50;
+                keyboardScroll.WidthRequest = 50;
+            };
 
-            //keyboards = new View[] { extended, keypad, formulas };
+            //Application.Current.Properties["test"] = 234;
+
+            //Measuring for cursor
+            Text t = new Text("");
+            page.Children.Add(t);
+            t.SizeChanged += delegate
+            {
+                Input.textHeight = t.Height;
+                cursor = new Cursor(true);
+                page.Children.Remove(t);
+            };
+
+            buttons(permanentKeys, (button) => { button.FontSize = fontSize; });
+            foreach(View v in permanentKeys.Children)
+            {
+                v.VerticalOptions = LayoutOptions.FillAndExpand;
+                v.HorizontalOptions = LayoutOptions.FillAndExpand;
+            }
+            buttons(keypad, (button) =>
+            {
+                button.FontSize = fontSize;
+                if (button != left && button != right && button != delete)
+                {
+                    button.Clicked += (b, args) =>
+                    {
+                        Input.Key((b as Button).Text);
+                    };
+                }
+            });
 
             //Cursor stuff
-            cursor = CreateCursor();
-            Cursor.Initialize(UpdateCursor);
+            //cursor.Focus();
             left.Clicked += (sender, e) => Cursor.Left();
             right.Clicked += (sender, e) => Cursor.Right();
             delete.Clicked += (sender, e) => Input.Delete();
+            left.WidthRequest = fontSize * 1.5;
+            right.WidthRequest = fontSize * 1.5;
 
             //Phantom cursor stuff
-            phantomCursor = CreatePhantomCursor();
-            (canvas as Layout<View>).Children.Add(phantomCursor);
+            phantomCursor = new Cursor();
+            phantomCursor.Color = Color.Red;
+            //(canvas as Layout<View>).Children.Add(phantomCursor);
+            phantomCursorField.Children.Add(phantomCursor);
             phantomCursor.IsVisible = false;
 
             ExtensionMethods.FixDynamicLag("");
             Input.Started(this);
         }
 
+        private void showGraph()
+        {
+            var htmlSource = new HtmlWebViewSource();
+            htmlSource.Html = @"
+<html>
+<body>
+<script src = ""https://www.desmos.com/api/v1.0/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6""></script>
+ <div id = ""calculator"" style = ""width: 600px; height: 400px;""></div>
+    <script>
+      var elt = document.getElementById('calculator');
+            var calculator = Desmos.GraphingCalculator(elt, { expressions: false, settingsMenu: false, zoomButtons: false});
+            calculator.setExpression({ id: 'graph1', latex: 'y=x^2'});
+</script>
+</body>
+</html> ";
+            //graph.Source = htmlSource;
+        }
+
+        private void buttons(Layout<View> parent, Action<Button> action)
+        {
+            for (int i = 0; i < parent.Children.Count; i++)
+            {
+                View v = parent.Children[i];
+                if (v is Button)
+                {
+                    action(v as Button);
+                }
+                else if (v is Layout <View>)
+                {
+                    buttons(v as Layout<View>, action);
+                }
+            }
+        }
+
         private double width = 0;
-        private double height = 1;
+        private double height = 0;
 
         protected override void OnSizeAllocated(double width, double height)
         {
@@ -99,25 +161,84 @@ namespace Calculator
                 this.width = width;
                 this.height = height;
 
-                //page.LayoutChanged += OnRender;
+                padding = (int)Math.Min(page.Width, page.Height);
+
+                page.Orientation = orient(StackOrientation.Vertical, StackOrientation.Horizontal);
+                keyboard.Orientation = orient(StackOrientation.Horizontal, StackOrientation.Vertical);
+                permanentKeys.Orientation = orient(StackOrientation.Vertical, StackOrientation.Horizontal);
+
+                keyboardScroll.ScrollToAsync(keypad, ScrollToPosition.End, false);
+                LayoutKeyboard(isDocked);
             }
         }
 
-        private T orient<T>(T first, T second)
+        private T orient<T>(T verticalOption, T horizontalOption)
         {
             if (height > width)
-                return first;
-            else
-                return second;
+            {
+                return verticalOption;
+            }
+            return horizontalOption;
         }
 
-        public void OnRender(object sender, EventArgs e)
-        {
-            padding = (int)Math.Min(page.Width, page.Height);
+        private Point lastKeyboardPos;
 
-            //Set button sizes
-            columnsShown = Math.Min((int)(orient(page.Width, page.Height) / buttonSize), orient(columns, rows));
-            buttonSize = (int)(orient(page.Width, page.Height) / columnsShown);
+        public void MoveKeyboard(Point pos)
+        {
+            if (isDocked)
+            {
+                LayoutKeyboard(isDocked = false);
+                if (lastKeyboardPos == null)
+                {
+                    lastKeyboardPos = pos;// + new Point((float)-keyboardContainer.TranslationX, (float)-keyboardContainer.TranslationY);
+                }
+            }
+
+            keyboardContainer.TranslationX += (lastKeyboardPos.X - pos.X);
+            keyboardContainer.TranslationY += (lastKeyboardPos.Y - pos.Y);
+
+            lastKeyboardPos = pos;
+        }
+
+        public void LayoutKeyboard(bool docked)
+        {
+            print.log("layout keyboard", docked);
+
+            keypad.ColumnDefinitions.Clear();
+            keypad.RowDefinitions.Clear();
+
+            if (docked)
+            {
+                buttonSize = (int)orient((page.Width - fontSize * 3) / columnsShown, page.Height / (columnsShown + 1));
+
+                if (keyboardContainer.Parent == canvas)
+                {
+                    keyboardContainer.Remove();
+                    page.Children.Add(keyboardContainer);
+                    keyboardContainer.TranslationX = 0;
+                    keyboardContainer.TranslationY = 0;
+                }
+            }
+            else if (undockedButtonSize < buttonSize)
+            {
+                buttonSize = undockedButtonSize;
+
+                keyboardContainer.Remove();
+                (canvas as Layout<View>).Children.Add(keyboardContainer);
+
+                keyboardContainer.TranslationX = page.Width - buttonSize * columnsShown - permanentKeys.Width;
+                keyboardContainer.TranslationY = page.Height - buttonSize * columnsShown;
+            }
+
+            //keyboard.WidthRequest = orient(page.Width, buttonSize * columnsShown);
+            //permanentKeys.WidthRequest = orient(fontSize * 3, buttonSize * columnsShown);
+            keyboardScroll.WidthRequest = buttonSize * columnsShown;
+            
+            //keyboard.HeightRequest = buttonSize * columnsShown;
+            //keyboard.WidthRequest = buttonSize * columnsShown + permanentKeys.Width;
+
+            //keyboardContainer.WidthRequest = buttonSize * columnsShown + permanentKeys.Width;
+
             for (int i = 0; i < columns; i++)
             {
                 keypad.ColumnDefinitions.Add(new ColumnDefinition { Width = buttonSize });
@@ -126,181 +247,119 @@ namespace Calculator
             {
                 keypad.RowDefinitions.Add(new RowDefinition { Height = buttonSize });
             }
-            print.log("on render");
-            //print.log("keypad height " + keypad.Height);
-
-            keypad.SizeChanged += delegate
+            foreach (View v in permanentKeys.Children)
             {
-                if (height > width)
-                    keyboard.HeightRequest = keypad.Height;
-                else
-                    keyboard.WidthRequest = keypad.Width;
-
-                //return;
-                //print.log(keypad.Height, keypad.Height / page.Height, keypad.Children[0].Width, keypad.Children[0].Height);
-                //AbsoluteLayout.SetLayoutBounds(keyboard, new Rectangle(0, 1, 1, keypad.Height / page.Height));
-                //AbsoluteLayout.SetLayoutFlags(keyboard, AbsoluteLayoutFlags.All);
-                //keyboard.HeightRequest = keypad.Height;
-                setKeyboardPage(0);
-            };
-
-            foreach (Button child in keypad.Children)
-            {
-                child.FontSize = fontSize;
-                if (child != left && child != right && child != delete)
+                if (!(v is StackLayout))
                 {
-                    child.Clicked += (button, args) => 
-                    {
-                        Input.Key((button as Button).Text);
-                    };
+                    v.WidthRequest = orient(fontSize * 3, (buttonSize * columnsShown - fontSize * 3) / (permanentKeys.Children.Count - 1));
                 }
             }
-
-            page.LayoutChanged -= OnRender;
+            permanentKeys.HeightRequest = orient(buttonSize * columnsShown, buttonSize);
         }
 
         public void AddEquation(Point touchPercent)
         {
-            StackLayout layout = new StackLayout();
-
             //Get rid of the old focus
-            if (focus != null && focus.Children.Count == 0)
+            if (focus != null && focus.ChildCount == 0)
             {
-                viewLookup[focus.Parent].Remove();
-                viewLookup.Remove(focus.Parent);
+                focus.Remove();
             }
-
-            Expression e = new Expression(focus = new Expression(), new Text("="));
-            e.selectable = false;
-            focus.selectable = true;
-            SetText(layout, e);
-            UpdateCursor();
+            
+            //Make a generic equation
+            Expression e = new Expression(focus = new Expression(cursor), new Text("="));
+            e.Selectable = true;
+            focus.Selectable = true;
 
             //Do this last because the '=' needs to be added for it to be centered properly
-            //layout.LayoutChanged += delegate
-            // {
-            print.log(touchPercent.x * canvas.Width, touchPercent.y * canvas.Height);
-            print.log(layout.Width, layout.Height);
-            canvas.Children.Remove(layout);
-            Point position = new Point((float)(touchPercent.x * canvas.Width), (float)(touchPercent.y * canvas.Height));
-            canvas.Children.Add(layout, Constraint.Constant(position.x), Constraint.Constant(position.y));
+            Point position = new Point((float)(touchPercent.X * canvas.Width), (float)(touchPercent.Y * canvas.Height));
+            canvas.Children.Add(e, Constraint.Constant(position.X), Constraint.Constant(position.Y));
 
-            layout.SizeChanged += delegate
+            e.SizeChanged += delegate
             {
-                Point p = position + new Point((float)layout.Width, (float)layout.Height);
+                Point p = position.Add(new Point(e.Width, e.Height));
 
-                if (canvas.Width - p.x < padding)
+                if (canvas.Width - p.X < padding)
                 {
-                    canvas.WidthRequest = p.x + padding;
+                    canvas.WidthRequest = p.X + padding;
                 }
-                if (canvas.Height - p.y < padding)
+                if (canvas.Height - p.Y < padding)
                 {
-                    canvas.HeightRequest = p.y + padding;
+                    canvas.HeightRequest = p.Y + padding;
                 }
             };
-
-            //Constraint.RelativeToParent((parent) => { return 0.5 * parent.Width - 100; }),
-            //Constraint.RelativeToParent((parent) => { return 0.5 * parent.Height - 100; }));
-
-            /*AbsoluteLayout.SetLayoutBounds(layout, new Rectangle(
-                touchPercent.x,// * canvas.Width - layout.Width / 2,
-                touchPercent.y,// * canvas.Height - layout.Height / 2,
-                AbsoluteLayout.AutoSize,
-                AbsoluteLayout.AutoSize));
-            AbsoluteLayout.SetLayoutFlags(layout, AbsoluteLayoutFlags.PositionProportional);*/
-            //};
         }
 
-        public void ChangeKeyboard(int direction)
+        public async void clearCanvas()
         {
-            int updated = (keyboardPage + direction).Bound(0, 1);
-
-            if (updated != keyboardPage)
+            if (await DisplayAlert("Wait!", "Are you sure you want to clear the canvas?", "Yes", "No"))
             {
-                keyboardPage = updated;
-                setKeyboardPage(keyboardPage);
-            }
-            else if (keyboardPage == 0 && direction == -1)
-            {
-                keypad.IsVisible = false;
-                formulas.IsVisible = true;
+                canvas.Children.Clear();
+                canvas.WidthRequest = page.Width;
+                canvas.HeightRequest = (canvas.Parent as View).Height;
             }
         }
 
-        private void setKeyboardPage(int page)
-        {
-            AbsoluteLayout.SetLayoutBounds(keypad, new Rectangle(-(columns - columnsShown) * buttonSize * (1 - page), 1, AbsoluteLayout.AutoSize, AbsoluteLayout.AutoSize));
-            AbsoluteLayout.SetLayoutFlags(keypad, AbsoluteLayoutFlags.YProportional);
-        }
+        public static bool IsInCursorMode = false;
 
         public void CursorMode(bool isVisible)
         {
-            keyboardMask.IsVisible = isVisible;
-            phantomCursor.Remove();
-            (canvas as Layout<View>).Children.Add(phantomCursor);
-            //canvas.RaiseChild(cursor);
-
             if (isVisible)
             {
-                Point temp = PositionOnCanvas(cursor);
-                phantomCursor.TranslationX = temp.x;
-                phantomCursor.TranslationY = temp.y;
+                Point temp = PositionOnCanvas(cursor).Add(new Point(-canvasScroll.ScrollX, -canvasScroll.ScrollY));
+                phantomCursor.TranslationX = temp.X;
+                phantomCursor.TranslationY = temp.Y;
             }
             else
             {
-                lastPos = null;
+                lastPos = new Point(-1, -1);
             }
+
             phantomCursor.IsVisible = isVisible;
+            keyboardMask.IsVisible = isVisible;
+            IsInCursorMode = isVisible;
         }
 
-        public static Point lastPos = null;
+        public static Point lastPos = new Point(-1, -1);
         private static float speed = 1f;
 
         private Point PositionOnCanvas(View view)
         {
             if (view == canvas)
-                return new Point(0, 0);
+            {
+                return Point.Zero;
+            }
 
-            return new Point((float)view.X, (float)view.Y) + PositionOnCanvas(view.Parent as View);
+            return PositionOnCanvas(view.Parent as View).Add(new Point(view.X, view.Y));
         }
 
         //Physically move the phantom cursor
         public void MovePhantomCursor(Point pos)
         {
-            if (!keyboardMask.IsVisible)
-                return;
-
-            if (lastPos == null)
-            {                
-                lastPos = new Point(pos);
+            if (lastPos.X == -1 && lastPos.Y == -1)
+            {
+                lastPos = new Point(pos.X, pos.Y);
             }
 
-            Point increase = new Point((pos.x - lastPos.x) * speed, (pos.y - lastPos.y) * speed);
+            Point increase = new Point((pos.X - lastPos.X) * speed, (pos.Y - lastPos.Y) * speed);
 
-            phantomCursor.TranslationX = Math.Max(Math.Min(canvas.Width - phantomCursor.Width, phantomCursor.TranslationX + increase.x), 0);
-            phantomCursor.TranslationY = Math.Max(Math.Min(canvas.Height - phantomCursor.Height, phantomCursor.TranslationY + increase.y), 0);
+            phantomCursor.TranslationX = Math.Max(Math.Min(canvasScroll.Width - phantomCursor.Width, phantomCursor.TranslationX + increase.X), 0);
+            phantomCursor.TranslationY = Math.Max(Math.Min(canvasScroll.Height - phantomCursor.Height, phantomCursor.TranslationY + increase.Y), 0);
 
-            lastPos = new Point(pos);
+            lastPos = new Point(pos.X, pos.Y);
 
             //Get the coordinates of the cursor relative to the entire screen
-            //int[] bounds = new int[2];
-            //phantomCursor.GetLocationInWindow(bounds);
-            //Point globalPos = new Point(bounds[0] + phantomCursor.Width / 2, bounds[1] + phantomCursor.Height / 2);
-
-            //Point globalPos = renderFactory.MovePhantomCursor(phantomCursor, new Point((pos.x - lastPos.x) * increase, (pos.y - lastPos.y) * increase));
-            //Point globalPos = new Point((float)phantomCursor.X, (float)phantomCursor.Y);
-
-            Point loc = new Point((float)(phantomCursor.TranslationX + phantomCursor.Width / 2), (float)(phantomCursor.TranslationY + phantomCursor.Height / 2));
+            Point loc = new Point(canvasScroll.ScrollX + phantomCursor.TranslationX + phantomCursor.Width / 2, canvasScroll.ScrollY + phantomCursor.TranslationY + phantomCursor.Height / 2);
             int leftOrRight = 0;
             View view = GetViewAt(canvas, loc, ref leftOrRight);
 
-            if (viewLookup.Contains(view) && viewLookup[view].selectable && (viewLookup[view] is Text || viewLookup[view] is Expression))
+            //if (viewLookup.Contains(view) && viewLookup[view].selectable && (viewLookup[view] is Text || viewLookup[view] is Expression))
+            if (view is Text || view is Expression)
             {
-                var symbol = viewLookup[view];
+                phantomCursor.HeightRequest = cursor.Height;
 
                 //Climb up to the top of the tree structure
-                Symbol root = symbol;
-                while (root.HasParent && root.Parent.HasParent)
+                Element root = view;
+                while (root.HasParent() && root.Parent.HasParent() && root.Parent.Parent is Expression)
                 {
                     root = root.Parent;
                 }
@@ -308,28 +367,25 @@ namespace Calculator
                 //Focus has changed
                 if (root != focus)
                 {
-                    if (focus.Children.Count == 0)
-                    {
-                        viewLookup[focus.Parent].Remove();
-                        viewLookup.Remove(focus.Parent);
-                    }
+                    print.log(root, focus);
+                    //if (focus.Children.Count == 0)
+                    //{
+                    //viewLookup[focus.Parent].Remove();
+                    //viewLookup.Remove(focus.Parent);
+                    //}
                     focus = root as Expression;
                 }
 
-                bool changed;
-                if (symbol is Expression)
+                bool changed = false;
+                if (view.GetType() == typeof(Expression))
                 {
-                    Expression e = symbol as Expression;
-                    changed = Cursor.Set(e, e.Children.Count * leftOrRight);
+                    Expression e = view as Expression;
+                    changed = Cursor.Move(e, e.ChildCount * leftOrRight);
                 }
-                else
+                else if (view is Text)
                 {
-                    changed = Cursor.Set(symbol.Parent, symbol.Index + leftOrRight);
-                }
-
-                if (changed)
-                {
-                    UpdateCursor();
+                    print.log(view.Index());
+                    changed = Cursor.Move((view as Text).Parent, view.Index() + leftOrRight);
                 }
             }
         }
@@ -341,12 +397,13 @@ namespace Calculator
             for (int i = 0; i < parent.Children.Count; i++)
             {
                 View child = parent.Children[i];
-
-                if (pos.x >= child.X && pos.x <= child.X + child.Width && pos.y >= child.Y && pos.y <= child.Y + child.Height)
+                //print.log("hovering over " + child + " which has selectability set to: " + child.Selectable());
+                print.log("test", child is Exponent, pos.Y, child.Y, child.Height, child.TranslationY);
+                if (child.Selectable() && pos.X >= child.X && pos.X <= child.X + child.Width && pos.Y >= child.Y && pos.Y <= child.Y + child.Height)
                 {
                     if (child is Layout<View>)
                     {
-                        return GetViewAt(child as Layout<View>, pos - new Point((float)child.X, (float)child.Y), ref leftOrRight);
+                        return GetViewAt(child as Layout<View>, pos.Add(new Point(-child.X, -child.Y)), ref leftOrRight);
                     }
                     else
                     {
@@ -356,111 +413,41 @@ namespace Calculator
                 }
             }
 
-            leftOrRight = (int)Math.Round((pos.x - ans.X) / ans.Width);
+            leftOrRight = (int)Math.Round((pos.X - ans.X) / ans.Width);
             return ans;
-        }
-
-        public void UpdateCursor()
-        {
-            if (cursor.Parent != viewLookup[Cursor.Parent] || (cursor.Parent != null && (cursor.Parent as Layout<View>).Children.IndexOf(cursor) != Cursor.Index))
-            {
-                cursor.Remove();
-                (viewLookup[Cursor.Parent] as Layout<View>).Children.Insert(Cursor.Index, cursor);
-            }
-            
-            //cursor.Focus();
-        }
-
-        /// <summary>
-        /// Assumes that the symbol being passed has a parent symbol and that the parent symbol has an associated view
-        /// </summary>
-        public void SetText(Symbol symbol)
-        {
-            if (symbol.HasParent && viewLookup.Contains(symbol.Parent))
-            {
-                SetText((Layout<View>)viewLookup[symbol.Parent], symbol, symbol.Parent.Children.IndexOf(symbol));
-            }
-            else
-            {
-                throw new Exception("The given symbol either does not have a parent symbol, or the parent does not have an associated view. Alternatively, pass a parent and index");
-            }
-        }
-
-        public void SetText(Layout<View> parent, Symbol symbol, int index = 0, bool firstCall = true)
-        {
-            print.log("set text " + symbol);
-            var view = default(View);
-
-            if (viewLookup.Contains(symbol))
-            {
-                view = viewLookup[symbol];
-            }
-            else
-            {
-                view = symbol.Render();
-                viewLookup.Add(symbol, view);
-            }
-
-            Element currentParent = view.Parent;
-            if (currentParent == null || !currentParent.Equals(parent) || (view.Parent as Layout<View>).Children.IndexOf(view) != index)
-            {
-                parent.Children.Insert(index, view);
-            }
-
-            if (symbol.HasParent && symbol.Parent is Expression)
-            {
-                CheckPadding(parent, symbol.Parent.Children.First() is Fraction, symbol.Parent.Children.Last() is Fraction);
-            }
-
-            if (symbol is Container)
-            {
-                Container layout = symbol as Container;
-
-                //Focus on an empty layout
-                if (layout is Expression && layout.Children.Count == 0)
-                {
-                    Cursor.Set(layout);
-                }
-
-                for (int i = 0; i < layout.Children.Count; i++)
-                {
-                    SetText((Layout<View>)view, layout.Children[i], i, false);
-                }
-            }
-        }
-
-        public void Remove(Symbol symbol)
-        {
-            symbol.Remove();
-            viewLookup[symbol].Remove();
-            viewLookup.Remove(symbol);
         }
 
         public void SetAnswer()
         {
-            Crunch.Term calculated = focus;
-            Container root = focus.Parent;
+            Expression root = focus.Parent;
             
-            //Remove the old answer if necessary
-            if (root.Children.Count == 3)
+            //Remove the old answer if it exists
+            if (root.ChildCount == 3)
             {
-                Remove(root.Children[2]);
+                root.RemoveAt(2);
             }
 
             //Try to add the new answer
-            if (calculated != null)
+            try
             {
-                Symbol answer = calculated as dynamic;
-                if (isDecimal)
+                var answer = Crunch.Math.Evaluate(focus);
+                if (isDecimal || answer.GetType() == typeof(Crunch.Number))
                 {
-                    answer = new Crunch.Number(Math.Round(calculated.value, 3)) as dynamic;
+                    answer = new Crunch.Number(Math.Round(answer.value, decimalPlaces));
                 }
 
-                answer.selectable = false;
+                //answer.selectable = false;
 
-                answer.AddAfter(root.Children[1]);
-                SetText(answer);
+                //answer.AddAfter(root.Children[1]);
+                //SetText(answer);
                 //viewLookup[answer] delegate { isDecimal = !isDecimal; SetAnswer(focus as dynamic); });
+
+                print.log("adding answer");
+                root.Insert(2, answer.ToView());
+            }
+            catch (Exception e)
+            {
+                print.log(e.Message);
             }
         }
     }

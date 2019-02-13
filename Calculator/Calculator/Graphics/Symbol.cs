@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Xamarin.Forms;
-using Calculator;
 
 namespace Calculator.Graphics
 {
@@ -58,8 +57,8 @@ namespace Calculator.Graphics
 
         public void Add()
         {
-            Cursor.Parent.Add(this, Cursor.Index);
-            Cursor.Set(Cursor.Parent, Cursor.Index + 1);
+            //Cursor.Parent.Add(this, Cursor.Index);
+            //Cursor.Set(Cursor.Parent, Cursor.Index + 1);
             //Cursor.Right();
         }
 
@@ -78,7 +77,7 @@ namespace Calculator.Graphics
             Parent.Remove(this);
         }
 
-        public static implicit operator Symbol(Crunch.Number n)
+        /*public static implicit operator Symbol(Crunch.Number n)
         {
             return new Number(n.value.ToString());
         }
@@ -92,5 +91,15 @@ namespace Calculator.Graphics
         {
             return new Fraction(new Expression(f.numerator as dynamic), new Expression(f.denominator as dynamic));
         }
+        
+        public static implicit operator Crunch.Number(Number n)
+        {
+            return new Crunch.Number(double.Parse(n.text));
+        }
+
+        public static implicit operator Crunch.Fraction(Fraction f)
+        {
+            return new Crunch.Fraction(f.Children.First() as dynamic, f.Children.Last() as dynamic);
+        }*/
     }
 }

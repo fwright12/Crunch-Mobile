@@ -16,7 +16,6 @@ namespace Playground
         {
             test = delegate
             {
-                print.log("H");
             };
         }
     }
