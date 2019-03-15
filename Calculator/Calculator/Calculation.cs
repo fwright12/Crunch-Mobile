@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Extensions;
+using Xamarin.Forms.MathDisplay;
 using Crunch;
-using Xamarin.Forms.Math;
 
 namespace Calculator
 {
@@ -27,9 +27,9 @@ namespace Calculator
             Children.Add(Main = main);
 
             //(Main.Children[1] as Text)
-            Main.Touch += (point, state) =>
+            Touch += (point, state) =>
             {
-                if (state == TouchState.Down)
+                if (state == TouchState.Moving)
                 {
                     this.BeginDrag(MainPage.VisiblePage.Canvas.Bounds);
                 }
@@ -46,7 +46,7 @@ namespace Calculator
 
                 if (s != "")
                 {
-                    Operand temp = Crunch.Math.Evaluate(s);
+                    Operand temp = Crunch.Reader.Evaluate(s);
                     if (temp != null && !s.Contains(pair.Key))
                     {
                         substitutions.Add(pair.Key, temp);

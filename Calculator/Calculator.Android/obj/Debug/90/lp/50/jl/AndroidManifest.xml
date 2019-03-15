@@ -13,11 +13,6 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.google.android.gms">
-    <uses-sdk android:minSdkVersion="14" />
-
-    <application>
-        <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
-    </application>
-
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" package="com.google.android.gms.ads.impl">
+    <uses-sdk android:minSdkVersion="14" tools:overrideLibrary="android.support.customtabs" />
 </manifest>

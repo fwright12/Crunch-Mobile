@@ -108,6 +108,7 @@ class MonoPackageManager_Resources {
 		/* We need to ensure that "Calculator.Android.dll" comes first in this list. */
 		"Calculator.Android.dll",
 		"Crunch.dll",
+		"Crunch.Machine.dll",
 		"FormsViewGroup.dll",
 		"System.Extensions.dll",
 		"Xamarin.Android.Arch.Core.Common.dll",
@@ -126,6 +127,7 @@ class MonoPackageManager_Resources {
 		"Xamarin.Android.Support.Core.UI.dll",
 		"Xamarin.Android.Support.Core.Utils.dll",
 		"Xamarin.Android.Support.CursorAdapter.dll",
+		"Xamarin.Android.Support.CustomTabs.dll",
 		"Xamarin.Android.Support.CustomView.dll",
 		"Xamarin.Android.Support.Design.dll",
 		"Xamarin.Android.Support.DocumentFile.dll",
@@ -150,7 +152,7 @@ class MonoPackageManager_Resources {
 		"Xamarin.Android.Support.ViewPager.dll",
 		"Xamarin.Forms.Core.dll",
 		"Xamarin.Forms.Extensions.dll",
-		"Xamarin.Forms.Math.dll",
+		"Xamarin.Forms.MathDisplay.dll",
 		"Xamarin.Forms.Platform.Android.dll",
 		"Xamarin.Forms.Platform.dll",
 		"Xamarin.Forms.Xaml.dll",
@@ -158,7 +160,6 @@ class MonoPackageManager_Resources {
 		"Xamarin.GooglePlayServices.Ads.Lite.dll",
 		"Xamarin.GooglePlayServices.Basement.dll",
 		"Xamarin.GooglePlayServices.Gass.dll",
-		"Crunch.Machine.dll",
 	};
 	public static final String[] Dependencies = new String[]{
 	};

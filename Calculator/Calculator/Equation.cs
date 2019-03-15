@@ -4,7 +4,7 @@ using System.Text;
 
 using System.Extensions;
 using Xamarin.Forms;
-using Xamarin.Forms.Math;
+using Xamarin.Forms.MathDisplay;
 using Xamarin.Forms.Extensions;
 using Crunch;
 
@@ -26,10 +26,16 @@ namespace Calculator
             Spacing = 0;
             VerticalOptions = LayoutOptions.Center;
             
-            LHS = text == "" ? new Expression() : new Expression(Render.Math(text));
+            LHS = text == "" ? new Expression() : new Expression(Xamarin.Forms.MathDisplay.Reader.Render(text));
             LHS.Editable = true;
 
-            //LHS.Children.Add(new BoxView { Color = Color.Blue, WidthRequest = 5, HeightRequest = 0 });
+            LHS.Touch += (point, state) =>
+            {
+                if (state == TouchState.Moving)
+                {
+                    MainPage.VisiblePage.EnterCursorMode(point.Add(LHS.PositionOn(MainPage.VisiblePage.Canvas).Add(new Point(-MainPage.phantomCursor.Width / 2, -Text.MaxTextHeight))));
+                }
+            };
 
             Text equals = new Text(" = ") { FontSize = Text.MaxFontSize };
 
@@ -44,8 +50,7 @@ namespace Calculator
         {
             print.log("Entered: " + LHS.ToString());
 
-            Dictionary<char, Operand> updatedUnknowns = new Dictionary<char, Operand>();
-            Operand answer = Crunch.Math.Evaluate(LHS.ToString(), ref updatedUnknowns);
+            Operand answer = Crunch.Reader.Evaluate(LHS.ToString());
 
             /*if (answer != null)
             {

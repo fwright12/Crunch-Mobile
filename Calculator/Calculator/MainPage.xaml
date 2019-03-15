@@ -7,79 +7,22 @@
              xmlns:extensions="clr-namespace:Xamarin.Forms.Extensions;assembly=Xamarin.Forms.Extensions"
              x:Class="Calculator.MainPage" >
     
-    <ContentPage.Padding>
+    <!--<ContentPage.Padding>
         <OnPlatform x:TypeArguments="Thickness">
-            <On Platform="iOS" Value="20, 40, 20, 20" />
+            <On Platform="iOS" Value="10, 25, 10, 10" />
             <On Platform="Android, WinPhone, Windows" Value="10" />
         </OnPlatform>
-    </ContentPage.Padding>
+    </ContentPage.Padding>-->
 
     <AbsoluteLayout x:Name="screen" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
         <custom:TouchScreen x:Name="page" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All">
-            <AbsoluteLayout x:Name="phantomCursorField" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
-                <ScrollView x:Name="canvasScroll" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" Orientation="Both">
-                    <custom:Canvas x:Name="canvas" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
-                </ScrollView>
-
-                <!--<StackLayout BackgroundColor="Red" AbsoluteLayout.LayoutBounds="0.5,0.33,0.9,0.15" AbsoluteLayout.LayoutFlags="All">-->
-            </AbsoluteLayout>
-
-            <!--<custom:Keyboard x:Name="keyboard" />-->
-            <!--<AbsoluteLayout x:Name="keyboardContainer">
-                <StackLayout x:Name="keyboard" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" Orientation="Horizontal" Spacing="0">
-                    <ScrollView x:Name="keyboardScroll" Orientation="Horizontal">
-                        <Grid x:Name="keypad" ColumnSpacing="0" RowSpacing="0" >
-                            <extensions:LongClickableButton Grid.Row="0" Grid.Column="0" Text="sin" />
-                            <extensions:LongClickableButton Grid.Row="0" Grid.Column="1" Text="x&#8319;" StyleId="^" />
-                            <extensions:LongClickableButton Grid.Row="0" Grid.Column="2" Text="x&#178;" StyleId="^2" />
-                            <extensions:LongClickableButton Grid.Row="0" Grid.Column="3" Text="7" />
-                            <extensions:LongClickableButton Grid.Row="0" Grid.Column="4" Text="8" />
-                            <extensions:LongClickableButton Grid.Row="0" Grid.Column="5" Text="9" />
-                            <extensions:LongClickableButton Grid.Row="0" Grid.Column="6" Text="U+00F7" StyleId="/" />
-
-                            <extensions:LongClickableButton Grid.Row="1" Grid.Column="0" Text="cos" />
-                            <extensions:LongClickableButton Grid.Row="1" Grid.Column="1" Text="log" StyleId="log_"/>
-                            <extensions:LongClickableButton Grid.Row="1" Grid.Column="2" Text="&#8730;" StyleId="sqrt"/>
-                            <extensions:LongClickableButton Grid.Row="1" Grid.Column="3" Text="4" />
-                            <extensions:LongClickableButton Grid.Row="1" Grid.Column="4" Text="5" />
-                            <extensions:LongClickableButton Grid.Row="1" Grid.Column="5" Text="6" />
-                            <extensions:LongClickableButton Grid.Row="1" Grid.Column="6" Text="&#215;"/>
-
-                            <extensions:LongClickableButton Grid.Row="2" Grid.Column="0" Text="tan" />
-                            <extensions:LongClickableButton Grid.Row="2" Grid.Column="1" Text="ln"/>
-                            <extensions:LongClickableButton Grid.Row="2" Grid.Column="2" Text="10&#8319;" StyleId="10^"/>
-                            <extensions:LongClickableButton Grid.Row="2" Grid.Column="3" Text="1" />
-                            <extensions:LongClickableButton Grid.Row="2" Grid.Column="4" Text="2" />
-                            <extensions:LongClickableButton Grid.Row="2" Grid.Column="5" Text="3" />
-                            <extensions:LongClickableButton Grid.Row="2" Grid.Column="6" Text="-" />
-
-                            <extensions:LongClickableButton Grid.Row="3" Grid.Column="0" Text="&#960;" />
-                            <extensions:LongClickableButton Grid.Row="3" Grid.Column="1" Text="e" />
-                            <extensions:LongClickableButton Grid.Row="3" Grid.Column="2" Text="x" />
-                            <extensions:LongClickableButton Grid.Row="3" Grid.Column="3" Text="0" />
-                            <extensions:LongClickableButton Grid.Row="3" Grid.Column="4" Text="." />
-                            <StackLayout x:Name="parentheses" Grid.Row="3" Grid.Column="5" Orientation="Horizontal" Spacing="0">
-                                <extensions:LongClickableButton Text="("/>
-                                <extensions:LongClickableButton Text=")"/>
-                            </StackLayout>
-                            <extensions:LongClickableButton Grid.Row="3" Grid.Column="6" Text="+" />
-                        </Grid>
+            <StackLayout x:Name="header" Orientation="Vertical" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+                <AbsoluteLayout x:Name="phantomCursorField" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+                    <ScrollView x:Name="canvasScroll" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" Orientation="Both">
+                        <custom:Canvas x:Name="canvas" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
                     </ScrollView>
-
-                    <StackLayout x:Name="permanentKeys" Orientation="Vertical" Spacing="0">
-                        <extensions:LongClickableButton />
-                        <extensions:LongClickableButton x:Name="delete" Text="DEL"/>
-                        <StackLayout x:Name="arrowKeys" Orientation="Horizontal" Spacing="0">
-                            <extensions:LongClickableButton x:Name="left" Text="&#10216;"/>
-                            <extensions:LongClickableButton x:Name="right" Text="&#10217;"/>
-                        </StackLayout>
-                    </StackLayout>
-                </StackLayout>
-
-                <StackLayout x:Name="keyboardMask" InputTransparent="True" IsVisible="False" BackgroundColor="Gray" Opacity="0.75"
-                             AbsoluteLayout.LayoutBounds="0,0,1,1"
-                             AbsoluteLayout.LayoutFlags="All" />
-            </AbsoluteLayout>-->
+                </AbsoluteLayout>
+            </StackLayout>
         </custom:TouchScreen>
 
         <!--<custom:AnythingButton x:Name="settingsMenuButton">
@@ -90,7 +33,7 @@
 
         <AbsoluteLayout IsVisible="False" AbsoluteLayout.LayoutBounds="1,0,50,50" AbsoluteLayout.LayoutFlags="PositionProportional">
             <Button x:Name="equationsButton" BorderWidth="0" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" />
-            <extensions:TouchableLabel Text="f(x)" FontSize="Large" TextColor="Black" AbsoluteLayout.LayoutBounds="0.5,0.5,-1,-1" AbsoluteLayout.LayoutFlags="PositionProportional"/>
+            <!--<extensions:TouchableLabel Text="f(x)" FontSize="Large" TextColor="Black" AbsoluteLayout.LayoutBounds="0.5,0.5,-1,-1" AbsoluteLayout.LayoutFlags="PositionProportional"/>-->
         </AbsoluteLayout>
         
         <StackLayout IsVisible="False" x:Name="equationsMenu" BackgroundColor="LightGray" Spacing="0" Orientation="Vertical" AbsoluteLayout.LayoutFlags="All">

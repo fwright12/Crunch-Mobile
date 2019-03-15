@@ -12,6 +12,7 @@ namespace Calculator
         private StackLayout Controls;
         private int step = 0;
         private Canvas canvasBackup;
+        private Calculation calculationBackup;
 
         public void Tutorial()
         {
@@ -20,6 +21,8 @@ namespace Calculator
             canvasBackup = canvas;
             canvasScroll.Content = canvas = new Canvas() { HorizontalOptions = LayoutOptions.FillAndExpand, VerticalOptions = LayoutOptions.FillAndExpand };
             canvas.Touch += AddCalculation;
+
+            calculationBackup = CalculationFocus;
             phantomCursorField.HeightRequest = 1;
 
             Action[] order = new Action[] { Welcome, ExplainCanvas, ExplainAnswerFormats, ExplainKeyboard, End };
@@ -94,6 +97,8 @@ namespace Calculator
             canvas = canvasBackup;
             canvasScroll.Content = canvas;
 
+            FocusOnCalculation(calculationBackup);
+
             Settings.Tutorial = false;
         }
 
@@ -106,7 +111,8 @@ namespace Calculator
             }
 
             KeyboardView.Overlay(
-                new Label() {
+                new Label
+                {
                     Text = "Lastly, this is the keyboard",
                     HorizontalTextAlignment = TextAlignment.End,
                     TextColor = Color.White,
@@ -114,9 +120,9 @@ namespace Calculator
                 },
                 new Rectangle(0.5, 1 / 8.0, 0.95, AbsoluteLayout.AutoSize),
                 AbsoluteLayoutFlags.PositionProportional | AbsoluteLayoutFlags.WidthProportional
-            );
+                );
             KeyboardView.Overlay(
-                new Label()
+                new Label
                 {
                     Text = "Long press DEL to clear the canvas ➜",
                     TextColor = Color.White,
@@ -124,71 +130,152 @@ namespace Calculator
                 },
                 new Rectangle(0.5, 3 / 8.0, 0.95, AbsoluteLayout.AutoSize),
                 AbsoluteLayoutFlags.PositionProportional | AbsoluteLayoutFlags.WidthProportional
-            );
+                );
             KeyboardView.Overlay(
-                new Label()
+                new Label
                 {
-                    Text = "Long press any other key to move the cursor",
+                    Text = "Long press any other key and drag to move the cursor",
                     HorizontalTextAlignment = TextAlignment.End,
                     TextColor = Color.White,
                     FontSize = 20
                 },
                 new Rectangle(0.5, 5 / 8.0, 0.95, AbsoluteLayout.AutoSize),
                 AbsoluteLayoutFlags.PositionProportional | AbsoluteLayoutFlags.WidthProportional
-            );
+                );
 
             if (KeyboardView.ShowingFullKeyboard)
             {
                 KeyboardView.Overlay(
-                new Label()
-                {
-                    Text = "Drag the dock button to move the keyboard ➜",
-                    TextColor = Color.White,
-                    FontSize = 20
-                },
-                new Rectangle(0.5, 7 / 8.0, 0.95, AbsoluteLayout.AutoSize),
-                AbsoluteLayoutFlags.PositionProportional | AbsoluteLayoutFlags.WidthProportional
-            );
+                    new Label
+                    {
+                        Text = "Drag or tap the dock button to change the keyboard position ➜",
+                        TextColor = Color.White,
+                        FontSize = 20
+                    },
+                    new Rectangle(0.5, 7 / 8.0, 0.95, AbsoluteLayout.AutoSize),
+                    AbsoluteLayoutFlags.PositionProportional | AbsoluteLayoutFlags.WidthProportional
+                    );
             }
             else
             {
-                StackLayout scroll = new StackLayout() { Orientation = StackOrientation.Horizontal, HorizontalOptions = LayoutOptions.Start, Spacing = 0 };
-                scroll.Children.Add(new Label() { Text = " ➜", FontSize = 20, TextColor = Color.White, Rotation = 180 });
+                StackLayout scroll = new StackLayout
+                {
+                    Orientation = StackOrientation.Horizontal,
+                    HorizontalOptions = LayoutOptions.Start,
+                    Spacing = 0
+                };
                 scroll.Children.Add(
-                    new Label()
+                    new Label
+                    {
+                        Text = " ➜",
+                        FontSize = 20,
+                        TextColor = Color.White,
+                        Rotation = 180
+                    }
+                    );
+                scroll.Children.Add(
+                    new Label
                     {
                         Text = "Scroll for more operations",
                         TextColor = Color.White,
                         FontSize = 20
                     }
-                );
+                    );
                 KeyboardView.Overlay(
                     scroll,
                     new Rectangle(0.5, 7 / 8.0, 0.95, AbsoluteLayout.AutoSize),
                     AbsoluteLayoutFlags.PositionProportional | AbsoluteLayoutFlags.WidthProportional
-                );
+                    );
             }
         }
 
         private void ExplainAnswerFormats()
         {
-            canvas.Children.Add(new Label() { Text = "Answers can be tapped to cycle through different formats", FontSize = 20 }, new Rectangle(0.05, 0.05, 0.9, AbsoluteLayout.AutoSize), AbsoluteLayoutFlags.PositionProportional | AbsoluteLayoutFlags.WidthProportional);
-            canvas.Children.Add(new Equation("1+1/2"), new Rectangle(0.05, 0.4, AbsoluteLayout.AutoSize, AbsoluteLayout.AutoSize), AbsoluteLayoutFlags.PositionProportional);
+            canvas.Children.Add(
+                new Label
+                {
+                    Text = "Answers can be tapped to cycle through different formats",
+                    FontSize = 20
+                },
+                new Rectangle(0, 0, 0.9, AbsoluteLayout.AutoSize),
+                AbsoluteLayoutFlags.PositionProportional | AbsoluteLayoutFlags.WidthProportional
+                );
 
-            canvas.Children.Add(new Equation("sin90"), new Rectangle(0.95, 0.6, AbsoluteLayout.AutoSize, AbsoluteLayout.AutoSize), AbsoluteLayoutFlags.PositionProportional);
-            canvas.Children.Add(new Label() { Text = "And tapping the deg/rad label will toggle degrees and radians", FontSize = 20, HorizontalTextAlignment = TextAlignment.End, VerticalTextAlignment = TextAlignment.End }, new Rectangle(0.95, 0.95, 0.9, AbsoluteLayout.AutoSize), AbsoluteLayoutFlags.PositionProportional | AbsoluteLayoutFlags.WidthProportional);
+            canvas.Children.Add(new Equation("sin30*2/3"), new Rectangle(0.5, 0.5, AbsoluteLayout.AutoSize, AbsoluteLayout.AutoSize), AbsoluteLayoutFlags.PositionProportional);
+
+            //canvas.Children.Add(new Equation("1+1/2"), new Rectangle(0.05, 0.4, AbsoluteLayout.AutoSize, AbsoluteLayout.AutoSize), AbsoluteLayoutFlags.PositionProportional);
+            //canvas.Children.Add(new Equation("sin90"), new Rectangle(0.95, 0.6, AbsoluteLayout.AutoSize, AbsoluteLayout.AutoSize), AbsoluteLayoutFlags.PositionProportional);
+
+            canvas.Children.Add(
+                new Label
+                {
+                    Text = "And tapping the deg/rad label will toggle degrees and radians",
+                    FontSize = 20,
+                    HorizontalTextAlignment = TextAlignment.End,
+                    VerticalTextAlignment = TextAlignment.End
+                },
+                new Rectangle(1, 1, 0.9, AbsoluteLayout.AutoSize),
+                AbsoluteLayoutFlags.PositionProportional | AbsoluteLayoutFlags.WidthProportional
+                );
         }
 
         private void ExplainCanvas()
         {
-            canvas.Children.Add(new Label() { Text = "This area is the canvas, where you can enter calculations and view results", FontSize = 20 }, new Rectangle(0.1, 0.1, 0.8, AbsoluteLayout.AutoSize), AbsoluteLayoutFlags.PositionProportional | AbsoluteLayoutFlags.WidthProportional);
-            canvas.Children.Add(new Label() { Text = "Calculations can be added by tapping anywhere", FontSize = 20, HorizontalTextAlignment = TextAlignment.End, VerticalTextAlignment = TextAlignment.End }, new Rectangle(0.9, 0.9, 0.8, AbsoluteLayout.AutoSize), AbsoluteLayoutFlags.PositionProportional | AbsoluteLayoutFlags.WidthProportional);
+            canvas.Children.Add(
+                new Label
+                {
+                    Text = "This area is the canvas, where you can enter calculations",
+                    FontSize = 18
+                },
+                new Rectangle(0, 0, 0.9, AbsoluteLayout.AutoSize),
+                AbsoluteLayoutFlags.PositionProportional | AbsoluteLayoutFlags.WidthProportional
+                );
+            canvas.Children.Add(
+                new Label
+                {
+                    Text = "Calculations can be added by tapping anywhere, and moved by dragging the answer or equals sign",
+                    HorizontalTextAlignment = TextAlignment.Center,
+                    VerticalTextAlignment = TextAlignment.Center,
+                    FontSize = 18
+                },
+                new Rectangle(0.5, 0.5, 0.9, AbsoluteLayout.AutoSize),
+                AbsoluteLayoutFlags.PositionProportional | AbsoluteLayoutFlags.WidthProportional
+                );
+            canvas.Children.Add(
+                new Label
+                {
+                    Text = "More space will be added as necessary; scroll to access it",
+                    FontSize = 18,
+                    HorizontalTextAlignment = TextAlignment.End,
+                    VerticalTextAlignment = TextAlignment.End
+                },
+                new Rectangle(1, 1, 0.9, AbsoluteLayout.AutoSize),
+                AbsoluteLayoutFlags.PositionProportional | AbsoluteLayoutFlags.WidthProportional
+                );
         }
 
         private void Welcome()
         {
-            canvas.Children.Add(new Label() { Text = "Welcome to Crunch!", FontSize = 25, HorizontalTextAlignment = TextAlignment.Center }, new Rectangle(0.5, 1.0 / 3.0, AbsoluteLayout.AutoSize, AbsoluteLayout.AutoSize), AbsoluteLayoutFlags.PositionProportional);
-            canvas.Children.Add(new Label() { Text = "The calculator designed for your " + (Device.Idiom == TargetIdiom.Phone ? "smartphone" : "tablet"), FontSize = 15, HorizontalTextAlignment = TextAlignment.Center }, new Rectangle(0.5, 2.0 / 3.0, AbsoluteLayout.AutoSize, AbsoluteLayout.AutoSize), AbsoluteLayoutFlags.PositionProportional);
+            canvas.Children.Add(
+                new Label
+                {
+                    Text = "Welcome to Crunch!",
+                    FontSize = 25,
+                    HorizontalTextAlignment = TextAlignment.Center
+                },
+                new Rectangle(0.5, 1.0 / 3.0, AbsoluteLayout.AutoSize, AbsoluteLayout.AutoSize),
+                AbsoluteLayoutFlags.PositionProportional
+                );
+            canvas.Children.Add(
+                new Label
+                {
+                    Text = "The calculator designed for your " + (Device.Idiom == TargetIdiom.Phone ? "smartphone" : "tablet"),
+                    FontSize = 15,
+                    HorizontalTextAlignment = TextAlignment.Center
+                },
+                new Rectangle(0.5, 2.0 / 3.0, AbsoluteLayout.AutoSize, AbsoluteLayout.AutoSize),
+                AbsoluteLayoutFlags.PositionProportional
+                );
         }
     }
 }

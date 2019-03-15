@@ -7,7 +7,7 @@ using Xamarin.Forms.Extensions;
 
 namespace Calculator
 {
-    public class AnythingButton : TouchableAbsoluteLayout
+    public class AnythingButton : AbsoluteLayout
     {
         public event EventHandler Clicked;
 
@@ -46,61 +46,32 @@ namespace Calculator
         public override string ToString() => Text;
     }
 
-    /*public class StepperCell : ViewCell
-    {
-        public static readonly BindableProperty TextProperty = BindableProperty.Create("Text", typeof(string), typeof(StepperCell), propertyChanged: (bindable, old, value) => (bindable as StepperCell).text.Text = value.ToString());
-
-        public static readonly BindableProperty ValueProperty = BindableProperty.Create("Value", typeof(string), typeof(StepperCell), propertyChanged: (bindable, old, value) => (bindable as StepperCell).stepper.Value = double.Parse(value.ToString()));
-        public static readonly BindableProperty MinimumProperty = BindableProperty.Create("Minimum", typeof(string), typeof(StepperCell), propertyChanged: (bindable, old, value) => (bindable as StepperCell).stepper.Minimum = double.Parse(value.ToString()));
-        public static readonly BindableProperty MaximumProperty = BindableProperty.Create("Maximum", typeof(string), typeof(StepperCell), propertyChanged: (bindable, old, value) => (bindable as StepperCell).stepper.Maximum = double.Parse(value.ToString()));
-        public static readonly BindableProperty IncrementProperty = BindableProperty.Create("Increment", typeof(string), typeof(StepperCell), propertyChanged: (bindable, old, value) => (bindable as StepperCell).stepper.Increment = double.Parse(value.ToString()));
-
-        public static readonly BindableProperty DisplayValueProperty = BindableProperty.Create("ShowValue", typeof(string), typeof(StepperCell), propertyChanged: (bindable, old, value) => (bindable as StepperCell).value.IsVisible = (bool)value);
-
-        public string Text { get; set; }
-
-        public string Value { get; set; }
-        public string Minimum { get; set; }
-        public string Maximum { get; set; }
-        public string Increment { get; set; }
-
-        public bool ShowValue { get; set; }
-
-        public EventHandler<ValueChangedEventArgs> ValueChanged
-        {
-            set { stepper.ValueChanged += value; }
-        }
-
-        private Label text;
-        private Label value;
-        private Stepper stepper;
-
-        public StepperCell()
-        {
-            StackLayout layout = new StackLayout { Orientation = StackOrientation.Horizontal, Padding = new Thickness(25, 0, 0, 0) };
-            layout.Children.Add(text = new Label { VerticalOptions = LayoutOptions.Center });
-            layout.Children.Add(value = new Label { VerticalOptions = LayoutOptions.Center });
-            layout.Children.Add(stepper = new Stepper { VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.EndAndExpand });
-
-            stepper.ValueChanged += (sender, e) => value.Text = e.NewValue.ToString();
-            
-            View = layout;
-        }
-    }*/
-
     public class TouchScreen : StackLayout, ITouchable
     {
-        public static Point LastDownEvent;
-
         public event TouchEventHandler Touch;
         public event ClickEventHandler Click;
         public event TouchEventHandler InterceptedTouch;
+
+        private static TouchScreen Instance;
+
+        public TouchScreen()
+        {
+            if (Instance == null)
+            {
+                Instance = this;
+                Drag.Screen = this;
+            }
+            else
+            {
+                throw new Exception("There can only be one instance of TouchScreen");
+            }
+        }
 
         public void OnTouch(Point point, TouchState state)
         {
             if (state == TouchState.Up)
             {
-                Drag.End();
+                //Drag.End();
                 Click?.Invoke(point);
             }
 

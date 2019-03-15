@@ -66,6 +66,7 @@ namespace Calculator
         {
             Storage.Clear();
             Load();
+            Tutorial = false;
         }
 
         private static T TryGet<T>(this IDictionary<string, object> dict, string key, T defaultValue)

@@ -21,6 +21,7 @@ namespace Calculator
 
         public Key(string display, string basic = "")
         {
+            Padding = new Thickness(0);
             Text = display;
             Basic = basic;
         }
@@ -65,12 +66,13 @@ namespace Calculator
             new Key[] { PI,     "e",    "x",    "0",    ".",    "()",   "+" }
         };
 
-        private readonly int MaxButtonSize = 75;
-        private readonly double PermanentKeysIncrease = 1.25;
-        private readonly int MinColumns = 4;
+        private readonly int MAX_BUTTON_SIZE = 75;
+        private readonly double PERMANENT_KEYS_INCREASE = 1.25;
+        private readonly int MIN_COLUMNS = 4;
+        private readonly double BUTTON_SPACING = 6;
 
         public int Rows => Keys.Length + Orient(0, 1);
-        public double Columns => Orient((ShowingFullKeyboard ? Keys[0].Length : MinColumns) + PermanentKeysIncrease, MinColumns);
+        public double Columns => Orient((ShowingFullKeyboard ? Keys[0].Length : MIN_COLUMNS) + PERMANENT_KEYS_INCREASE, MIN_COLUMNS);
 
         private ScrollView Scroll;
         private Grid Keypad;
@@ -95,9 +97,16 @@ namespace Calculator
 
             //StackLayout keyboard = new StackLayout() { HorizontalOptions = LayoutOptions.Center, VerticalOptions = LayoutOptions.Center, Spacing = 0 };
 
-            Scroll = new ScrollView() { Orientation = ScrollOrientation.Horizontal };
-            Keypad = new Grid() { ColumnSpacing = 0, RowSpacing = 0 };
-
+            Scroll = new ScrollView()
+            {
+                Orientation = ScrollOrientation.Horizontal
+            };
+            Keypad = new Grid()
+            {
+                ColumnSpacing = BUTTON_SPACING,
+                RowSpacing = BUTTON_SPACING
+            };
+            
             for (int i = 0; i < Keys.Length; i++)
             {
                 for (int j = 0; j < Keys[i].Length; j++)
@@ -106,13 +115,13 @@ namespace Calculator
 
                     if (Keys[i][j].Text == "()")
                     {
-                        view = Parentheses = new StackLayout() { Orientation = StackOrientation.Horizontal, Spacing = 0 };
+                        view = Parentheses = new StackLayout() { Orientation = StackOrientation.Horizontal, Spacing = BUTTON_SPACING };
                         Parentheses.Children.Add(new Key("("));
                         Parentheses.Children.Add(new Key(")"));
                     }
                     else
                     {
-                        if (Keys[i].Length - j > MinColumns)
+                        if (Keys[i].Length - j > MIN_COLUMNS)
                         {
                             Keys[i][j].Clicked += delegate { Scroll.ScrollToAsync(Keypad, ScrollToPosition.End, false); };
                         }
@@ -123,18 +132,41 @@ namespace Calculator
             }
 
             Scroll.Content = Keypad;
-
-            PermanentKeys = new StackLayout() { Orientation = StackOrientation.Vertical, Spacing = 0, HorizontalOptions = LayoutOptions.FillAndExpand, VerticalOptions = LayoutOptions.FillAndExpand };
+            
+            PermanentKeys = new StackLayout()
+            {
+                Orientation = StackOrientation.Vertical,
+                Spacing = BUTTON_SPACING,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                VerticalOptions = LayoutOptions.FillAndExpand
+            };
             PermanentKeys.Children.Add(new LongClickableButton());
             PermanentKeys.Children.Add(new Key("DEL", Key.DELETE));
-            ArrowKeys = new StackLayout() { Orientation = StackOrientation.Horizontal, Spacing = 0, HorizontalOptions = LayoutOptions.FillAndExpand, VerticalOptions = LayoutOptions.FillAndExpand };
+            ArrowKeys = new StackLayout()
+            {
+                Orientation = StackOrientation.Horizontal,
+                Spacing = BUTTON_SPACING,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                VerticalOptions = LayoutOptions.FillAndExpand
+            };
             ArrowKeys.Children.Add(new Key("\u27E8", Key.LEFT)); //mathematical left angle bracket
             ArrowKeys.Children.Add(new Key("\u27E9", Key.RIGHT)); //mathematical right angle bracket
             PermanentKeys.Children.Add(ArrowKeys);
+            //PermanentKeys.Children.Add(new Button());
             PermanentKeys.Children.Add(Dock);
 
-            Mask = new AbsoluteLayout() { IsVisible = false, BackgroundColor = Color.Gray, Opacity = 0.875 };
+            foreach(View v in PermanentKeys.Children)
+            {
+                v.VerticalOptions = LayoutOptions.FillAndExpand;
+            }
 
+            Mask = new AbsoluteLayout()
+            {
+                IsVisible = false,
+                BackgroundColor = Color.Gray,
+                Opacity = 0.875
+            };
+            
             Children.Add(PermanentKeys);
             Children.Add(Scroll);
             Children.Add(Mask);
@@ -182,21 +214,22 @@ namespace Calculator
 
         protected override SizeRequest OnMeasure(double widthConstraint, double heightConstraint)
         {
-            View root = this.Root<View>();
+            View root = this.Parent<View>();
             widthConstraint = root.Width;
             heightConstraint = root.Height;
 
-            CanShowFullKeyboard = (Keys[0].Length + PermanentKeysIncrease) * MaxButtonSize * Keys.Length * MaxButtonSize < widthConstraint * heightConstraint / 2;
+            CanShowFullKeyboard = (Keys[0].Length + PERMANENT_KEYS_INCREASE) * MAX_BUTTON_SIZE * Keys.Length * MAX_BUTTON_SIZE < widthConstraint * heightConstraint / 2;
             IdealOrientation = ShowingFullKeyboard || heightConstraint > widthConstraint;
-
+            
             double constraint = Orient(Columns, Rows);
-            ButtonSize = ShowingFullKeyboard ? MaxButtonSize : Orient(widthConstraint, heightConstraint) / constraint;
-            return new SizeRequest(new Size(ButtonSize * Columns, ButtonSize * Rows));
+            ButtonSize = ShowingFullKeyboard ? MAX_BUTTON_SIZE : (Orient(widthConstraint, heightConstraint) - BUTTON_SPACING) / constraint;
+
+            return new SizeRequest(new Size(ButtonSize * Columns, ButtonSize * Rows) + Orient(new Size(BUTTON_SPACING, 0), new Size(0, BUTTON_SPACING)));
         }
 
         protected override void LayoutChildren(double x, double y, double width, double height)
         {
-            double middle = ButtonSize * Orient(Columns - PermanentKeysIncrease, Rows - 1);
+            double middle = ButtonSize * Orient(Columns - PERMANENT_KEYS_INCREASE, Rows - 1);
 
             LayoutChildIntoBoundingRegion(
                 Keypad.Parent as VisualElement,
@@ -211,35 +244,31 @@ namespace Calculator
             LayoutChildIntoBoundingRegion(
                 PermanentKeys,
                 Orient(
-                    new Rectangle(middle, 0, ButtonSize * PermanentKeysIncrease, height),
-                    new Rectangle(0, middle, width, ButtonSize)
+                    new Rectangle(middle + BUTTON_SPACING, 0, ButtonSize * PERMANENT_KEYS_INCREASE, height),
+                    new Rectangle(0, middle + BUTTON_SPACING, width, ButtonSize)
                 )
             );
             LayoutChildIntoBoundingRegion(Mask, new Rectangle(0, 0, width, height));
-
+            
             foreach (View v in PermanentKeys.Children)
             {
-                if (v == ArrowKeys)
-                {
-                    continue;
-                }
-
                 if (IdealOrientation)
                 {
-                    v.HeightRequest = ButtonSize;
+                    v.HeightRequest = (height - BUTTON_SPACING * (Rows - 1)) / Rows;
                 }
-                else
+                else if (v != ArrowKeys)
                 {
-                    v.WidthRequest = (ButtonSize * Columns - (ButtonSize * PermanentKeysIncrease)) / (PermanentKeys.Children.Count - 1);
+                    v.WidthRequest = (width - ButtonSize * PERMANENT_KEYS_INCREASE - BUTTON_SPACING * (Columns - 1)) / (Columns - 1);
                 }
             }
+            
             foreach (View v in ArrowKeys.Children)
             {
-                v.WidthRequest = ButtonSize * PermanentKeysIncrease / 2;
+                v.WidthRequest = (ButtonSize * PERMANENT_KEYS_INCREASE - BUTTON_SPACING) / 2;
             }
             foreach (View v in Parentheses.Children)
             {
-                v.WidthRequest = ButtonSize / 2;
+                v.WidthRequest = ButtonSize / 2 - BUTTON_SPACING;
             }
 
             Keypad.WidthRequest = Keys[0].Length * ButtonSize;

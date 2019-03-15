@@ -9,17 +9,14 @@ using Android.Graphics;
 using Android.Runtime;
 using Android.OS;
 
-using Xamarin.Forms.Math;
+using Xamarin.Forms.MathDisplay;
 using Android.Gms.Ads;
 using Xamarin.Forms.Extensions;
 
 [assembly: ExportRenderer(typeof(Calculator.Canvas), typeof(CanvasRenderer))]
 [assembly: ExportRenderer(typeof(LongClickableButton), typeof(LongClickableButtonRenderer))]
 [assembly: ExportRenderer(typeof(TouchableStackLayout), typeof(TouchableStackLayoutRenderer))]
-[assembly: ExportRenderer(typeof(TouchableAbsoluteLayout), typeof(TouchableAbsoluteLayoutRenderer))]
-//[assembly: ExportRenderer(typeof(DockButton), typeof(DockButtonRenderer))]
 [assembly: ExportRenderer(typeof(BannerAd), typeof(BannerAdRenderer))]
-[assembly: ExportRenderer(typeof(TouchableLabel), typeof(TouchableLabelRenderer))]
 [assembly: ExportRenderer(typeof(TouchScreen), typeof(TouchScreenRenderer))]
 
 namespace Calculator.Droid
@@ -33,91 +30,72 @@ namespace Calculator.Droid
 
     public class TouchScreenRenderer : VisualElementRenderer<StackLayout>
     {
+        private void DragTouch(MotionEvent e) => Xamarin.Forms.Drag.OnTouch(this.ScaleTouch(Element, e), (TouchState)e.Action);
+
         public override bool OnTouchEvent(MotionEvent e)
         {
-            Element.RelayTouch(this, e);
+            //Xamarin.Forms.Drag.Screen.RelayTouch(this, e);
+            if (Xamarin.Forms.Drag.Active)
+            {
+                DragTouch(e);
+            }
             return true;
         }
 
         public override bool OnInterceptTouchEvent(MotionEvent e)
         {
-            (Element as TouchScreen).OnInterceptedTouch(this.ScaleTouch(Element, e), (TouchState)(int)e.Action);
+            Xamarin.Forms.Drag.Screen.OnInterceptedTouch(this.ScaleTouch(Element, e), (TouchState)(int)e.Action);
 
             if (e.Action == MotionEventActions.Down)
             {
-                TouchScreen.LastDownEvent = this.ScaleTouch(Element, e);
+                //TouchScreen.LastDownEvent = this.ScaleTouch(Element, e);
+                //Xamarin.Forms.Drag.OnTouch(this.ScaleTouch(Element, e), (TouchState)e.Action);
+                DragTouch(e);
             }
-            if (Xamarin.Forms.Drag.ShouldIntercept)
+            if (Xamarin.Forms.Drag.Active)
             {
                 OnTouchEvent(e);
             }
-            return Xamarin.Forms.Drag.ShouldIntercept;
+            //return false;
+            return Xamarin.Forms.Drag.Active;
         }
     }
 
     public class TouchableLabelRenderer : LabelRenderer
     {
-        public TouchableLabelRenderer()
-        {
-            //Touch += (sender, e) => Element.RelayTouch(sender as Android.Views.View, e.Event);
-        }
-
-        public override bool OnTouchEvent(MotionEvent e) => Element is Text && (Element as Text).ShouldIntercept ? Element.RelayTouch(this, e) : false;
-    }
-
-    public class DockButtonRenderer : ButtonRenderer
-    {
-        public override bool OnTouchEvent(MotionEvent e)
-        {
-            Element.RelayTouch(this, e);
-            return true;
-        }
-
-        public override bool OnInterceptTouchEvent(MotionEvent e)
-        {
-            if (e.Action == MotionEventActions.Move)
-            {
-                return OnTouchEvent(e);
-            }
-
-            return false;
-        }
+        //public override bool OnTouchEvent(MotionEvent e) => Element is Text && (Element as Text).ShouldIntercept ? Element.RelayTouch(this, e) : false;
     }
 
     public class TouchableAbsoluteLayoutRenderer : VisualElementRenderer<AbsoluteLayout>
     {
-        public override bool OnTouchEvent(MotionEvent e) => Element is TouchableAbsoluteLayout && (Element as TouchableAbsoluteLayout).ShouldIntercept ? Element.RelayTouch(this, e) : false;
+        //public override bool OnTouchEvent(MotionEvent e) => Element is TouchableAbsoluteLayout && (Element as TouchableAbsoluteLayout).ShouldIntercept ? Element.RelayTouch(this, e) : false;
 
     }
 
     public class TouchableStackLayoutRenderer : VisualElementRenderer<StackLayout>
     {
-        public TouchableStackLayoutRenderer()
+        public override bool OnTouchEvent(MotionEvent e)
         {
-            //Touch += (sender, e) => Element.RelayTouch(sender as Android.Views.View, e.Event);
-        }
-
-        public override bool OnTouchEvent(MotionEvent e) => Element is TouchableStackLayout && (Element as TouchableStackLayout).ShouldIntercept ? Element.RelayTouch(this, e) : false;
-
-        /*public override bool OnTouchEvent(MotionEvent e)
-        {
-            print.log("touched " + (Element as dynamic).ToString());// Element.RelayTouch(this, e);
-            return Element.RelayTouch(this, e);
-        }*/
-
-        //public override bool OnInterceptTouchEvent(MotionEvent ev) => (Element as TouchableStackLayout).InterceptTouch;
-
-        /*public override bool OnTouchEvent(MotionEvent e)
-        {
-            print.log("touched " + this);
-            Element.RelayTouch(this as Android.Views.View, e);
-            return true;
+            bool test = base.OnTouchEvent(e);
+            //print.log("touch event", e.Action, Element is TouchableStackLayout && (Element as TouchableStackLayout).ShouldIntercept, test);
+            if (Element is TouchableStackLayout && (Element as TouchableStackLayout).ShouldIntercept)
+            {
+                return Element.RelayTouch(this, e);
+            }
+            else
+            {
+                return test || e.Action == MotionEventActions.Move;
+            }
         }
 
         public override bool OnInterceptTouchEvent(MotionEvent ev)
         {
-            return true;
-        }*/
+            if (Element is TouchableStackLayout && (Element as TouchableStackLayout).ShouldIntercept)
+            {
+                Element.RelayTouch(this, ev);
+            }
+            return base.OnInterceptTouchEvent(ev);
+        }
     }
 
     public class LongClickableButtonRenderer : ButtonRenderer
@@ -155,7 +133,7 @@ namespace Calculator.Droid
         public CanvasRenderer()
         {
             Touch += (sender, e) => Element.RelayTouch(sender as Android.Views.View, e.Event);
-            Drag += dropEquation;
+            //Drag += dropEquation;
         }
 
         private void dropEquation(object sender, DragEventArgs e)
@@ -236,70 +214,4 @@ namespace Calculator.Droid
             }
         }
     }
-
-    /*public class SoftkeyboardDisabledEntryRenderer : EntryRenderer
-    {
-        public SoftkeyboardDisabledEntryRenderer()
-        {
-            //LayoutParameters = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WrapContent, ViewGroup.LayoutParams.MatchParent);
-            //temp.TextSize = Control.TextSize;
-            //Control.SetPadding(1, 0, 1, 0);
-            //Control.Background = null;
-            //Control.SetCursorVisible(true);
-            //temp.Gravity = GravityFlags.Center;
-
-            //Control.ViewAttachedToWindow += delegate { Control.RequestFocus(); };
-        }
-
-        private void focus()
-        {
-            Control.RequestFocus();
-        }
-
-        protected override void OnElementChanged(ElementChangedEventArgs<Entry> e)
-        {
-            base.OnElementChanged(e);
-            Input.Focus = focus;
-            //Control.RequestFocus();
-            print.log("here");
-            Control.SetPadding(1, 0, 1, 0);
-            Control.Background = null;
-            Control.SetCursorVisible(true);
-
-            return;
-
-            if (e.NewElement != null)
-            {
-                ((SoftKeyboardDisabledEntry)e.NewElement).PropertyChanging += OnPropertyChanging;
-            }
-
-            if (e.OldElement != null)
-            {
-                ((SoftKeyboardDisabledEntry)e.OldElement).PropertyChanging -= OnPropertyChanging;
-            }
-
-            if (Control != null)
-            {
-                //Control.SetPadding(1, 0, 0, 0);
-                //Control.Background = null;
-                //Control.SetBackgroundColor(Android.Graphics.Color.Transparent);
-                //Control.SetCursorVisible(true);
-            }
-
-            // Disable the Keyboard on Focus
-            Control.ShowSoftInputOnFocus = false;
-        }
-
-        private void OnPropertyChanging(object sender, PropertyChangingEventArgs propertyChangingEventArgs)
-        {
-            // Check if the view is about to get Focus
-            if (propertyChangingEventArgs.PropertyName == VisualElement.IsFocusedProperty.PropertyName)
-            {
-                // in case if the focus was moved from another Entry
-                // Forcefully dismiss the Keyboard 
-                //InputMethodManager imm = (InputMethodManager)this.Context.GetSystemService(Android.Content.Context.InputMethodService);
-                //imm.HideSoftInputFromWindow(this.Control.WindowToken, 0);
-            }
-        }
-    }*/
 }

@@ -7,15 +7,20 @@ using Calculator;
 
 namespace Xamarin.Forms
 {
+    public delegate void DragEventHandler(Drag.State state);
+
     public static class Drag
     {
+        public enum State { Moving, Ended };
+
         public static TouchScreen Screen;
-        public static bool ShouldIntercept = false;
+        public static event DragEventHandler Dragging;
+        public static Point LastTouch { get; private set; }
+        public static bool Active { get; private set; } = false;
 
         private static View view;
         private static Rectangle bounds;
         private static double speed;
-        private static Point lastTouch;
         private static Point lastPosition;
 
         public static void BeginDrag(this View v, Rectangle boundedArea, double moveSpeed = 1)
@@ -23,26 +28,42 @@ namespace Xamarin.Forms
             view = v;
             bounds = boundedArea;
             speed = moveSpeed;
-            Screen.Touch += UpdatePosition;
+            //Screen.Touch += UpdatePosition;
 
-            lastTouch = TouchScreen.LastDownEvent;
+            //lastTouch = TouchScreen.LastDownEvent;
             lastPosition = new Point(view.X, view.Y);
 
-            ShouldIntercept = true;
+            Active = true;
+        }
+
+        public static void OnTouch(Point point, TouchState state)
+        {
+            if (state == TouchState.Down)
+            {
+                LastTouch = point;
+            }
+            else if (Active)
+            {
+                if (state == TouchState.Moving)
+                {
+                    UpdatePosition(point, state);
+                    Dragging?.Invoke(State.Moving);
+                }
+                else if (state == TouchState.Up)
+                {
+                    Active = false;
+                    Dragging?.Invoke(State.Ended);
+                }
+            }
         }
 
         private static void UpdatePosition(Point point, TouchState state)
         {
-            lastPosition = lastPosition.Add(point.Subtract(lastTouch).Multiply(speed));
-            lastTouch = point;
-
-            (view as View).MoveView(bounds, lastPosition);
-        }
-
-        public static void End()
-        {
-            Screen.Touch -= UpdatePosition;
-            ShouldIntercept = false;
+            lastPosition = lastPosition.Add(point.Subtract(LastTouch).Multiply(speed));
+            LastTouch = point;
+            //print.log("dragging", point, LastTouch, point.Subtract(LastTouch).Multiply(speed), lastPosition);
+            
+            view.MoveView(bounds, lastPosition);
         }
 
         public static readonly Action<View, Point> MoveOnAbsoluteLayout = (v, p) => v.MoveTo(p);
@@ -65,8 +86,8 @@ namespace Xamarin.Forms
         {
             Action<View, Point> move = v.Parent is AbsoluteLayout ? MoveOnAbsoluteLayout : MoveOnLayout;
             Point p = new Point(
-                System.Math.Max(bounds.X, System.Math.Min(bounds.X + bounds.Width - v.Width, destination.X)),
-                System.Math.Max(bounds.Y, System.Math.Min(bounds.Y + bounds.Height - v.Height, destination.Y))
+                Math.Max(0, Math.Min(bounds.Width - v.Width, destination.X)),
+                Math.Max(0, Math.Min(bounds.Height - v.Height, destination.Y))
                 );
             move(v, p);
         }

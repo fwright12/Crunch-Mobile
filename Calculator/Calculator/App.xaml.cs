@@ -1,26 +1,44 @@
-﻿using Xamarin.Forms;
+﻿using System;
+
+using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using Xamarin.Forms.Extensions;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace Calculator
 {
     public partial class App : Application
     {
-        public static Page VisiblePage => (Current.MainPage as NavigationPage)?.CurrentPage ?? Current.MainPage;
+        public static NavigationPage Navigation;
+        public static MainPage Main;
 
         public App()
         {
             InitializeComponent();
+            Resources = CrunchStyle.Apply();
 
             Settings.Load();
 
             if (Device.Idiom == TargetIdiom.Phone)
             {
-                MainPage = new NavigationPage(new MainPage());
+                MainPage = Navigation = new NavigationPage(Main = new MainPage());
+                NavigationPage.SetHasNavigationBar(Main, false);
             }
             else if (Device.Idiom == TargetIdiom.Tablet)
             {
-                MainPage = new MainPage();
+                Navigation = new NavigationPage(new SettingsPage()) { Title = "Settings" };
+
+                Main = new MainPage();
+                MainPage = new MasterDetailPage
+                {
+                    Title = "Home",
+                    Detail = new NavigationPage(Main),
+                    Master = Navigation,
+                    MasterBehavior = MasterBehavior.Popover,
+#if __IOS__
+                    IsGestureEnabled = false
+#endif
+                };
             }
         }
 

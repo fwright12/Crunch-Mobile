@@ -6,7 +6,7 @@ using System.Text;
 using System.Extensions;
 using Xamarin.Forms;
 using Xamarin.Forms.Extensions;
-using Xamarin.Forms.Math;
+using Xamarin.Forms.MathDisplay;
 using Crunch;
 
 namespace Calculator
@@ -64,12 +64,14 @@ namespace Calculator
             DegRadLabel = new TouchableStackLayout { VerticalOptions = LayoutOptions.Fill };
             Label label = new Label { FontSize = Text.MaxFontSize * 2 / 3, Opacity = 0.5, VerticalOptions = LayoutOptions.EndAndExpand, Margin = new Thickness(3, 0, 0, 0) };
 
-            DegRadLabel.Click += delegate
+            TapGestureRecognizer tgr = new TapGestureRecognizer();
+            tgr.Tapped += delegate
             {
                 TrigChoice = TrigChoice.Iterate((int)TrigChoice);
                 SwitchDegRad(label);
                 SwitchToNextValidFormat(actualPolynomialForm, actualNumbersForm, false);
             };
+            DegRadLabel.GestureRecognizers.Add(tgr);
 
             DegRadLabel.Children.Add(label);
             SwitchDegRad(label);
@@ -118,7 +120,8 @@ namespace Calculator
                 //print.log("checking format ", polynomials, numbers, TrigChoice);
                 e = allFormats[(int)polynomials, (int)numbers, (int)TrigChoice];
 
-                if (e == null) {
+                if (e == null)
+                {
                     Operand o;
 
                     try
@@ -138,12 +141,21 @@ namespace Calculator
                     if (o != null)
                     {
                         //print.log("rendering new answer");
-                        e = new Expression(Render.Math(o.ToString()));
-                        e.Click += delegate
-                        {
-                        //print.log("current format is ", actualPolynomialForm, actualNumbersForm, TrigChoice);
+                        e = new Expression(Xamarin.Forms.MathDisplay.Reader.Render(o.ToString()));
 
-                        if (SwitchToNextValidFormat(actualPolynomialForm, actualNumbersForm))
+                        /*PanGestureRecognizer pgr = new PanGestureRecognizer();
+                        pgr.PanUpdated += (sender, e1) =>
+                        {
+                            this.Root<Calculation>().BeginDrag(MainPage.VisiblePage.Canvas.Bounds);
+                        };
+                        e.GestureRecognizers.Add(pgr);*/
+
+                        TapGestureRecognizer tgr = new TapGestureRecognizer();
+                        tgr.Tapped += delegate
+                        {
+                            //print.log("current format is ", actualPolynomialForm, actualNumbersForm, TrigChoice);
+
+                            if (SwitchToNextValidFormat(actualPolynomialForm, actualNumbersForm))
                             {
                                 if (answer.HasForm(PolynomialChoice))
                                 {
@@ -157,6 +169,7 @@ namespace Calculator
 
                             //print.log("ended on " + actualPolynomialForm, actualNumbersForm, TrigChoice);
                         };
+                        e.GestureRecognizers.Add(tgr);
 
                         allFormats[(int)polynomials, (int)numbers, (int)TrigChoice] = e;
                     }

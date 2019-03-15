@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:custom="clr-namespace:Calculator"
+             Title="Privacy Policy"
+             x:Class="Calculator.PrivacyPolicyPage">
+    
+    <TableView VerticalOptions="FillAndExpand"
+                       Intent="Settings"
+                       HasUnevenRows="True" >
+        <TableRoot>
+            <TableSection>
+                <custom:ParagraphCell Text="Your data is yours, and it should only be collected with your consent when absolutely necessary to significantly improve your experience. Crunch doesn't need to know anything about you to function; therefore, it doesn't collect or store any of your personal data. That being said, it does serve ads using Google's Admob service. This service uses personalized advertising to serve targeted ads, and may utilize information about you associated with your device's advertising ID or your device itself. Check out the links below for more information." />
+            </TableSection>
+
+            <TableSection>
+                <TextCell x:Name="googleAds" Text="Google ads information" />
+                <TextCell x:Name="googlePrivacy" Text="Google data privacy" />
+            </TableSection>
+        </TableRoot>
+    </TableView>
+    
+    <!--<ScrollView Orientation="Vertical">
+        <StackLayout x:Name="main">
+            <Label IsVisible="False">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="Your data is yours, and it should only be collected with your consent when absolutely necessary to significantly improve your experience. Crunch doesn't need to know anything about you to function;  therefore, it doesn't collect or store any of your personal data. That being said, it does serve ads using Google's Admob service. This service uses personalized advertising to serve targeted ads, and may utilize information about you associated with your device's advertising ID or your device itself. More information about Google ads and data privacy can be found " />
+                        <Span x:Name="googleAds"
+                              Text="here"
+                              TextColor="Blue"
+                              TextDecorations="Underline">
+                        </Span>
+                        <Span Text=" and " />
+                        <Span x:Name="googlePrivacy"
+                              Text="here"
+                              TextColor="Blue"
+                              TextDecorations="Underline">
+                        </Span>
+                        <Span Text="." />
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+            
+
+        </StackLayout>
+    </ScrollView>-->
+</ContentPage>

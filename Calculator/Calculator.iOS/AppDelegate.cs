@@ -4,6 +4,7 @@ using System.Linq;
 
 using Foundation;
 using UIKit;
+using Google.MobileAds;
 
 namespace Calculator.iOS
 {
@@ -22,6 +23,7 @@ namespace Calculator.iOS
         //
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
+            MobileAds.Configure("ca-app-pub-1795523054003202~2467617560");
             global::Xamarin.Forms.Forms.Init();
             LoadApplication(new App());
 

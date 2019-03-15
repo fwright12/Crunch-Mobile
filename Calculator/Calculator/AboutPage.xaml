@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Title="About Crunch"
+             x:Class="Calculator.AboutPage">
+
+    <ScrollView Orientation="Vertical">
+        <StackLayout x:Name="main" Spacing="20">
+            <Label Text="Thank you for using Crunch!" HorizontalTextAlignment="Center" />
+            <Label Text="If you find any bugs, please report them to GreenMountainLabs802@gmail.com. The more information you can provide (what you did to cause the error, screenshots, etc.) the easier it will be to fix." />
+            <Label Text="If you enjoy using Crunch, please rate it on the app store. Ratings help with visibility, so other people can find Crunch." />
+            <Label Text="Please also email me with any ideas you have about how the app can be improved, or features you would like to see in the future. I'm open to suggestions!" />
+        </StackLayout>
+    </ScrollView>
+</ContentPage>
