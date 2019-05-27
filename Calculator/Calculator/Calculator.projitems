@@ -25,17 +25,15 @@
     <Compile Include="$(MSBuildThisFileDirectory)CustomViews.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graph.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Keyboard.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Link.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Playground.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)print.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PrivacyPolicyPage.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Settings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CrunchStyle.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Drag.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SettingsPage.xaml.cs">
       <SubType>Code</SubType>
     </Compile>

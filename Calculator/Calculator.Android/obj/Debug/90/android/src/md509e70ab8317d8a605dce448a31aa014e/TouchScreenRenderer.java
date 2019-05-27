@@ -12,6 +12,7 @@ public class TouchScreenRenderer
 		__md_methods = 
 			"n_onTouchEvent:(Landroid/view/MotionEvent;)Z:GetOnTouchEvent_Landroid_view_MotionEvent_Handler\n" +
 			"n_onInterceptTouchEvent:(Landroid/view/MotionEvent;)Z:GetOnInterceptTouchEvent_Landroid_view_MotionEvent_Handler\n" +
+			"n_requestDisallowInterceptTouchEvent:(Z)V:GetRequestDisallowInterceptTouchEvent_ZHandler\n" +
 			"";
 		mono.android.Runtime.register ("Calculator.Droid.TouchScreenRenderer, Calculator.Android", TouchScreenRenderer.class, __md_methods);
 	}
@@ -55,6 +56,14 @@ public class TouchScreenRenderer
 	}
 
 	private native boolean n_onInterceptTouchEvent (android.view.MotionEvent p0);
+
+
+	public void requestDisallowInterceptTouchEvent (boolean p0)
+	{
+		n_requestDisallowInterceptTouchEvent (p0);
+	}
+
+	private native void n_requestDisallowInterceptTouchEvent (boolean p0);
 
 	private java.util.ArrayList refList;
 	public void monodroidAddReference (java.lang.Object obj)

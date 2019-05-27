@@ -1664,7 +1664,7 @@ int style Animation_AppCompat_Dialog 0x7f09009b
 int style Animation_AppCompat_DropDownUp 0x7f09009c
 int style Animation_AppCompat_Tooltip 0x7f09009d
 int style Animation_Design_BottomSheetDialog 0x7f09016e
-int style AppCompatDialogStyle 0x7f090202
+int style AppCompatDialogStyle 0x7f090203
 int style Base_AlertDialog_AppCompat 0x7f09009e
 int style Base_AlertDialog_AppCompat_Light 0x7f09009f
 int style Base_Animation_AppCompat_Dialog 0x7f0900a0
@@ -1856,8 +1856,8 @@ int style Base_Widget_MaterialComponents_TextInputLayout 0x7f09018c
 int style CardView 0x7f09000c
 int style CardView_Dark 0x7f09000e
 int style CardView_Light 0x7f09000f
-int style MainTheme 0x7f090200
-int style MainTheme_Base 0x7f090201
+int style MainTheme 0x7f090201
+int style MainTheme_Base 0x7f090202
 int style Platform_AppCompat 0x7f09007f
 int style Platform_AppCompat_Light 0x7f090080
 int style Platform_MaterialComponents 0x7f09018d
@@ -2173,6 +2173,7 @@ int style Widget_MaterialComponents_Toolbar 0x7f0901f7
 int style Widget_MediaRouter_Light_MediaRouteButton 0x7f09000a
 int style Widget_MediaRouter_MediaRouteButton 0x7f09000b
 int style Widget_Support_CoordinatorLayout 0x7f0901f8
+int style noPaddingButtonStyle 0x7f090200
 int[] styleable ActionBar { 0x7f010027, 0x7f010029, 0x7f01002a, 0x7f01002b, 0x7f01002c, 0x7f01002d, 0x7f01002e, 0x7f01002f, 0x7f010030, 0x7f010031, 0x7f010032, 0x7f010033, 0x7f010034, 0x7f010035, 0x7f010036, 0x7f010037, 0x7f010038, 0x7f010039, 0x7f01003a, 0x7f01003b, 0x7f01003c, 0x7f01003d, 0x7f01003e, 0x7f01003f, 0x7f010040, 0x7f010041, 0x7f010042, 0x7f010043, 0x7f01008e }
 int styleable ActionBar_background 10
 int styleable ActionBar_backgroundSplit 12

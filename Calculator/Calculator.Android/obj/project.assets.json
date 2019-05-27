@@ -802,7 +802,7 @@
           "build/Xamarin.Build.Download.targets": {}
         }
       },
-      "Xamarin.Forms/3.6.0.220655": {
+      "Xamarin.Forms/3.6.0.344457": {
         "type": "package",
         "dependencies": {
           "Xamarin.Android.Support.CustomTabs": "28.0.0.1",
@@ -934,6 +934,9 @@
       },
       "Xamarin.Forms.Extensions/1.0.0": {
         "type": "project",
+        "dependencies": {
+          "System.Extensions": "1.0.0"
+        },
         "compile": {
           "bin/placeholder/Xamarin.Forms.Extensions.dll": {}
         },
@@ -1828,10 +1831,10 @@
         "xamarin.build.download.nuspec"
       ]
     },
-    "Xamarin.Forms/3.6.0.220655": {
-      "sha512": "ltCTV5Tez9zTbg9f6UunegHPWRzfVHKGHeLOmXeJvNFEPwXrHDwjCcRqMqNISLRjzWxT1MuC9wgKdMoxGdBLqQ==",
+    "Xamarin.Forms/3.6.0.344457": {
+      "sha512": "YTPYiRg5q8Q1AgkjX9mx2/0wfCNyoSfztvvWw9HY4qM1lmOgkAxAbbtY8zi3fCPUXhfZrCAgRvJYNS8VM519kQ==",
       "type": "package",
-      "path": "xamarin.forms/3.6.0.220655",
+      "path": "xamarin.forms/3.6.0.344457",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -1989,7 +1992,7 @@
         "lib/uap10.0/Xamarin.Forms.Xaml.dll",
         "lib/uap10.0/Xamarin.Forms.Xaml.pdb",
         "lib/uap10.0/Xamarin.Forms.Xaml.xml",
-        "xamarin.forms.3.6.0.220655.nupkg.sha512",
+        "xamarin.forms.3.6.0.344457.nupkg.sha512",
         "xamarin.forms.nuspec"
       ]
     },
@@ -2079,7 +2082,7 @@
       "Xamarin.Android.Support.v7.AppCompat >= 28.0.0.1",
       "Xamarin.Android.Support.v7.CardView >= 28.0.0.1",
       "Xamarin.Android.Support.v7.MediaRouter >= 28.0.0.1",
-      "Xamarin.Forms >= 3.6.0.220655",
+      "Xamarin.Forms >= 3.6.0.344457",
       "Xamarin.Forms.Extensions >= 1.0.0",
       "Xamarin.Forms.MathDisplay >= 1.0.0",
       "Xamarin.GooglePlayServices.Ads >= 60.1142.1",
@@ -2161,7 +2164,7 @@
           },
           "Xamarin.Forms": {
             "target": "Package",
-            "version": "[3.6.0.220655, )"
+            "version": "[3.6.0.344457, )"
           },
           "Xamarin.GooglePlayServices.Ads": {
             "target": "Package",

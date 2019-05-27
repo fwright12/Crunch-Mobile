@@ -21,7 +21,7 @@
           "build/Xamarin.Build.Download.targets": {}
         }
       },
-      "Xamarin.Forms/3.6.0.220655": {
+      "Xamarin.Forms/3.6.0.344457": {
         "type": "package",
         "compile": {
           "lib/Xamarin.iOS10/Xamarin.Forms.Core.dll": {},
@@ -195,6 +195,9 @@
       },
       "Xamarin.Forms.Extensions/1.0.0": {
         "type": "project",
+        "dependencies": {
+          "System.Extensions": "1.0.0"
+        },
         "compile": {
           "bin/placeholder/Xamarin.Forms.Extensions.dll": {}
         },
@@ -237,7 +240,7 @@
           "build/Xamarin.Build.Download.targets": {}
         }
       },
-      "Xamarin.Forms/3.6.0.220655": {
+      "Xamarin.Forms/3.6.0.344457": {
         "type": "package",
         "compile": {
           "lib/Xamarin.iOS10/Xamarin.Forms.Core.dll": {},
@@ -411,6 +414,9 @@
       },
       "Xamarin.Forms.Extensions/1.0.0": {
         "type": "project",
+        "dependencies": {
+          "System.Extensions": "1.0.0"
+        },
         "compile": {
           "bin/placeholder/Xamarin.Forms.Extensions.dll": {}
         },
@@ -453,7 +459,7 @@
           "build/Xamarin.Build.Download.targets": {}
         }
       },
-      "Xamarin.Forms/3.6.0.220655": {
+      "Xamarin.Forms/3.6.0.344457": {
         "type": "package",
         "compile": {
           "lib/Xamarin.iOS10/Xamarin.Forms.Core.dll": {},
@@ -627,6 +633,9 @@
       },
       "Xamarin.Forms.Extensions/1.0.0": {
         "type": "project",
+        "dependencies": {
+          "System.Extensions": "1.0.0"
+        },
         "compile": {
           "bin/placeholder/Xamarin.Forms.Extensions.dll": {}
         },
@@ -669,7 +678,7 @@
           "build/Xamarin.Build.Download.targets": {}
         }
       },
-      "Xamarin.Forms/3.6.0.220655": {
+      "Xamarin.Forms/3.6.0.344457": {
         "type": "package",
         "compile": {
           "lib/Xamarin.iOS10/Xamarin.Forms.Core.dll": {},
@@ -843,6 +852,9 @@
       },
       "Xamarin.Forms.Extensions/1.0.0": {
         "type": "project",
+        "dependencies": {
+          "System.Extensions": "1.0.0"
+        },
         "compile": {
           "bin/placeholder/Xamarin.Forms.Extensions.dll": {}
         },
@@ -953,10 +965,10 @@
         "xamarin.build.download.nuspec"
       ]
     },
-    "Xamarin.Forms/3.6.0.220655": {
-      "sha512": "ltCTV5Tez9zTbg9f6UunegHPWRzfVHKGHeLOmXeJvNFEPwXrHDwjCcRqMqNISLRjzWxT1MuC9wgKdMoxGdBLqQ==",
+    "Xamarin.Forms/3.6.0.344457": {
+      "sha512": "YTPYiRg5q8Q1AgkjX9mx2/0wfCNyoSfztvvWw9HY4qM1lmOgkAxAbbtY8zi3fCPUXhfZrCAgRvJYNS8VM519kQ==",
       "type": "package",
-      "path": "xamarin.forms/3.6.0.220655",
+      "path": "xamarin.forms/3.6.0.344457",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -1114,7 +1126,7 @@
         "lib/uap10.0/Xamarin.Forms.Xaml.dll",
         "lib/uap10.0/Xamarin.Forms.Xaml.pdb",
         "lib/uap10.0/Xamarin.Forms.Xaml.xml",
-        "xamarin.forms.3.6.0.220655.nupkg.sha512",
+        "xamarin.forms.3.6.0.344457.nupkg.sha512",
         "xamarin.forms.nuspec"
       ]
     },
@@ -1164,7 +1176,7 @@
       "Crunch.Machine >= 1.0.0",
       "Microsoft.CSharp >= 4.5.0",
       "System.Extensions >= 1.0.0",
-      "Xamarin.Forms >= 3.6.0.220655",
+      "Xamarin.Forms >= 3.6.0.344457",
       "Xamarin.Forms.Extensions >= 1.0.0",
       "Xamarin.Forms.MathDisplay >= 1.0.0",
       "Xamarin.Google.iOS.MobileAds >= 7.38.0"
@@ -1225,7 +1237,7 @@
           },
           "Xamarin.Forms": {
             "target": "Package",
-            "version": "[3.6.0.220655, )"
+            "version": "[3.6.0.344457, )"
           },
           "Xamarin.Google.iOS.MobileAds": {
             "target": "Package",

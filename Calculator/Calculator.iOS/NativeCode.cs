@@ -17,7 +17,7 @@ using CoreGraphics;
 using Google.MobileAds;
 using System.ComponentModel;
 
-[assembly: ExportRenderer(typeof(Calculator.Canvas), typeof(CanvasRenderer))]
+[assembly: ExportRenderer(typeof(Canvas), typeof(CanvasRenderer))]
 [assembly: ExportRenderer(typeof(LongClickableButton), typeof(LongClickableButtonRenderer))]
 [assembly: ExportRenderer(typeof(TouchableStackLayout), typeof(TouchableStackLayoutRenderer))]
 [assembly: ExportRenderer(typeof(BannerAd), typeof(BannerAdRenderer))]
@@ -27,37 +27,121 @@ namespace Calculator.iOS
 {
     public static class ExtensionMethods
     {
-        public static bool RelayTouch(this View shared, UIView native, CGPoint point, TouchState state) => shared.TryToTouch(native.ScaleTouch(shared, point), (int)state);
+        public static bool RelayTouch<T>(this VisualElementRenderer<T> native, CGPoint point, TouchState state) where T : View => native.Element.TryToTouch(native.ScaleTouch(native.Element, point), state);
+
+        public static bool RelayTouch<T>(this VisualElementRenderer<T> native, UIGestureRecognizer gesture) where T : View
+        {
+            TouchState touchState;
+
+            if (gesture.State == UIGestureRecognizerState.Began)
+            {
+                touchState = TouchState.Down;
+            }
+            else if (gesture.State == UIGestureRecognizerState.Changed)
+            {
+                touchState = TouchState.Moving;
+            }
+            else if (gesture.State == UIGestureRecognizerState.Ended || gesture.State == UIGestureRecognizerState.Cancelled)
+            {
+                touchState = TouchState.Up;
+            }
+            else
+            {
+                return native.Element is ITouchable;
+            }
+
+            return native.RelayTouch(gesture.LocationInView(native), touchState);
+        }
 
         public static Point ScaleTouch(this UIView native, View shared, CGPoint point) => new Point(shared.Width * point.X / native.Frame.Width, shared.Height * point.Y / native.Frame.Height);
     }
 
     public class TouchScreenRenderer : VisualElementRenderer<StackLayout>
     {
-        public static UIPanGestureRecognizer pan = new UIPanGestureRecognizer();
-        private static TouchScreenRenderer Instance;
+        //public static UIPanGestureRecognizer Pan { get; private set; } = new UIPanGestureRecognizer();
+        //private static TouchScreenRenderer Instance;
 
         public TouchScreenRenderer()
         {
-            Instance = this;
+            /*if (Instance != null)
+            {
+                return;
+            }
+
+            Instance = this;*/
+
+            UIPanGestureRecognizer pan = AddDrag(this);
+            pan.ShouldRecognizeSimultaneously = (a, b) => true;
             
-            pan.AddTarget(() => {
-                if (Drag.Active)
+            UITouchGestureRecognizer touch = new UITouchGestureRecognizer()
+            {
+                CancelsTouchesInView = false
+            };
+            touch.ShouldRecognizeSimultaneously = (a, b) => true;
+            touch.AddTarget(() =>
+            {
+                if (TouchScreen.Active && touch.State == UIGestureRecognizerState.Ended)
                 {
-                    RelayDrag(pan);
+                    this.RelayTouch(touch);
                 }
             });
-            AddGestureRecognizer(pan);
+            AddGestureRecognizer(touch);
         }
 
-        public static void RelayDrag(UIGestureRecognizer gesture) => Drag.OnTouch(Instance.ScaleTouch(Instance.Element, gesture.LocationInView(Instance)), gesture.State == UIGestureRecognizerState.Ended ? TouchState.Up : TouchState.Moving);
+        /*public TouchScreenRenderer()
+        {
+            UITapGestureRecognizer tgr = new UITapGestureRecognizer();
+            tgr.ShouldRecognizeSimultaneously = (a, b) => true;
+            tgr.AddTarget(() =>
+            {
+                Print.Log("touchscreen tap", tgr.State);
+                if (TouchScreen.Active && tgr.State == UIGestureRecognizerState.Ended)
+                {
+                    Element.RelayTouch(this, tgr, TouchState.Up);
+                }
+                //Element.RelayTouch(this, tgr.LocationInView(this), tgr.State);
+            });
+            AddGestureRecognizer(tgr);
 
-        public static void RelayDrag(UITouch touch, TouchState state) => Drag.OnTouch(Instance.ScaleTouch(Instance.Element, touch.LocationInView(Instance)), state);
+            //Pan.ShouldReceiveTouch = (r, t) => true;
+            /*Pan.AddTarget(() =>
+            {
+                //Print.Log("touchscreen pan", Pan.State);
+                if (TouchScreen.Active)
+                {
+                    RelayDrag(Pan);
+                }
+            });
+            AddGestureRecognizer(Pan);
+        }*/
+
+        public static UIPanGestureRecognizer AddDrag<T>(VisualElementRenderer<T> native) where T : View
+        {
+            UIPanGestureRecognizer pan = new UIPanGestureRecognizer(); 
+
+            pan.ShouldReceiveTouch = (r, t) => native.Element is ITouchable && (native.Element as ITouchable).ShouldIntercept;
+            pan.AddTarget(() =>
+            {
+                if (!(native is TouchScreenRenderer ^ TouchScreen.Active))
+                {
+                    //Print.Log("relaying pan to", pan.State, native.Element, native.Element.GetType(), TouchScreen.Active);
+                    native.RelayTouch(pan);
+                }
+            });
+            native.AddGestureRecognizer(pan);
+            return pan;
+        }
+
+        //public static void RelayDrag(UIGestureRecognizer gesture) => (Instance.Element as TouchScreen)?.OnTouch(Instance.ScaleTouch(Instance.Element, gesture.LocationInView(Instance)), gesture.State == UIGestureRecognizerState.Ended ? TouchState.Up : TouchState.Moving);
+
+        //public static void RelayDrag(UITouch touch, TouchState state) => (Instance.Element as TouchScreen)?.OnTouch(Instance.ScaleTouch(Instance.Element, touch.LocationInView(Instance)), state);
 
         public override UIView HitTest(CGPoint point, UIEvent uievent)
         {
-            Drag.OnTouch(Instance.ScaleTouch(Instance.Element, point), TouchState.Down);
-            Drag.Screen.OnInterceptedTouch(Instance.ScaleTouch(Instance.Element, pan.LocationInView(Instance)), TouchState.Down);
+            //Print.Log("hit test on touchscreen");
+            //Drag.OnTouch(Instance.ScaleTouch(Instance.Element, point), TouchState.Down);
+            //(Element as TouchScreen)?.OnTouch(Instance.ScaleTouch(Instance.Element, point), TouchState.Down);
+            (Element as TouchScreen)?.OnInterceptedTouch(this.ScaleTouch(Element, point), TouchState.Down);
             return base.HitTest(point, uievent);
         }
     }
@@ -65,6 +149,11 @@ namespace Calculator.iOS
     public class TouchableStackLayoutRenderer : VisualElementRenderer<StackLayout>
     {
         public TouchableStackLayoutRenderer()
+        {
+            TouchScreenRenderer.AddDrag(this);
+        }
+
+        /*public TouchableStackLayoutRenderer()
         {
             UITapGestureRecognizer tap = new UITapGestureRecognizer();
             tap.ShouldRecognizeSimultaneously = (a, b) => !(Element as TouchableStackLayout).ShouldIntercept;
@@ -75,47 +164,49 @@ namespace Calculator.iOS
                     TouchScreenRenderer.RelayDrag(tap);
                 }
             });
-            AddGestureRecognizer(tap);
+            AddGestureRecognizer(tap);*/
 
-            UIPanGestureRecognizer pan = new UIPanGestureRecognizer();
-            pan.ShouldRecognizeSimultaneously = (a, b) => !Drag.Active;
-            pan.AddTarget(() =>
+        /*UIPanGestureRecognizer pan = new UIPanGestureRecognizer();
+        //pan.ShouldRecognizeSimultaneously = (a, b) => !TouchScreen.Active;
+        pan.AddTarget(() =>
+        {
+            Print.Log("panning");
+            if (TouchScreen.Active)
             {
-                if (Drag.Active)
-                {
-                    TouchScreenRenderer.RelayDrag(pan);
-                }
-            });
-            AddGestureRecognizer(pan);
-        }
+                TouchScreenRenderer.RelayDrag(pan);
+            }
+        });
+        AddGestureRecognizer(pan);
+    }*/
 
-        public override void TouchesBegan(NSSet touches, UIEvent evt)
+        /*public override void TouchesBegan(NSSet touches, UIEvent evt)
         {
             base.TouchesBegan(touches, evt);
-            
+
             UITouch touch = touches.AnyObject as UITouch;
             if (touch != null && touch.TapCount == 1 && touches.Count == 1)
             {
-                Element.RelayTouch(this, touch.LocationInView(this), TouchState.Down);
+                //Element.RelayTouch(this, touch.LocationInView(this), TouchState.Down);
             }
         }
 
         public override void TouchesMoved(NSSet touches, UIEvent evt)
         {
             base.TouchesMoved(touches, evt);
-
+            
             UITouch touch = touches.AnyObject as UITouch;
             if (touch != null && touch.TapCount == 1 && touches.Count == 1)
             {
-                Element.RelayTouch(this, touch.LocationInView(this), TouchState.Moving);
+                //Element.RelayTouch(this, touch.LocationInView(this), TouchState.Moving);
             }
         }
 
         public override void TouchesEnded(NSSet touches, UIEvent evt)
         {
             base.TouchesEnded(touches, evt);
-            Drag.OnTouch(Point.Zero, TouchState.Up);
-        }
+            //TouchScreenRenderer.RelayDrag(touches.AnyObject as UITouch, TouchState.Up);
+            //Drag.OnTouch(Point.Zero, TouchState.Up);
+        }*/
     }
 
     public class CanvasRenderer : VisualElementRenderer<AbsoluteLayout>
@@ -127,34 +218,37 @@ namespace Calculator.iOS
             UITouch touch = touches.AnyObject as UITouch;
             if (touch != null && touch.TapCount == 1 && touches.Count == 1)
             {
-                Element.RelayTouch(this, touch.LocationInView(this), TouchState.Up);
+                this.RelayTouch(touch.LocationInView(this), TouchState.Up);
+                //Element.RelayTouch(this, touch.LocationInView(this), TouchState.Up);
             }
         }
     }
 
     public class LongClickableButtonRenderer : ButtonRenderer
     {
-        UIPanGestureRecognizer pan = new UIPanGestureRecognizer();
+        //UIPanGestureRecognizer pan = new UIPanGestureRecognizer();
 
         public LongClickableButtonRenderer()
         {
+            UIPanGestureRecognizer tgr = TouchScreenRenderer.AddDrag(this);
+
             UILongPressGestureRecognizer longPress = new UILongPressGestureRecognizer();
             longPress.AddTarget(() =>
             {
                 if (longPress.State == UIGestureRecognizerState.Began)
                 {
-                    (Element as LongClickableButton).OnLongClick();
+                    (Element as LongClickableButton)?.OnLongClick();
                 }
-                else if (longPress.State == UIGestureRecognizerState.Ended)
+                /*else if (longPress.State == UIGestureRecognizerState.Ended)
                 {
-                    TouchScreenRenderer.RelayDrag(longPress);
-                }
+                    //TouchScreenRenderer.RelayDrag(longPress);
+                }*/
             });
-            longPress.ShouldRecognizeSimultaneously = (gesture1, gesture2) => gesture2 == TouchScreenRenderer.pan || gesture2 == pan;
+            //longPress.ShouldRecognizeSimultaneously = (gesture1, gesture2) => gesture2 == TouchScreenRenderer.Pan || gesture2 == pan;
             AddGestureRecognizer(longPress);
         }
 
-        protected override void OnElementChanged(ElementChangedEventArgs<Button> e)
+        /*protected override void OnElementChanged(ElementChangedEventArgs<Button> e)
         {
             base.OnElementChanged(e);
 
@@ -166,10 +260,11 @@ namespace Calculator.iOS
                 //if (Element is LongClickableButton && (Element as LongClickableButton).Draggable)
                 if (parent == null)
                 {
+                    //TouchScreenRenderer.AddDrag(this);
                     //pan.ShouldRecognizeSimultaneously = (a, b) => !Drag.Active;
-                    pan.AddTarget(() =>
+                    /*pan.AddTarget(() =>
                     {
-                        if (Drag.Active)
+                        if (TouchScreen.Active)
                         {
                             TouchScreenRenderer.RelayDrag(pan);
                         }
@@ -181,7 +276,7 @@ namespace Calculator.iOS
                     AddGestureRecognizer(pan);
                 }
             }
-        }
+        }*/
     }
 
     //ca-app-pub-1795523054003202/6023719192
@@ -191,11 +286,14 @@ namespace Calculator.iOS
 
     public class BannerAdRenderer : ViewRenderer<BannerAd, BannerView>
     {
-        //Real
-        string AdUnitId = "ca-app-pub-1795523054003202/6023719192";
-
-        //Test
-        //string AdUnitId = "ca-app-pub-3940256099942544/2934735716";
+        string AdUnitId =
+#if DEBUG
+            //Test
+            "ca-app-pub-3940256099942544/2934735716";
+#else
+            //Real
+            "ca-app-pub-1795523054003202/6023719192";
+#endif
 
         protected override void OnElementChanged(ElementChangedEventArgs<BannerAd> e)
         {

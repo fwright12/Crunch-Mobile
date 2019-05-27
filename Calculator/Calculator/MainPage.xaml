@@ -15,7 +15,7 @@
     </ContentPage.Padding>-->
 
     <AbsoluteLayout x:Name="screen" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
-        <custom:TouchScreen x:Name="page" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All">
+        <extensions:TouchScreen x:Name="page" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All">
             <StackLayout x:Name="header" Orientation="Vertical" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
                 <AbsoluteLayout x:Name="phantomCursorField" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
                     <ScrollView x:Name="canvasScroll" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" Orientation="Both">
@@ -23,7 +23,7 @@
                     </ScrollView>
                 </AbsoluteLayout>
             </StackLayout>
-        </custom:TouchScreen>
+        </extensions:TouchScreen>
 
         <!--<custom:AnythingButton x:Name="settingsMenuButton">
             <BoxView BackgroundColor="Black" AbsoluteLayout.LayoutBounds="0.5,0.25,0.6,0.075" AbsoluteLayout.LayoutFlags="All"/>

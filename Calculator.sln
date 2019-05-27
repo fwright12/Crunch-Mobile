@@ -10,9 +10,6 @@ EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Calculator", "Calculator\Calculator\Calculator.shproj", "{593F7D91-8A33-44A2-AA6E-8DA8D52505B4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{435BE422-7914-4D35-A8E1-9FE296E2AD93}"
-	ProjectSection(SolutionItems) = preProject
-		Calculator\Calculator\math.docx = Calculator\Calculator\math.docx
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Extensions", "..\..\C# Extensions\System.Extensions\System.Extensions.csproj", "{F2E94F0B-5217-44A2-8747-A28C1D8C7E4B}"
 EndProject

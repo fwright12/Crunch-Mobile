@@ -5339,7 +5339,7 @@ containing a value of this type.
         public static int Animation_AppCompat_DropDownUp=0x7f09009c;
         public static int Animation_AppCompat_Tooltip=0x7f09009d;
         public static int Animation_Design_BottomSheetDialog=0x7f09016e;
-        public static int AppCompatDialogStyle=0x7f090202;
+        public static int AppCompatDialogStyle=0x7f090203;
         public static int Base_AlertDialog_AppCompat=0x7f09009e;
         public static int Base_AlertDialog_AppCompat_Light=0x7f09009f;
         public static int Base_Animation_AppCompat_Dialog=0x7f0900a0;
@@ -5531,10 +5531,12 @@ containing a value of this type.
         public static int CardView=0x7f09000c;
         public static int CardView_Dark=0x7f09000e;
         public static int CardView_Light=0x7f09000f;
-        public static int MainTheme=0x7f090200;
+        /** <item name="android:buttonStyle">@style/noPaddingButtonStyle</item>
+         */
+        public static int MainTheme=0x7f090201;
         /**  Base theme applied no matter what API 
          */
-        public static int MainTheme_Base=0x7f090201;
+        public static int MainTheme_Base=0x7f090202;
         public static int Platform_AppCompat=0x7f09007f;
         public static int Platform_AppCompat_Light=0x7f090080;
         public static int Platform_MaterialComponents=0x7f09018d;
@@ -5854,6 +5856,12 @@ containing a value of this type.
         public static int Widget_MediaRouter_Light_MediaRouteButton=0x7f09000a;
         public static int Widget_MediaRouter_MediaRouteButton=0x7f09000b;
         public static int Widget_Support_CoordinatorLayout=0x7f0901f8;
+        /** <item name="android:minHeight">0dp</item>
+    <item name="android:minWidth">0dp</item>
+    <item name="android:paddingLeft">0dp</item>
+    <item name="android:paddingRight">0dp</item>
+         */
+        public static int noPaddingButtonStyle=0x7f090200;
     }
     public static final class styleable {
         /** Attributes that can be used with a ActionBar.

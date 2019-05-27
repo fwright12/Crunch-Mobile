@@ -21,7 +21,7 @@ namespace Calculator {
         private global::Xamarin.Forms.AbsoluteLayout screen;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "0.0.0.0")]
-        private global::Calculator.TouchScreen page;
+        private global::Xamarin.Forms.Extensions.TouchScreen page;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "0.0.0.0")]
         private global::Xamarin.Forms.StackLayout header;
@@ -54,7 +54,7 @@ namespace Calculator {
         private void InitializeComponent() {
             global::Xamarin.Forms.Xaml.Extensions.LoadFromXaml(this, typeof(MainPage));
             screen = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.AbsoluteLayout>(this, "screen");
-            page = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Calculator.TouchScreen>(this, "page");
+            page = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Extensions.TouchScreen>(this, "page");
             header = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.StackLayout>(this, "header");
             phantomCursorField = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.AbsoluteLayout>(this, "phantomCursorField");
             canvasScroll = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.ScrollView>(this, "canvasScroll");

@@ -40,19 +40,23 @@ namespace Calculator
         }
     }*/
 
-    public class Answer : Expression // Expression, ITouchable
+    public class Answer : Expression
     {
+        public event EventHandler<ChangedEventArgs<Operand>> Changed;
+        public event EventHandler<ChangedEventArgs<Expression>> FormChanged;
+
         public Polynomials PolynomialChoice = Settings.Polynomials;
         public Numbers NumberChoice = Settings.Numbers;
         public Trigonometry TrigChoice = Settings.Trigonometry;
+        public Dictionary<char, Operand> Knowns;
 
         private Polynomials actualPolynomialForm;
         private Numbers actualNumbersForm;
 
-        private Operand answer;
-        private Expression[,,] allFormats = new Expression[2,2,2];
+        public Operand answer { get; private set; }
+        private Expression[,,] allFormats = new Expression[2, 2, 2];
         private List<Operand> formats = new List<Operand>();
-        
+
         private TouchableStackLayout DegRadLabel;
         private int clicks;
 
@@ -62,7 +66,23 @@ namespace Calculator
             VerticalOptions = LayoutOptions.Center;
 
             DegRadLabel = new TouchableStackLayout { VerticalOptions = LayoutOptions.Fill };
-            Label label = new Label { FontSize = Text.MaxFontSize * 2 / 3, Opacity = 0.5, VerticalOptions = LayoutOptions.EndAndExpand, Margin = new Thickness(3, 0, 0, 0) };
+            Label label = new Label
+            {
+                FontSize = Text.MaxFontSize * 2 / 3,
+                Opacity = 0.5,
+                VerticalOptions = LayoutOptions.EndAndExpand,
+                Margin = new Thickness(3, 0, 0, 0)
+            };
+
+            Touch += (point, state) =>
+            {
+                if (state == TouchState.Moving)
+                {
+                    Link link = new Link(this);
+                    TouchScreen.BeginDrag(link, MainPage.VisiblePage.PhantomCursorField, this);
+                    link.StartDrag();
+                }
+            };
 
             TapGestureRecognizer tgr = new TapGestureRecognizer();
             tgr.Tapped += delegate
@@ -76,24 +96,51 @@ namespace Calculator
             DegRadLabel.Children.Add(label);
             SwitchDegRad(label);
 
+            TapGestureRecognizer tgr1 = new TapGestureRecognizer();
+            tgr1.Tapped += delegate
+            {
+                //print.log("current format is ", actualPolynomialForm, actualNumbersForm, TrigChoice);
+
+                if (SwitchToNextValidFormat(actualPolynomialForm, actualNumbersForm))
+                {
+                    if (answer.HasForm(PolynomialChoice))
+                    {
+                        PolynomialChoice = actualPolynomialForm;
+                    }
+                    if (answer.HasForm(NumberChoice))
+                    {
+                        NumberChoice = actualNumbersForm;
+                    }
+                }
+
+                //print.log("ended on " + actualPolynomialForm, actualNumbersForm, TrigChoice);
+            };
+            GestureRecognizers.Add(tgr1);
+
             clicks = Enum.GetNames(typeof(Polynomials)).Length + Enum.GetNames(typeof(Numbers)).Length;
         }
 
-        private Dictionary<char, Operand> Knowns;
+        /*public void Update(Operand answer, Dictionary<char, Operand> knowns)
+        {
+            Knowns = knowns;
+            Update(answer);
+        }*/
 
-        public void Update(Operand answer, Dictionary<char, Operand> knowns)
+        public void Update(Operand answer)
         {
             Children.Clear();
 
-            this.answer = answer;
-            Knowns = knowns;
             allFormats = new Expression[2, 2, 2];
 
+            Operand old = this.answer;
             if (answer != null)
             {
+                this.answer = answer;
                 PolynomialChoice = answer.GetPolynomials;
                 SwitchToNextValidFormat(PolynomialChoice, NumberChoice, false);
             }
+
+            Changed?.Invoke(this, new ChangedEventArgs<Operand>(old, answer));
         }
 
         private void NextFormat(ref Polynomials polynomials, ref Numbers numbers)
@@ -134,7 +181,7 @@ namespace Calculator
                         {
                             Children.RemoveAt(0);
                         }
-                        print.log("error formatting", ex.Message);
+                        Print.Log("error formatting", ex.Message);
                         return false;
                     }
 
@@ -150,26 +197,7 @@ namespace Calculator
                         };
                         e.GestureRecognizers.Add(pgr);*/
 
-                        TapGestureRecognizer tgr = new TapGestureRecognizer();
-                        tgr.Tapped += delegate
-                        {
-                            //print.log("current format is ", actualPolynomialForm, actualNumbersForm, TrigChoice);
-
-                            if (SwitchToNextValidFormat(actualPolynomialForm, actualNumbersForm))
-                            {
-                                if (answer.HasForm(PolynomialChoice))
-                                {
-                                    PolynomialChoice = actualPolynomialForm;
-                                }
-                                if (answer.HasForm(NumberChoice))
-                                {
-                                    NumberChoice = actualNumbersForm;
-                                }
-                            }
-
-                            //print.log("ended on " + actualPolynomialForm, actualNumbersForm, TrigChoice);
-                        };
-                        e.GestureRecognizers.Add(tgr);
+                        
 
                         allFormats[(int)polynomials, (int)numbers, (int)TrigChoice] = e;
                     }
@@ -177,8 +205,12 @@ namespace Calculator
 
                 if (e != null)
                 {
+                    Expression old = allFormats[(int)actualPolynomialForm, (int)actualNumbersForm, (int)TrigChoice];
+
                     actualPolynomialForm = polynomials;
                     actualNumbersForm = numbers;
+
+                    FormChanged?.Invoke(this, new ChangedEventArgs<Expression>(old, e));
 
                     break;
                 }
@@ -212,5 +244,22 @@ namespace Calculator
                 label.Text = "rad";
             }
         }
+
+        public override string ToString()
+        {
+            string s = answer?.ToString() ?? "";
+            return s == "" ? s : "(" + s + ")";
+        }
+
+        public string BetterToString()
+        {
+            if (Children.Count > 0 && Children[0] is Expression)
+            {
+                return Children[0].ToString(); 
+            }
+            return "";
+        }
+
+        //public override string ToString() => "(" + answer?.ToString() + ")" ?? "";// allFormats[(int)PolynomialChoice, (int)NumberChoice, (int)TrigChoice]?.ToString() ?? "";
     }
 }

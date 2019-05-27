@@ -10,6 +10,7 @@ namespace Calculator
 {
     public static class CrunchStyle
     {
+        public static readonly Color CRUNCH_PURPLE = Color.FromHex("#560297");
         public static readonly int PAGE_PADDING = 10;
 
         public static readonly Color TEXT_COLOR = Color.Gray;
