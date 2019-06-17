@@ -27,7 +27,29 @@ namespace Calculator.iOS
             global::Xamarin.Forms.Forms.Init();
             LoadApplication(new App());
 
+#if SAMPLE
+            UIApplication.SharedApplication.StatusBarHidden = true;
+#endif
+
             return base.FinishedLaunching(app, options);
         }
+
+#if SAMPLE
+        static ShowTouchesWindow theWindow;
+        public override UIWindow Window
+        {
+            get
+            {
+                if (theWindow == null)
+                {
+                    theWindow = new ShowTouchesWindow(UIScreen.MainScreen.Bounds);
+                    theWindow.AlwaysShowTouches = true;
+                }
+                return theWindow;
+
+            }
+            set { }
+        }
+#endif
     }
 }

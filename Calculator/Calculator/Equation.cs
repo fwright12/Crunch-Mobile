@@ -41,7 +41,9 @@ namespace Calculator
 
         private bool UpdatingDependencies = false;
 
-        public void UpdateDependecies()
+        private void UpdateDependencies(object sender, EventArgs e) => UpdateDependencies();
+
+        public void UpdateDependencies()
         {
             if (UpdatingDependencies)
             {
@@ -52,7 +54,7 @@ namespace Calculator
 
             foreach(Equation e in Dependencies)
             {
-                e.Update();
+                e.Update(true);
             }
 
             UpdatingDependencies = false;
@@ -71,6 +73,8 @@ namespace Calculator
         }
 
         public bool RemoveDependency(Equation e) => Dependencies.Remove(e);
+
+        public IEnumerable<Equation> GetDependencies() => Dependencies;
     }
 
     public class Equation : MathLayout
@@ -106,15 +110,11 @@ namespace Calculator
         public Equation(Expression lhs) : this(lhs, new Answer())
         {
             LHS.Editable = true;
+
+            LHS.DescendantAdded += Update;
+            LHS.DescendantRemoved += Update;
             
-            LHS.InputChanged += () => Update();
-            LHS.Touch += (point, state) =>
-            {
-                if (state == TouchState.Moving)
-                {
-                    MainPage.VisiblePage.EnterCursorMode(point.Add(LHS.PositionOn(MainPage.VisiblePage.PhantomCursorField)));//.Add(new Point(-MainPage.phantomCursor.Width / 2, -Text.MaxTextHeight))));
-                }
-            };
+            //LHS.InputChanged += () => Update();
         }
 
         public Equation(string lhs, string rhs) : this(new Expression(MathDisplay.Reader.Render(lhs)), new Expression(MathDisplay.Reader.Render(rhs))) { }
@@ -124,11 +124,13 @@ namespace Calculator
             Orientation = StackOrientation.Horizontal;
             Spacing = 0;
             VerticalOptions = LayoutOptions.Center;
-            
+            LHS = lhs;
+            RHS = rhs;
+
             //LHS = lhs;// text == "" ? new Expression() : new Expression(Xamarin.Forms.MathDisplay.Reader.Render(text));
             Text equals = new Text(" = ") { FontSize = Text.MaxFontSize };
 
-            Children.AddRange(LHS = lhs, equals, RHS = rhs);
+            Children.AddRange(LHS, equals, RHS);
 
             //Changed += (newAnswer, oldAnswer) => CheckAnswerNecessary();
             AnswerChanged += (o, n) => CheckAnswerNecessary();
@@ -144,23 +146,38 @@ namespace Calculator
             };
         }
 
-        public void Update()
+        private Operand LastAnswer;
+        private string LastUpdate;
+
+        private void Update(object sender, ElementEventArgs e) => Update();
+
+        public void Update(bool forceUpdate = false)
         {
-            Print.Log("Entered: " + LHS.ToString());
+            string text = LHS.ToString();
+
+            if (!forceUpdate && LastUpdate == text)
+            {
+                return;
+            }
+
+            Print.Log("Entered: " + text);
             
             if (RHS is Answer)
             {
                 Answer ans = RHS as Answer;
 
                 Operand old = ans.answer;
-                Operand updated = Crunch.Reader.Evaluate(LHS.ToString());
+                Operand updated = Crunch.Reader.Evaluate(text);
 
                 ans.Update(updated);
 
-                OnChanged(old, updated);
+                //OnChanged(old, updated);
+                OnChanged(LastAnswer, updated);
+                LastAnswer = updated;
             }
 
             //Operand.Simplifier os = new Operand.Simplifier(Polynomials.Factored, Numbers.Exact, Trigonometry.Degrees, substitutions);
+            LastUpdate = text;
 
             Print.Log("*************************");
         }
@@ -171,6 +188,24 @@ namespace Calculator
         {
             base.OnParentSet();
             CheckAnswerNecessary();
+        }
+
+        private void DescendantChanged(object sender, ElementEventArgs e)
+        {
+            Print.Log("descendant changed", e.Element, e.Element.GetType());
+            Element parent = e.Element;
+
+            while (!(parent is IMathView))
+            {
+                parent = parent.Parent;
+
+                if (parent == null || parent is Expression)
+                {
+                    return;
+                }
+            }
+
+            Update();
         }
 
         private void CheckAnswerNecessary()

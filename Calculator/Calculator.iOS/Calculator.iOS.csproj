@@ -132,12 +132,47 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'AppStore|iPhoneSimulator'">
     <LangVersion>7.1</LangVersion>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Screenshots|iPhoneSimulator'">
+    <OutputPath>bin\iPhoneSimulator\Screenshots\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Screenshots|iPhone'">
+    <OutputPath>bin\iPhone\Screenshots\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Sample|iPhoneSimulator'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\iPhoneSimulator\Sample\</OutputPath>
+    <DefineConstants>__IOS__;__MOBILE__;__UNIFIED__;DEBUG</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <LangVersion>7.1</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Sample|iPhone'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\iPhone\Sample\</OutputPath>
+    <DefineConstants>DEBUG;__IOS__;__MOBILE__;__UNIFIED__;SAMPLE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <MtouchArch>ARM64</MtouchArch>
+    <OptimizePNGs>true</OptimizePNGs>
+    <MtouchDebug>true</MtouchDebug>
+    <CodesignKey>iPhone Developer</CodesignKey>
+    <CodesignProvision>Crunch Testing</CodesignProvision>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
+    <Compile Include="ShowTouchesWindow.cs" />
     <Compile Include="UITouchGestureRecognizer.cs" />
     <None Include="Entitlements.plist" />
-    <None Include="Info.plist" />
+    <None Include="Info.plist">
+      <SubType>Designer</SubType>
+    </None>
     <Compile Include="NativeCode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />

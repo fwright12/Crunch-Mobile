@@ -22,8 +22,6 @@
 	</array>
 	<key>MinimumOSVersion</key>
 	<string>11.0</string>
-	<key>CFBundleVersion</key>
-	<string>2.2</string>
 	<key>CFBundleIconFiles</key>
 	<array>
 		<string>Icon-60@2x</string>
@@ -47,12 +45,16 @@
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/AppIcons.appiconset</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.2</string>
+	<string>2.2.1</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.GreenMountainLabs.Calculator</string>
 	<key>CFBundleDisplayName</key>
 	<string>Crunch</string>
 	<key>CFBundleName</key>
 	<string>Crunch</string>
+	<key>CFBundleVersion</key>
+	<string>3.1</string>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
 </dict>
 </plist>

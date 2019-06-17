@@ -32,6 +32,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)PrivacyPolicyPage.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Screenshots.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Settings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CrunchStyle.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SettingsPage.xaml.cs">

@@ -74,16 +74,6 @@ namespace Calculator
                 Margin = new Thickness(3, 0, 0, 0)
             };
 
-            Touch += (point, state) =>
-            {
-                if (state == TouchState.Moving)
-                {
-                    Link link = new Link(this);
-                    TouchScreen.BeginDrag(link, MainPage.VisiblePage.PhantomCursorField, this);
-                    link.StartDrag();
-                }
-            };
-
             TapGestureRecognizer tgr = new TapGestureRecognizer();
             tgr.Tapped += delegate
             {
@@ -118,6 +108,22 @@ namespace Calculator
             GestureRecognizers.Add(tgr1);
 
             clicks = Enum.GetNames(typeof(Polynomials)).Length + Enum.GetNames(typeof(Numbers)).Length;
+        }
+
+        public IEnumerable<Element> GetListeners()
+        {
+            if (FormChanged == null)
+            {
+                yield break;
+            }
+            
+            foreach(Delegate d in FormChanged.GetInvocationList())
+            {
+                if (d.Target is Element)
+                {
+                    yield return d.Target as Element;
+                }
+            }
         }
 
         /*public void Update(Operand answer, Dictionary<char, Operand> knowns)

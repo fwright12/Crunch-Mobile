@@ -39,13 +39,13 @@ namespace Calculator
 
                 //(last.Parent as Calculation).CursorPositions[last.Index()] = new Tuple<Expression, int>((Expression)e.OldValue.Parent, e.OldValue.Index);
             };*/
-            MainPage.EquationChanged += (e) =>
+            /*MainPage.EquationChanged += (e) =>
             {
                 //e.NewValue.Parent<Calculation>()?.Focus(e.NewValue);
-            };
+            };*/
         }
 
-        public Calculation(Equation main)
+        public Calculation()//Equation main)
         {
             Orientation = StackOrientation.Vertical;
             Spacing = 0;
@@ -53,21 +53,11 @@ namespace Calculator
             //CursorPositions = new List<Tuple<Expression, int>>();
 
             //Children.Add(Main = main);
-            Add(main);
+            //Add(main);
 
             //Main.LHS.InputChanged += () => SetAnswer();
             
             //(Main.Children[1] as Text)
-            Touch += (point, state) =>
-            {
-                if (state == TouchState.Moving)
-                {
-                    double backup = TouchScreen.FatFinger;
-                    TouchScreen.FatFinger = 0;
-                    TouchScreen.BeginDrag(this, MainPage.VisiblePage.Canvas);
-                    TouchScreen.FatFinger = backup;
-                }
-            };
         }
 
         public void Add(Equation e) => Insert(Children.Count, e);
@@ -75,7 +65,8 @@ namespace Calculator
         public void Insert(int index, Equation equation)
         {
             Children.Insert(index, equation);
-            
+            equation.HorizontalOptions = LayoutOptions.Start;
+
             if (equation is VariableAssignment)
             {
                 equation = (equation as VariableAssignment).Value;
@@ -85,36 +76,31 @@ namespace Calculator
             {
                 (equation.RHS as Answer).Knowns = Variables;
             }
-            
+
             equation.AnswerChanged += (sender, e) =>
             {
-                if (e.NewValue != null)
+                if (e.OldValue != null)// && (equation.LHS.ChildCount() == 0 || e.NewValue != null))
                 {
-                    //First answer - make sure its using the subsitutions
-                    if (e.OldValue == null)
+                    foreach (char c in e.OldValue.Unknowns)
                     {
-                        //e.Update(Variables);
-                    }
-                    else
-                    {
-                        foreach (char c in e.OldValue.Unknowns)
+                        //Was removed when the answer changed
+                        if (e.NewValue == null || !e.NewValue.Unknowns.Contains(c))
                         {
-                            //Was removed when the answer changed
-                            if (!e.NewValue.Unknowns.Contains(c))
+                            VariableAssignment va;
+                            if (HasVariableAssignment(c, out va))
                             {
-                                VariableAssignment va;
-                                if (HasVariableAssignment(c, out va))
+                                //va.Dependencies.Remove(e);
+                                if (va.RemoveDependency(equation))
                                 {
-                                    //va.Dependencies.Remove(e);
-                                    if (va.RemoveDependency(equation))
-                                    {
-                                        va.IsVisible = va.DependencyCount > 0;
-                                    }
+                                    va.IsVisible = va.DependencyCount > 0;
                                 }
                             }
                         }
                     }
+                }
 
+                if (e.NewValue != null)
+                {
                     foreach (char c in e.NewValue.Unknowns)
                     {
                         //Was added when the answer changed
@@ -146,11 +132,21 @@ namespace Calculator
                     VariableAssignment va = equation.Parent as VariableAssignment;
 
                     Variables[va.Name] = e.NewValue;
-                    va.UpdateDependecies();
+                    va.UpdateDependencies();
                 }
             };
 
             //CursorPositions.Insert(index, new Tuple<Expression, int>(equation.LHS, 0));
+        }
+
+        protected override void OnChildRemoved(Element child)
+        {
+            base.OnChildRemoved(child);
+
+            if (Children.Count == 0)
+            {
+                this.Remove();
+            }
         }
 
         public void Up() => Move(-1);
@@ -174,13 +170,19 @@ namespace Calculator
             }
             int selected = Children.IndexOf(last);
 
-            if (selected + direction < 0 || selected + direction == Children.Count)
+            do
             {
-                Insert(selected + (direction + 1) / 2, new Equation());
-                selected -= (direction - 1) / 2;
-            }
+                if (selected + direction < 0 || selected + direction == Children.Count)
+                {
+                    Insert(selected + (direction + 1) / 2, new Equation());
+                    selected -= (direction - 1) / 2;
+                }
 
-            View view = Children[selected + direction];
+                selected += direction;
+            }
+            while (!Children[selected].IsVisible);
+
+            View view = Children[selected];
             Focus((view as VariableAssignment)?.RHS ?? (Equation)view);
         }
 

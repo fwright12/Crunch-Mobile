@@ -48,15 +48,10 @@ C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\b
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Debug\Xamarin.Forms.Extensions.dll
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Debug\Xamarin.Forms.MathDisplay.dll
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Debug\System.Extensions.pdb
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Debug\System.Extensions.dll.mdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Debug\Xamarin.Forms.Extensions.pdb
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Debug\Xamarin.Forms.Extensions.dll.mdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Debug\Crunch.pdb
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Debug\Crunch.dll.mdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Debug\Crunch.Machine.pdb
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Debug\Crunch.Machine.dll.mdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Debug\Xamarin.Forms.MathDisplay.pdb
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Debug\Xamarin.Forms.MathDisplay.dll.mdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\obj\iPhone\Debug\ibtool\_BundleResourceWithLogicalName.items
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\obj\iPhone\Debug\actool\_PartialAppManifest.items
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\obj\iPhone\Debug\actool\_BundleResourceWithLogicalName.items
@@ -75,3 +70,8 @@ C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\o
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\obj\iPhone\Debug\Calculator.iOS.csproj.CopyComplete
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\obj\iPhone\Debug\Calculator.iOS.exe
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\obj\iPhone\Debug\Calculator.iOS.pdb
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Debug\System.Extensions.dll.mdb
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Debug\Xamarin.Forms.Extensions.dll.mdb
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Debug\Crunch.dll.mdb
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Debug\Crunch.Machine.dll.mdb
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Debug\Xamarin.Forms.MathDisplay.dll.mdb

@@ -31,7 +31,7 @@ namespace Calculator
         public void SetButtonBorderWidth(double width) => Button.BorderWidth = width;
     }
 
-    public class TextImage : AbsoluteLayout
+    public class TextImage : AbsoluteLayout, Xamarin.Forms.MathDisplay.IMathView
     {
         new public double HeightRequest
         {
@@ -40,6 +40,10 @@ namespace Calculator
                 SetLayoutBounds(image, new Rectangle(0, 0, MainPage.parenthesesWidth, value));
             }
         }
+
+        public double Middle => 0.5;
+
+        public double FontSize { set { } }
 
         private Image image;
         private string Text;
@@ -53,14 +57,16 @@ namespace Calculator
         }
 
         public override string ToString() => Text;
+
+        public string ToLatex() => ToString();
     }
 
     public class Canvas : AbsoluteLayout, ITouchable
     {
-        public event TouchEventHandler Touch;
+        public event EventHandler<TouchEventArgs> Touch;
         public bool ShouldIntercept => Touch != null;
 
-        public void OnTouch(Point point, TouchState state) => Touch?.Invoke(point, state);
+        public void OnTouch(Point point, TouchState state) => Touch?.Invoke(this, new TouchEventArgs(point, state));
     }
 
     public class BannerAd : View { }

@@ -9,9 +9,44 @@ using Xamarin.Forms.MathDisplay;
 
 namespace Calculator
 {
-    public class Link : Frame
+    public class Variable : Link
     {
-        private Answer Value;
+        public Variable(char name, Answer value)
+        {
+            VerticalOptions = LayoutOptions.Center;
+            HorizontalOptions = LayoutOptions.Center;
+            BackgroundColor = Color.Transparent;
+            Padding = new Thickness(5);
+            BorderColor = Color.Transparent;
+            CornerRadius = 0;
+
+            Value = value;
+            Value.FormChanged += Update;
+
+            Update(name.ToString());
+        }
+    }
+
+    public class Link : Frame, IMathView
+    {
+        public Expression MathContent
+        {
+            get => Content as Expression;
+            set => Content = value;
+        }
+
+        public double Middle => MathContent.Middle;
+        public double FontSize
+        {
+            set => MathContent.FontSize = value;
+        }
+
+        protected Answer Value;
+
+        protected Link()
+        {
+
+        }
 
         public Link(Answer value)
         {
@@ -19,15 +54,16 @@ namespace Calculator
             HorizontalOptions = LayoutOptions.Center;
             BackgroundColor = Color.Transparent;
             Padding = new Thickness(5);
+            Margin = new Thickness(1);
             BorderColor = CrunchStyle.CRUNCH_PURPLE;
             CornerRadius = 5;
             HasShadow = false;
 
             Value = value;
-
             Value.FormChanged += Update;
+
             Print.Log(";lkjasd;lkf", Value.BetterToString());
-            Update(new Expression(Reader.Render(Value.BetterToString())));
+            Update(Value.BetterToString());
             
             TapGestureRecognizer tgr = new TapGestureRecognizer();
             tgr.Tapped += (sender, e) =>
@@ -37,15 +73,15 @@ namespace Calculator
             GestureRecognizers.Add(tgr);
         }
 
-        ~Link()
-        {
-            Value.FormChanged -= Update;
-        }
-
         private async void OnTap()
         {
             Print.Log("link tapped");
-            await MainPage.VisiblePage.Scroll.MakeVisible(Value.Parent<Equation>() ?? (View)Value);
+
+            ScrollView scroll = this.Parent<ScrollView>();
+            if (scroll != null)
+            {
+                await scroll.MakeVisible(Value.Parent<Equation>() ?? (View)Value);
+            }
 
             Color temp = CrunchStyle.CRUNCH_PURPLE;
             uint length = 1000;
@@ -53,21 +89,19 @@ namespace Calculator
             animation.Commit(this, "FadeBackground", length / 255, length, Easing.Linear, (v, c) => Value.BackgroundColor = Color.Transparent, () => false);
         }
 
-        public void StartDrag()
+        public BoxView StartDrag()
         {
-            //Expression e = new Expression(Xamarin.Forms.MathDisplay.Reader.Render(ToString()));
-            BoxView placeholder = new BoxView { Color = Color.Transparent, WidthRequest = Value.Width, HeightRequest = Value.Height };
+            BoxView placeholder = new BoxView
+            {
+                Color = Color.Transparent,
+                WidthRequest = Value.Width,
+                HeightRequest = Value.Height
+            };
             //MainPage.VisiblePage.MakeDraggable(this, view);
 
             TouchScreen.Dragging += (state1) =>
             {
-                Tuple<Expression, int> target = MainPage.VisiblePage.ExampleDrop(this);
-
-                if (state1 == DragState.Moving && target != null)
-                {
-                    target.Item1.Insert(target.Item2, placeholder);
-                }
-                else if (state1 == DragState.Ended)
+                if (state1 == DragState.Ended)
                 {
                     this.Remove();
 
@@ -77,14 +111,62 @@ namespace Calculator
                         placeholder.Remove();
 
                         Equation root = loc.Item1.Parent<Equation>();
-                        if (root != null && root != Value.Parent<Equation>())
+                        if (root != null && !CanAddDependency(Value, root))
                         {
                             loc.Item1.Insert(loc.Item2, this);
-                            root.Update();
+                            //root.Update();
+                        }
+                        else
+                        {
+                            Destroy();
                         }
                     }
                 }
             };
+
+            return placeholder;
+        }
+
+        public void Destroy()
+        {
+            this.Remove();
+            Value.FormChanged -= Update;
+        }
+
+        private static bool CanAddDependency(Answer source, Element dependent)
+        {
+            Answer next = (dependent as Equation ?? dependent?.Parent<Equation>())?.RHS as Answer;
+
+            if (next == null)
+            {
+                return false;
+            }
+            else if (next == source)
+            {
+                return true;
+            }
+            
+            foreach (Element e in next.GetListeners())
+            {
+                if (CanAddDependency(source, e))
+                {
+                    return true;
+                }
+            }
+
+            VariableAssignment va = (next as Element).Parent?.Parent as VariableAssignment;
+            if (va != null)
+            {
+                foreach(Equation e in va.GetDependencies())
+                {
+                    if (CanAddDependency(source, e))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
 
         private Equation ParentEquation;
@@ -93,31 +175,35 @@ namespace Calculator
         {
             base.OnParentSet();
             ParentEquation = this.Parent<Equation>();
-            ParentEquation?.Update();
         }
 
-        private void Update(object sender, ChangedEventArgs<Expression> e) => Update(e.NewValue);
-
-        private void Update(Expression e)
+        protected void Update(object sender, ChangedEventArgs<Expression> e)
         {
-            Content = new Expression(Reader.Render(e.ToString()));
+            Update(e.NewValue.ToString());
+            //ParentEquation?.Update();
+        }
 
-            ((Expression)Content).Touch += (point, state) =>
-            {
-                if (state == TouchState.Moving)
-                {
-                    TouchScreen.BeginDrag(this, MainPage.VisiblePage.PhantomCursorField);
-                    StartDrag();
-                }
-            };
-            ((Expression)Content).Tapped += (point) =>
+        protected void Update(string text)
+        {
+            MathContent = new Expression(Reader.Render(text));
+
+            MathContent.Tapped += (point) =>
             {
                 OnTap();
             };
-            
-            ParentEquation?.Update();
+
+            /*MathContent.Touch += (sender, e) =>
+            {
+                if (e.State == TouchState.Moving)
+                {
+                    TouchScreen.BeginDrag(this, MainPage.CanvasArea);
+                    this.StartDrag();
+                }
+            };*/
         }
 
-        public override string ToString() => ((Expression)Content).ToString();
+        public override string ToString() => MathContent.ToString();
+
+        public string ToLatex() => MathContent.ToLatex();
     }
 }
