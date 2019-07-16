@@ -1,0 +1,33 @@
+﻿<script Language="JavaScript">
+    function setSize(width, height) {
+        var image = document.getElementById("image");
+        image.width = width;
+        image.height = height;
+
+        return image.width + "," + image.height;
+        // style='height: 100%; width: 100%; object-fit: scale-down'/>
+    }
+
+    function setHeight(height) {
+        var image = document.getElementById("image");
+        image.style.width = "auto";
+        image.style.height = height;
+
+        return image.height;
+    }
+
+    function setWidth(width) {
+        var image = document.getElementById("image");
+        image.style.width = width;
+        image.style.height = "auto";
+
+        return image.width;
+    }
+
+</script>
+
+<html>
+	<body style="margin: 0; padding: 0">
+		<img id="image" src="test.gif" />
+	</body>
+</html>

@@ -2,11 +2,227 @@
 using System.Collections.Generic;
 using System.Text;
 
+using System.Extensions;
 using Xamarin.Forms;
 using Xamarin.Forms.Extensions;
 
 namespace Calculator
 {
+    public enum Fit { Uniform, Tight }
+
+    public class CachedLayout : Layout<View>
+    {
+        public int Visible { get; private set; }
+        private Fit Fit = Fit.Uniform;
+
+        public void Show(int child)
+        {
+            if (child < 0 || child >= Children.Count)
+            {
+                return;
+            }
+
+            Children[Visible].IsVisible = false;
+            Children[Visible = child].IsVisible = true;
+
+            if (Fit == Fit.Tight)
+            {
+                InvalidateMeasure();
+            }
+        }
+
+        protected override void LayoutChildren(double x, double y, double width, double height)
+        {
+            for (int i = 0; i < Children.Count; i++)
+            {
+                if (Fit == Fit.Uniform)
+                {
+                    LayoutChildIntoBoundingRegion(Children[i], new Rectangle(Point.Zero, new Size(width, height)));
+                }
+                else
+                {
+                    LayoutChildIntoBoundingRegion(Children[i], new Rectangle(Point.Zero, Sizes[i]));
+                }
+            }
+        }
+
+        private List<Size> Sizes;
+
+        protected override SizeRequest OnMeasure(double widthConstraint, double heightConstraint)
+        {
+            //Print.Log(widthConstraint, heightConstraint);
+            Size min = base.OnMeasure(widthConstraint, heightConstraint).Minimum;
+            //Print.Log("\n\nmeasuring children");
+            Sizes = new List<Size>();
+            foreach (View view in Children)
+            {
+                Sizes.Add(view.Measure(widthConstraint, heightConstraint).Request);
+            }
+
+            Size request = Sizes[Visible];
+
+            if (Fit == Fit.Uniform)
+            {
+                foreach(Size size in Sizes)
+                {
+                    request = new Size(Math.Max(request.Width, size.Width), Math.Max(request.Height, size.Height));
+                }
+            }
+
+            return new SizeRequest(request, min);
+        }
+
+        protected override void OnAdded(View view)
+        {
+            base.OnAdded(view);
+            view.IsVisible = false;
+        }
+    }
+
+    public class Tutorial : StackLayout
+    {
+        public event SimpleEventHandler Completed;
+
+        private readonly List<string[]> info = new List<string[]>()
+        {
+            new string[] { "canvas.gif", "Tap anywhere on the canvas to add an equation" },
+            new string[] { "answer forms.gif", "Tap answers to see the different ways they can be expressed" },
+            new string[] { "move equations.gif", "Drag the equals sign to move an equation on the canvas" },
+            //new string[] { "drag drop answers.gif", "Drag and drop live answers between calculations" },
+            //new string[] { "variables.gif", "Set values for unknown variables" },
+            new string[] { "editing.gif", "Go back and make changes anytime" },
+        };
+
+        private CachedLayout GIFLayout;
+        private AbsoluteLayout Welcome;
+        private Label Description;
+
+        private Button Back;
+        private Button Next;
+
+        private int Step;
+
+        public Tutorial()
+        {
+            HorizontalOptions = LayoutOptions.Center;
+            VerticalOptions = LayoutOptions.FillAndExpand;
+            Orientation = StackOrientation.Vertical;
+
+            if (Device.Idiom == TargetIdiom.Phone)
+            {
+                info.Insert(3, new string[] { "scroll keyboard.gif", "Scroll the keyboard for more operations" });
+            }
+            
+            Welcome = new AbsoluteLayout
+            {
+                HorizontalOptions = LayoutOptions.Center,
+                VerticalOptions = LayoutOptions.FillAndExpand,
+            };
+            Welcome.Children.Add(new Label
+            {
+                Text = "Welcome to Crunch!",
+                FontSize = 33,
+                HorizontalTextAlignment = TextAlignment.Center,
+            }, new Rectangle(0.5, 0.25, -1, -1), AbsoluteLayoutFlags.PositionProportional);
+            Welcome.Children.Add(new Label
+            {
+                Text = "A new kind of calculator",
+                FontSize = 20,
+                HorizontalTextAlignment = TextAlignment.Center,
+            }, new Rectangle(0.5, 0.75, -1, -1), AbsoluteLayoutFlags.PositionProportional);
+
+            Next = new Button
+            {
+                HorizontalOptions = LayoutOptions.EndAndExpand,
+                BackgroundColor = Color.Transparent,
+            };
+            Back = new Button
+            {
+                Text = "Back",
+                BackgroundColor = Color.Transparent,
+            };
+            Next.Clicked += (sender, e) =>
+            {
+                if (Step + 1 == info.Count + 1)
+                {
+                    Completed?.Invoke();
+                }
+                else
+                {
+                    Set(Step + 1);
+                }
+            };
+            Back.Clicked += (sender, e) =>
+            {
+                Set(Step - 1);
+            };
+
+            StackLayout nav = new StackLayout
+            {
+                Orientation = StackOrientation.Horizontal,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+            };
+            nav.Children.Add(Back);
+            nav.Children.Add(Next);
+
+            Description = new Label
+            {
+                FontSize = 20,
+                HorizontalTextAlignment = TextAlignment.Center
+            };
+
+            GIFLayout = new CachedLayout
+            {
+                HorizontalOptions = LayoutOptions.Center,
+                VerticalOptions = LayoutOptions.FillAndExpand,
+                //Fit = Fit.Uniform
+            };
+            GIFLayout.Children.Add(Welcome);
+            foreach (string[] s in info)
+            {
+                GIF gif = new GIF(s[0])
+                {
+                    VerticalOptions = LayoutOptions.Center,
+                    HorizontalOptions = LayoutOptions.Center,
+                };
+                gif.Loaded += async () =>
+                {
+                    //await System.Threading.Tasks.Task.Delay(2000);
+                    //gif.IsVisible = false;
+                };
+
+                GIFLayout.Children.Add(gif);
+            }
+
+            Children.Add(Description);
+            Children.Add(GIFLayout);
+            Children.Add(nav);
+
+            Set(0);
+        }
+
+        private async void Set(int step)
+        {
+            if (step < 0 || step >= GIFLayout.Children.Count)
+            {
+                return;
+            }
+
+            try
+            {
+                await (GIFLayout.Children[step] as GIF)?.ResetGIF();
+            }
+            catch { }
+            GIFLayout.Show(step);
+
+            Back.IsEnabled = step > 0;
+            Next.Text = step + 1 == info.Count + 1 ? "Done" : "Next";
+            Description.Text = step > 0 ? info[step - 1][1] : "";
+
+            Step = step;
+        }
+    }
+
     public partial class MainPage
     {
         private StackLayout Controls;
@@ -14,7 +230,7 @@ namespace Calculator
         private Canvas canvasBackup;
         private Calculation calculationBackup;
 
-        public void Tutorial()
+        public void OldTutorial()
         {
             Settings.Tutorial = true;
 
@@ -40,7 +256,8 @@ namespace Calculator
                     KeyboardView.MaskKeys(true);
                     if (Device.Idiom == TargetIdiom.Tablet)
                     {
-                        KeyboardView.IsVisible = false;
+                        AbsoluteLayout.SetLayoutBounds(KeyboardView, new Rectangle(-1000, -1000, -1, -1));
+                        //KeyboardView.IsVisible = false;
                     }
 
                     back.IsEnabled = i > 0;
@@ -85,7 +302,8 @@ namespace Calculator
         private void End()
         {
             KeyboardView.MaskKeys(false);
-            KeyboardView.IsVisible = true;
+            AbsoluteLayout.SetLayoutBounds(KeyboardView, new Rectangle(1, 1, -1, -1));
+            //KeyboardView.IsVisible = true;
 
             canvas.SizeChanged -= PreventScroll;
             canvasScroll.SizeChanged -= PreventScroll;
@@ -106,8 +324,9 @@ namespace Calculator
         {
             if (Device.Idiom == TargetIdiom.Tablet)
             {
-                KeyboardView.IsVisible = true;
-                AddCalculation(new Point(0.25 * canvas.Width, 0.25 * canvas.Height), TouchState.Up);
+                AbsoluteLayout.SetLayoutBounds(KeyboardView, new Rectangle(1, 1, -1, -1));
+                //KeyboardView.IsVisible = true;
+                //AddCalculation(new Point(0.25 * canvas.Width, 0.25 * canvas.Height), TouchState.Up);
             }
 
             KeyboardView.Overlay(

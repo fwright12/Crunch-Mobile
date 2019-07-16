@@ -298,6 +298,7 @@ namespace Calculator.iOS
         protected override void OnElementChanged(ElementChangedEventArgs<BannerAd> e)
         {
             base.OnElementChanged(e);
+
             if (Control == null)
             {
                 SetNativeControl(CreateBannerView());
@@ -328,7 +329,7 @@ namespace Calculator.iOS
                 var request = Request.GetDefaultRequest();
                 return request;
             }
-
+            
             return bannerView;
         }
 

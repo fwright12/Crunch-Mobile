@@ -36,7 +36,7 @@ namespace Calculator
         private static readonly string NUMBER_FORM = "number form";
         private static readonly string TRIG_FORM = "trig form";
         private static readonly string CLEAR_CANVAS_WARNING = "clear canvas warning";
-        private static readonly string TUTORIAL = "tutorial";
+        private static readonly string TUTORIAL = "tutorial1";
 
         public static void Load()
         {

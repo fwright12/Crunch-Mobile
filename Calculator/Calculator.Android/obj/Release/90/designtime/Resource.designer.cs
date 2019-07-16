@@ -1048,6 +1048,8 @@ namespace Calculator.Droid
 			global::Xamarin.Forms.Platform.Android.Resource.Id.fill = global::Calculator.Droid.Resource.Id.fill;
 			global::Xamarin.Forms.Platform.Android.Resource.Id.filled = global::Calculator.Droid.Resource.Id.filled;
 			global::Xamarin.Forms.Platform.Android.Resource.Id.@fixed = global::Calculator.Droid.Resource.Id.@fixed;
+			global::Xamarin.Forms.Platform.Android.Resource.Id.flyoutcontent_appbar = global::Calculator.Droid.Resource.Id.flyoutcontent_appbar;
+			global::Xamarin.Forms.Platform.Android.Resource.Id.flyoutcontent_recycler = global::Calculator.Droid.Resource.Id.flyoutcontent_recycler;
 			global::Xamarin.Forms.Platform.Android.Resource.Id.forever = global::Calculator.Droid.Resource.Id.forever;
 			global::Xamarin.Forms.Platform.Android.Resource.Id.ghost_view = global::Calculator.Droid.Resource.Id.ghost_view;
 			global::Xamarin.Forms.Platform.Android.Resource.Id.group_divider = global::Calculator.Droid.Resource.Id.group_divider;
@@ -7544,10 +7546,10 @@ namespace Calculator.Droid
 			public const int @fixed = 2131492913;
 			
 			// aapt resource value: 0x7F020216
-			public const int flyoutcontent.appbar = 2130838038;
+			public const int flyoutcontent_appbar = 2130838038;
 			
 			// aapt resource value: 0x7F020217
-			public const int flyoutcontent.recycler = 2130838039;
+			public const int flyoutcontent_recycler = 2130838039;
 			
 			// aapt resource value: 0x7F0C0009
 			public const int forever = 2131492873;

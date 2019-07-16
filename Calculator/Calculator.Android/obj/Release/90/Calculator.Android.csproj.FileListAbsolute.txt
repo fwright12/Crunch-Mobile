@@ -1,3 +1,4 @@
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Release\GIF_HTML.html
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Release\Calculator.Android.dll
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Release\Calculator.Android.pdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Release\com.GreenMountainLabs.Calculator.apk
@@ -8,15 +9,10 @@ C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Andro
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Release\Xamarin.Forms.Extensions.dll
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Release\Xamarin.Forms.MathDisplay.dll
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Release\System.Extensions.pdb
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Release\System.Extensions.dll.mdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Release\Xamarin.Forms.Extensions.pdb
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Release\Xamarin.Forms.Extensions.dll.mdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Release\Crunch.pdb
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Release\Crunch.dll.mdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Release\Crunch.Machine.pdb
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Release\Crunch.Machine.dll.mdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Release\Xamarin.Forms.MathDisplay.pdb
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Release\Xamarin.Forms.MathDisplay.dll.mdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Release\90\MonoAndroid,Version=v9.0.AssemblyAttributes.cs
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Release\90\Calculator.Android.nuget.stamp
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Release\90\Calculator.Android.csprojAssemblyReference.cache
@@ -78,7 +74,6 @@ C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Andro
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Release\System.ServiceModel.Internals.pdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Release\System.Web.Services.pdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Release\Mono.Security.pdb
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Release\Calculator.Android.dll.mdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Release\90\linksrc\FormsViewGroup.pdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Release\90\linksrc\Microsoft.CSharp.pdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Release\90\linksrc\Mono.Android.pdb
@@ -101,12 +96,18 @@ C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Andro
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Release\90\linksrc\System.ServiceModel.Internals.pdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Release\90\linksrc\System.Web.Services.pdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Release\90\linksrc\Mono.Security.pdb
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Release\Crunch.dll.mdb
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Release\Crunch.Machine.dll.mdb
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Release\System.Extensions.dll.mdb
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Release\Xamarin.Forms.Extensions.dll.mdb
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Release\Xamarin.Forms.MathDisplay.dll.mdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Release\90\linksrc\Calculator.Android.dll.mdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Release\90\linksrc\Crunch.dll.mdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Release\90\linksrc\Crunch.Machine.dll.mdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Release\90\linksrc\System.Extensions.dll.mdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Release\90\linksrc\Xamarin.Forms.Extensions.dll.mdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Release\90\linksrc\Xamarin.Forms.MathDisplay.dll.mdb
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Release\Calculator.Android.dll.mdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Release\90\android\assets\Calculator.Android.dll.mdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Release\90\android\assets\Crunch.dll.mdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Release\90\android\assets\Crunch.Machine.dll.mdb

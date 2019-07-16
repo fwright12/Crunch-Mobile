@@ -188,7 +188,7 @@
       <Version>4.5.0</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Forms">
-      <Version>3.6.0.344457</Version>
+      <Version>4.1.0.555618</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Google.iOS.MobileAds">
       <Version>7.38.0</Version>
@@ -313,6 +313,21 @@
     <ImageAsset Include="Assets.xcassets\rightParenthesis.imageset\rightParenthesis2.png">
       <Visible>false</Visible>
     </ImageAsset>
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\answer forms.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\canvas.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\editing.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\move equations.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\scroll keyboard.gif" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Import Project="..\Calculator\Calculator.projitems" Label="Shared" />

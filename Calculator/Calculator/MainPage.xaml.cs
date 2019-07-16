@@ -23,11 +23,6 @@ namespace Calculator
     //Radical - right half is about 1/2 of horizontal, bottom left takes up about 1/2 of vertical, thickness is 0.1, horizontal bar is about 1/3 of horizontal
 
     /* To do:
-     * v2.2.1
-     * Circular drag and drop answers
-     * Update answer when link removed - refactor InputChanged event in Expressions
-     * Phantom cursor doesn't recognize links
-     * 
      * v?
      * Makeover - color scheme, better icons
      * 
@@ -117,8 +112,8 @@ namespace Calculator
         private CursorView PhantomCursor;
         //How much extra space is in the lower right
         private int padding = 100;
-        private bool keyboardDocked = true;
-        private Size canvasSize;
+        private bool keyboardDocked = false;
+        //private Size canvasSize;
 
         public MainPage()
         {
@@ -131,18 +126,26 @@ namespace Calculator
             
             if (Device.Idiom == TargetIdiom.Tablet)
             {
-                phantomCursorField.Children.Add(KeyboardView);
-                KeyboardView.MoveTo(-1000, -1000);
+                //phantomCursorField.Children.Add(KeyboardView);
+                //KeyboardView.MoveOnAbsoluteLayout(new Point(1, 1), AbsoluteLayoutFlags.PositionProportional);
 
-                canvasScroll.Scrolled += delegate
+                phantomCursorField.Children.Add(KeyboardView, new Rectangle(1, 1, -1, -1), AbsoluteLayoutFlags.PositionProportional);
+                //KeyboardView.MoveTo(-1000, -1000);
+                //AbsoluteLayout.SetLayoutFlags(KeyboardView, AbsoluteLayoutFlags.None);
+
+                canvasScroll.Scrolled += (sender, e) =>
                 {
                     AdjustKeyboardPosition();
                 };
-                phantomCursorField.HeightRequest = 0;
-                phantomCursorField.SizeChanged += (sender, e) =>
+                //phantomCursorField.HeightRequest = 0;
+                /*phantomCursorField.SizeChanged += (sender, e) =>
                 {
                     if (canvasSize != null && !keyboardDocked)
                     {
+                        if (KeyboardView.Parent == null)
+                        {
+                            //phantomCursorField.Children.Add(KeyboardView, )
+                        }
                         Point pos = new Point(
                             KeyboardView.X / (canvasSize.Width - KeyboardView.Width),
                             KeyboardView.Y / (canvasSize.Height - KeyboardView.Height)
@@ -154,7 +157,7 @@ namespace Calculator
                     }
 
                     canvasSize = phantomCursorField.Bounds.Size;
-                };
+                };*/
             }
             else
             {
@@ -251,27 +254,92 @@ namespace Calculator
 
             FixDynamicLag("");
 
-            /*var browser = new WebView();
-            var htmlSource = new HtmlWebViewSource();
-            htmlSource.Html = @"<html>
-  <head>
-    <title>Xamarin Forms</title>
-  </head>
-  <body style=""margin: 0; padding: 0"">
-       <img src=""test.gif""/>
-  </ body >
-</ html >";
-            htmlSource.BaseUrl = "file:///android_asset/";
-            browser.Source = htmlSource;
-
-            screen.Children.Add(browser, new Rectangle(0.5, 0.5, 312, 176), AbsoluteLayoutFlags.PositionProportional);*/
-
 #if !DEBUG
             if (Settings.Tutorial)
             {
                 Tutorial();
             }
+#else
+            Settings.Tutorial = false;
+            Tutorial();
 #endif
+        }
+
+        private readonly int MAX_TUTORIAL_SIZE_ABSOLUTE = 400;
+        private readonly double MAX_TUTORIAL_SIZE_PERCENT = 0.75;
+
+        public void Tutorial()
+        {
+            if (Device.RuntimePlatform == Device.Android)
+            {
+                OldTutorial();
+                return;
+            }
+
+            if (Settings.Tutorial)
+            {
+                //return;
+            }
+
+            Settings.Tutorial = true;
+            header.IsEnabled = false;
+            KeyboardView.IsEnabled = false;
+            Tutorial tutorial = new Tutorial();
+            Color Background = Color.White;
+
+            Frame frame = new Frame
+            {
+                Content = tutorial,
+                BorderColor = Background,
+                BackgroundColor = Background,
+                CornerRadius = 10,
+                Padding = new Thickness(20, 20, 20, 0),
+                //Margin = new Thickness(100),
+                VerticalOptions = LayoutOptions.FillAndExpand
+            };
+
+            /*if (Device.Idiom == TargetIdiom.Phone)
+            {
+                screen.Children.Add(frame, new Rectangle(0.5, 0.5, 0.9, -1), AbsoluteLayoutFlags.PositionProportional | AbsoluteLayoutFlags.WidthProportional);
+            }
+            else
+            {
+                frame.WidthRequest = 400;
+                screen.Children.Add(frame, new Rectangle(0.5, 0.5, -1, -1), AbsoluteLayoutFlags.PositionProportional);
+            }*/
+
+            screen.Children.Add(frame, new Rectangle(0.5, 0.5, -1, -1), AbsoluteLayoutFlags.PositionProportional);
+            
+            EventHandler sizing = (sender, e) =>
+            {
+                //frame.WidthRequest = -1;
+                //frame.HeightRequest = -1;
+                //frame.WidthRequest = Math.Min(MAX_ABSOLUTE_TUTORIAL_SIZE, MAX_PERCENT_TUTORIAL_SIZE * screen.Width);
+                //frame.HeightRequest = Math.Min(MAX_ABSOLUTE_TUTORIAL_SIZE, MAX_PERCENT_TUTORIAL_SIZE * screen.Height);
+
+                double width = Math.Min(MAX_TUTORIAL_SIZE_ABSOLUTE, MAX_TUTORIAL_SIZE_PERCENT * screen.Width);
+                frame.WidthRequest = frame.Width > width ? width : -1;
+
+                double height = Math.Min(MAX_TUTORIAL_SIZE_ABSOLUTE, MAX_TUTORIAL_SIZE_PERCENT * screen.Height);
+                frame.HeightRequest = frame.Height > height ? height : -1;
+            };
+            sizing(null, null);
+
+            screen.SizeChanged += sizing;
+            frame.SizeChanged += sizing;
+
+            tutorial.Completed += () =>
+            {
+                frame.Remove();
+                screen.SizeChanged -= sizing;
+                header.IsEnabled = true;
+                KeyboardView.IsEnabled = true;
+                Settings.Tutorial = false;
+            };
+
+            //GIF gif = new GIF("test.gif") { WidthRequest = 200, HeightRequest = 200 };
+            //header.Children.Add(gif);
+            //screen.Children.Add(gif, new Rectangle(0.5, 0.5, -1, -1), AbsoluteLayoutFlags.PositionProportional);
         }
 
 #if DEBUG
@@ -286,9 +354,6 @@ namespace Calculator
 #endif
 
         void FixDynamicLag(object o) => Print.Log(o as dynamic);
-
-        //private readonly int MenuButtonWidth = 44;
-        //private double SettingsMenuWidth = 400;
 
         public static int MaxBannerWidth = 320;
         //private double canvasWidthHorizontal => KeyboardView.Width;
@@ -613,7 +678,7 @@ namespace Calculator
             canvas.HeightRequest = (canvas.Parent as View).Height;
             if (Device.Idiom == TargetIdiom.Tablet)
             {
-                KeyboardView.MoveTo(-1000, -1000);
+                //KeyboardView.MoveTo(-1000, -1000);
                 keyboardDocked = true;
             }
 

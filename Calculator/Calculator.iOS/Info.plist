@@ -45,16 +45,16 @@
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/AppIcons.appiconset</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.2.1</string>
+	<string>2.2.2</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.GreenMountainLabs.Calculator</string>
 	<key>CFBundleDisplayName</key>
 	<string>Crunch</string>
 	<key>CFBundleName</key>
 	<string>Crunch</string>
-	<key>CFBundleVersion</key>
-	<string>3.1</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>CFBundleVersion</key>
+	<string>4.1</string>
 </dict>
 </plist>

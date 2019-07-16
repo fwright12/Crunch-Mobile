@@ -76,7 +76,7 @@ namespace Calculator
             TextCell about = new TextCell { Text = "About" };
             about.Tapped += async (sender, e) => await App.Navigation.PushAsync(new AboutPage());
 
-            TextCell tutorial = new TextCell { Text = "Show tutorial" };
+            TextCell tutorial = new TextCell { Text = "Tutorial" };
             tutorial.Tapped += async (sender, e) =>
             {
                 if (Device.Idiom == TargetIdiom.Phone)
@@ -94,12 +94,21 @@ namespace Calculator
                 }
             };
 
-            TextCell privacy = new TextCell { Text = "Privacy Policy" };
-            privacy.Tapped += async (sender, e) => await App.Navigation.PushAsync(new PrivacyPolicyPage());
+            TextCell support = new TextCell { Text = "Support\u2197" };
+            //ExternalLinkCell support = new ExternalLinkCell { Text = "Support" };
+            support.Tapped += (sender, e) => Device.OpenUri(new Uri(@"https://gml802.wixsite.com/apps/support"));
+
+            TextCell tips = new TextCell { Text = "Tips & Tricks\u2197" };
+            tips.Tapped += (sender, e) => Device.OpenUri(new Uri(@"https://gml802.wixsite.com/apps/support"));
+
+            TextCell privacy = new TextCell { Text = "Privacy Policy\u2197" };
+            privacy.Tapped += (sender, e) => Device.OpenUri(new Uri(@"https://gml802.wixsite.com/apps/privacy"));
 
             TableSection info = new TableSection { Title = "Info" };
             info.Add(about);
             info.Add(tutorial);
+            info.Add(support);
+            info.Add(tips);
             info.Add(privacy);
             foreach(TextCell cell in info)
             {
@@ -109,6 +118,23 @@ namespace Calculator
                 }
             }
 
+            //TextCell test = new TextCell
+            LabelCell test = new LabelCell
+            {
+                Label = new Label
+                {
+                    Text = "Reset to Default",
+                    TextColor = Color.Red,
+                    HorizontalTextAlignment = TextAlignment.Center,
+                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                },
+            };
+            TableSection danger = new TableSection
+            {
+                Title = " "
+            };
+            danger.Add(test);
+
             Refresh();
 
             TableRoot root = new TableRoot();
@@ -116,12 +142,14 @@ namespace Calculator
             root.Add(answerDefaults);
             root.Add(other);
             root.Add(info);
+            root.Add(danger);
 
             tableView.Root = root;
 
             page.Children.Insert(0, tableView);
 
-            reset.Clicked += async (sender, e) =>
+            reset.IsVisible = false;
+            test.Tapped += async (sender, e) =>
             {
                 if (await Application.Current.MainPage.DisplayAlert("Wait!", "This will reset all settings to their default values. This cannot be undone. Are you sure you want to continue?", "Yes", "No"))
                 {
@@ -129,6 +157,86 @@ namespace Calculator
                     Refresh();
                 }
             };
+        }
+
+        private ContentPage FullPageWebView(string url) => new ContentPage
+        {
+            Content = new WebView
+            {
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                VerticalOptions = LayoutOptions.FillAndExpand,
+                Source = url
+            }
+        };
+    }
+
+    public class LabelCell : ViewCell
+    {
+        public Label Label
+        {
+            get => label;
+            set
+            {
+                label?.Remove();
+                Layout.Children.Add(label = value);
+            }
+        }
+
+        private StackLayout Layout;
+        private Label label;
+
+        public LabelCell()
+        {
+            Layout = new StackLayout
+            {
+                Orientation = StackOrientation.Horizontal,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                VerticalOptions = LayoutOptions.FillAndExpand,
+                Padding = new Thickness(15),
+            };
+
+            View = Layout;
+        }
+    }
+
+    public class ExternalLinkCell : ViewCell
+    {
+        public static BindableProperty TextProperty = TextCell.TextProperty;
+
+        public string Text
+        {
+            get => (string)GetValue(TextProperty);
+            set => SetValue(TextProperty, value);
+        }
+
+        public ExternalLinkCell()
+        {
+            StackLayout layout = new StackLayout
+            {
+                Orientation = StackOrientation.Vertical,
+            };
+
+            Label symbol = new Label
+            {
+                Text = "\u2197"
+            };
+
+            Label text = new Label
+            {
+                BindingContext = this,
+            };
+            text.PropertyChanged += (sender, e) =>
+            {
+                if (e.PropertyName == Label.FontSizeProperty.PropertyName)
+                {
+                    symbol.FontSize = 1.2 * text.FontSize;
+                }
+            };
+
+            layout.Children.Add(text);
+            layout.Children.Add(symbol);
+
+            View = layout;
         }
     }
 

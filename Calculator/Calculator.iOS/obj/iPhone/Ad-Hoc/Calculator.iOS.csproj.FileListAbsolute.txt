@@ -1,3 +1,4 @@
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Ad-Hoc\GIF_HTML.html
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Ad-Hoc\Calculator.iOS.exe
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Ad-Hoc\Xamarin.Forms.Core.dll
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Ad-Hoc\Xamarin.Forms.Core.pdb
@@ -27,7 +28,7 @@ C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\b
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Ad-Hoc\nb\Xamarin.Forms.Platform.iOS.resources.dll
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Ad-Hoc\nl\Xamarin.Forms.Platform.iOS.resources.dll
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Ad-Hoc\pl\Xamarin.Forms.Platform.iOS.resources.dll
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Ad-Hoc\pt-BR\Xamarin.Forms.Platform.iOS.resources.dll
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Ad-Hoc\pt-br\Xamarin.Forms.Platform.iOS.resources.dll
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Ad-Hoc\pt\Xamarin.Forms.Platform.iOS.resources.dll
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Ad-Hoc\ro\Xamarin.Forms.Platform.iOS.resources.dll
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Ad-Hoc\ru\Xamarin.Forms.Platform.iOS.resources.dll
@@ -47,10 +48,15 @@ C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\b
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Ad-Hoc\Xamarin.Forms.Extensions.dll
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Ad-Hoc\Xamarin.Forms.MathDisplay.dll
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Ad-Hoc\System.Extensions.pdb
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Ad-Hoc\System.Extensions.dll.mdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Ad-Hoc\Xamarin.Forms.Extensions.pdb
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Ad-Hoc\Xamarin.Forms.Extensions.dll.mdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Ad-Hoc\Crunch.pdb
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Ad-Hoc\Crunch.dll.mdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Ad-Hoc\Crunch.Machine.pdb
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Ad-Hoc\Crunch.Machine.dll.mdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Ad-Hoc\Xamarin.Forms.MathDisplay.pdb
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Ad-Hoc\Xamarin.Forms.MathDisplay.dll.mdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\obj\iPhone\Ad-Hoc\ibtool\_BundleResourceWithLogicalName.items
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\obj\iPhone\Ad-Hoc\actool\_PartialAppManifest.items
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\obj\iPhone\Ad-Hoc\actool\_BundleResourceWithLogicalName.items
@@ -68,8 +74,3 @@ C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\o
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\obj\iPhone\Ad-Hoc\XamlC.stamp
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\obj\iPhone\Ad-Hoc\Calculator.iOS.csproj.CopyComplete
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\obj\iPhone\Ad-Hoc\Calculator.iOS.exe
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Ad-Hoc\System.Extensions.dll.mdb
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Ad-Hoc\Xamarin.Forms.Extensions.dll.mdb
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Ad-Hoc\Crunch.dll.mdb
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Ad-Hoc\Crunch.Machine.dll.mdb
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Ad-Hoc\Xamarin.Forms.MathDisplay.dll.mdb
