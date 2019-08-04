@@ -167,7 +167,19 @@ namespace Calculator
                 Answer ans = RHS as Answer;
 
                 Operand old = ans.answer;
-                Operand updated = Crunch.Reader.Evaluate(text);
+                Operand updated;
+
+                Print.Log("evaluating " + text);
+
+                try
+                {
+                    updated = Crunch.Math.Evaluate(text);
+                }
+                catch (Exception e)
+                {
+                    Print.Log("error evaluating", e.Message);
+                    updated = null;
+                }
 
                 ans.Update(updated);
 

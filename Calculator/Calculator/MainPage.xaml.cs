@@ -261,7 +261,7 @@ namespace Calculator
             }
 #else
             Settings.Tutorial = false;
-            Tutorial();
+            //Tutorial();
 #endif
         }
 
