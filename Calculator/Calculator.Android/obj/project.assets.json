@@ -802,7 +802,7 @@
           "build/Xamarin.Build.Download.targets": {}
         }
       },
-      "Xamarin.Forms/4.1.0.555618": {
+      "Xamarin.Forms/4.1.0.709244": {
         "type": "package",
         "dependencies": {
           "Xamarin.Android.Support.CustomTabs": "28.0.0.1",
@@ -828,23 +828,6 @@
         "build": {
           "build/Xamarin.Forms.props": {},
           "build/Xamarin.Forms.targets": {}
-        }
-      },
-      "Xamarin.GooglePlayServices.Ads/60.1142.1": {
-        "type": "package",
-        "dependencies": {
-          "Xamarin.GooglePlayServices.Ads.Lite": "[60.1142.1]",
-          "Xamarin.GooglePlayServices.Basement": "[60.1142.1]",
-          "Xamarin.GooglePlayServices.Gass": "[60.1142.1]"
-        },
-        "compile": {
-          "lib/MonoAndroid80/Xamarin.GooglePlayServices.Ads.dll": {}
-        },
-        "runtime": {
-          "lib/MonoAndroid80/Xamarin.GooglePlayServices.Ads.dll": {}
-        },
-        "build": {
-          "build/MonoAndroid80/Xamarin.GooglePlayServices.Ads.targets": {}
         }
       },
       "Xamarin.GooglePlayServices.Ads.Lite/60.1142.1": {
@@ -880,21 +863,6 @@
         },
         "build": {
           "build/MonoAndroid80/Xamarin.GooglePlayServices.Basement.targets": {}
-        }
-      },
-      "Xamarin.GooglePlayServices.Gass/60.1142.1": {
-        "type": "package",
-        "dependencies": {
-          "Xamarin.GooglePlayServices.Basement": "[60.1142.1]"
-        },
-        "compile": {
-          "lib/MonoAndroid80/Xamarin.GooglePlayServices.Gass.dll": {}
-        },
-        "runtime": {
-          "lib/MonoAndroid80/Xamarin.GooglePlayServices.Gass.dll": {}
-        },
-        "build": {
-          "build/MonoAndroid80/Xamarin.GooglePlayServices.Gass.targets": {}
         }
       },
       "Crunch/1.0.0": {
@@ -1830,10 +1798,10 @@
         "xamarin.build.download.nuspec"
       ]
     },
-    "Xamarin.Forms/4.1.0.555618": {
-      "sha512": "P7MK9Gl6UBFfs8VZIvyfxohxmoIrqjHvVJIA214rdj2aui+5tQF7K+GhY68bSz2Ct5gofTLBbZGWZA+Apm8TYw==",
+    "Xamarin.Forms/4.1.0.709244": {
+      "sha512": "bYXjW99KKAxD56SR0ldF3gve7vAv9xUzWflcok1a8Aw9PB0FWAaiFTyzSD9t3DYuIddqD/W94TDEKT1Lo+zcew==",
       "type": "package",
-      "path": "xamarin.forms/4.1.0.555618",
+      "path": "xamarin.forms/4.1.0.709244",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -2072,20 +2040,8 @@
         "lib/uap10.0/Xamarin.Forms.Xaml.dll",
         "lib/uap10.0/Xamarin.Forms.Xaml.pdb",
         "lib/uap10.0/Xamarin.Forms.Xaml.xml",
-        "xamarin.forms.4.1.0.555618.nupkg.sha512",
+        "xamarin.forms.4.1.0.709244.nupkg.sha512",
         "xamarin.forms.nuspec"
-      ]
-    },
-    "Xamarin.GooglePlayServices.Ads/60.1142.1": {
-      "sha512": "ztonafv6RChuOQTIZG+bLnB9rxtVRmnwA/DsEYpGHb63AaO8z+z31VW0M1uA84b1LdgNXXZFOeO1sBwp3qF+uQ==",
-      "type": "package",
-      "path": "xamarin.googleplayservices.ads/60.1142.1",
-      "files": [
-        ".nupkg.metadata",
-        "build/MonoAndroid80/Xamarin.GooglePlayServices.Ads.targets",
-        "lib/MonoAndroid80/Xamarin.GooglePlayServices.Ads.dll",
-        "xamarin.googleplayservices.ads.60.1142.1.nupkg.sha512",
-        "xamarin.googleplayservices.ads.nuspec"
       ]
     },
     "Xamarin.GooglePlayServices.Ads.Lite/60.1142.1": {
@@ -2113,18 +2069,6 @@
         "xamarin.googleplayservices.basement.nuspec"
       ]
     },
-    "Xamarin.GooglePlayServices.Gass/60.1142.1": {
-      "sha512": "tFgcAm3GJs1njhKpF6UcHl45ui+ge+9WkuYKf5kIAGpT4LTtrWqt948Vgq/zZCUkVpmzOxj6b9jgxlmeBHkPHw==",
-      "type": "package",
-      "path": "xamarin.googleplayservices.gass/60.1142.1",
-      "files": [
-        ".nupkg.metadata",
-        "build/MonoAndroid80/Xamarin.GooglePlayServices.Gass.targets",
-        "lib/MonoAndroid80/Xamarin.GooglePlayServices.Gass.dll",
-        "xamarin.googleplayservices.gass.60.1142.1.nupkg.sha512",
-        "xamarin.googleplayservices.gass.nuspec"
-      ]
-    },
     "Crunch/1.0.0": {
       "type": "project",
       "path": "../../../Crunch/Crunch.csproj",
@@ -2137,13 +2081,13 @@
     },
     "System.Extensions/1.0.0": {
       "type": "project",
-      "path": "../../../../C# Extensions/System.Extensions/System.Extensions.csproj",
-      "msbuildProject": "../../../../C# Extensions/System.Extensions/System.Extensions.csproj"
+      "path": "../../../../Code/C#/System.Extensions/System.Extensions.csproj",
+      "msbuildProject": "../../../../Code/C#/System.Extensions/System.Extensions.csproj"
     },
     "Xamarin.Forms.Extensions/1.0.0": {
       "type": "project",
-      "path": "../../../../C# Extensions/Xamarin.Forms.Extensions/Xamarin.Forms.Extensions.csproj",
-      "msbuildProject": "../../../../C# Extensions/Xamarin.Forms.Extensions/Xamarin.Forms.Extensions.csproj"
+      "path": "../../../../Code/C#/Xamarin.Forms.Extensions/Xamarin.Forms.Extensions.csproj",
+      "msbuildProject": "../../../../Code/C#/Xamarin.Forms.Extensions/Xamarin.Forms.Extensions.csproj"
     },
     "Xamarin.Forms.MathDisplay/1.0.0": {
       "type": "project",
@@ -2162,10 +2106,9 @@
       "Xamarin.Android.Support.v7.AppCompat >= 28.0.0.1",
       "Xamarin.Android.Support.v7.CardView >= 28.0.0.1",
       "Xamarin.Android.Support.v7.MediaRouter >= 28.0.0.1",
-      "Xamarin.Forms >= 4.1.0.555618",
+      "Xamarin.Forms >= 4.1.0.709244",
       "Xamarin.Forms.Extensions >= 1.0.0",
       "Xamarin.Forms.MathDisplay >= 1.0.0",
-      "Xamarin.GooglePlayServices.Ads >= 60.1142.1",
       "Xamarin.GooglePlayServices.Ads.Lite >= 60.1142.1"
     ]
   },
@@ -2196,12 +2139,6 @@
       "frameworks": {
         "monoandroid90": {
           "projectReferences": {
-            "C:\\Users\\Flint\\Documents\\C# Extensions\\System.Extensions\\System.Extensions.csproj": {
-              "projectPath": "C:\\Users\\Flint\\Documents\\C# Extensions\\System.Extensions\\System.Extensions.csproj"
-            },
-            "C:\\Users\\Flint\\Documents\\C# Extensions\\Xamarin.Forms.Extensions\\Xamarin.Forms.Extensions.csproj": {
-              "projectPath": "C:\\Users\\Flint\\Documents\\C# Extensions\\Xamarin.Forms.Extensions\\Xamarin.Forms.Extensions.csproj"
-            },
             "C:\\Users\\Flint\\Documents\\Calculator Stuff\\Crunch\\Crunch.csproj": {
               "projectPath": "C:\\Users\\Flint\\Documents\\Calculator Stuff\\Crunch\\Crunch.csproj"
             },
@@ -2210,6 +2147,12 @@
             },
             "C:\\Users\\Flint\\Documents\\Calculator Stuff\\Xamarin.Forms.MathDisplay\\Xamarin.Forms.MathDisplay.csproj": {
               "projectPath": "C:\\Users\\Flint\\Documents\\Calculator Stuff\\Xamarin.Forms.MathDisplay\\Xamarin.Forms.MathDisplay.csproj"
+            },
+            "C:\\Users\\Flint\\Documents\\Code\\C#\\System.Extensions\\System.Extensions.csproj": {
+              "projectPath": "C:\\Users\\Flint\\Documents\\Code\\C#\\System.Extensions\\System.Extensions.csproj"
+            },
+            "C:\\Users\\Flint\\Documents\\Code\\C#\\Xamarin.Forms.Extensions\\Xamarin.Forms.Extensions.csproj": {
+              "projectPath": "C:\\Users\\Flint\\Documents\\Code\\C#\\Xamarin.Forms.Extensions\\Xamarin.Forms.Extensions.csproj"
             }
           }
         }
@@ -2244,11 +2187,7 @@
           },
           "Xamarin.Forms": {
             "target": "Package",
-            "version": "[4.1.0.555618, )"
-          },
-          "Xamarin.GooglePlayServices.Ads": {
-            "target": "Package",
-            "version": "[60.1142.1, )"
+            "version": "[4.1.0.709244, )"
           },
           "Xamarin.GooglePlayServices.Ads.Lite": {
             "target": "Package",

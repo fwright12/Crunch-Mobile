@@ -56,10 +56,8 @@ C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Andro
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\90\android\assets\Xamarin.Forms.Platform.Android.dll
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\90\android\assets\Xamarin.Forms.Platform.dll
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\90\android\assets\Xamarin.Forms.Xaml.dll
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\90\android\assets\Xamarin.GooglePlayServices.Ads.dll
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\90\android\assets\Xamarin.GooglePlayServices.Ads.Lite.dll
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\90\android\assets\Xamarin.GooglePlayServices.Basement.dll
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\90\android\assets\Xamarin.GooglePlayServices.Gass.dll
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\90\android\assets\netstandard.dll
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\90\android\assets\System.Data.dll
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\90\android\assets\System.Numerics.dll

@@ -48,8 +48,6 @@ Xamarin.Forms.MathDisplay
 Xamarin.Forms.Platform.Android
 Xamarin.Forms.Platform
 Xamarin.Forms.Xaml
-Xamarin.GooglePlayServices.Ads
 Xamarin.GooglePlayServices.Ads.Lite
 Xamarin.GooglePlayServices.Basement
-Xamarin.GooglePlayServices.Gass
 netstandard

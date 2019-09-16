@@ -9135,23 +9135,23 @@ namespace Calculator.Droid
 			// aapt resource value: 0x1
 			public const int preferences_license_summary = 1;
 			
-			// aapt resource value: 0x7F050082
-			public const int s1 = 2131034242;
+			// aapt resource value: 0x1
+			public const int s1 = 1;
 			
-			// aapt resource value: 0x7F050083
-			public const int s2 = 2131034243;
+			// aapt resource value: 0x1
+			public const int s2 = 1;
 			
-			// aapt resource value: 0x7F050084
-			public const int s3 = 2131034244;
+			// aapt resource value: 0x1
+			public const int s3 = 1;
 			
-			// aapt resource value: 0x7F050085
-			public const int s4 = 2131034245;
+			// aapt resource value: 0x1
+			public const int s4 = 1;
 			
-			// aapt resource value: 0x7F050086
-			public const int s5 = 2131034246;
+			// aapt resource value: 0x1
+			public const int s5 = 1;
 			
-			// aapt resource value: 0x7F050087
-			public const int s6 = 2131034247;
+			// aapt resource value: 0x1
+			public const int s6 = 1;
 			
 			// aapt resource value: 0x7F150035
 			public const int search_menu_title = 2132082741;

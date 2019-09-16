@@ -171,6 +171,7 @@ namespace Calculator
 
                 Print.Log("evaluating " + text);
 
+                Print.Quiet = true;
                 try
                 {
                     updated = Crunch.Math.Evaluate(text);
@@ -182,6 +183,7 @@ namespace Calculator
                 }
 
                 ans.Update(updated);
+                Print.Quiet = false;
 
                 //OnChanged(old, updated);
                 OnChanged(LastAnswer, updated);

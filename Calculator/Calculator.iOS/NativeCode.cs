@@ -22,12 +22,111 @@ using System.ComponentModel;
 [assembly: ExportRenderer(typeof(TouchableStackLayout), typeof(TouchableStackLayoutRenderer))]
 [assembly: ExportRenderer(typeof(BannerAd), typeof(BannerAdRenderer))]
 [assembly: ExportRenderer(typeof(TouchScreen), typeof(TouchScreenRenderer))]
+[assembly: ExportRenderer(typeof(SystemKeyboard.KeyboardEntry), typeof(KeyboardEntryRenderer))]
 
 namespace Calculator.iOS
 {
+    public class KeyboardEntryRenderer : EntryRenderer
+    {
+        private bool HiddenBySystem = false;
+
+        public KeyboardEntryRenderer()
+        {
+            UIKeyboard.Notifications.ObserveWillHide((sender, e) =>
+            {
+                Print.Log("keyboard will hide");
+                HiddenBySystem = true;
+                AdjustResize(0);
+            });
+            UIKeyboard.Notifications.ObserveWillShow((sender, e) =>
+            {
+                HiddenBySystem = false;
+
+                if (Element is SystemKeyboard.KeyboardEntry keyboard && !keyboard.Showing)
+                {
+                    Control.EndEditing(true);
+                }
+            });
+            
+            UIKeyboard.Notifications.ObserveDidShow((sender, e) =>
+            {
+                AdjustResize(UIKeyboard.FrameEndFromNotification(e.Notification).Height);
+            });
+        }
+
+        private void AdjustResize(double newKeyboardHeight)
+        {
+            Layout<View> Parent = Element.Parent<Layout<View>>();
+            Thickness margin = Parent.Margin;
+            margin.Bottom = newKeyboardHeight;
+            Parent.Margin = margin;
+
+            return;
+            AbsoluteLayout layout = Element.Parent<AbsoluteLayout>();
+            layout.HeightRequest = layout.Height - newKeyboardHeight;
+            //AbsoluteLayout.SetLayoutBounds(Placeholder, new Rectangle(0, 1, -1, newKeyboardHeight));
+
+            return;
+            Page root = Element.Parent<Page>();
+            Thickness padding = root.Padding;
+            Print.Log(root, padding.Bottom, padding.Top);
+            //padding.Bottom -= LastKeyboardHeight;
+            //padding.Bottom += LastKeyboardHeight = newKeyboardHeight;
+            //padding.Bottom += newKeyboardHeight;
+
+            root.Padding = padding;
+        }
+
+        protected override void OnElementChanged(ElementChangedEventArgs<Entry> e)
+        {
+            base.OnElementChanged(e);
+
+            if (Control == null)
+            {
+                return;
+            }
+
+            Control.ShouldEndEditing = (sender) =>
+            {
+                Print.Log("should end editing", Hidden, HiddenBySystem);
+                return Element is SystemKeyboard.KeyboardEntry keyboard && (!keyboard.Showing || HiddenBySystem);
+            };
+        }
+
+        public override UIKeyCommand[] KeyCommands => new UIKeyCommand[]
+        {
+            UIKeyCommand.Create(UIKeyCommand.LeftArrow, 0, new ObjCRuntime.Selector("LeftArrow")),
+            UIKeyCommand.Create(UIKeyCommand.RightArrow, 0, new ObjCRuntime.Selector("RightArrow")),
+            UIKeyCommand.Create(UIKeyCommand.UpArrow, 0, new ObjCRuntime.Selector("UpArrow")),
+            UIKeyCommand.Create(UIKeyCommand.DownArrow, 0, new ObjCRuntime.Selector("DownArrow"))
+        };
+        
+        [Export("LeftArrow")]
+        private void LeftArrow() => KeyboardManager.MoveCursor(KeyboardManager.CursorKey.Left);
+
+        [Export("RightArrow")]
+        private void RightArrow() => KeyboardManager.MoveCursor(KeyboardManager.CursorKey.Right);
+
+        [Export("UpArrow")]
+        private void UpArrow() => KeyboardManager.MoveCursor(KeyboardManager.CursorKey.Up);
+
+        [Export("DownArrow")]
+        private void DownArrow() => KeyboardManager.MoveCursor(KeyboardManager.CursorKey.Down);
+    }
+
     public static class ExtensionMethods
     {
         public static bool RelayTouch<T>(this VisualElementRenderer<T> native, CGPoint point, TouchState state) where T : View => native.Element.TryToTouch(native.ScaleTouch(native.Element, point), state);
+
+        public static void RelayTouch<T>(this VisualElementRenderer<T> native, NSSet touches, TouchState state) where T : View
+        {
+            UITouch touch = touches.AnyObject as UITouch;
+            if (touch != null && touch.TapCount == 1 && touches.Count == 1)
+            {
+                native.RelayTouch(touch.LocationInView(native), state);
+                //Element.RelayTouch(this, touch.LocationInView(this), TouchState.Up);
+            }
+        }
 
         public static bool RelayTouch<T>(this VisualElementRenderer<T> native, UIGestureRecognizer gesture) where T : View
         {
@@ -56,7 +155,7 @@ namespace Calculator.iOS
         public static Point ScaleTouch(this UIView native, View shared, CGPoint point) => new Point(shared.Width * point.X / native.Frame.Width, shared.Height * point.Y / native.Frame.Height);
     }
 
-    public class TouchScreenRenderer : VisualElementRenderer<StackLayout>
+    public class TouchScreenRenderer : VisualElementRenderer<AbsoluteLayout>
     {
         //public static UIPanGestureRecognizer Pan { get; private set; } = new UIPanGestureRecognizer();
         //private static TouchScreenRenderer Instance;
@@ -213,14 +312,8 @@ namespace Calculator.iOS
     {
         public override void TouchesEnded(NSSet touches, UIEvent evt)
         {
-            base.TouchesBegan(touches, evt);
-            
-            UITouch touch = touches.AnyObject as UITouch;
-            if (touch != null && touch.TapCount == 1 && touches.Count == 1)
-            {
-                this.RelayTouch(touch.LocationInView(this), TouchState.Up);
-                //Element.RelayTouch(this, touch.LocationInView(this), TouchState.Up);
-            }
+            base.TouchesEnded(touches, evt);
+            this.RelayTouch(touches, TouchState.Up);
         }
     }
 
@@ -231,13 +324,21 @@ namespace Calculator.iOS
         public LongClickableButtonRenderer()
         {
             UIPanGestureRecognizer tgr = TouchScreenRenderer.AddDrag(this);
+            tgr.CancelsTouchesInView = false;
 
-            UILongPressGestureRecognizer longPress = new UILongPressGestureRecognizer();
+            UILongPressGestureRecognizer longPress = new UILongPressGestureRecognizer
+            {
+                CancelsTouchesInView = false
+            };
             longPress.AddTarget(() =>
             {
                 if (longPress.State == UIGestureRecognizerState.Began)
                 {
                     (Element as LongClickableButton)?.OnLongClick();
+                }
+                else if (longPress.State == UIGestureRecognizerState.Ended)
+                {
+                    this.RelayTouch(longPress);
                 }
                 /*else if (longPress.State == UIGestureRecognizerState.Ended)
                 {

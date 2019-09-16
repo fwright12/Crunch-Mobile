@@ -23,8 +23,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Calculation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Equation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CustomViews.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FunctionsDrawer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graph.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Keyboard.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CrunchKeyboard.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)KeyboardManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Link.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
@@ -38,7 +40,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)SettingsPage.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)SystemKeyboard.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Tutorial.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)VariableRow.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="$(MSBuildThisFileDirectory)desmos.html" />

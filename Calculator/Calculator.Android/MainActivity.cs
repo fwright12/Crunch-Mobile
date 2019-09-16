@@ -23,7 +23,8 @@ namespace Calculator.Droid
             global::Xamarin.Forms.Forms.Init(this, bundle);
             LoadApplication(new App());
 
-            Window.SetSoftInputMode(SoftInput.StateAlwaysHidden);
+            Window.SetSoftInputMode(SoftInput.AdjustResize);
+
             MobileAds.Initialize(ApplicationContext, "ca-app-pub-1795523054003202~5967496762");
         }
     }

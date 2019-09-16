@@ -188,18 +188,18 @@
       <Version>4.5.0</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Forms">
-      <Version>4.1.0.555618</Version>
+      <Version>4.1.0.709244</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Google.iOS.MobileAds">
       <Version>7.38.0</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\C# Extensions\System.Extensions\System.Extensions.csproj">
+    <ProjectReference Include="..\..\..\..\Code\C#\System.Extensions\System.Extensions.csproj">
       <Project>{f2e94f0b-5217-44a2-8747-a28c1d8c7e4b}</Project>
       <Name>System.Extensions</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\C# Extensions\Xamarin.Forms.Extensions\Xamarin.Forms.Extensions.csproj">
+    <ProjectReference Include="..\..\..\..\Code\C#\Xamarin.Forms.Extensions\Xamarin.Forms.Extensions.csproj">
       <Project>{393a81a0-558d-4901-aeba-5d08e67f02af}</Project>
       <Name>Xamarin.Forms.Extensions</Name>
     </ProjectReference>

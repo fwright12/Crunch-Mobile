@@ -8,7 +8,7 @@ using Xamarin.Forms.Extensions;
 
 namespace Calculator
 {
-    public static class CrunchStyle
+    public class CrunchStyle : ResourceDictionary
     {
         public static readonly Color CRUNCH_PURPLE = Color.FromHex("#560297");
         public static readonly int PAGE_PADDING = 10;
@@ -22,92 +22,55 @@ namespace Calculator
 
         private static readonly Thickness BUTTON_PADDING = Device.RuntimePlatform == Device.iOS ? new Thickness(10, 0, 10, 0) : new Thickness(0);
 
-        public static ResourceDictionary Apply()
+        public CrunchStyle()
         {
-            ResourceDictionary resources = new ResourceDictionary();
-
             //Buttons
-            resources.Add(new Style(typeof(Button))
-            {
-                ApplyToDerivedTypes = true,
-                Setters =
-                {
-                    new Setter { Property = Button.TextColorProperty, Value = BUTTON_TEXT_COLOR },
-                    new Setter { Property = Button.BackgroundColorProperty, Value = BUTTON_BACKGROUND_COLOR },
-                    new Setter { Property = Button.CornerRadiusProperty, Value = CORNER_RADIUS },
-                    new Setter { Property = Button.PaddingProperty, Value = BUTTON_PADDING }
-                }
-            });
+            this.Add<Button>(
+                new Setter { Property = Button.TextColorProperty, Value = BUTTON_TEXT_COLOR },
+                new Setter { Property = Button.BackgroundColorProperty, Value = BUTTON_BACKGROUND_COLOR },
+                new Setter { Property = Button.CornerRadiusProperty, Value = CORNER_RADIUS },
+                new Setter { Property = Button.PaddingProperty, Value = BUTTON_PADDING }
+                );
 
             //Text
-            resources.Add(new Style(typeof(Text))
-            {
-                ApplyToDerivedTypes = true,
-                Setters =
-                {
-                    new Setter { Property = Label.TextColorProperty, Value = TEXT_COLOR },
-                }
-            });
+            this.Add<Text>(
+                new Setter { Property = Label.TextColorProperty, Value = TEXT_COLOR }
+                );
 
             //Pages
-            resources.Add(new Style(typeof(ContentPage))
-            {
-                ApplyToDerivedTypes = true,
-                Behaviors =
+            this.Add<ContentPage>(
+                (bindable) =>
                 {
-                    new PageBehavior()
+                    if (!(bindable is SettingsPage) && !(bindable is PrivacyPolicyPage))
+                    {
+                        bindable.LayoutChanged += (sender, e) => SetPadding(sender as Page);
+                        bindable.Appearing += (sender, e) => SetPadding(sender as Page);
+                    }
                 },
-                Setters =
-                {
-                    new Setter { Property = VisualElement.BackgroundColorProperty, Value = BACKGROUND_COLOR },
-                }
-            });
+                new Setter { Property = VisualElement.BackgroundColorProperty, Value = BACKGROUND_COLOR }
+                );
 
             //Canvas
-            resources.Add(new Style(typeof(Canvas))
-            {
-                Setters =
-                {
-                    new Setter { Property = VisualElement.BackgroundColorProperty, Value = BACKGROUND_COLOR },
-                }
-            });
+            this.Add<Canvas>(
+                new Setter { Property = VisualElement.BackgroundColorProperty, Value = BACKGROUND_COLOR }
+                );
 
             //Cursor
-            resources.Add(new Style(typeof(CursorView))
-            {
-                Setters =
-                {
-                    new Setter { Property = VisualElement.BackgroundColorProperty, Value = TEXT_COLOR },
-                }
-            });
-
-            return resources;
+            this.Add<CursorView>(
+                new Setter { Property = VisualElement.BackgroundColorProperty, Value = TEXT_COLOR }
+                );
         }
 
-        private class PageBehavior : Behavior<Page>
+        private void SetPadding(Page page)
         {
-            protected override void OnAttachedTo(Page bindable)
-            {
-                base.OnAttachedTo(bindable);
-
-                if (!(bindable is SettingsPage) && !(bindable is PrivacyPolicyPage))
-                {
-                    bindable.LayoutChanged += (sender, e) => SetPadding(sender as Page);
-                    bindable.Appearing += (sender, e) => SetPadding(sender as Page);
-                }
-            }
-
-            private void SetPadding(Page page)
-            {
-                var safeInsets = Xamarin.Forms.PlatformConfiguration.iOSSpecific.Page.SafeAreaInsets(page.On<Xamarin.Forms.PlatformConfiguration.iOS>());
-                safeInsets = new Thickness(
-                    Math.Max(PAGE_PADDING, safeInsets.Left),
-                    Math.Max(PAGE_PADDING, safeInsets.Top),
-                    Math.Max(PAGE_PADDING, safeInsets.Right),
-                    Math.Max(PAGE_PADDING, safeInsets.Bottom)
-                    );
-                page.Padding = safeInsets;
-            }
+            var safeInsets = Xamarin.Forms.PlatformConfiguration.iOSSpecific.Page.SafeAreaInsets(page.On<Xamarin.Forms.PlatformConfiguration.iOS>());
+            safeInsets = new Thickness(
+                Math.Max(PAGE_PADDING, safeInsets.Left),
+                Math.Max(PAGE_PADDING, safeInsets.Top),
+                Math.Max(PAGE_PADDING, safeInsets.Right),
+                Math.Max(PAGE_PADDING, safeInsets.Bottom)
+                );
+            page.Padding = safeInsets;
         }
     }
 }

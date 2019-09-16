@@ -18,15 +18,93 @@ using Xamarin.Forms.Extensions;
 [assembly: ExportRenderer(typeof(TouchableStackLayout), typeof(TouchableStackLayoutRenderer))]
 [assembly: ExportRenderer(typeof(BannerAd), typeof(BannerAdRenderer))]
 [assembly: ExportRenderer(typeof(TouchScreen), typeof(TouchScreenRenderer))]
+[assembly: ExportRenderer(typeof(SystemKeyboard.KeyboardEntry), typeof(KeyboardEntryRenderer))]
 
 namespace Calculator.Droid
 {
+    public class KeyboardEntryRenderer : EntryRenderer
+    {
+        private bool ImplicitDismissal = false;
+
+        public KeyboardEntryRenderer(Android.Content.Context context) : base(context) { }
+
+        public override void ClearChildFocus(Android.Views.View child)
+        {
+            Print.Log("clearing child focus");
+            base.ClearChildFocus(child);
+
+            if (!ImplicitDismissal && Element is SystemKeyboard.KeyboardEntry keyboard)
+            {
+                keyboard.DismissedBySystem();
+            }
+        }
+
+        public override bool IsFocused => Element is SystemKeyboard.KeyboardEntry keyboard && keyboard.Showing;
+
+        public override void ClearFocus()
+        {
+            Print.Log("clearing focus");
+            ImplicitDismissal = true;
+            base.ClearFocus();
+            ImplicitDismissal = false;
+        }
+
+        protected override void OnFocusChangeRequested(object sender, VisualElement.FocusRequestArgs e)
+        {
+            base.OnFocusChangeRequested(sender, e);
+            Print.Log("focus change requested", e.Focus, e.Result);
+
+            if (e.Focus && Element is SystemKeyboard.KeyboardEntry keyboard && keyboard.Showing)
+            {
+                RequestFocus();
+
+                InputMethodManager inputMethodManager = Context.GetSystemService(Android.Content.Context.InputMethodService) as InputMethodManager;
+                inputMethodManager.ShowSoftInput(Control, ShowFlags.Forced);
+                inputMethodManager.ToggleSoftInput(ShowFlags.Forced, HideSoftInputFlags.ImplicitOnly);
+            }
+        }
+
+        protected override void OnElementChanged(ElementChangedEventArgs<Entry> e)
+        {
+            base.OnElementChanged(e);
+
+            if (Control == null)
+            {
+                return;
+            }
+
+            Control.ImeOptions = (ImeAction)ImeFlags.NoExtractUi;
+        }
+
+        public override bool OnKeyDown([GeneratedEnum] Keycode keyCode, KeyEvent e)
+        {
+            if (keyCode == Keycode.DpadUp)
+            {
+                KeyboardManager.MoveCursor(KeyboardManager.CursorKey.Up);
+            }
+            else if (keyCode == Keycode.DpadDown)
+            {
+                KeyboardManager.MoveCursor(KeyboardManager.CursorKey.Down);
+            }
+            else if (keyCode == Keycode.DpadLeft)
+            {
+                KeyboardManager.MoveCursor(KeyboardManager.CursorKey.Left);
+            }
+            else if (keyCode == Keycode.DpadRight)
+            {
+                KeyboardManager.MoveCursor(KeyboardManager.CursorKey.Right);
+            }
+
+            return base.OnKeyDown(keyCode, e);
+        }
+    }
+
     public static class ExtensionMethods
     {
         public static bool RelayTouch<T>(this VisualElementRenderer<T> native, MotionEvent e) where T : Xamarin.Forms.View
         {
             TouchState touchState;
-
+            
             if (e.Action == MotionEventActions.Down)
             {
                 touchState = TouchState.Down;
@@ -52,7 +130,7 @@ namespace Calculator.Droid
         public static Xamarin.Forms.Point ScaleTouch(this Android.Views.View native, Xamarin.Forms.View shared, MotionEvent e) => new Xamarin.Forms.Point(shared.Width * e.GetX() / native.Width, shared.Height * e.GetY() / native.Height);
     }
 
-    public class TouchScreenRenderer : VisualElementRenderer<StackLayout>
+    public class TouchScreenRenderer : VisualElementRenderer<AbsoluteLayout>
     {
         public TouchScreenRenderer() { }
 
@@ -176,16 +254,40 @@ namespace Calculator.Droid
                 //Control.SetMinimumWidth(0);
                 Control.SetAllCaps(false);
                 Control.LongClick += (sender, args) => (Element as LongClickableButton)?.OnLongClick();
+                /*Control.Touch += (sender, args) =>
+                {
+                    Print.Log("button touched", args.Event.Action);
+                };*/
             }
         }
 
-        public override bool OnTouchEvent(MotionEvent e) => this.RelayTouch(e);// Element.RelayTouch(this, e);
+        public override bool OnTouchEvent(MotionEvent e)
+        {
+            //Print.Log("touch event", e.Action);
+            base.OnTouchEvent(e);
+            return this.RelayTouch(e);
+        }
 
         public override bool OnInterceptTouchEvent(MotionEvent e)
         {
+            /*if (Element is LongClickableButton && (Element as LongClickableButton).ShouldIntercept)
+            {
+                return true;
+            }
+            else
+            {
+                return base.OnInterceptTouchEvent(e);
+            }*/
+
+            //return base.OnInterceptTouchEvent(e);
+            
             if (e.Action == MotionEventActions.Move)
             {
                 return OnTouchEvent(e);
+            }
+            else
+            {
+                this.RelayTouch(e);
             }
 
             return false;

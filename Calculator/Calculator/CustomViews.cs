@@ -27,8 +27,6 @@ namespace Calculator
                 (child as VisualElement).InputTransparent = true;
             }
         }
-
-        public void SetButtonBorderWidth(double width) => Button.BorderWidth = width;
     }
 
     public class TextImage : AbsoluteLayout, Xamarin.Forms.MathDisplay.IMathView
@@ -37,7 +35,7 @@ namespace Calculator
         {
             set
             {
-                SetLayoutBounds(image, new Rectangle(0, 0, MainPage.parenthesesWidth, value));
+                SetLayoutBounds(image, new Rectangle(0, 0, MainPage.ParenthesesWidth, value));
             }
         }
 
@@ -53,7 +51,7 @@ namespace Calculator
             //BackgroundColor = Color.Gainsboro;
 
             Text = text;
-            Children.Add(this.image = image, new Rectangle(0, 0, MainPage.parenthesesWidth, 0));
+            Children.Add(this.image = image, new Rectangle(0, 0, MainPage.ParenthesesWidth, 0));
         }
 
         public override string ToString() => Text;

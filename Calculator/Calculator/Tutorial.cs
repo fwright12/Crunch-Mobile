@@ -251,12 +251,12 @@ namespace Calculator
                 if (i >= 0 && i < order.Length)
                 {
                     canvas.Children.Clear();
-                    KeyboardView.ClearOverlay();
+                    ClearOverlay();
 
-                    KeyboardView.MaskKeys(true);
+                    KeyboardMask.IsVisible = true;
                     if (Device.Idiom == TargetIdiom.Tablet)
                     {
-                        AbsoluteLayout.SetLayoutBounds(KeyboardView, new Rectangle(-1000, -1000, -1, -1));
+                        AbsoluteLayout.SetLayoutBounds(FullKeyboardView, new Rectangle(-1000, -1000, -1, -1));
                         //KeyboardView.IsVisible = false;
                     }
 
@@ -301,8 +301,8 @@ namespace Calculator
 
         private void End()
         {
-            KeyboardView.MaskKeys(false);
-            AbsoluteLayout.SetLayoutBounds(KeyboardView, new Rectangle(1, 1, -1, -1));
+            KeyboardMask.IsVisible = false;
+            AbsoluteLayout.SetLayoutBounds(FullKeyboardView, new Rectangle(1, 1, -1, -1));
             //KeyboardView.IsVisible = true;
 
             canvas.SizeChanged -= PreventScroll;
@@ -324,12 +324,12 @@ namespace Calculator
         {
             if (Device.Idiom == TargetIdiom.Tablet)
             {
-                AbsoluteLayout.SetLayoutBounds(KeyboardView, new Rectangle(1, 1, -1, -1));
+                AbsoluteLayout.SetLayoutBounds(FullKeyboardView, new Rectangle(1, 1, -1, -1));
                 //KeyboardView.IsVisible = true;
                 //AddCalculation(new Point(0.25 * canvas.Width, 0.25 * canvas.Height), TouchState.Up);
             }
 
-            KeyboardView.Overlay(
+            Overlay(
                 new Label
                 {
                     Text = "Lastly, this is the keyboard",
@@ -340,7 +340,7 @@ namespace Calculator
                 new Rectangle(0.5, 1 / 8.0, 0.95, AbsoluteLayout.AutoSize),
                 AbsoluteLayoutFlags.PositionProportional | AbsoluteLayoutFlags.WidthProportional
                 );
-            KeyboardView.Overlay(
+            Overlay(
                 new Label
                 {
                     Text = "Long press DEL to clear the canvas ➜",
@@ -350,7 +350,7 @@ namespace Calculator
                 new Rectangle(0.5, 3 / 8.0, 0.95, AbsoluteLayout.AutoSize),
                 AbsoluteLayoutFlags.PositionProportional | AbsoluteLayoutFlags.WidthProportional
                 );
-            KeyboardView.Overlay(
+            Overlay(
                 new Label
                 {
                     Text = "Long press any other key and drag to move the cursor",
@@ -362,9 +362,9 @@ namespace Calculator
                 AbsoluteLayoutFlags.PositionProportional | AbsoluteLayoutFlags.WidthProportional
                 );
 
-            if (KeyboardView.ShowingFullKeyboard)
+            if (Device.Idiom == TargetIdiom.Tablet)
             {
-                KeyboardView.Overlay(
+                Overlay(
                     new Label
                     {
                         Text = "Drag or tap the dock button to change the keyboard position ➜",
@@ -400,7 +400,7 @@ namespace Calculator
                         FontSize = 20
                     }
                     );
-                KeyboardView.Overlay(
+                Overlay(
                     scroll,
                     new Rectangle(0.5, 7 / 8.0, 0.95, AbsoluteLayout.AutoSize),
                     AbsoluteLayoutFlags.PositionProportional | AbsoluteLayoutFlags.WidthProportional

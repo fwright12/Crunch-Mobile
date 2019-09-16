@@ -20,6 +20,7 @@ namespace Calculator
         private Selector Numbers;
         private Selector Trig;
         private SwitchCell ClearCanvasWarning;
+        private SwitchCell ShowFullKeyboard;
 
         public void Refresh()
         {
@@ -30,6 +31,7 @@ namespace Calculator
             Trig.Select((int)Settings.Trigonometry);
 
             ClearCanvasWarning.SetValue(SwitchCell.OnProperty, Settings.ClearCanvasWarning);
+            ShowFullKeyboard.SetValue(SwitchCell.OnProperty, Settings.ShouldShowFullKeyboard);
         }
 
         public SettingsPage()
@@ -46,12 +48,20 @@ namespace Calculator
             };
 
             //Math
-            DecimalPlaces = new Stepper() { Minimum = 1, Maximum = 15, Increment = 1 };
+            DecimalPlaces = new Stepper()
+            {
+                Minimum = 1,
+                Maximum = 15,
+                Increment = 1
+            };
             DecimalPlaces.ValueChanged += (sender, e) => Settings.DecimalPlaces = (int)e.NewValue;
             LogBase = new Selector("2", "10");
             LogBase.Selected += (selected) => Settings.LogarithmBase = selected == 0 ? 2 : 10;
 
-            TableSection math = new TableSection() { Title = "Math" };
+            TableSection math = new TableSection()
+            {
+                Title = "Math"
+            };
             math.Add(new LabeledCell("Decimal Precision:", DecimalPlaces.ValueWrappedStepper()));
             math.Add(new LabeledCell("Logarithm Base:", LogBase));
 
@@ -61,22 +71,49 @@ namespace Calculator
             Trig = new Selector(Enum.GetNames(typeof(Crunch.Trigonometry)));
             Trig.Selected += (selected) => Settings.Trigonometry = (Crunch.Trigonometry)selected;
 
-            TableSection answerDefaults = new TableSection() { Title = "Answer Defaults" };
+            TableSection answerDefaults = new TableSection()
+            {
+                Title = "Answer Defaults"
+            };
             answerDefaults.Add(new LabeledCell("Numerical values:", Numbers));
             answerDefaults.Add(new LabeledCell("Trigonometry:", Trig));
 
             //Other
-            ClearCanvasWarning = new SwitchCell() { Text = "Clear canvas warning" };
+            ClearCanvasWarning = new SwitchCell()
+            {
+                Text = "Clear canvas warning"
+            };
             ClearCanvasWarning.OnChanged += (sender, e) => Settings.ClearCanvasWarning = e.Value;
+            ShowFullKeyboard = new SwitchCell()
+            {
+                Text = "Show full keyboard"
+            };
+            ShowFullKeyboard.OnChanged += (sender, e) =>
+            {
+                Settings.ShouldShowFullKeyboard = e.Value;
+            };
 
-            TableSection other = new TableSection() { Title = "Other" };
+            TableSection other = new TableSection()
+            {
+                Title = "Other"
+            };
             other.Add(ClearCanvasWarning);
+            if (Device.Idiom == TargetIdiom.Tablet)
+            {
+                other.Add(ShowFullKeyboard);
+            }
 
             //Info
-            TextCell about = new TextCell { Text = "About" };
+            TextCell about = new TextCell
+            {
+                Text = "About"
+            };
             about.Tapped += async (sender, e) => await App.Navigation.PushAsync(new AboutPage());
 
-            TextCell tutorial = new TextCell { Text = "Tutorial" };
+            TextCell tutorial = new TextCell
+            {
+                Text = "Tutorial"
+            };
             tutorial.Tapped += async (sender, e) =>
             {
                 if (Device.Idiom == TargetIdiom.Phone)
@@ -94,17 +131,29 @@ namespace Calculator
                 }
             };
 
-            TextCell support = new TextCell { Text = "Support\u2197" };
+            TextCell support = new TextCell
+            {
+                Text = "Support\u2197"
+            };
             //ExternalLinkCell support = new ExternalLinkCell { Text = "Support" };
             support.Tapped += (sender, e) => Device.OpenUri(new Uri(@"https://gml802.wixsite.com/apps/support"));
 
-            TextCell tips = new TextCell { Text = "Tips & Tricks\u2197" };
+            TextCell tips = new TextCell
+            {
+                Text = "Tips & Tricks\u2197"
+            };
             tips.Tapped += (sender, e) => Device.OpenUri(new Uri(@"https://gml802.wixsite.com/apps/support"));
 
-            TextCell privacy = new TextCell { Text = "Privacy Policy\u2197" };
+            TextCell privacy = new TextCell
+            {
+                Text = "Privacy Policy\u2197"
+            };
             privacy.Tapped += (sender, e) => Device.OpenUri(new Uri(@"https://gml802.wixsite.com/apps/privacy"));
 
-            TableSection info = new TableSection { Title = "Info" };
+            TableSection info = new TableSection
+            {
+                Title = "Info"
+            };
             info.Add(about);
             info.Add(tutorial);
             info.Add(support);

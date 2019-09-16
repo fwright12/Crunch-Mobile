@@ -3,6 +3,7 @@
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using Xamarin.Forms.Extensions;
+using Xamarin.Forms.MathDisplay;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace Calculator
@@ -15,7 +16,59 @@ namespace Calculator
         public App()
         {
             InitializeComponent();
-            Resources = CrunchStyle.Apply();
+
+            MainPageSetup();
+
+            return;
+
+            Label l = new Label()
+            {
+                HorizontalOptions = LayoutOptions.Start,
+                VerticalOptions = LayoutOptions.Start,
+                Text = "(",
+                FontSize = Text.MaxFontSize,
+            };
+            l.SizeChanged += delegate
+            {
+                Text.MaxTextHeight = l.Height;
+                double parenthesesWidth = l.Width;
+                Calculator.MainPage.ParenthesesWidth = parenthesesWidth;
+
+                Text.CreateLeftParenthesis = () => new TextImage(new Image() { Source = "leftParenthesis.png", HeightRequest = 0, WidthRequest = parenthesesWidth, Aspect = Aspect.Fill }, "(");
+                Text.CreateRightParenthesis = () => new TextImage(new Image() { Source = "rightParenthesis.png", HeightRequest = 0, WidthRequest = parenthesesWidth, Aspect = Aspect.Fill }, ")");
+                Text.CreateRadical = () => new Image() { Source = "radical.png", HeightRequest = 0, WidthRequest = parenthesesWidth * 2, Aspect = Aspect.Fill };
+
+                MainPageSetup();
+            };
+
+            StackLayout layout = new StackLayout { };
+            layout.Children.Add(l);
+            MainPage = new ContentPage
+            {
+                Content = layout
+            };
+        }
+
+        protected override void OnStart()
+        {
+            // Handle when your app starts
+            System.Diagnostics.Debug.WriteLine("on start");
+        }
+
+        protected override void OnSleep()
+        {
+            // Handle when your app sleeps
+            Settings.Save();
+        }
+
+        protected override void OnResume()
+        {
+            // Handle when your app resumes
+        }
+
+        private void MainPageSetup()
+        {
+            Resources = new CrunchStyle();
 
             Settings.Load();
 
@@ -40,23 +93,6 @@ namespace Calculator
 #endif
                 };
             }
-        }
-
-        protected override void OnStart()
-        {
-            // Handle when your app starts
-            System.Diagnostics.Debug.WriteLine("on start");
-        }
-
-        protected override void OnSleep()
-        {
-            // Handle when your app sleeps
-            Settings.Save();
-        }
-
-        protected override void OnResume()
-        {
-            // Handle when your app resumes
         }
     }
 }
