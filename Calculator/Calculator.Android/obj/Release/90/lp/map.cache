@@ -36,8 +36,6 @@ Xamarin.Android.Support.Transition
 Xamarin.Android.Support.v4
 Xamarin.Android.Support.v7.AppCompat
 Xamarin.Android.Support.v7.CardView
-Xamarin.Android.Support.v7.MediaRouter
-Xamarin.Android.Support.v7.Palette
 Xamarin.Android.Support.v7.RecyclerView
 Xamarin.Android.Support.Vector.Drawable
 Xamarin.Android.Support.VersionedParcelable
@@ -48,6 +46,9 @@ Xamarin.Forms.MathDisplay
 Xamarin.Forms.Platform.Android
 Xamarin.Forms.Platform
 Xamarin.Forms.Xaml
+Xamarin.GooglePlayServices.Ads.Base
 Xamarin.GooglePlayServices.Ads.Lite
 Xamarin.GooglePlayServices.Basement
+Xamarin.GooglePlayServices.Measurement.Base
+Xamarin.GooglePlayServices.Measurement.Sdk.Api
 netstandard

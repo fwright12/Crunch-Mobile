@@ -56,7 +56,7 @@ namespace Calculator
         private static readonly Key SQRD = new Key("x\u00B2", "^2");
         private static readonly Key DIV = new Key("\u00F7", "/");
         private static readonly Key LOG = new Key("log", "log_");
-        private static readonly Key SQRT = new Key("\u221A", "√");
+        private static readonly Key SQRT = new Key("\u221A", "√");// { FontFamily = CrunchStyle.SYMBOLA_FONT };
         private static readonly Key MULT = new Key("\u00D7", "*");
         private static readonly Key TEN = new Key("10\u207F", "10^");
         private static readonly Key PI = new Key("\u03C0");
@@ -170,18 +170,23 @@ namespace Calculator
                 };
             }
 
-            Button left = new CursorKey("\u27E8", KeyboardManager.CursorKey.Left);
-
+            Button left = new CursorKey("〈", KeyboardManager.CursorKey.Left)
+            {
+                FontFamily = CrunchStyle.SYMBOLA_FONT,
+                //FontAttributes = FontAttributes.Bold
+            };
+            
             AnythingButton up = new AnythingButton { };
             up.Children.Add(
                 new Label
                 {
-                    Text = "\u27E8", //mathematical left angle bracket
+                    Text = "〈",
                     TextColor = CrunchStyle.BUTTON_TEXT_COLOR,
                     HorizontalTextAlignment = TextAlignment.Center,
                     VerticalTextAlignment = TextAlignment.Center,
                     Rotation = 90,
                     BindingContext = left,
+                    FontFamily = CrunchStyle.SYMBOLA_FONT,
                 },
                 new Rectangle(0.5, 0.5, 100, 100),
                 AbsoluteLayoutFlags.PositionProportional
@@ -193,12 +198,13 @@ namespace Calculator
             down.Children.Add(
                 new Label
                 {
-                    Text = "\u27E9", //mathematical right angle bracket
+                    Text = "〉",
                     TextColor = CrunchStyle.BUTTON_TEXT_COLOR,
                     HorizontalTextAlignment = TextAlignment.Center,
                     VerticalTextAlignment = TextAlignment.Center,
                     Rotation = 90,
-                    BindingContext = left
+                    BindingContext = left,
+                    FontFamily = CrunchStyle.SYMBOLA_FONT,
                 },
                 new Rectangle(0.5, 0.5, 100, 100),
                 AbsoluteLayoutFlags.PositionProportional
@@ -208,8 +214,11 @@ namespace Calculator
 
             ArrowKeys = new Grid();
             ArrowKeys.Children.Add(up);
-            ArrowKeys.Children.Add(left); //mathematical left angle bracket
-            ArrowKeys.Children.Add(new CursorKey("\u27E9", KeyboardManager.CursorKey.Right)); //mathematical right angle bracket
+            ArrowKeys.Children.Add(left);
+            ArrowKeys.Children.Add(new CursorKey("〉", KeyboardManager.CursorKey.Right)
+            {
+                FontFamily = CrunchStyle.SYMBOLA_FONT,
+            });
             ArrowKeys.Children.Add(down);
 
             Grid.SetColumnSpan(ArrowKeys.Children[0], 2);
@@ -223,7 +232,7 @@ namespace Calculator
 
             PermanentKeys.Children.Add(new Key("DEL", KeyboardManager.BACKSPACE.ToString()));
             PermanentKeys.Children.Add(ArrowKeys);
-            PermanentKeys.Children.Add(Device.Idiom == TargetIdiom.Tablet ? new Key("\u25BD", Key.DOCK) : new LongClickableButton()); //white down-pointing triangle
+            PermanentKeys.Children.Add(Device.Idiom == TargetIdiom.Tablet ? new Key("\u25BD", Key.DOCK) { FontFamily = CrunchStyle.SYMBOLA_FONT } : new LongClickableButton()); //white down-pointing triangle
 
             Children.Add(scroll);
             Children.Add(PermanentKeys);
@@ -315,11 +324,11 @@ namespace Calculator
 
         protected override SizeRequest OnMeasure(double widthConstraint, double heightConstraint)
         {
-            Print.Log("measuring");
+            //Print.Log("measuring");
             SizeRequest sr = base.OnMeasure(widthConstraint, heightConstraint);
             //return sr;
 
-            VisualElement root = this.Parent<TouchScreen>();
+            VisualElement root = this.Root<AbsoluteLayout>();
             double width = root.Width;
             double height = root.Height;
 
@@ -329,7 +338,6 @@ namespace Calculator
             if (Device.Idiom == TargetIdiom.Tablet && !CanShowFullKeyboard)
             {
                 Print.Log(width, height, root);
-                ;
             } 
             double buttonSize = CanShowFullKeyboard ? MAX_BUTTON_SIZE : ButtonWidth(Orient(width, height), Orient(Columns, Rows));
             Print.Log(new Size(PaddedButtonsWidth(Columns, buttonSize), PaddedButtonsWidth(Rows, buttonSize)
@@ -344,11 +352,6 @@ namespace Calculator
 
         public double ButtonWidth(double spaceConstraint, double numButtons) => (spaceConstraint - Spacing * ((int)numButtons - 1)) / numButtons;
 
-        /*public void ClearOverlay() => Mask.Children.Clear();
-        public void Overlay(View view, Rectangle bounds, AbsoluteLayoutFlags flags = AbsoluteLayoutFlags.None) => Mask.Children.Add(view, bounds, flags);
-
-        public void MaskKeys(bool onOrOff) => Mask.IsVisible = onOrOff;*/
-
         private T Orient<T>(T ifHorizontal, T ifVertical) => Orientation == StackOrientation.Horizontal ? ifHorizontal : ifVertical;
 
         private void SetPos(BindableObject bindable, int row, int column)
@@ -357,328 +360,4 @@ namespace Calculator
             Grid.SetColumn(bindable, column);
         }
     }
-
-    /*public class CrunchKeyboard : AbsoluteLayout, IEnumerable<Key>, IKeyboard
-    {
-        //public event Crunch.Mobile.KeystrokeEventHandler KeyPress;
-        public KeystrokeEventHandler Typed { get; set; }
-
-        public event SpecialKeyEventHandler<Key> LongKeyPress;
-
-        private static readonly Key EXP = new Key("x\u207F", "^");
-        private static readonly Key SQRD = new Key("x\u00B2", "^2");
-        private static readonly Key DIV = new Key("\u00F7", "/");
-        private static readonly Key LOG = new Key("log", "log_");
-        private static readonly Key SQRT = new Key("\u221A", "√");
-        private static readonly Key MULT = new Key("\u00D7", "*");
-        private static readonly Key TEN = new Key("10\u207F", "10^");
-        private static readonly Key PI = new Key("\u03C0");
-
-        private readonly Key[][] Keys = new Key[][]
-        {
-            new Key[] { "sin",  TEN,    EXP,    "7",    "8",    "9",    DIV },
-            new Key[] { "cos",  LOG,    SQRD,   "4",    "5",    "6",    MULT },
-            new Key[] { "tan",  "ln",   SQRT,    "1",    "2",    "3",    "-" },
-            new Key[] { PI,     "e",    "x",    "0",    ".",    "()",   "+" }
-        };
-
-        public View ExampleKey => Keypad.Children[0];
-
-        public readonly double SPACING = 6;
-        private readonly int MAX_BUTTON_SIZE = 75;
-        private readonly double PERMANENT_KEYS_INCREASE = 1.25;
-        private readonly int MIN_COLUMNS = 4;
-
-        public int Rows => Keys.Length + Orient(0, 1);
-        public double Columns => Orient((ShowingFullKeyboard ? Keys[0].Length : MIN_COLUMNS) + PERMANENT_KEYS_INCREASE, MIN_COLUMNS);
-
-        private ScrollView Scroll;
-        private Grid Keypad;
-        private AbsoluteLayout Mask;
-
-        private StackLayout Parentheses;
-        private StackLayout PermanentKeys;
-        private StackLayout LRArrowKeys;
-        private StackLayout UDArrowKeys;
-
-        //white down-pointing triangle
-        private LongClickableButton Dock = Device.Idiom == TargetIdiom.Tablet ? new Key("\u25BD", Key.DOCK) : new LongClickableButton();
-
-        public CrunchKeyboard()
-        {
-            DescendantAdded += (sender, e) =>
-            {
-                Key key = e.Element as Key;
-
-                if (key != null)
-                {
-                    if (key is CursorKey)
-                    {
-                        key.Clicked += (sender1, e1) => KeyboardManager.MoveCursor((sender1 as CursorKey).Key);
-                    }
-                    else if (key.Output != Key.DOCK)
-                    {
-                        key.Clicked += (sender1, e1) => Typed?.Invoke((sender1 as Key).Output);
-                    }
-
-                    key.LongClick += (sender1, e1) => LongKeyPress?.Invoke(sender1 as Key);
-                }
-            };
-
-            //StackLayout keyboard = new StackLayout() { HorizontalOptions = LayoutOptions.Center, VerticalOptions = LayoutOptions.Center, Spacing = 0 };
-
-            Scroll = new ScrollView()
-            {
-                Orientation = ScrollOrientation.Horizontal
-            };
-            Keypad = new Grid()
-            {
-                ColumnSpacing = SPACING,
-                RowSpacing = SPACING
-            };
-
-            for (int i = 0; i < Keys.Length; i++)
-            {
-                for (int j = 0; j < Keys[i].Length; j++)
-                {
-                    View view = Keys[i][j];
-
-                    if (Keys[i][j].Text == "()")
-                    {
-                        view = Parentheses = new StackLayout() { Orientation = StackOrientation.Horizontal, Spacing = SPACING };
-                        Parentheses.Children.Add(new Key("("));
-                        Parentheses.Children.Add(new Key(")"));
-                    }
-                    else
-                    {
-                        if (Keys[i].Length - j > MIN_COLUMNS)
-                        {
-                            Keys[i][j].Clicked += (sender, e) => Scroll.ScrollToAsync(Keypad, ScrollToPosition.End, false);
-                        }
-                    }
-
-                    Keypad.Children.Add(view, j, i);
-                }
-            }
-
-            Scroll.Content = Keypad;
-
-            PermanentKeys = new StackLayout()
-            {
-                Orientation = StackOrientation.Vertical,
-                Spacing = SPACING,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-                VerticalOptions = LayoutOptions.FillAndExpand
-            };
-            //PermanentKeys.Children.Add(new LongClickableButton());
-            PermanentKeys.Children.Add(new Key("DEL", KeyboardManager.BACKSPACE.ToString()));
-            PermanentKeys.Children.Add(Dock);
-
-            LRArrowKeys = new StackLayout()
-            {
-                Orientation = StackOrientation.Horizontal,
-                Spacing = SPACING
-            };
-            LRArrowKeys.Children.Add(new CursorKey("\u27E8", KeyboardManager.CursorKey.Left)); //mathematical left angle bracket
-            LRArrowKeys.Children.Add(new CursorKey("\u27E9", KeyboardManager.CursorKey.Right)); //mathematical right angle bracket
-            LRArrowKeys.Children[0].SizeChanged += (sender, e) =>
-            {
-                double size = Math.Floor(33 * Math.Max((sender as View).Height, (sender as View).Width) / 75);
-                UP.FontSize = size;
-                DOWN.FontSize = size;
-            };
-
-            UDArrowKeys = new StackLayout()
-            {
-                Orientation = StackOrientation.Vertical,
-                Spacing = SPACING
-            };
-            UDArrowKeys.Children.Add(new CursorKey("", KeyboardManager.CursorKey.Up) { TextColor = Color.Black });
-            UDArrowKeys.Children.Add(new CursorKey("", KeyboardManager.CursorKey.Down) { TextColor = Color.Black });
-
-            Mask = new AbsoluteLayout()
-            {
-                IsVisible = false,
-                BackgroundColor = Color.Gray,
-                Opacity = 0.875
-            };
-
-            Children.Add(PermanentKeys);
-            Children.Add(Scroll);
-            Children.Add(UP);
-            Children.Add(DOWN);
-            Children.Add(Mask);
-
-            SizeChanged += (sender, e) =>
-            {
-                LRArrowKeys.Remove();
-                UDArrowKeys.Remove();
-
-                if (IdealOrientation)
-                {
-                    PermanentKeys.Children[0].HeightRequest = ButtonWidth(PermanentKeys.Height, 4);
-                    PermanentKeys.Children[PermanentKeys.Children.Count - 1].HeightRequest = ButtonWidth(PermanentKeys.Height, 4);
-                    UDArrowKeys.Children.Insert(1, LRArrowKeys);
-                }
-                else
-                {
-                    PermanentKeys.Children[0].WidthRequest = ButtonWidth(PermanentKeys.Width, 4);
-                    PermanentKeys.Children[PermanentKeys.Children.Count - 1].WidthRequest = ButtonWidth(PermanentKeys.Width, 4);
-                    LRArrowKeys.Children.Insert(1, UDArrowKeys);
-                }
-                PermanentKeys.Children.Insert(1, Orient(UDArrowKeys, LRArrowKeys));
-            };
-            foreach (View v in LRArrowKeys.Children)
-            {
-                v.SizeChanged += (sender, e) =>
-                {
-                    v.WidthRequest = ButtonWidth(ButtonSize * Orient(PERMANENT_KEYS_INCREASE, 1), 2);
-                    v.HeightRequest = ButtonSize;
-                };
-            }
-            foreach (View v in UDArrowKeys.Children)
-            {
-                v.SizeChanged += (sender, e) =>
-                {
-                    v.WidthRequest = ButtonSize;
-                    v.HeightRequest = ButtonWidth(ButtonSize, 2);
-                };
-            }
-
-            Settings.KeyboardChanged += (e) =>
-            {
-                InvalidateLayout();
-            };
-        }
-
-        public void ClearOverlay() => Mask.Children.Clear();
-        public void Overlay(View view, Rectangle bounds, AbsoluteLayoutFlags flags = AbsoluteLayoutFlags.None) => Mask.Children.Add(view, bounds, flags);
-
-        public void MaskKeys(bool onOrOff) => Mask.IsVisible = onOrOff;
-
-        public IEnumerator<Key> GetEnumerator()
-        {
-            for (int i = 0; i < Keys.Length; i++)
-            {
-                for (int j = 0; j < Keys[i].Length; j++)
-                {
-                    if (Keys[i][j].Text != "()")
-                    {
-                        yield return Keys[i][j];
-                    }
-                }
-            }
-            foreach (Layout<View> layout in new Layout<View>[] { PermanentKeys, LRArrowKeys, UDArrowKeys, Parentheses })
-            {
-                foreach (View v in layout.Children)
-                {
-                    if (v is Key)
-                    {
-                        yield return v as Key;
-                    }
-                }
-            }
-        }
-
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-        public void Enable() => IsVisible = true;
-        public void Disable() => IsVisible = false;
-
-        public bool ShowingFullKeyboard => Settings.ShouldShowFullKeyboard && CanShowFullKeyboard;
-
-        public double ButtonSize { get; private set; }
-        private bool CanShowFullKeyboard = false;
-
-        private bool IdealOrientation;
-        private T Orient<T>(T ifHorizontal, T ifVertical) => IdealOrientation ? ifHorizontal : ifVertical;
-
-        protected override SizeRequest OnMeasure(double widthConstraint, double heightConstraint)
-        {
-            View root = this.Parent<TouchScreen>();
-            widthConstraint = root.Width;
-            heightConstraint = root.Height;
-
-            CanShowFullKeyboard = (Keys[0].Length + PERMANENT_KEYS_INCREASE) * MAX_BUTTON_SIZE * Keys.Length * MAX_BUTTON_SIZE < widthConstraint * heightConstraint / 2;
-            IdealOrientation = CanShowFullKeyboard || heightConstraint > widthConstraint;
-
-            double constraint = Orient(Columns, Rows);
-            ButtonSize = CanShowFullKeyboard ? MAX_BUTTON_SIZE : (Orient(widthConstraint, heightConstraint) - SPACING * ((int)constraint - 1)) / constraint;
-
-            return new SizeRequest(new Size(PaddedButtonsWidth(Columns), PaddedButtonsWidth(Rows)));
-        }
-
-        private double PaddedButtonsWidth(double numButtons) => ButtonSize * numButtons + SPACING * ((int)numButtons - 1);
-
-        private double ButtonWidth(double spaceConstraint, int numButtons) => (spaceConstraint - SPACING * (numButtons - 1)) / numButtons;
-
-        private readonly Label UP = new Label
-        {
-            Text = "\u27E8", //mathematical left angle bracket
-            Rotation = 90,
-            HorizontalTextAlignment = TextAlignment.Center,
-            VerticalTextAlignment = TextAlignment.Center,
-            InputTransparent = true,
-            TextColor = Color.Black,
-        };
-        private readonly Label DOWN = new Label
-        {
-            Text = "\u27E9", //mathematical right angle bracket
-            Rotation = 90,
-            HorizontalTextAlignment = TextAlignment.Center,
-            VerticalTextAlignment = TextAlignment.Center,
-            InputTransparent = true,
-            TextColor = Color.Black,
-        };
-
-        protected override void LayoutChildren(double x, double y, double width, double height)
-        {
-            //base.LayoutChildren(x, y, width, height);
-
-            double middle = Orient(PaddedButtonsWidth(Columns - PERMANENT_KEYS_INCREASE), PaddedButtonsWidth(Rows - 1));
-            
-            LayoutChildIntoBoundingRegion(
-                Keypad.Parent as VisualElement,
-                new Rectangle(
-                    new Point(0, 0),
-                    Orient(
-                        new Size(middle, height),
-                        new Size(width, middle)
-                    )
-                )
-            );
-            LayoutChildIntoBoundingRegion(
-                PermanentKeys,
-                Orient(
-                    new Rectangle(middle + SPACING, 0, ButtonSize * PERMANENT_KEYS_INCREASE, height),
-                    new Rectangle(0, middle + SPACING, width, ButtonSize)
-                )
-            );
-            LayoutChildIntoBoundingRegion(Mask, new Rectangle(0, 0, width, height));
-
-            // Temporary fix to display text for up and down arrow keys
-            double halfButton = ButtonWidth(ButtonSize, 2);
-            LayoutChildIntoBoundingRegion(
-                UP,
-                Orient(
-                    new Rectangle(middle + SPACING + ButtonSize * PERMANENT_KEYS_INCREASE / 2 - halfButton / 2, ButtonSize + SPACING + halfButton / 2 - ButtonSize * PERMANENT_KEYS_INCREASE / 2, halfButton, ButtonSize * PERMANENT_KEYS_INCREASE),
-                    new Rectangle(ButtonSize * 2 + SPACING * 2 + halfButton / 2 - ButtonSize / 2, middle + SPACING - ButtonSize / 2 + halfButton / 2, halfButton, ButtonSize)
-                    ));
-            LayoutChildIntoBoundingRegion(
-                DOWN,
-                Orient(
-                    new Rectangle(middle + SPACING + ButtonSize * PERMANENT_KEYS_INCREASE / 2 - halfButton / 2, ButtonSize * 2 + SPACING * 3 + halfButton + halfButton / 2 - ButtonSize * PERMANENT_KEYS_INCREASE / 2, halfButton, ButtonSize * PERMANENT_KEYS_INCREASE),
-                    new Rectangle(ButtonSize * 2 + SPACING * 2 + halfButton / 2 - ButtonSize / 2, middle + SPACING * 2 - ButtonSize / 2 + halfButton / 2 + halfButton, halfButton, ButtonSize)
-                    ));
-
-            foreach (View v in Parentheses.Children)
-            {
-                v.WidthRequest = ButtonWidth(ButtonSize, 2);
-            }
-
-            Keypad.WidthRequest = PaddedButtonsWidth(Keys[0].Length);
-            Scroll.ScrollToAsync(Keypad, ScrollToPosition.End, false);
-            PermanentKeys.Orientation = Orient(StackOrientation.Vertical, StackOrientation.Horizontal);
-        }
-    }*/
 }

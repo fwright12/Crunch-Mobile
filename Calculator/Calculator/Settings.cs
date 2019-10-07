@@ -24,7 +24,7 @@ namespace Calculator
         }
 
         public static Polynomials Polynomials;
-        public static Numbers Numbers = Numbers.Exact;
+        public static Numbers Numbers = Numbers.Decimal;
         public static Trigonometry Trigonometry = Trigonometry.Degrees;
 
         public static bool Tutorial = true;
@@ -61,7 +61,7 @@ namespace Calculator
             DecimalPlaces = Storage.TryGet(DECIMAL_PLACES, 3);
             LogarithmBase = Storage.TryGet(LOG_BASE, 10.0);
 
-            Numbers = Storage.TryGet(NUMBER_FORM, Numbers.Exact);
+            Numbers = Storage.TryGet(NUMBER_FORM, Numbers.Decimal);
             Trigonometry = Storage.TryGet(TRIG_FORM, Trigonometry.Degrees);
 
             ClearCanvasWarning = Storage.TryGet(CLEAR_CANVAS_WARNING, true);

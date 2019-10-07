@@ -86,11 +86,12 @@ namespace Calculator
         private readonly List<string[]> info = new List<string[]>()
         {
             new string[] { "canvas.gif", "Tap anywhere on the canvas to add an equation" },
-            new string[] { "answer forms.gif", "Tap answers to see the different ways they can be expressed" },
+            new string[] { "answer forms.gif", "Tap answers to see different forms, or the deg/rad label to toggle degrees and radians" },
+            //new string[] { "answer forms.gif", "Tap an answer (or the deg/rad label) to see them in different forms" },
             new string[] { "move equations.gif", "Drag the equals sign to move an equation on the canvas" },
-            //new string[] { "drag drop answers.gif", "Drag and drop live answers between calculations" },
+            new string[] { "drag drop answers.gif", "Drag and drop live answers between calculations" },
             //new string[] { "variables.gif", "Set values for unknown variables" },
-            new string[] { "editing.gif", "Go back and make changes anytime" },
+            //new string[] { "editing.gif", "Go back and make changes anytime" },
         };
 
         private CachedLayout GIFLayout;
@@ -110,7 +111,7 @@ namespace Calculator
 
             if (Device.Idiom == TargetIdiom.Phone)
             {
-                info.Insert(3, new string[] { "scroll keyboard.gif", "Scroll the keyboard for more operations" });
+                info.Add(new string[] { "scroll keyboard.gif", "Scroll the keyboard for more operations" });
             }
             
             Welcome = new AbsoluteLayout

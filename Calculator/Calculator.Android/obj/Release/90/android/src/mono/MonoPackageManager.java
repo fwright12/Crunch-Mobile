@@ -143,8 +143,6 @@ class MonoPackageManager_Resources {
 		"Xamarin.Android.Support.Transition.dll",
 		"Xamarin.Android.Support.v7.AppCompat.dll",
 		"Xamarin.Android.Support.v7.CardView.dll",
-		"Xamarin.Android.Support.v7.MediaRouter.dll",
-		"Xamarin.Android.Support.v7.Palette.dll",
 		"Xamarin.Android.Support.v7.RecyclerView.dll",
 		"Xamarin.Android.Support.Vector.Drawable.dll",
 		"Xamarin.Android.Support.VersionedParcelable.dll",
@@ -155,8 +153,11 @@ class MonoPackageManager_Resources {
 		"Xamarin.Forms.Platform.Android.dll",
 		"Xamarin.Forms.Platform.dll",
 		"Xamarin.Forms.Xaml.dll",
+		"Xamarin.GooglePlayServices.Ads.Base.dll",
 		"Xamarin.GooglePlayServices.Ads.Lite.dll",
 		"Xamarin.GooglePlayServices.Basement.dll",
+		"Xamarin.GooglePlayServices.Measurement.Base.dll",
+		"Xamarin.GooglePlayServices.Measurement.Sdk.Api.dll",
 	};
 	public static final String[] Dependencies = new String[]{
 	};

@@ -17,6 +17,7 @@ public class RewardedVideoAdListenerImplementor
 			"n_onRewardedVideoAdLeftApplication:()V:GetOnRewardedVideoAdLeftApplicationHandler:Android.Gms.Ads.Reward.IRewardedVideoAdListenerInvoker, Xamarin.GooglePlayServices.Ads.Lite\n" +
 			"n_onRewardedVideoAdLoaded:()V:GetOnRewardedVideoAdLoadedHandler:Android.Gms.Ads.Reward.IRewardedVideoAdListenerInvoker, Xamarin.GooglePlayServices.Ads.Lite\n" +
 			"n_onRewardedVideoAdOpened:()V:GetOnRewardedVideoAdOpenedHandler:Android.Gms.Ads.Reward.IRewardedVideoAdListenerInvoker, Xamarin.GooglePlayServices.Ads.Lite\n" +
+			"n_onRewardedVideoCompleted:()V:GetOnRewardedVideoCompletedHandler:Android.Gms.Ads.Reward.IRewardedVideoAdListenerInvoker, Xamarin.GooglePlayServices.Ads.Lite\n" +
 			"n_onRewardedVideoStarted:()V:GetOnRewardedVideoStartedHandler:Android.Gms.Ads.Reward.IRewardedVideoAdListenerInvoker, Xamarin.GooglePlayServices.Ads.Lite\n" +
 			"";
 		mono.android.Runtime.register ("Android.Gms.Ads.Reward.IRewardedVideoAdListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite", RewardedVideoAdListenerImplementor.class, __md_methods);
@@ -77,6 +78,14 @@ public class RewardedVideoAdListenerImplementor
 	}
 
 	private native void n_onRewardedVideoAdOpened ();
+
+
+	public void onRewardedVideoCompleted ()
+	{
+		n_onRewardedVideoCompleted ();
+	}
+
+	private native void n_onRewardedVideoCompleted ();
 
 
 	public void onRewardedVideoStarted ()

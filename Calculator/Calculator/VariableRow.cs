@@ -59,16 +59,15 @@ namespace Calculator
             });
             
 #if DEBUG
-            //Expanded = true;
+            Expanded = true;
 #endif
 
             Bar = new StackLayout();
 
-            Button keyboard = new Button
-            {
-                Text = "...",
-            };
-            keyboard.Clicked += (sender, e) =>
+            LabelButton keyboard = new LabelButton("🌐");
+            keyboard.Text.FontSize = 15;
+            keyboard.Text.FontFamily = CrunchStyle.SYMBOLA_FONT;
+            keyboard.Button.Clicked += (sender, e) =>
             {
                 KeyboardManager.NextKeyboard();
             };
@@ -117,7 +116,9 @@ namespace Calculator
             
             ExpandButton = new Button
             {
-                Text = "<",
+                Text = "◁",
+                FontFamily = CrunchStyle.SYMBOLA_FONT,
+                FontSize = 15
             };
             ExpandButton.Clicked += Change;
             

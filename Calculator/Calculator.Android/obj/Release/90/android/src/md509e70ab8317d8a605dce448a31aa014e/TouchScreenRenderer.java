@@ -2,7 +2,7 @@ package md509e70ab8317d8a605dce448a31aa014e;
 
 
 public class TouchScreenRenderer
-	extends md51558244f76c53b6aeda52c8a337f2c37.VisualElementRenderer_1
+	extends md51558244f76c53b6aeda52c8a337f2c37.PageRenderer
 	implements
 		mono.android.IGCUserPeer
 {

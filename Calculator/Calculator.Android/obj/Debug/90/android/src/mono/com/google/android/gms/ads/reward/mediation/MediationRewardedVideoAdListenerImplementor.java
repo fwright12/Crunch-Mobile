@@ -20,7 +20,9 @@ public class MediationRewardedVideoAdListenerImplementor
 			"n_onInitializationFailed:(Lcom/google/android/gms/ads/reward/mediation/MediationRewardedVideoAdAdapter;I)V:GetOnInitializationFailed_Lcom_google_android_gms_ads_reward_mediation_MediationRewardedVideoAdAdapter_IHandler:Android.Gms.Ads.Reward.Mediation.IMediationRewardedVideoAdListenerInvoker, Xamarin.GooglePlayServices.Ads.Lite\n" +
 			"n_onInitializationSucceeded:(Lcom/google/android/gms/ads/reward/mediation/MediationRewardedVideoAdAdapter;)V:GetOnInitializationSucceeded_Lcom_google_android_gms_ads_reward_mediation_MediationRewardedVideoAdAdapter_Handler:Android.Gms.Ads.Reward.Mediation.IMediationRewardedVideoAdListenerInvoker, Xamarin.GooglePlayServices.Ads.Lite\n" +
 			"n_onRewarded:(Lcom/google/android/gms/ads/reward/mediation/MediationRewardedVideoAdAdapter;Lcom/google/android/gms/ads/reward/RewardItem;)V:GetOnRewarded_Lcom_google_android_gms_ads_reward_mediation_MediationRewardedVideoAdAdapter_Lcom_google_android_gms_ads_reward_RewardItem_Handler:Android.Gms.Ads.Reward.Mediation.IMediationRewardedVideoAdListenerInvoker, Xamarin.GooglePlayServices.Ads.Lite\n" +
+			"n_onVideoCompleted:(Lcom/google/android/gms/ads/reward/mediation/MediationRewardedVideoAdAdapter;)V:GetOnVideoCompleted_Lcom_google_android_gms_ads_reward_mediation_MediationRewardedVideoAdAdapter_Handler:Android.Gms.Ads.Reward.Mediation.IMediationRewardedVideoAdListenerInvoker, Xamarin.GooglePlayServices.Ads.Lite\n" +
 			"n_onVideoStarted:(Lcom/google/android/gms/ads/reward/mediation/MediationRewardedVideoAdAdapter;)V:GetOnVideoStarted_Lcom_google_android_gms_ads_reward_mediation_MediationRewardedVideoAdAdapter_Handler:Android.Gms.Ads.Reward.Mediation.IMediationRewardedVideoAdListenerInvoker, Xamarin.GooglePlayServices.Ads.Lite\n" +
+			"n_zzb:(Landroid/os/Bundle;)V:GetZzb_Landroid_os_Bundle_Handler:Android.Gms.Ads.Reward.Mediation.IMediationRewardedVideoAdListenerInvoker, Xamarin.GooglePlayServices.Ads.Lite\n" +
 			"";
 		mono.android.Runtime.register ("Android.Gms.Ads.Reward.Mediation.IMediationRewardedVideoAdListenerImplementor, Xamarin.GooglePlayServices.Ads.Lite", MediationRewardedVideoAdListenerImplementor.class, __md_methods);
 	}
@@ -106,12 +108,28 @@ public class MediationRewardedVideoAdListenerImplementor
 	private native void n_onRewarded (com.google.android.gms.ads.reward.mediation.MediationRewardedVideoAdAdapter p0, com.google.android.gms.ads.reward.RewardItem p1);
 
 
+	public void onVideoCompleted (com.google.android.gms.ads.reward.mediation.MediationRewardedVideoAdAdapter p0)
+	{
+		n_onVideoCompleted (p0);
+	}
+
+	private native void n_onVideoCompleted (com.google.android.gms.ads.reward.mediation.MediationRewardedVideoAdAdapter p0);
+
+
 	public void onVideoStarted (com.google.android.gms.ads.reward.mediation.MediationRewardedVideoAdAdapter p0)
 	{
 		n_onVideoStarted (p0);
 	}
 
 	private native void n_onVideoStarted (com.google.android.gms.ads.reward.mediation.MediationRewardedVideoAdAdapter p0);
+
+
+	public void zzb (android.os.Bundle p0)
+	{
+		n_zzb (p0);
+	}
+
+	private native void n_zzb (android.os.Bundle p0);
 
 	private java.util.ArrayList refList;
 	public void monodroidAddReference (java.lang.Object obj)

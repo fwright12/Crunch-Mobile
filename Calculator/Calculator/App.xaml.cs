@@ -10,15 +10,15 @@ namespace Calculator
 {
     public partial class App : Application
     {
-        public static NavigationPage Navigation;
+        private static NavigationPage Navigation;
         public static MainPage Main;
 
         public App()
         {
             InitializeComponent();
-
+            
             MainPageSetup();
-
+            
             return;
 
             Label l = new Label()
@@ -71,7 +71,7 @@ namespace Calculator
             Resources = new CrunchStyle();
 
             Settings.Load();
-
+            
             if (Device.Idiom == TargetIdiom.Phone)
             {
                 MainPage = Navigation = new NavigationPage(Main = new MainPage());
@@ -80,7 +80,7 @@ namespace Calculator
             else if (Device.Idiom == TargetIdiom.Tablet)
             {
                 Navigation = new NavigationPage(new SettingsPage()) { Title = "Settings" };
-
+                
                 Main = new MainPage();
                 MainPage = new MasterDetailPage
                 {
@@ -92,6 +92,10 @@ namespace Calculator
                     IsGestureEnabled = false
 #endif
                 };
+                /*(MainPage as MasterDetailPage).IsPresentedChanged += (sender, e) =>
+                {
+                    (sender as MasterDetailPage).Master.IsVisible = (sender as MasterDetailPage).IsPresented;
+                };*/
             }
         }
     }

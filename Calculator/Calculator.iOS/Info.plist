@@ -45,7 +45,7 @@
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/AppIcons.appiconset</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.3</string>
+	<string>2.3.1</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.GreenMountainLabs.Calculator</string>
 	<key>CFBundleDisplayName</key>
@@ -55,6 +55,10 @@
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 	<key>CFBundleVersion</key>
-	<string>6.2</string>
+	<string>7.0</string>
+  <key>UIAppFonts</key>
+  <array>
+    <string>Symbola.ttf</string>
+  </array>
 </dict>
 </plist>

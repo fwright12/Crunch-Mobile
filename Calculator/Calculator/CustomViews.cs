@@ -7,9 +7,26 @@ using Xamarin.Forms.Extensions;
 
 namespace Calculator
 {
+    public class LabelButton : AnythingButton
+    {
+        public Label Text { get; private set; }
+
+        public LabelButton(string text = "")
+        {
+            Children.Add(Button = new LongClickableButton());
+            Children.Add(Text = new Label
+            {
+                Text = text,
+                HorizontalTextAlignment = TextAlignment.Center,
+                VerticalTextAlignment = TextAlignment.Center,
+            }, new Rectangle(0.5, 0.5, 1, 1), AbsoluteLayoutFlags.All);
+            Button.InputTransparent = false;
+        }
+    }
+
     public class AnythingButton : AbsoluteLayout
     {
-        public LongClickableButton Button { get; private set; }
+        public LongClickableButton Button { get; protected set; }
 
         public AnythingButton()
         {

@@ -20,6 +20,8 @@ namespace Calculator
         public static readonly Color BUTTON_BACKGROUND_COLOR = Color.LightGray;
         public static readonly int CORNER_RADIUS = 5;
 
+        public static readonly string SYMBOLA_FONT = Device.RuntimePlatform == Device.Android ? "Symbola.ttf#Symbola" : "Symbola";
+
         private static readonly Thickness BUTTON_PADDING = Device.RuntimePlatform == Device.iOS ? new Thickness(10, 0, 10, 0) : new Thickness(0);
 
         public CrunchStyle()
@@ -41,7 +43,7 @@ namespace Calculator
             this.Add<ContentPage>(
                 (bindable) =>
                 {
-                    if (!(bindable is SettingsPage) && !(bindable is PrivacyPolicyPage))
+                    if (!(bindable is SettingsPage))
                     {
                         bindable.LayoutChanged += (sender, e) => SetPadding(sender as Page);
                         bindable.Appearing += (sender, e) => SetPadding(sender as Page);
