@@ -4,3 +4,5 @@ LinkerBehavior=SdkOnly
 AdditionalSupportedEncodings=
 HttpClientImplementation=HttpClientHandler
 SupportedArchitectures=ARM64
+BuildConfiguration=Release
+TemplateName=

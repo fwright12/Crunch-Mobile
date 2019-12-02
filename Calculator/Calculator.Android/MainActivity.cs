@@ -6,7 +6,6 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.OS;
-using Android.Gms.Ads;
 
 namespace Calculator.Droid
 {
@@ -25,7 +24,7 @@ namespace Calculator.Droid
 
             Window.SetSoftInputMode(SoftInput.AdjustResize);
 
-            MobileAds.Initialize(ApplicationContext, "ca-app-pub-1795523054003202~5967496762");
+            Android.Gms.Ads.MobileAds.Initialize(ApplicationContext, "ca-app-pub-1795523054003202~5967496762");
         }
     }
 }

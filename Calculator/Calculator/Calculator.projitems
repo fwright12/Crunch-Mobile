@@ -12,6 +12,10 @@
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)App.xaml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)App - Copy.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Keyboard\Key.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Pages\AboutPage.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -24,7 +28,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)CustomViews.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FunctionsDrawer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graph.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)CrunchKeyboard.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Keyboard\CrunchKeyboard.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)KeyboardManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Link.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Pages\MainPage.cs" />
@@ -36,7 +40,7 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)SystemKeyboard.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Tutorial.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)VariableRow.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Keyboard\VariableRow.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="$(MSBuildThisFileDirectory)desmos.html" />

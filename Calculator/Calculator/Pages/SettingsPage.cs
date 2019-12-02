@@ -27,7 +27,13 @@ namespace Calculator
             Trig.Select((int)Settings.Trigonometry);
 
             ClearCanvasWarning.SetValue(SwitchCell.OnProperty, Settings.ClearCanvasWarning);
-            ShowFullKeyboard.SetValue(SwitchCell.OnProperty, Settings.ShouldShowFullKeyboard);
+            RefreshShowFullKeyboard();
+            //ShowFullKeyboard.SetValue(SwitchCell.OnProperty, Settings.ShouldShowFullKeyboard);
+        }
+
+        private void RefreshShowFullKeyboard()
+        {
+            ShowFullKeyboard.On = App.Current.Collapsed ? false : Settings.ShouldShowFullKeyboard;
         }
 
         public SettingsPage()
@@ -68,34 +74,34 @@ namespace Calculator
             //Other
             ClearCanvasWarning = new SwitchCell()
             {
-                Text = "Clear canvas warning"
+                Text = "Clear canvas warning",
             };
             ClearCanvasWarning.OnChanged += (sender, e) => Settings.ClearCanvasWarning = e.Value;
             ShowFullKeyboard = new SwitchCell()
             {
-                Text = "Show full keyboard"
+                BindingContext = App.Current,
+                Text = "Show full keyboard",
             };
             ShowFullKeyboard.OnChanged += (sender, e) =>
             {
                 Settings.ShouldShowFullKeyboard = e.Value;
             };
+            ShowFullKeyboard.SetBinding(Cell.IsEnabledProperty, "Collapsed", converter: new ValueConverter<bool>((b) => !b));
+            App.Current.WhenPropertyChanged(DrawerPage.CollapsedProperty, (sender, e) => RefreshShowFullKeyboard());
 
             TableSection other = new TableSection()
             {
                 Title = "Other"
             };
             other.Add(ClearCanvasWarning);
-            if (Device.Idiom == TargetIdiom.Tablet)
-            {
-                other.Add(ShowFullKeyboard);
-            }
+            other.Add(ShowFullKeyboard);
 
             //Info
             TextCell about = new TextCell
             {
                 Text = "About"
             };
-            about.Tapped += async (sender, e) => await Navigation.PushAsync(new AboutPage());
+            about.Tapped += (sender, e) => Navigation.PushAsync(new AboutPage());
 
             TextCell tutorial = new TextCell
             {
@@ -103,19 +109,16 @@ namespace Calculator
             };
             tutorial.Tapped += async (sender, e) =>
             {
-                if (Device.Idiom == TargetIdiom.Phone)
+                if (App.Current.MainPage is MasterDetailPage masterDetail && masterDetail.IsPresented)
                 {
-                    await Navigation.PopAsync();
+                    masterDetail.IsPresented = false;
                 }
                 else
                 {
-                    (App.Current.MainPage as MasterDetailPage).IsPresented = false;
+                    await Navigation.PopAsync();
                 }
 
-                if (!Settings.Tutorial)
-                {
-                    App.Main.Tutorial();
-                }
+                (App.Current as App).RunTutorial();
             };
 
             TextCell support = new TextCell
@@ -194,6 +197,9 @@ namespace Calculator
                 Root = root,
                 VerticalOptions = LayoutOptions.FillAndExpand,
                 Intent = TableIntent.Settings,
+#if __IOS__
+                BackgroundColor = Color.LightGray,
+#endif
                 HasUnevenRows = true
             };
 
@@ -309,7 +315,11 @@ namespace Calculator
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand
             };
-            layout.Children.Add(new Label() { Text = labelText, VerticalOptions = LayoutOptions.Center });
+            layout.Children.Add(new Label()
+            {
+                Text = labelText,
+                VerticalOptions = LayoutOptions.Center
+            });
             layout.Children.Add(control);
 
             View = layout;

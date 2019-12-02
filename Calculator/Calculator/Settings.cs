@@ -27,7 +27,15 @@ namespace Calculator
         public static Numbers Numbers = Numbers.Decimal;
         public static Trigonometry Trigonometry = Trigonometry.Degrees;
 
-        public static bool Tutorial = true;
+        public static bool ShouldRunTutorial
+        {
+            get
+            {
+                bool keyExists = Storage.ContainsKey(TUTORIAL);
+                Storage[TUTORIAL] = null;
+                return !keyExists;
+            }
+        }
         public static bool ClearCanvasWarning = true;
         public static bool LeftHanded = false;
         public static List<char> Variables = new List<char>(51);
@@ -40,8 +48,8 @@ namespace Calculator
             get => ShowFullKeyboard;
             set
             {
-                KeyboardChanged?.Invoke(new ToggledEventArgs(value));
                 ShowFullKeyboard = value;
+                KeyboardChanged?.Invoke(new ToggledEventArgs(value));
             }
         }
         private static bool ShowFullKeyboard = true;
@@ -65,7 +73,7 @@ namespace Calculator
             Trigonometry = Storage.TryGet(TRIG_FORM, Trigonometry.Degrees);
 
             ClearCanvasWarning = Storage.TryGet(CLEAR_CANVAS_WARNING, true);
-            Tutorial = Storage.TryGet(TUTORIAL, true);
+            //Tutorial = !Storage.ContainsKey(TUTORIAL);
             ShouldShowFullKeyboard = Storage.TryGet(KEYBOARD_FULL, true);
             
             if (Storage.ContainsKey(KEYBOARD_POSITION))
@@ -117,7 +125,6 @@ namespace Calculator
             Storage[NUMBER_FORM] = (int)Numbers;
             Storage[TRIG_FORM] = (int)Trigonometry;
             Storage[CLEAR_CANVAS_WARNING] = ClearCanvasWarning;
-            Storage[TUTORIAL] = false;
             Storage[KEYBOARD_FULL] = ShouldShowFullKeyboard;
             Storage[KEYBOARD_POSITION] = KeyboardPosition.X.ToString() + "|" + KeyboardPosition.Y.ToString();
 
@@ -135,7 +142,7 @@ namespace Calculator
         {
             Storage.Clear();
             Load();
-            Tutorial = false;
+            //Tutorial = false;
         }
 
         private static T TryGet<T>(this IDictionary<string, object> dict, string key, T defaultValue)

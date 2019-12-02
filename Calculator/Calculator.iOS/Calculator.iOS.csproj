@@ -165,16 +165,17 @@
     <CodesignProvision>Crunch Testing</CodesignProvision>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="BannerAdRenderer.cs" />
-    <Compile Include="CanvasRenderer.cs" />
+    <Compile Include="Renderers\BannerAdRenderer.cs" />
+    <Compile Include="Renderers\CanvasRenderer.cs" />
     <Compile Include="ExtensionMethods.cs" />
-    <Compile Include="KeyboardEntryRenderer.cs" />
-    <Compile Include="LongClickableButtonRenderer.cs" />
+    <Compile Include="Renderers\iOSDrawerPageRenderer.cs" />
+    <Compile Include="Renderers\KeyboardEntryRenderer.cs" />
+    <Compile Include="Renderers\LongClickableButtonRenderer.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
     <Compile Include="ShowTouchesWindow.cs" />
-    <Compile Include="TouchableStackLayoutRenderer.cs" />
-    <Compile Include="TouchScreenRenderer.cs" />
+    <Compile Include="Renderers\TouchableStackLayoutRenderer.cs" />
+    <Compile Include="Renderers\TouchScreenRenderer.cs" />
     <Compile Include="UITouchGestureRecognizer.cs" />
     <None Include="Entitlements.plist" />
     <None Include="Info.plist">
@@ -195,7 +196,7 @@
       <Version>4.5.0</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Forms">
-      <Version>4.2.0.848062</Version>
+      <Version>4.3.0.947036</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Google.iOS.MobileAds">
       <Version>7.38.0</Version>

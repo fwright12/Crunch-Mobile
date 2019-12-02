@@ -130,7 +130,7 @@ namespace Calculator
             //LHS = lhs;// text == "" ? new Expression() : new Expression(Xamarin.Forms.MathDisplay.Reader.Render(text));
             Text equals = new Text(" = ") { FontSize = Text.MaxFontSize };
 
-            Children.AddRange(LHS, equals, RHS);
+            Children.Add(LHS, equals, RHS);
 
             //Changed += (newAnswer, oldAnswer) => CheckAnswerNecessary();
             AnswerChanged += (o, n) => CheckAnswerNecessary();

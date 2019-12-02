@@ -15,15 +15,21 @@ namespace Calculator
         {
             Title = "About Crunch";
 
+            Resources = new ResourceDictionary();
+            Resources.Add(new Style(typeof(Label))
+            {
+                Setters =
+                {
+                    new Setter { Property = Label.HorizontalOptionsProperty, Value = LayoutOptions.CenterAndExpand },
+                    new Setter { Property = Label.FontSizeProperty, Value = MainPage.FontSize }
+                }
+            });
+
             Content = new ScrollView
             {
                 Content = new StackLayout
                 {
                     Spacing = 20,
-                    Resources = new ResourceDictionary().Populate<Label>(
-                        new Setter { Property = Label.HorizontalOptionsProperty, Value = LayoutOptions.CenterAndExpand },
-                        new Setter { Property = Label.FontSizeProperty, Value = MainPage.FontSize }
-                        ),
                     Children =
                     {
                         new Label

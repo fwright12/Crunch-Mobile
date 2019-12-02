@@ -9,41 +9,72 @@ namespace Calculator
 {
     public class LabelButton : AnythingButton
     {
-        public Label Text { get; private set; }
+        public Label Label { get; private set; }
 
-        public LabelButton(string text = "")
+        protected LabelButton(Button button) : base(button) { }
+
+        public static implicit operator LabelButton(Button button)
         {
-            Children.Add(Button = new LongClickableButton());
-            Children.Add(Text = new Label
+            Label label = new Label
             {
-                Text = text,
+                BindingContext = button,
                 HorizontalTextAlignment = TextAlignment.Center,
                 VerticalTextAlignment = TextAlignment.Center,
-            }, new Rectangle(0.5, 0.5, 1, 1), AbsoluteLayoutFlags.All);
-            Button.InputTransparent = false;
+                Text = button.Text,
+            };
+            BindButtonTextProperties(label);
+
+            button.Text = "";
+            LabelButton labelButton = new LabelButton(button)
+            {
+                Label = label
+            };
+
+            labelButton.Children.Add(label, new Rectangle(0.5, 0.5, -1, -1), AbsoluteLayoutFlags.PositionProportional);
+
+            return labelButton;
+        }
+
+        private static void BindButtonTextProperties(Label label)
+        {
+            label.SetBinding(Label.FontAttributesProperty, "FontAttributes");
+            label.SetBinding(Label.FontFamilyProperty, "FontFamily");
+            label.SetBinding(Label.FontProperty, "Font");
+            label.SetBinding(Label.FontSizeProperty, "FontSize");
+            label.SetBinding(Label.TextColorProperty, "TextColor");
         }
     }
 
     public class AnythingButton : AbsoluteLayout
     {
-        public LongClickableButton Button { get; protected set; }
+        public Button Button { get; private set; }
 
-        public AnythingButton()
+        public AnythingButton() : this(new LongClickableButton()) { }
+
+        protected AnythingButton(Button button)
         {
-            Children.Add(Button = new LongClickableButton(), new Rectangle(0, 0, 1, 1), AbsoluteLayoutFlags.All);
-            //Button.Clicked += (sender, e) => Clicked?.Invoke(sender, e);
+            Button = button;
+
+            Children.Insert(0, Button);
+            SetLayoutBounds(Button, new Rectangle(0, 0, 1, 1));
+            SetLayoutFlags(Button, AbsoluteLayoutFlags.All);
+
             Button.InputTransparent = false;
         }
+
+        public static implicit operator AnythingButton(Button button) => new AnythingButton(button);
 
         protected override void OnChildAdded(Element child)
         {
             base.OnChildAdded(child);
 
-            if (child is VisualElement)
+            if (child is VisualElement visualElement)
             {
-                (child as VisualElement).InputTransparent = true;
+                visualElement.InputTransparent = true;
             }
         }
+
+        protected override SizeRequest OnMeasure(double widthConstraint, double heightConstraint) => Button?.Measure(widthConstraint, heightConstraint) ?? base.OnMeasure(widthConstraint, heightConstraint);
     }
 
     public class TextImage : AbsoluteLayout, Xamarin.Forms.MathDisplay.IMathView

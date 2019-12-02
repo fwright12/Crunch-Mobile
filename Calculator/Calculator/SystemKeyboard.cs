@@ -13,10 +13,15 @@ namespace Calculator
         public static IKeyboard Instance => RawInstance;
         //public static bool IsShowing => KeyboardManager.Current == Instance;
 
-        private static KeyboardEntry RawInstance;
+        private static KeyboardEntry RawInstance = null;
 
         public static void Setup(AbsoluteLayout layout)
         {
+            if (RawInstance != null)
+            {
+                return;
+            }
+
             layout.Children.Add(RawInstance = new KeyboardEntry(), new Point(-1000, -1000));
         }
 

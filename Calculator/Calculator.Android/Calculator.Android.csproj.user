@@ -4,5 +4,6 @@
     <SelectedDevice>tablet</SelectedDevice>
     <DefaultDevice>tablet</DefaultDevice>
     <AndroidDesignerPreferredTheme>MainTheme</AndroidDesignerPreferredTheme>
+    <AndroidDesignerPreferredDevice>Nexus 4</AndroidDesignerPreferredDevice>
   </PropertyGroup>
 </Project>

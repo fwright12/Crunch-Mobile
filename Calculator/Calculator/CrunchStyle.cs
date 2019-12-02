@@ -27,40 +27,68 @@ namespace Calculator
         public CrunchStyle()
         {
             //Buttons
-            this.Add<Button>(
-                new Setter { Property = Button.TextColorProperty, Value = BUTTON_TEXT_COLOR },
-                new Setter { Property = Button.BackgroundColorProperty, Value = BUTTON_BACKGROUND_COLOR },
-                new Setter { Property = Button.CornerRadiusProperty, Value = CORNER_RADIUS },
-                new Setter { Property = Button.PaddingProperty, Value = BUTTON_PADDING }
-                );
+            Add(new Style(typeof(Button))
+            {
+                ApplyToDerivedTypes = true,
+                Setters =
+                {
+                    new Setter { Property = Button.TextColorProperty, Value = BUTTON_TEXT_COLOR },
+                    new Setter { Property = Button.BackgroundColorProperty, Value = BUTTON_BACKGROUND_COLOR },
+                    new Setter { Property = Button.CornerRadiusProperty, Value = CORNER_RADIUS },
+                    new Setter { Property = Button.PaddingProperty, Value = BUTTON_PADDING }
+                }
+            });
 
             //Text
-            this.Add<Text>(
-                new Setter { Property = Label.TextColorProperty, Value = TEXT_COLOR }
-                );
+            Add(new Style(typeof(Text))
+            {
+                ApplyToDerivedTypes = true,
+                Setters =
+                {
+                    new Setter { Property = Label.TextColorProperty, Value = TEXT_COLOR }
+                }
+            });
 
             //Pages
-            this.Add<ContentPage>(
-                (bindable) =>
+            Add(new Style(typeof(ContentPage))
+            {
+                ApplyToDerivedTypes = true,
+                Behaviors =
                 {
-                    if (!(bindable is SettingsPage))
+                    new BehaviorFunc<ContentPage>((bindable) =>
                     {
-                        bindable.LayoutChanged += (sender, e) => SetPadding(sender as Page);
-                        bindable.Appearing += (sender, e) => SetPadding(sender as Page);
-                    }
+                        if (!(bindable is SettingsPage))
+                        {
+                            bindable.LayoutChanged += (sender, e) => SetPadding(sender as Page);
+                            bindable.Appearing += (sender, e) => SetPadding(sender as Page);
+                        }
+                    })
                 },
-                new Setter { Property = VisualElement.BackgroundColorProperty, Value = BACKGROUND_COLOR }
-                );
+                Setters =
+                {
+                    new Setter { Property = VisualElement.BackgroundColorProperty, Value = BACKGROUND_COLOR }
+                }
+            });
 
             //Canvas
-            this.Add<Canvas>(
-                new Setter { Property = VisualElement.BackgroundColorProperty, Value = BACKGROUND_COLOR }
-                );
+            Add(new Style(typeof(Canvas))
+            {
+                ApplyToDerivedTypes = true,
+                Setters =
+                {
+                    new Setter { Property = VisualElement.BackgroundColorProperty, Value = BACKGROUND_COLOR }
+                }
+            });
 
             //Cursor
-            this.Add<CursorView>(
-                new Setter { Property = VisualElement.BackgroundColorProperty, Value = TEXT_COLOR }
-                );
+            Add(new Style(typeof(CursorView))
+            {
+                ApplyToDerivedTypes = true,
+                Setters =
+                {
+                    new Setter { Property = VisualElement.BackgroundColorProperty, Value = TEXT_COLOR }
+                }
+            });
         }
 
         private void SetPadding(Page page)

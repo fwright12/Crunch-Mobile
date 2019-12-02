@@ -32,6 +32,14 @@ namespace Calculator
 
         private static List<IKeyboard> Keyboards = new List<IKeyboard>();
 
+
+        public static IEnumerable<IKeyboard> Connected() => Keyboards;
+        public static void ClearKeyboards()
+        {
+            SwitchTo(null);
+            Keyboards = new List<IKeyboard>();
+        }
+
         //public static void AddSource(KeystrokeEventHandler eventHandler) => eventHandler += (keystroke) => Type(keystroke);
 
         public static void Type(params char[] keystrokes) => Type(keystrokes as IEnumerable<char>);
@@ -46,11 +54,7 @@ namespace Calculator
 
         public static void MoveCursor(CursorKey key) => CursorMoved?.Invoke(key);
 
-        public static void AddKeyboard(params IKeyboard[] keyboards)
-        {
-            Keyboards.AddRange(keyboards);
-            SwitchTo(keyboards[keyboards.Length - 1]);
-        }
+        public static void AddKeyboard(params IKeyboard[] keyboards) => Keyboards.AddRange(keyboards);
 
         public static void SwitchTo(int index) => SwitchTo(Keyboards[index]);
 
@@ -69,8 +73,11 @@ namespace Calculator
 
             Current = keyboard;
 
-            Current.Enable();
-            Current.Typed += Type;
+            if (Current != null)
+            {
+                Current.Enable();
+                Current.Typed += Type;
+            }
 
             KeyboardChanged?.Invoke(Current);
         }
