@@ -22,18 +22,6 @@ namespace Calculator
      * Makeover - color scheme, better icons
      * Basic calculator mode
      * 
-     * v2.3.2
-     * More flexible UI
-     *      Dynamic keyboard
-     *      Simplified layout structure
-     * More decimal places
-     * Adjust ad position
-     * iOS
-     *      touch renderer (DEL long press registers click)
-     *      masterdetail problems
-     * Show full keyboard option in menu
-     * Make IsCondensed in CrunchKeyboard a bindable property
-     * 
      * Android Button Touch renderer long press problems
      *
      * v2.4
