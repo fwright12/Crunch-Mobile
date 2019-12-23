@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Extensions;
+using System.Runtime.CompilerServices;
 using Xamarin.Forms;
 using Xamarin.Forms.Extensions;
 using Xamarin.Forms.MathDisplay;
@@ -18,14 +19,14 @@ namespace Calculator
     //Radical - right half is about 1/2 of horizontal, bottom left takes up about 1/2 of vertical, thickness is 0.1, horizontal bar is about 1/3 of horizontal
 
     /* To do:
-     * v3.0
-     * Makeover - color scheme, better icons
-     * Basic calculator mode
-     * 
      * Android Button Touch renderer long press problems
      *
      * v2.4
      * Predefined functions (quadratic formula, physics stuff), ability to add custom ones
+     * 
+     * v3.0
+     * Makeover - color scheme, better icons
+     * Basic calculator mode
      * 
      * v.?
      * Native drag and drop
@@ -80,13 +81,13 @@ namespace Calculator
                 Orientation = StackOrientation.Vertical,
                 Children =
                 {
-                    (widthSlider = new Xamarin.Forms.Slider
+                    (widthSlider = new Slider
                     {
                         Maximum = 1000,
                         Minimum = 0,
                         Value = 300,
                     }),
-                    (heightSlider = new Xamarin.Forms.Slider
+                    (heightSlider = new Slider
                     {
                         Maximum = 1000,
                         Minimum = 0,
@@ -311,49 +312,111 @@ namespace Calculator
             FixDynamicLag("");
         }
 
-        private readonly int MAX_TUTORIAL_SIZE_ABSOLUTE = 400;
-        private readonly double MAX_TUTORIAL_SIZE_PERCENT = 0.75;
-
         public void Tutorial()
         {
-            CanvasScroll.IsEnabled = false;
-            FullKeyboardView.IsEnabled = false;
             Tutorial tutorial = new Tutorial(CrunchKeyboard.IsCondensed);
-            Color Background = Color.White;
 
-            Frame frame = new Frame
+            ModalView popup = new ModalView
             {
                 Content = tutorial,
-                BorderColor = Background,
-                BackgroundColor = Background,
-                CornerRadius = 10,
                 Padding = new Thickness(20, 20, 20, 0),
-                VerticalOptions = LayoutOptions.FillAndExpand
+                BackgroundColor = Color.White
             };
-
-            PhantomCursorField.Children.Add(frame, new Rectangle(0.5, 0.5, -1, -1), AbsoluteLayoutFlags.PositionProportional);
-
-            EventHandler sizing = (sender, e) =>
-            {
-                double width = Math.Min(MAX_TUTORIAL_SIZE_ABSOLUTE, MAX_TUTORIAL_SIZE_PERCENT * PhantomCursorField.Width);
-                frame.WidthRequest = frame.Width > width ? width : -1;
-
-                double height = Math.Min(MAX_TUTORIAL_SIZE_ABSOLUTE, MAX_TUTORIAL_SIZE_PERCENT * PhantomCursorField.Height);
-                frame.HeightRequest = frame.Height > height ? height : -1;
-            };
-            sizing(null, null);
-
-            PhantomCursorField.SizeChanged += sizing;
-            frame.SizeChanged += sizing;
 
             tutorial.Completed += () =>
             {
-                frame.Remove();
-                PhantomCursorField.SizeChanged -= sizing;
-                CanvasScroll.IsEnabled = true;
-                FullKeyboardView.IsEnabled = true;
+                popup.Remove();
                 App.TutorialRunning = false;
             };
+
+            PhantomCursorField.Children.Add(popup, new Rectangle(0.5, 0.5, -1, -1), AbsoluteLayoutFlags.PositionProportional);
+        }
+
+        public class TestImage : WebView
+        {
+
+        }
+
+        public void ShowTip(string explanation, string url)
+        {
+            CheckBox showTips = new CheckBox
+            {
+                IsChecked = true
+            };
+            Button dismiss = new Button
+            {
+                HorizontalOptions = LayoutOptions.EndAndExpand,
+                Text = "Dismiss"
+            };
+            GIF gif = new GIF(url);
+
+            ModalView popup = new ModalView { };
+            popup.WhenDescendantAdded<View>((view) =>
+            {
+                view.VerticalOptions = LayoutOptions.Center;
+            });
+            popup.Content = new StackLayout
+            {
+                Orientation = StackOrientation.Vertical,
+                Children =
+                {
+                    new StackLayout
+                    {
+                        Orientation = StackOrientation.Horizontal,
+                        //BackgroundColor = Color.Red,
+                        Children =
+                        {
+                            new Label
+                            {
+                                HorizontalOptions = LayoutOptions.Start,
+                                //VerticalOptions = LayoutOptions.Center,
+                                Text = "Did you know?",
+                                FontSize = NamedSize.Large.FontSize<Label>()
+                            },
+                            dismiss
+                        }
+                    },
+                    new Label
+                    {
+                        HorizontalOptions = LayoutOptions.Center,
+                        HorizontalTextAlignment = TextAlignment.Center,
+                        Text = explanation,
+                        FontSize = NamedSize.Body.FontSize<Label>()
+                    },
+                    gif,
+                    new StackLayout
+                    {
+                        Orientation = StackOrientation.Horizontal,
+                        HorizontalOptions = LayoutOptions.Center,
+                        Spacing = 0,
+                        Children =
+                        {
+                            new Label
+                            {
+                                HorizontalTextAlignment = TextAlignment.Center,
+                                Text = "Show new tips at startup",
+                                FontSize = NamedSize.Caption.FontSize<Label>()
+                            },
+                            showTips
+                        }
+                    },
+                    /*new Label
+                    {
+                        HorizontalOptions = LayoutOptions.Center,
+                        HorizontalTextAlignment = TextAlignment.Center,
+                        Text = "(additional tips can be found in the settings menu)",
+                        FontSize = NamedSize.Caption.FontSize<Label>()
+                    },*/
+                }
+            };
+
+            dismiss.Clicked += (sender, e) =>
+            {
+                popup.Remove();
+                Settings.ShouldShowTips = showTips.IsChecked;
+            };
+
+            PhantomCursorField.Children.Add(popup, new Rectangle(0.5, 0.5, -1, -1), AbsoluteLayoutFlags.PositionProportional);
         }
 
 #if DEBUG

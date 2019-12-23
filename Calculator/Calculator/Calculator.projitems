@@ -16,6 +16,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Keyboard\Key.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ModalView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Pages\AboutPage.cs">
       <SubType>Code</SubType>
     </Compile>

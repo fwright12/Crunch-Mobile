@@ -4,8 +4,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using System.Extensions;
 using Xamarin.Forms;
 using Xamarin.Forms.Extensions;
+
+/*namespace Xamarin.Forms.Extensions
+{
+    public class TableRoot
+    {
+        public Xamarin.Forms.TableRoot Value;
+        public IList<TableSection> Sections
+        {
+            get => Value.ToList<TableSection>();
+            set => Value.Add(value);
+        }
+        
+        public static implicit operator Xamarin.Forms.TableRoot(TableRoot root) => root.Value;
+    }
+}*/
 
 namespace Calculator
 {
@@ -96,13 +112,6 @@ namespace Calculator
             other.Add(ClearCanvasWarning);
             other.Add(ShowFullKeyboard);
 
-            //Info
-            TextCell about = new TextCell
-            {
-                Text = "About"
-            };
-            about.Tapped += (sender, e) => Navigation.PushAsync(new AboutPage());
-
             TextCell tutorial = new TextCell
             {
                 Text = "Tutorial"
@@ -121,6 +130,7 @@ namespace Calculator
                 (App.Current as App).RunTutorial();
             };
 
+            // Help
             TextCell support = new TextCell
             {
                 Text = "Support \u2197"
@@ -134,6 +144,32 @@ namespace Calculator
             };
             tips.Tapped += (sender, e) => Device.OpenUri(new Uri(@"https://gml802.wixsite.com/apps/support"));
 
+            SwitchCell showTips = new SwitchCell
+            {
+                Text = "Show new tips at startup",
+                On = Settings.ShouldShowTips
+            };
+            showTips.OnChanged += (sender, e) =>
+            {
+                Settings.ShouldShowTips = e.Value;
+            };
+
+            TableSection help = new TableSection
+            {
+                Title = "Help"
+            };
+            help.Add(tutorial);
+            help.Add(support);
+            help.Add(tips);
+            help.Add(showTips);
+
+            //Info
+            TextCell about = new TextCell
+            {
+                Text = "About"
+            };
+            about.Tapped += (sender, e) => Navigation.PushAsync(new AboutPage());
+
             TextCell privacy = new TextCell
             {
                 Text = "Privacy Policy \u2197"
@@ -145,9 +181,6 @@ namespace Calculator
                 Title = "Info"
             };
             info.Add(about);
-            info.Add(tutorial);
-            info.Add(support);
-            info.Add(tips);
             info.Add(privacy);
             foreach(TextCell cell in info)
             {
@@ -157,41 +190,11 @@ namespace Calculator
                 }
             }
 
-            //TextCell test = new TextCell
-            LabelCell test = new LabelCell
-            {
-                Label = new Label
-                {
-                    Text = "Reset to Default",
-                    TextColor = Color.Red,
-                    HorizontalTextAlignment = TextAlignment.Center,
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
-                },
-            };
-            TableSection danger = new TableSection
-            {
-                Title = " ",
-            };
-            danger.Add(test);
-
             Refresh();
 
             TableRoot root = new TableRoot();
-            root.Add(math);
-            root.Add(answerDefaults);
-            root.Add(other);
-            root.Add(info);
-            root.Add(danger);
-
-            test.Tapped += async (sender, e) =>
-            {
-                if (await Application.Current.MainPage.DisplayAlert("Wait!", "This will reset all settings to their default values. This cannot be undone. Are you sure you want to continue?", "Yes", "No"))
-                {
-                    Settings.ResetToDefault();
-                    Refresh();
-                }
-            };
-
+            root.Add(math, answerDefaults, other, help, info, Danger());
+            
             Content = new TableView()
             {
                 Root = root,
@@ -202,22 +205,36 @@ namespace Calculator
 #endif
                 HasUnevenRows = true
             };
+        }
 
-            /*Content = new StackLayout
+        private TableSection Danger()
+        {
+            LabelCell reset = new LabelCell
             {
-                Orientation = StackOrientation.Vertical,
-                Children =
+                Label = new Label
                 {
-                    tableView,
-                    new Button
-                    {
-                        VerticalOptions = LayoutOptions.End,
-                        HorizontalOptions = LayoutOptions.Center,
-                        Text = "Reset to Default",
-                        IsVisible = false
-                    }
+                    Text = "Reset to Default",
+                    TextColor = Color.Red,
+                    HorizontalTextAlignment = TextAlignment.Center,
+                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                },
+            };
+
+            reset.Tapped += async (sender, e) =>
+            {
+                if (await Application.Current.MainPage.DisplayAlert("Wait!", "This will reset all settings to their default values. This cannot be undone. Are you sure you want to continue?", "Yes", "No"))
+                {
+                    Settings.ResetToDefault();
+                    Refresh();
                 }
-            };*/
+            };
+            TableSection danger = new TableSection
+            {
+                Title = " ",
+            };
+            danger.Add(reset);
+
+            return danger;
         }
 
         private ContentPage FullPageWebView(string url) => new ContentPage

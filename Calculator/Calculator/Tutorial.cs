@@ -89,7 +89,7 @@ namespace Calculator
             new string[] { "answer forms.gif", "Tap answers to see different forms, or the deg/rad label to toggle degrees and radians" },
             //new string[] { "answer forms.gif", "Tap an answer (or the deg/rad label) to see them in different forms" },
             new string[] { "move equations.gif", "Drag the equals sign to move an equation on the canvas" },
-            new string[] { "drag drop answers.gif", "Drag and drop live answers between calculations" },
+            new string[] { "drag drop answers.gif", "Drag and drop live answers to create links between calculations" },
             //new string[] { "variables.gif", "Set values for unknown variables" },
             //new string[] { "editing.gif", "Go back and make changes anytime" },
         };

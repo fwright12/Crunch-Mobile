@@ -187,6 +187,14 @@ namespace Calculator
                 {
                     RunTutorial();
                 }
+#if true //__IOS__
+                else if (Settings.ShouldShowTips && Settings.Tips.Count > 0)
+                {
+                    System.Collections.Generic.KeyValuePair<string, string> tip = Settings.Tips.ElementAt(new Random().Next(Settings.Tips.Count));
+                    Settings.Tips.Remove(tip.Key);
+                    Home.ShowTip(tip.Key, tip.Value);
+                }
+#endif
             };
 
             Collapsed = Device.Idiom != TargetIdiom.Tablet;
@@ -205,6 +213,7 @@ namespace Calculator
             };
         }
 
+#if __IOS__
         // Fix for iOS problems with split view on iPad
         public class MasterDetailPage : Xamarin.Forms.MasterDetailPage
         {
@@ -218,6 +227,7 @@ namespace Calculator
                 }
             }
         }
+#endif
 
         protected override void OnStart()
         {

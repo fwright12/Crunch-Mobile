@@ -215,12 +215,13 @@ namespace Calculator
                 }
             }
 
-            Keypad.SizeChanged += (sender, e) => Scroll.ScrollToAsync(Keypad, ScrollToPosition.End, false);
+            SizeChanged += (sender, e) => ResetScroll();
 
             Orientation = StackOrientation.Horizontal;
             OnPropertyChanged(OrientationProperty.PropertyName);
         }
 
+        private void ResetScroll() => Scroll.ScrollToAsync(Keypad, ScrollToPosition.End, false);
         public void Remeasure() => InvalidateMeasure();
 
         public void Enable() => IsVisible = true;
