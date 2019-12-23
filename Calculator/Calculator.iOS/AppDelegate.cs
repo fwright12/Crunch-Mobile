@@ -23,8 +23,6 @@ namespace Calculator.iOS
         //
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
-            Xamarin.Forms.Extensions.GIF.iOSPath = NSBundle.MainBundle.BundlePath;
-
             MobileAds.Configure("ca-app-pub-1795523054003202~2467617560");
             global::Xamarin.Forms.Forms.Init();
             LoadApplication(new App());

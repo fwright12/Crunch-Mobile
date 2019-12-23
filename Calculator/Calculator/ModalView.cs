@@ -81,7 +81,7 @@ namespace Calculator
 
         protected override SizeRequest OnMeasure(double widthConstraint, double heightConstraint)
         {
-            //SizeRequest sr = base.OnMeasure(widthConstraint, heightConstraint);
+            //return base.OnMeasure(widthConstraint, heightConstraint);
 
             //widthConstraint = (Parent as View)?.Width ?? widthConstraint;
             //heightConstraint = (Parent as View)?.Height ?? heightConstraint;
@@ -89,7 +89,8 @@ namespace Calculator
             widthConstraint = Math.Min(MAX_TUTORIAL_SIZE_ABSOLUTE, MAX_TUTORIAL_SIZE_PERCENT * widthConstraint);
             heightConstraint = Math.Min(MAX_TUTORIAL_SIZE_ABSOLUTE, MAX_TUTORIAL_SIZE_PERCENT * heightConstraint);
             Print.Log("measuring modal view", widthConstraint, heightConstraint);
-            SizeRequest sr = Content.Measure(widthConstraint, heightConstraint);
+            SizeRequest sr = base.OnMeasure(widthConstraint, heightConstraint);
+            //SizeRequest sr = Content.Measure(widthConstraint, heightConstraint);
             sr.Request = new Size(Math.Min(widthConstraint, sr.Request.Width), Math.Min(heightConstraint, sr.Request.Height));
             //sr.Request = new Size(Math.Min(sr.Request.Width, maxWidth), Math.Min(sr.Request.Height, maxHeight));
             return sr;

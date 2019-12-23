@@ -332,11 +332,6 @@ namespace Calculator
             PhantomCursorField.Children.Add(popup, new Rectangle(0.5, 0.5, -1, -1), AbsoluteLayoutFlags.PositionProportional);
         }
 
-        public class TestImage : WebView
-        {
-
-        }
-
         public void ShowTip(string explanation, string url)
         {
             CheckBox showTips = new CheckBox
@@ -348,7 +343,13 @@ namespace Calculator
                 HorizontalOptions = LayoutOptions.EndAndExpand,
                 Text = "Dismiss"
             };
-            GIF gif = new GIF(url);
+            Image gif = new Image
+            {
+                VerticalOptions = LayoutOptions.FillAndExpand,
+                Source = url,
+                IsAnimationPlaying = true,
+                //Aspect = Aspect.AspectFill
+            };
 
             ModalView popup = new ModalView { };
             popup.WhenDescendantAdded<View>((view) =>
@@ -383,7 +384,13 @@ namespace Calculator
                         Text = explanation,
                         FontSize = NamedSize.Body.FontSize<Label>()
                     },
-                    gif,
+                    new Grid
+                    {
+                        Children =
+                        {
+                            gif
+                        }
+                    },
                     new StackLayout
                     {
                         Orientation = StackOrientation.Horizontal,

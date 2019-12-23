@@ -8,6 +8,7 @@ using Xamarin.Forms.Extensions;
 
 namespace Calculator
 {
+#if false
     public enum Fit { Uniform, Tight }
 
     public class CachedLayout : Layout<View>
@@ -78,6 +79,7 @@ namespace Calculator
             view.IsVisible = false;
         }
     }
+#endif
 
     public class Tutorial : StackLayout
     {
@@ -94,7 +96,7 @@ namespace Calculator
             //new string[] { "editing.gif", "Go back and make changes anytime" },
         };
 
-        private readonly CachedLayout GIFLayout;
+        private readonly Grid GIFLayout;
         private readonly AbsoluteLayout Welcome;
         private readonly Label Description;
 
@@ -118,6 +120,7 @@ namespace Calculator
             {
                 HorizontalOptions = LayoutOptions.Center,
                 VerticalOptions = LayoutOptions.FillAndExpand,
+                HeightRequest = 200
             };
             Welcome.Children.Add(new Label
             {
@@ -175,31 +178,29 @@ namespace Calculator
                 HorizontalTextAlignment = TextAlignment.Center
             };
 
-            GIFLayout = new CachedLayout
+            GIFLayout = new Grid
             {
                 HorizontalOptions = LayoutOptions.Center,
                 VerticalOptions = LayoutOptions.FillAndExpand,
-                //Fit = Fit.Uniform
                 Children =
                 {
                     Welcome
                 }
             };
-            foreach (string[] s in info)
+            System.Threading.Tasks.Task.Run(() =>
             {
-                GIF gif = new GIF(s[0])
+                foreach (string[] s in info)
                 {
-                    VerticalOptions = LayoutOptions.Center,
-                    HorizontalOptions = LayoutOptions.Center,
-                };
-                gif.Loaded += async () =>
-                {
-                    //await System.Threading.Tasks.Task.Delay(2000);
-                    //gif.IsVisible = false;
-                };
-
-                GIFLayout.Children.Add(gif);
-            }
+                    GIFLayout.Children.Add(new Image
+                    {
+                        VerticalOptions = LayoutOptions.Center,
+                        HorizontalOptions = LayoutOptions.Center,
+                        Source = s[0],
+                        IsAnimationPlaying = false,
+                        IsVisible = false,
+                    });
+                }
+            });
 
             Children.Add(Description);
             Children.Add(GIFLayout);
@@ -208,19 +209,39 @@ namespace Calculator
             Set(0);
         }
 
-        private async void Set(int step)
+        private int TutorialStep = -1;
+
+        private void ShowGIF(int index, bool showing)
+        {
+            GIFLayout.Children[index].IsVisible = showing;
+            if (GIFLayout.Children[index] is Image image)
+            {
+                image.IsAnimationPlaying = showing;
+            }
+        }
+
+        private void Set(int step)
         {
             if (step < 0 || step >= GIFLayout.Children.Count)
             {
                 return;
             }
 
-            try
+            /*try
             {
                 await (GIFLayout.Children[step] as GIF)?.ResetGIF();
             }
             catch { }
-            GIFLayout.Show(step);
+            GIFLayout.Show(step);*/
+
+            if (TutorialStep != -1)
+            {
+                ShowGIF(TutorialStep, false);
+            }
+
+            TutorialStep = step;
+
+            ShowGIF(TutorialStep, true);
 
             Back.IsEnabled = step > 0;
             Next.Text = step + 1 == info.Count + 1 ? "Done" : "Next";
