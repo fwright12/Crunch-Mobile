@@ -323,19 +323,19 @@
     </ImageAsset>
   </ItemGroup>
   <ItemGroup>
-    <BundleResource Include="Resources\answer forms.gif" />
+    <BundleResource Include="Resources\answerForms.gif" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\canvas.gif" />
   </ItemGroup>
   <ItemGroup>
-    <BundleResource Include="Resources\move equations.gif" />
+    <BundleResource Include="Resources\moveEquations.gif" />
   </ItemGroup>
   <ItemGroup>
-    <BundleResource Include="Resources\scroll keyboard.gif" />
+    <BundleResource Include="Resources\scrollKeyboard.gif" />
   </ItemGroup>
   <ItemGroup>
-    <BundleResource Include="Resources\drag drop answers.gif" />
+    <BundleResource Include="Resources\dragDropAnswers.gif" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Import Project="..\Calculator\Calculator.projitems" Label="Shared" />

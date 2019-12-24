@@ -187,7 +187,7 @@ namespace Calculator
                 {
                     RunTutorial();
                 }
-#if true //__IOS__
+#if __IOS__
                 else if (Settings.ShouldShowTips && Settings.Tips.Count > 0)
                 {
                     System.Collections.Generic.KeyValuePair<string, string> tip = Settings.Tips.ElementAt(new Random().Next(Settings.Tips.Count));

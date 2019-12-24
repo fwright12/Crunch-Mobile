@@ -99,6 +99,10 @@ namespace Calculator
             new Tip("default answers", "You can choose the default format for answers in settings", "https://static.wixstatic.com/media/4a4e50_afe479ab52874b8aabf1403c7ec3f2ff~mv2.gif", TargetIdiom.Phone | TargetIdiom.Tablet),
             new Tip("clear canvas", "You can clear the canvas by long pressing the DEL key", "https://static.wixstatic.com/media/4a4e50_ab41263fc30a4a9bb3949bdcb4179a3b~mv2.gif", TargetIdiom.Phone | TargetIdiom.Tablet)*/
         };
+        private static readonly HashSet<string> Keys = new HashSet<string>()
+        {
+            "this","is","a","test","this"
+        };
 
         public static void Load()
         {

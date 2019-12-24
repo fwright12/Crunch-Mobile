@@ -80,7 +80,8 @@ namespace Calculator
             ScrollView scroll = this.Parent<ScrollView>();
             if (scroll != null)
             {
-                await scroll.MakeVisible(Value.Parent<Equation>() ?? (View)Value);
+                await scroll.ScrollToAsync(Value.Parent<Equation>() ?? (View)Value, ScrollToPosition.MakeVisible, true);
+                //await scroll.MakeVisible(Value.Parent<Equation>() ?? (View)Value);
             }
 
             Color temp = CrunchStyle.CRUNCH_PURPLE;

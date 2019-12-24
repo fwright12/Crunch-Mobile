@@ -89,13 +89,11 @@ namespace Calculator
         {
             new string[] { "canvas.gif", "Tap anywhere on the canvas to add an equation" },
             new string[] { "answer forms.gif", "Tap answers to see different forms, or the deg/rad label to toggle degrees and radians" },
-            //new string[] { "answer forms.gif", "Tap an answer (or the deg/rad label) to see them in different forms" },
             new string[] { "move equations.gif", "Drag the equals sign to move an equation on the canvas" },
             new string[] { "drag drop answers.gif", "Drag and drop live answers to create links between calculations" },
-            //new string[] { "variables.gif", "Set values for unknown variables" },
-            //new string[] { "editing.gif", "Go back and make changes anytime" },
         };
 
+        private View[] Screens;
         private readonly Grid GIFLayout;
         private readonly AbsoluteLayout Welcome;
         private readonly Label Description;
@@ -103,7 +101,7 @@ namespace Calculator
         private readonly Button Back;
         private readonly Button Next;
 
-        private int Step;
+        private int Step = -1;
 
         public Tutorial(bool explainKeyboardScroll = false)
         {
@@ -182,25 +180,20 @@ namespace Calculator
             {
                 HorizontalOptions = LayoutOptions.Center,
                 VerticalOptions = LayoutOptions.FillAndExpand,
-                Children =
-                {
-                    Welcome
-                }
             };
-            System.Threading.Tasks.Task.Run(() =>
+            Screens = new View[info.Count + 1];
+            Screens[0] = Welcome;
+            //foreach (string[] s in info)
+            for (int i = 0; i < info.Count; i++)
             {
-                foreach (string[] s in info)
+                Screens[i + 1] = new Image
                 {
-                    GIFLayout.Children.Add(new Image
-                    {
-                        VerticalOptions = LayoutOptions.Center,
-                        HorizontalOptions = LayoutOptions.Center,
-                        Source = s[0],
-                        IsAnimationPlaying = false,
-                        IsVisible = false,
-                    });
-                }
-            });
+                    VerticalOptions = LayoutOptions.Center,
+                    HorizontalOptions = LayoutOptions.Center,
+                    Source = info[i][0],
+                    IsAnimationPlaying = true
+                };
+            }
 
             Children.Add(Description);
             Children.Add(GIFLayout);
@@ -209,11 +202,18 @@ namespace Calculator
             Set(0);
         }
 
-        private int TutorialStep = -1;
-
         private void ShowGIF(int index, bool showing)
         {
-            GIFLayout.Children[index].IsVisible = showing;
+            Print.Log("showing gif", index);
+            if (showing)
+            {
+                GIFLayout.Children.Add(Screens[index]);
+            }
+            else
+            {
+                GIFLayout.Children.Clear();
+            }
+            //GIFLayout.Children[index].IsVisible = showing;
             if (GIFLayout.Children[index] is Image image)
             {
                 image.IsAnimationPlaying = showing;
@@ -222,7 +222,7 @@ namespace Calculator
 
         private void Set(int step)
         {
-            if (step < 0 || step >= GIFLayout.Children.Count)
+            if (step < 0 || step >= info.Count + 1)
             {
                 return;
             }
@@ -234,20 +234,18 @@ namespace Calculator
             catch { }
             GIFLayout.Show(step);*/
 
-            if (TutorialStep != -1)
+            if (Step != -1)
             {
-                ShowGIF(TutorialStep, false);
+                GIFLayout.Children.Clear();
             }
-
-            TutorialStep = step;
-
-            ShowGIF(TutorialStep, true);
 
             Back.IsEnabled = step > 0;
             Next.Text = step + 1 == info.Count + 1 ? "Done" : "Next";
             Description.Text = step > 0 ? info[step - 1][1] : "";
 
             Step = step;
+
+            GIFLayout.Children.Add(Screens[Step]);
         }
     }
 

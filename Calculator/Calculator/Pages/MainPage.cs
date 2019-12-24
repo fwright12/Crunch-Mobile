@@ -336,20 +336,57 @@ namespace Calculator
         {
             CheckBox showTips = new CheckBox
             {
-                IsChecked = true
+                IsChecked = true,
+                Color = CrunchStyle.CRUNCH_PURPLE
             };
-            Button dismiss = new Button
+            showTips.CheckedChanged += (sender, e) =>
             {
-                HorizontalOptions = LayoutOptions.EndAndExpand,
-                Text = "Dismiss"
+                Settings.ShouldShowTips = e.Value;
+            };
+            Label dismiss = new Label
+            {
+                HorizontalOptions = LayoutOptions.Center,
+                Text = "Dismiss",
+            };
+
+            Frame error = new Frame
+            {
+                BackgroundColor = Color.LightGray,
+                BorderColor = Color.Transparent,
+                HasShadow = false,
+                Content = new StackLayout
+                {
+                    Orientation = StackOrientation.Vertical,
+                    Children =
+                    {
+                        new Label
+                        {
+                            Text = "Failed to load image",
+                            HorizontalTextAlignment = TextAlignment.Center
+                        },
+                        new Label
+                        {
+                            Text = "(make sure your device is connected to the Internet)",
+                            HorizontalTextAlignment = TextAlignment.Center
+                        }
+                    },
+                },
             };
             Image gif = new Image
             {
-                VerticalOptions = LayoutOptions.FillAndExpand,
                 Source = url,
                 IsAnimationPlaying = true,
-                //Aspect = Aspect.AspectFill
             };
+            gif.SizeChanged += (sender, e) =>
+            {
+                error.IsVisible = gif.Bounds.Size.Area() <= 0;
+            };
+            AbsoluteLayout gifLayout = new AbsoluteLayout
+            {
+                VerticalOptions = LayoutOptions.FillAndExpand,
+            };
+            gifLayout.Children.Add(error, new Rectangle(0.5, 0.5, 1, 1), AbsoluteLayoutFlags.All);
+            gifLayout.Children.Add(gif, new Rectangle(0.5, 0.5, 1, 1), AbsoluteLayoutFlags.All);
 
             ModalView popup = new ModalView { };
             popup.WhenDescendantAdded<View>((view) =>
@@ -364,17 +401,14 @@ namespace Calculator
                     new StackLayout
                     {
                         Orientation = StackOrientation.Horizontal,
-                        //BackgroundColor = Color.Red,
                         Children =
                         {
                             new Label
                             {
                                 HorizontalOptions = LayoutOptions.Start,
-                                //VerticalOptions = LayoutOptions.Center,
                                 Text = "Did you know?",
-                                FontSize = NamedSize.Large.FontSize<Label>()
-                            },
-                            dismiss
+                                FontSize = NamedSize.Large.FontSize<Label>(),
+                            }
                         }
                     },
                     new Label
@@ -382,15 +416,10 @@ namespace Calculator
                         HorizontalOptions = LayoutOptions.Center,
                         HorizontalTextAlignment = TextAlignment.Center,
                         Text = explanation,
-                        FontSize = NamedSize.Body.FontSize<Label>()
+                        FontSize = NamedSize.Body.FontSize<Label>(),
+                        Margin = new Thickness(0, 10, 0, 10)
                     },
-                    new Grid
-                    {
-                        Children =
-                        {
-                            gif
-                        }
-                    },
+                    gifLayout,
                     new StackLayout
                     {
                         Orientation = StackOrientation.Horizontal,
@@ -407,6 +436,7 @@ namespace Calculator
                             showTips
                         }
                     },
+                    dismiss
                     /*new Label
                     {
                         HorizontalOptions = LayoutOptions.Center,
@@ -417,11 +447,12 @@ namespace Calculator
                 }
             };
 
-            dismiss.Clicked += (sender, e) =>
+            TapGestureRecognizer tgr = new TapGestureRecognizer();
+            tgr.Tapped += (sender, e) =>
             {
                 popup.Remove();
-                Settings.ShouldShowTips = showTips.IsChecked;
             };
+            dismiss.GestureRecognizers.Add(tgr);
 
             PhantomCursorField.Children.Add(popup, new Rectangle(0.5, 0.5, -1, -1), AbsoluteLayoutFlags.PositionProportional);
         }
