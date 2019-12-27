@@ -20,6 +20,7 @@ namespace Calculator
 
     /* To do:
      * Android Button Touch renderer long press problems
+     * Problems making original link equation visible when tapped
      *
      * v2.4
      * Predefined functions (quadratic formula, physics stuff), ability to add custom ones
@@ -216,7 +217,7 @@ namespace Calculator
                 CrunchKeyboard.Remeasure();
                 ResizeKeyboard();
             };
-
+            
             VariableRow variables = new VariableRow
             {
                 BindingContext = CrunchKeyboard,
@@ -332,15 +333,36 @@ namespace Calculator
             PhantomCursorField.Children.Add(popup, new Rectangle(0.5, 0.5, -1, -1), AbsoluteLayoutFlags.PositionProportional);
         }
 
+        public Label label = new Label { Text = "1" };
+        //public string label { get; set; }
+
         public void ShowTip(string explanation, string url)
         {
             CheckBox showTips = new CheckBox
             {
                 IsChecked = true,
-                Color = CrunchStyle.CRUNCH_PURPLE
+                Color = CrunchStyle.CRUNCH_PURPLE,
+                BindingContext = Settings.ShowTips
             };
+            showTips.SetBinding(CheckBox.IsCheckedProperty, "Value", BindingMode.TwoWay);
+            
+            Action test = async () =>
+            {
+                while (true)
+                {
+                    await System.Threading.Tasks.Task.Delay(5000);
+                    Settings.ShowTips.Value = !Settings.ShowTips.Value;
+                }
+            };
+            test();
+            Settings.ShowTips.WhenPropertyChanged(Settings.ShowTips.ValueProperty, (sender, e) =>
+            {
+                Print.Log("show tips changed", Settings.ShowTips.Value);
+            });
+
             showTips.CheckedChanged += (sender, e) =>
             {
+                //Print.Log("checked changed", showTips.IsChecked, Settings.Instance.GetValue(Settings.Instance.GetProperty(Settings.SHOW_TIPS)));
                 Settings.ShouldShowTips = e.Value;
             };
             Label dismiss = new Label
@@ -348,7 +370,7 @@ namespace Calculator
                 HorizontalOptions = LayoutOptions.Center,
                 Text = "Dismiss",
             };
-
+            
             Frame error = new Frame
             {
                 BackgroundColor = Color.LightGray,
@@ -433,7 +455,7 @@ namespace Calculator
                                 Text = "Show new tips at startup",
                                 FontSize = NamedSize.Caption.FontSize<Label>()
                             },
-                            showTips
+                            showTips,
                         }
                     },
                     dismiss

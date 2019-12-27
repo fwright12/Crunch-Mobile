@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 
 using System.Extensions;
@@ -10,21 +11,18 @@ namespace Calculator
 {
     using Tip = Tuple<string, string, string, TargetIdiom>;
 
-    public abstract class Setting
+    public static class Extensions
     {
-
-    }
-
-    public class Setting<T> : Setting
-    {
-        public readonly string Identifier;
-
-        private readonly T DefaultValue;
-
-        public Setting(string identifier, T defaultValue)
+        public static T TryGet<T>(this IDictionary<string, object> dict, string key, T defaultValue)
         {
-            Identifier = identifier;
-            DefaultValue = defaultValue;
+            try
+            {
+                return (T)dict[key];
+            }
+            catch
+            {
+                return defaultValue;
+            }
         }
     }
 
@@ -65,6 +63,7 @@ namespace Calculator
         public static Dictionary<string, string> Tips = new Dictionary<string, string>();
 
         public static event StaticEventHandler<ToggledEventArgs> KeyboardChanged;
+
         public static bool ShouldShowFullKeyboard
         {
             get => ShowFullKeyboard;
@@ -76,10 +75,6 @@ namespace Calculator
         }
         private static bool ShowFullKeyboard = true;
 
-        private static readonly Setting[] Values = new Setting[]
-        {
-            new Setting<int>(DECIMAL_PLACES, 3)
-        };
         private static readonly string DECIMAL_PLACES = "decimal places";
         private static readonly string LOG_BASE = "implicit logarithm base";
         private static readonly string NUMBER_FORM = "number form";
@@ -99,16 +94,149 @@ namespace Calculator
             new Tip("default answers", "You can choose the default format for answers in settings", "https://static.wixstatic.com/media/4a4e50_afe479ab52874b8aabf1403c7ec3f2ff~mv2.gif", TargetIdiom.Phone | TargetIdiom.Tablet),
             new Tip("clear canvas", "You can clear the canvas by long pressing the DEL key", "https://static.wixstatic.com/media/4a4e50_ab41263fc30a4a9bb3949bdcb4179a3b~mv2.gif", TargetIdiom.Phone | TargetIdiom.Tablet)*/
         };
-        private static readonly HashSet<string> Keys = new HashSet<string>()
+
+        public static Setting<bool> ShowTips = new Setting<bool>("should show tips", false);
+
+        public abstract class Setting
         {
-            "this","is","a","test","this"
-        };
+            private static Dictionary<string, Setting> AllInstances = new Dictionary<string, Setting>();
+
+            private readonly string Identifier;
+
+            public Setting(string identifier)
+            {
+                Identifier = identifier;
+
+                try
+                {
+                    AllInstances.Add(Identifier, this);
+                }
+                catch (ArgumentException ae)
+                {
+                    throw new ArgumentException("A Setting with identifier " + Identifier + " already exists; Setting identifiers must be unique", ae);
+                }
+            }
+
+            public static void LoadFrom(IDictionary<string, object> storage)
+            {
+                foreach (KeyValuePair<string, object> kvp in storage)
+                {
+                    Setting setting;
+                    if (AllInstances.TryGetValue(kvp.Key, out setting))
+                    {
+                        try
+                        {
+                            ((dynamic)setting).Value = (dynamic)kvp.Value;
+                        }
+                        catch
+                        {
+                            throw new Exception("Failed to set Setting value from storage (possible type mismatch?). Setting is type " + setting.GetType() + " and storage value is type " + kvp.Value.GetType());
+                        }
+                    }
+                }
+            }
+
+            public static void SaveTo(IDictionary<string, object> storage)
+            {
+                foreach (KeyValuePair<string, Setting> kvp in AllInstances)
+                {
+                    //storage[kvp.Key] = kvp.Value.GetValue();
+                }
+            }
+
+            public abstract object GetValue();
+        }
+
+        public class Setting<T> : Setting, INotifyPropertyChanged
+        {
+            public event PropertyChangedEventHandler PropertyChanged;
+
+            public readonly BindableProperty ValueProperty;
+
+            public T Value
+            {
+                get => (T)(_Value ?? ValueProperty.DefaultValue);
+                set
+                {
+                    if ((dynamic)_Value != value)
+                    {
+                        _Value = value;
+                        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(ValueProperty.PropertyName));
+                    }
+                }
+            }
+
+            private object _Value;
+
+            public Setting(string identifier, T defaultValue = default, BindingMode defaultBindingMode = BindingMode.TwoWay, BindableProperty.ValidateValueDelegate validateValue = null, BindableProperty.BindingPropertyChangedDelegate propertyChanged = null, BindableProperty.BindingPropertyChangingDelegate propertyChanging = null, BindableProperty.CoerceValueDelegate coerceValue = null, BindableProperty.CreateDefaultValueDelegate defaultValueCreator = null) : base(identifier)
+            {
+                ValueProperty = BindableProperty.Create("Value", typeof(T), typeof(Setting<T>), defaultValue, defaultBindingMode, validateValue, propertyChanged, propertyChanging, coerceValue, defaultValueCreator);
+            }
+
+            public override object GetValue() => Value;
+        }
+
+        /*{
+            public event PropertyChangedEventHandler PropertyChanged;
+
+            public readonly BindableProperty ValueProperty;
+
+            private readonly string Identifier;
+
+            public object Value
+            {
+                get => _Value ?? ValueProperty.DefaultValue; // (T)base.Value; // Stored.TryGet(Identifier, ValueProperty.DefaultValue);
+                set
+                {
+                    //object temp;
+                    //if (!Stored.TryGetValue(Identifier, out temp) || (dynamic)temp != value)
+                    if ((dynamic)_Value != value)
+                    {
+                        _Value = value;
+                        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(ValueProperty.PropertyName));
+                    }
+                }
+            }
+
+            private object _Value;
+
+            public Setting(string identifier, Type returnType, Type declaringType, object defaultValue = null, BindingMode defaultBindingMode = BindingMode.OneWay, BindableProperty.ValidateValueDelegate validateValue = null, BindableProperty.BindingPropertyChangedDelegate propertyChanged = null, BindableProperty.BindingPropertyChangingDelegate propertyChanging = null, BindableProperty.CoerceValueDelegate coerceValue = null, BindableProperty.CreateDefaultValueDelegate defaultValueCreator = null)
+            {
+                ValueProperty = BindableProperty.Create("Value", returnType, declaringType, defaultValue, defaultBindingMode, validateValue, propertyChanged, propertyChanging, coerceValue, defaultValueCreator);
+                Identifier = identifier;
+
+                object o = null;
+                Print.Log("here", (dynamic)o);
+
+                try
+                {
+                    Stored.Add(Identifier, this);
+                }
+                catch (ArgumentException ae)
+                {
+                    throw new ArgumentException("Setting identifiers must be unique", ae);
+                }
+            }
+        }
+
+        public class Setting<T> : Setting
+        {
+            new public T Value
+            {
+                get => (T)base.Value;
+                set => base.Value = value;
+            }
+
+            public Setting(string identifier, T defaultValue = default, BindingMode defaultBindingMode = BindingMode.OneWay, BindableProperty.ValidateValueDelegate validateValue = null, BindableProperty.BindingPropertyChangedDelegate propertyChanged = null, BindableProperty.BindingPropertyChangingDelegate propertyChanging = null, BindableProperty.CoerceValueDelegate coerceValue = null, BindableProperty.CreateDefaultValueDelegate defaultValueCreator = null) : base(identifier, typeof(T), typeof(Setting<T>), defaultValue, defaultBindingMode, validateValue, propertyChanged, propertyChanging, coerceValue, defaultValueCreator) { }
+        }*/
 
         public static void Load()
         {
+            Setting.LoadFrom(Storage);
+
             DecimalPlaces = Storage.TryGet(DECIMAL_PLACES, 3);
             LogarithmBase = Storage.TryGet(LOG_BASE, 10.0);
-
+            
             Numbers = Storage.TryGet(NUMBER_FORM, Numbers.Decimal);
             Trigonometry = Storage.TryGet(TRIG_FORM, Trigonometry.Degrees);
 
@@ -194,6 +322,8 @@ namespace Calculator
                 Storage[tip.Item1] = !Tips.ContainsKey(tip.Item2);
             }
 
+            Setting.SaveTo(Storage);
+
             await Application.Current.SavePropertiesAsync();
         }
 
@@ -202,18 +332,6 @@ namespace Calculator
             Storage.Clear();
             Load();
             //Tutorial = false;
-        }
-
-        private static T TryGet<T>(this IDictionary<string, object> dict, string key, T defaultValue)
-        {
-            try
-            {
-                return (T)dict[key];
-            }
-            catch
-            {
-                return defaultValue;
-            }
         }
     }
 }
