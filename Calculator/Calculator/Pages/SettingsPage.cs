@@ -36,20 +36,20 @@ namespace Calculator
 
         public void Refresh()
         {
-            DecimalPlaces.SetValue(Stepper.ValueProperty, Settings.DecimalPlaces);
-            LogBase.Select(Settings.LogarithmBase == 2 ? 0 : 1);
+            DecimalPlaces.SetValue(Stepper.ValueProperty, Settings.DecimalPlaces.Value);
+            LogBase.Select(Settings.LogarithmBase.Value == 2 ? 0 : 1);
 
-            Numbers.Select((int)Settings.Numbers);
-            Trig.Select((int)Settings.Trigonometry);
+            Numbers.Select((int)Settings.Numbers.Value);
+            Trig.Select((int)Settings.Trigonometry.Value);
 
-            ClearCanvasWarning.SetValue(SwitchCell.OnProperty, Settings.ClearCanvasWarning);
+            ClearCanvasWarning.SetValue(SwitchCell.OnProperty, Settings.ClearCanvasWarning.Value);
             RefreshShowFullKeyboard();
             //ShowFullKeyboard.SetValue(SwitchCell.OnProperty, Settings.ShouldShowFullKeyboard);
         }
 
         private void RefreshShowFullKeyboard()
         {
-            ShowFullKeyboard.On = App.Current.Collapsed ? false : Settings.ShouldShowFullKeyboard;
+            ShowFullKeyboard.On = App.Current.Collapsed ? false : Settings.ShowFullKeyboard.Value;
         }
 
         public SettingsPage()
@@ -59,13 +59,20 @@ namespace Calculator
             //Math
             DecimalPlaces = new Stepper()
             {
+                BindingContext = Settings.DecimalPlaces,
                 Minimum = 1,
                 Maximum = 15,
                 Increment = 1
             };
-            DecimalPlaces.ValueChanged += (sender, e) => Settings.DecimalPlaces = (int)e.NewValue;
+            DecimalPlaces.SetBinding(Stepper.ValueProperty, "Value", BindingMode.TwoWay);
+            /*Settings.DecimalPlaces.PropertyChanged += (sender, e) =>
+            //Settings.DecimalPlaces.WhenPropertyChanged(Settings.DecimalPlaces.ValueProperty, (sender, e) =>
+            {
+                Print.Log(e.PropertyName);
+            });*/
+            //DecimalPlaces.ValueChanged += (sender, e) => Settings.DecimalPlaces.Value = (int)e.NewValue;
             LogBase = new Selector("2", "10");
-            LogBase.Selected += (selected) => Settings.LogarithmBase = selected == 0 ? 2 : 10;
+            LogBase.Selected += (selected) => Settings.LogarithmBase.Value = selected == 0 ? 2 : 10;
 
             TableSection math = new TableSection()
             {
@@ -76,9 +83,9 @@ namespace Calculator
 
             //Answer Defaults
             Numbers = new Selector(Enum.GetNames(typeof(Crunch.Numbers)));
-            Numbers.Selected += (selected) => Settings.Numbers = (Crunch.Numbers)selected;
+            Numbers.Selected += (selected) => Settings.Numbers.Value = (Crunch.Numbers)selected;
             Trig = new Selector(Enum.GetNames(typeof(Crunch.Trigonometry)));
-            Trig.Selected += (selected) => Settings.Trigonometry = (Crunch.Trigonometry)selected;
+            Trig.Selected += (selected) => Settings.Trigonometry.Value = (Crunch.Trigonometry)selected;
 
             TableSection answerDefaults = new TableSection()
             {
@@ -91,8 +98,10 @@ namespace Calculator
             ClearCanvasWarning = new SwitchCell()
             {
                 Text = "Clear canvas warning",
+                BindingContext = Settings.ClearCanvasWarning
             };
-            ClearCanvasWarning.OnChanged += (sender, e) => Settings.ClearCanvasWarning = e.Value;
+            ClearCanvasWarning.SetBinding(SwitchCell.OnProperty, "Value", BindingMode.TwoWay);
+            //ClearCanvasWarning.OnChanged += (sender, e) => Settings.ClearCanvasWarning = e.Value;
             ShowFullKeyboard = new SwitchCell()
             {
                 BindingContext = App.Current,
@@ -100,7 +109,10 @@ namespace Calculator
             };
             ShowFullKeyboard.OnChanged += (sender, e) =>
             {
-                Settings.ShouldShowFullKeyboard = e.Value;
+                if (ShowFullKeyboard.IsEnabled)
+                {
+                    Settings.ShowFullKeyboard.Value = e.Value;
+                }
             };
             ShowFullKeyboard.SetBinding(Cell.IsEnabledProperty, "Collapsed", converter: new ValueConverter<bool>((b) => !b));
             App.Current.WhenPropertyChanged(DrawerPage.CollapsedProperty, (sender, e) => RefreshShowFullKeyboard());
@@ -147,12 +159,9 @@ namespace Calculator
             SwitchCell showTips = new SwitchCell
             {
                 Text = "Show new tips at startup",
-                On = Settings.ShouldShowTips
+                BindingContext = Settings.ShowTips
             };
-            showTips.OnChanged += (sender, e) =>
-            {
-                Settings.ShouldShowTips = e.Value;
-            };
+            showTips.SetBinding(SwitchCell.OnProperty, "Value", BindingMode.TwoWay);
 
             TableSection help = new TableSection
             {

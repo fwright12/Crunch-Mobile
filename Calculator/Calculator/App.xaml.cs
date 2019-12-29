@@ -183,16 +183,34 @@ namespace Calculator
                 NavigationPage.SetHasNavigationBar(Home, false);
                 TouchScreen.Instance = Home;
 
-                if (Settings.ShouldRunTutorial)
+                if (Settings.ShouldRunTutorial.Value)
                 {
                     RunTutorial();
                 }
 #if __IOS__
-                else if (Settings.ShouldShowTips && Settings.Tips.Count > 0)
+                else if (Settings.ShowTips.Value)
                 {
-                    System.Collections.Generic.KeyValuePair<string, string> tip = Settings.Tips.ElementAt(new Random().Next(Settings.Tips.Count));
-                    Settings.Tips.Remove(tip.Key);
-                    Home.ShowTip(tip.Key, tip.Value);
+                    var list = new System.Collections.Generic.List<int>();
+                    for (int i = 0; i < Settings.Tips.Length; i++)
+                    {
+                        var tip = Settings.Tips[i];
+                        if (!tip.Item1.Value && tip.Item4.HasFlag(Device.Idiom))
+                        {
+                            list.Add(i);
+                        }
+                    }
+                    Print.Log(Settings.ShowTips.Value, list.Count);
+
+                    if (list.Count > 0)
+                    {
+                        int index = list[new Random().Next(list.Count)];
+                        var tip = Settings.Tips[index];
+                        Home.ShowTip(tip.Item2, tip.Item3);
+                        //tip.Item1.Value = true;
+                    }
+
+                    //System.Collections.Generic.KeyValuePair<string, string> tip = Settings.Tips.ElementAt(new Random().Next(Settings.Tips.Count));
+                    //Settings.Tips.Remove(tip.Key);
                 }
 #endif
             };

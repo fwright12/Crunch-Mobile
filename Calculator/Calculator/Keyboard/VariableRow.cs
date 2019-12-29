@@ -22,8 +22,8 @@ namespace Calculator
 
         public bool Expanded
         {
-            get => Settings.VariableRowExpanded;
-            set => Settings.VariableRowExpanded = value;
+            get => Settings.VariableRowExpanded.Value;
+            set => Settings.VariableRowExpanded.Value = value;
         }
 
         public VisualElement LengthBinding
@@ -76,7 +76,8 @@ namespace Calculator
             });
 
 #if DEBUG
-            Expanded = true;
+            if (Device.RuntimePlatform == Device.Android)
+                Expanded = true;
 #endif
 
             LabelButton keyboard = new Button

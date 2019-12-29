@@ -212,11 +212,12 @@ namespace Calculator
                 BindingContext = PhantomCursor,
             }, new Rectangle(0, 0, 1, 1), AbsoluteLayoutFlags.SizeProportional);
             KeyboardMask.SetBinding(IsVisibleProperty, "IsVisible");
-            Settings.KeyboardChanged += (e) =>
+            Settings.ShowFullKeyboard.WhenPropertyChanged(Settings.ShowFullKeyboard.ValueProperty, (sender, e) =>
+            //Settings.KeyboardChanged += (e) =>
             {
                 CrunchKeyboard.Remeasure();
                 ResizeKeyboard();
-            };
+            });
             
             VariableRow variables = new VariableRow
             {
@@ -354,17 +355,17 @@ namespace Calculator
                     Settings.ShowTips.Value = !Settings.ShowTips.Value;
                 }
             };
-            test();
+            //test();
             Settings.ShowTips.WhenPropertyChanged(Settings.ShowTips.ValueProperty, (sender, e) =>
             {
                 Print.Log("show tips changed", Settings.ShowTips.Value);
             });
 
-            showTips.CheckedChanged += (sender, e) =>
+            /*showTips.CheckedChanged += (sender, e) =>
             {
                 //Print.Log("checked changed", showTips.IsChecked, Settings.Instance.GetValue(Settings.Instance.GetProperty(Settings.SHOW_TIPS)));
                 Settings.ShouldShowTips = e.Value;
-            };
+            };*/
             Label dismiss = new Label
             {
                 HorizontalOptions = LayoutOptions.Center,
@@ -538,7 +539,7 @@ namespace Calculator
                 {
                     key.LongClick += async (sender, e) =>
                     {
-                        if (!Settings.ClearCanvasWarning || await DisplayAlert("Wait!", "Are you sure you want to clear the canvas?", "Yes", "No"))
+                        if (!Settings.ClearCanvasWarning.Value || await DisplayAlert("Wait!", "Are you sure you want to clear the canvas?", "Yes", "No"))
                         {
                             ClearCanvas();
                         }
@@ -582,7 +583,7 @@ namespace Calculator
 
                     TouchScreen.Dragging += (e1) =>
                     {
-                        Settings.KeyboardPosition = AbsoluteLayout.GetLayoutBounds(FullKeyboardView).Location;
+                        Settings.KeyboardPosition.Value = AbsoluteLayout.GetLayoutBounds(FullKeyboardView).Location;
                     };
                     TouchScreen.BeginDrag(FullKeyboardView, PhantomCursorField);
                 }
@@ -734,7 +735,7 @@ namespace Calculator
                 CrunchKeyboard.Orientation = StackOrientation.Horizontal;
             }
 
-            Point keyboardPosition = collapsed ? new Point(1, 1) : Settings.KeyboardPosition;
+            Point keyboardPosition = collapsed ? new Point(1, 1) : Settings.KeyboardPosition.Value;
             AbsoluteLayout.SetLayoutBounds(FullKeyboardView, new Rectangle(keyboardPosition, new Size(-1, -1)));
 
             AbsoluteLayout.SetLayoutBounds(CrunchKeyboard, new Rectangle(0, 0, size.Width, size.Height));
@@ -750,12 +751,12 @@ namespace Calculator
         {
             if (isDocked)
             {
-                Settings.KeyboardPosition = new Point(KeyboardHidden.X, KeyboardHidden.Y);
+                Settings.KeyboardPosition.Value = new Point(KeyboardHidden.X, KeyboardHidden.Y);
                 AdjustKeyboardPosition();
             }
             else
             {
-                Settings.KeyboardPosition = AbsoluteLayout.GetLayoutBounds(FullKeyboardView).Location;
+                Settings.KeyboardPosition.Value = AbsoluteLayout.GetLayoutBounds(FullKeyboardView).Location;
             }
         }
 
