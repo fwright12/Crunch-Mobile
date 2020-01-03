@@ -48,19 +48,19 @@ namespace Calculator
                     new Setter { Property = Label.TextColorProperty, Value = TEXT_COLOR }
                 }
             });
-
+            Print.Log("here");
             //Pages
             Add(new Style(typeof(ContentPage))
             {
                 ApplyToDerivedTypes = true,
                 Behaviors =
                 {
-                    new BehaviorFunc<ContentPage>((bindable) =>
+                    new BehaviorFunc<ContentPage>((page) =>
                     {
-                        if (!(bindable is SettingsPage))
+                        if (!(page is SettingsPage))
                         {
-                            bindable.LayoutChanged += (sender, e) => SetPadding(sender as Page);
-                            bindable.Appearing += (sender, e) => SetPadding(sender as Page);
+                            page.LayoutChanged += (sender, e) => SetPadding(sender as Page);
+                            page.Appearing += (sender, e) => SetPadding(sender as Page);
                         }
                     })
                 },

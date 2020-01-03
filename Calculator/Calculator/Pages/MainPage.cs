@@ -142,7 +142,7 @@ namespace Calculator
         protected readonly AbsoluteLayout KeyboardMask;
         public readonly CrunchKeyboard CrunchKeyboard;
 
-        private bool IsKeyboardDocked => Settings.KeyboardPosition.Equals(KeyboardHidden);
+        private bool IsKeyboardDocked => App.KeyboardPosition.Equals(KeyboardHidden);
         protected readonly Point KeyboardHidden = new Point(-1000, -1000);
 
         //private readonly AbsoluteLayout Screen;
@@ -159,12 +159,12 @@ namespace Calculator
             Text.CreateLeftParenthesis = () => new TextImage(new Image() { Source = "leftParenthesis.png", HeightRequest = 0, WidthRequest = App.TextWidth, Aspect = Aspect.Fill }, "(");
             Text.CreateRightParenthesis = () => new TextImage(new Image() { Source = "rightParenthesis.png", HeightRequest = 0, WidthRequest = App.TextWidth, Aspect = Aspect.Fill }, ")");
             Text.CreateRadical = () => new Image() { Source = "radical.png", HeightRequest = 0, WidthRequest = App.TextWidth * 2, Aspect = Aspect.Fill };
-
+            
             Content = PhantomCursorField = new AbsoluteLayout
             {
                 Children =
                 {
-                    (CanvasScroll = new Xamarin.Forms.ScrollView
+                    (CanvasScroll = new ScrollView
                     {
                         Content = Canvas = new Canvas { },
                         Orientation = ScrollOrientation.Both,
@@ -212,7 +212,7 @@ namespace Calculator
                 BindingContext = PhantomCursor,
             }, new Rectangle(0, 0, 1, 1), AbsoluteLayoutFlags.SizeProportional);
             KeyboardMask.SetBinding(IsVisibleProperty, "IsVisible");
-            Settings.ShowFullKeyboard.WhenPropertyChanged(Settings.ShowFullKeyboard.ValueProperty, (sender, e) =>
+            App.ShowFullKeyboard.WhenPropertyChanged(App.ShowFullKeyboard.ValueProperty, (sender, e) =>
             //Settings.KeyboardChanged += (e) =>
             {
                 CrunchKeyboard.Remeasure();
@@ -334,16 +334,20 @@ namespace Calculator
             PhantomCursorField.Children.Add(popup, new Rectangle(0.5, 0.5, -1, -1), AbsoluteLayoutFlags.PositionProportional);
         }
 
-        public Label label = new Label { Text = "1" };
-        //public string label { get; set; }
-
         public void ShowTip(string explanation, string url)
         {
+            WebImage gif = (WebImage)new Image
+            {
+                Source = url,// new UriImageSource { CachingEnabled = false, Uri = new Uri(url) },
+                IsAnimationPlaying = true,
+            };
+            gif.ErrorText.Text += "\n\n(all tips can also be viewed in settings)";
+
             CheckBox showTips = new CheckBox
             {
                 IsChecked = true,
                 Color = CrunchStyle.CRUNCH_PURPLE,
-                BindingContext = Settings.ShowTips
+                BindingContext = App.ShowTips
             };
             showTips.SetBinding(CheckBox.IsCheckedProperty, "Value", BindingMode.TwoWay);
             
@@ -352,64 +356,19 @@ namespace Calculator
                 while (true)
                 {
                     await System.Threading.Tasks.Task.Delay(5000);
-                    Settings.ShowTips.Value = !Settings.ShowTips.Value;
+                    App.ShowTips.Value = !App.ShowTips.Value;
                 }
             };
             //test();
-            Settings.ShowTips.WhenPropertyChanged(Settings.ShowTips.ValueProperty, (sender, e) =>
+            App.ShowTips.WhenPropertyChanged(App.ShowTips.ValueProperty, (sender, e) =>
             {
-                Print.Log("show tips changed", Settings.ShowTips.Value);
+                Print.Log("show tips changed", App.ShowTips.Value);
             });
-
-            /*showTips.CheckedChanged += (sender, e) =>
-            {
-                //Print.Log("checked changed", showTips.IsChecked, Settings.Instance.GetValue(Settings.Instance.GetProperty(Settings.SHOW_TIPS)));
-                Settings.ShouldShowTips = e.Value;
-            };*/
             Label dismiss = new Label
             {
                 HorizontalOptions = LayoutOptions.Center,
                 Text = "Dismiss",
             };
-            
-            Frame error = new Frame
-            {
-                BackgroundColor = Color.LightGray,
-                BorderColor = Color.Transparent,
-                HasShadow = false,
-                Content = new StackLayout
-                {
-                    Orientation = StackOrientation.Vertical,
-                    Children =
-                    {
-                        new Label
-                        {
-                            Text = "Failed to load image",
-                            HorizontalTextAlignment = TextAlignment.Center
-                        },
-                        new Label
-                        {
-                            Text = "(make sure your device is connected to the Internet)",
-                            HorizontalTextAlignment = TextAlignment.Center
-                        }
-                    },
-                },
-            };
-            Image gif = new Image
-            {
-                Source = url,
-                IsAnimationPlaying = true,
-            };
-            gif.SizeChanged += (sender, e) =>
-            {
-                error.IsVisible = gif.Bounds.Size.Area() <= 0;
-            };
-            AbsoluteLayout gifLayout = new AbsoluteLayout
-            {
-                VerticalOptions = LayoutOptions.FillAndExpand,
-            };
-            gifLayout.Children.Add(error, new Rectangle(0.5, 0.5, 1, 1), AbsoluteLayoutFlags.All);
-            gifLayout.Children.Add(gif, new Rectangle(0.5, 0.5, 1, 1), AbsoluteLayoutFlags.All);
 
             ModalView popup = new ModalView { };
             popup.WhenDescendantAdded<View>((view) =>
@@ -442,7 +401,7 @@ namespace Calculator
                         FontSize = NamedSize.Body.FontSize<Label>(),
                         Margin = new Thickness(0, 10, 0, 10)
                     },
-                    gifLayout,
+                    gif,
                     new StackLayout
                     {
                         Orientation = StackOrientation.Horizontal,
@@ -460,13 +419,6 @@ namespace Calculator
                         }
                     },
                     dismiss
-                    /*new Label
-                    {
-                        HorizontalOptions = LayoutOptions.Center,
-                        HorizontalTextAlignment = TextAlignment.Center,
-                        Text = "(additional tips can be found in the settings menu)",
-                        FontSize = NamedSize.Caption.FontSize<Label>()
-                    },*/
                 }
             };
 
@@ -539,7 +491,7 @@ namespace Calculator
                 {
                     key.LongClick += async (sender, e) =>
                     {
-                        if (!Settings.ClearCanvasWarning.Value || await DisplayAlert("Wait!", "Are you sure you want to clear the canvas?", "Yes", "No"))
+                        if (!App.ClearCanvasWarning.Value || await DisplayAlert("Wait!", "Are you sure you want to clear the canvas?", "Yes", "No"))
                         {
                             ClearCanvas();
                         }
@@ -583,7 +535,7 @@ namespace Calculator
 
                     TouchScreen.Dragging += (e1) =>
                     {
-                        Settings.KeyboardPosition.Value = AbsoluteLayout.GetLayoutBounds(FullKeyboardView).Location;
+                        App.KeyboardPosition.Value = AbsoluteLayout.GetLayoutBounds(FullKeyboardView).Location;
                     };
                     TouchScreen.BeginDrag(FullKeyboardView, PhantomCursorField);
                 }
@@ -735,7 +687,7 @@ namespace Calculator
                 CrunchKeyboard.Orientation = StackOrientation.Horizontal;
             }
 
-            Point keyboardPosition = collapsed ? new Point(1, 1) : Settings.KeyboardPosition.Value;
+            Point keyboardPosition = collapsed ? new Point(1, 1) : App.KeyboardPosition.Value;
             AbsoluteLayout.SetLayoutBounds(FullKeyboardView, new Rectangle(keyboardPosition, new Size(-1, -1)));
 
             AbsoluteLayout.SetLayoutBounds(CrunchKeyboard, new Rectangle(0, 0, size.Width, size.Height));
@@ -751,12 +703,12 @@ namespace Calculator
         {
             if (isDocked)
             {
-                Settings.KeyboardPosition.Value = new Point(KeyboardHidden.X, KeyboardHidden.Y);
+                App.KeyboardPosition.Value = new Point(KeyboardHidden.X, KeyboardHidden.Y);
                 AdjustKeyboardPosition();
             }
             else
             {
-                Settings.KeyboardPosition.Value = AbsoluteLayout.GetLayoutBounds(FullKeyboardView).Location;
+                App.KeyboardPosition.Value = AbsoluteLayout.GetLayoutBounds(FullKeyboardView).Location;
             }
         }
 

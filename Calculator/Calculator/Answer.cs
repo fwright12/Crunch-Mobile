@@ -45,9 +45,9 @@ namespace Calculator
         public event EventHandler<ChangedEventArgs<Operand>> Changed;
         public event EventHandler<ChangedEventArgs<Expression>> FormChanged;
 
-        public Polynomials PolynomialChoice = Settings.Polynomials;
-        public Numbers NumberChoice = Settings.Numbers.Value;
-        public Trigonometry TrigChoice = Settings.Trigonometry.Value;
+        public Polynomials PolynomialChoice = App.Polynomials;
+        public Numbers NumberChoice = App.Numbers.Value;
+        public Trigonometry TrigChoice = App.Trigonometry.Value;
         public Dictionary<char, Operand> Knowns;
 
         private Polynomials actualPolynomialForm;

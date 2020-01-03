@@ -22,8 +22,8 @@ namespace Calculator
 
         public bool Expanded
         {
-            get => Settings.VariableRowExpanded.Value;
-            set => Settings.VariableRowExpanded.Value = value;
+            get => App.VariableRowExpanded.Value;
+            set => App.VariableRowExpanded.Value = value;
         }
 
         public VisualElement LengthBinding
@@ -117,7 +117,7 @@ namespace Calculator
             Children.Add(Bar);
             Children.Add(ExpandButton);
 
-            foreach (char c in Settings.Variables)
+            foreach (char c in App.Variables)
             {
                 Button button = new Button
                 {
@@ -126,12 +126,12 @@ namespace Calculator
                 };
                 button.Clicked += (sender, e) =>
                 {
-                    int index = Settings.Variables.IndexOf(c);
+                    int index = App.Variables.IndexOf(c);
 
                     if (index > RecentlyUsed - 1)
                     {
-                        Settings.Variables.RemoveAt(index);
-                        Settings.Variables.Insert(0, c);
+                        App.Variables.RemoveAt(index);
+                        App.Variables.Insert(0, c);
 
                         View v = Variables.Children[index];
                         Variables.Children.RemoveAt(index);

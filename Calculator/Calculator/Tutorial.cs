@@ -88,9 +88,9 @@ namespace Calculator
         private readonly List<string[]> info = new List<string[]>()
         {
             new string[] { "canvas.gif", "Tap anywhere on the canvas to add an equation" },
-            new string[] { "answer forms.gif", "Tap answers to see different forms, or the deg/rad label to toggle degrees and radians" },
-            new string[] { "move equations.gif", "Drag the equals sign to move an equation on the canvas" },
-            new string[] { "drag drop answers.gif", "Drag and drop live answers to create links between calculations" },
+            new string[] { "answerForms.gif", "Tap answers to see different forms, or the deg/rad label to toggle degrees and radians" },
+            new string[] { "moveEquations.gif", "Drag the equals sign to move an equation on the canvas" },
+            new string[] { "dragDropAnswers.gif", "Drag and drop live answers to create links between calculations" },
         };
 
         private View[] Screens;
@@ -111,7 +111,7 @@ namespace Calculator
 
             if (explainKeyboardScroll)
             {
-                info.Add(new string[] { "scroll keyboard.gif", "Scroll the keyboard for more operations" });
+                info.Add(new string[] { "scrollKeyboard.gif", "Scroll the keyboard for more operations" });
             }
             
             Welcome = new AbsoluteLayout
@@ -176,48 +176,30 @@ namespace Calculator
                 HorizontalTextAlignment = TextAlignment.Center
             };
 
-            GIFLayout = new Grid
+            /*GIFLayout = new Grid
             {
                 HorizontalOptions = LayoutOptions.Center,
-                VerticalOptions = LayoutOptions.FillAndExpand,
-            };
+                //VerticalOptions = LayoutOptions.FillAndExpand,
+            };*/
             Screens = new View[info.Count + 1];
             Screens[0] = Welcome;
             //foreach (string[] s in info)
             for (int i = 0; i < info.Count; i++)
             {
-                Screens[i + 1] = new Image
+                Screens[i + 1] = (WebImage)new Image
                 {
-                    VerticalOptions = LayoutOptions.Center,
-                    HorizontalOptions = LayoutOptions.Center,
+                    //VerticalOptions = LayoutOptions.Center,
+                    //HorizontalOptions = LayoutOptions.Center,
                     Source = info[i][0],
-                    IsAnimationPlaying = true
+                    IsAnimationPlaying = true,
                 };
             }
 
             Children.Add(Description);
-            Children.Add(GIFLayout);
+            //Children.Add(GIFLayout);
             Children.Add(nav);
 
             Set(0);
-        }
-
-        private void ShowGIF(int index, bool showing)
-        {
-            Print.Log("showing gif", index);
-            if (showing)
-            {
-                GIFLayout.Children.Add(Screens[index]);
-            }
-            else
-            {
-                GIFLayout.Children.Clear();
-            }
-            //GIFLayout.Children[index].IsVisible = showing;
-            if (GIFLayout.Children[index] is Image image)
-            {
-                image.IsAnimationPlaying = showing;
-            }
         }
 
         private void Set(int step)
@@ -236,7 +218,8 @@ namespace Calculator
 
             if (Step != -1)
             {
-                GIFLayout.Children.Clear();
+                //GIFLayout.Children.Clear();
+                Children.RemoveAt(1);
             }
 
             Back.IsEnabled = step > 0;
@@ -245,7 +228,8 @@ namespace Calculator
 
             Step = step;
 
-            GIFLayout.Children.Add(Screens[Step]);
+            Children.Insert(1, Screens[step]);
+            //GIFLayout.Children.Add(Screens[Step]);
         }
     }
 

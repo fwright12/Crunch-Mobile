@@ -311,8 +311,8 @@ namespace Calculator
                 PaddedButtonsWidth(rows, buttonSize)
                 );*/
 
-            Print.Log("measuring", widthConstraint, heightConstraint, Settings.ShowFullKeyboard.Value);
-            Size fullSize = Settings.ShowFullKeyboard.Value ? FullSize : new Size(PaddedButtonsWidth(MIN_COLUMNS + PERMANENT_KEYS_INCREASE, MAX_BUTTON_SIZE), PaddedButtonsWidth(Keys.Length, MAX_BUTTON_SIZE));
+            Print.Log("measuring", widthConstraint, heightConstraint, App.ShowFullKeyboard.Value);
+            Size fullSize = App.ShowFullKeyboard.Value ? FullSize : new Size(PaddedButtonsWidth(MIN_COLUMNS + PERMANENT_KEYS_INCREASE, MAX_BUTTON_SIZE), PaddedButtonsWidth(Keys.Length, MAX_BUTTON_SIZE));
             sr.Request = FullSize.Width < widthConstraint && FullSize.Height < heightConstraint && FullSize.Area() < condensed.Area() ? fullSize : condensed;
 
             return sr;

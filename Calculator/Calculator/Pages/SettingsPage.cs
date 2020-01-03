@@ -36,20 +36,20 @@ namespace Calculator
 
         public void Refresh()
         {
-            DecimalPlaces.SetValue(Stepper.ValueProperty, Settings.DecimalPlaces.Value);
-            LogBase.Select(Settings.LogarithmBase.Value == 2 ? 0 : 1);
+            //DecimalPlaces.SetValue(Stepper.ValueProperty, Settings.DecimalPlaces.Value);
+            LogBase.Select(App.LogarithmBase.Value == 2 ? 0 : 1);
 
-            Numbers.Select((int)Settings.Numbers.Value);
-            Trig.Select((int)Settings.Trigonometry.Value);
+            Numbers.Select((int)App.Numbers.Value);
+            Trig.Select((int)App.Trigonometry.Value);
 
-            ClearCanvasWarning.SetValue(SwitchCell.OnProperty, Settings.ClearCanvasWarning.Value);
+            //ClearCanvasWarning.SetValue(SwitchCell.OnProperty, Settings.ClearCanvasWarning.Value);
             RefreshShowFullKeyboard();
             //ShowFullKeyboard.SetValue(SwitchCell.OnProperty, Settings.ShouldShowFullKeyboard);
         }
 
         private void RefreshShowFullKeyboard()
         {
-            ShowFullKeyboard.On = App.Current.Collapsed ? false : Settings.ShowFullKeyboard.Value;
+            ShowFullKeyboard.On = App.Current.Collapsed ? false : App.ShowFullKeyboard.Value;
         }
 
         public SettingsPage()
@@ -59,7 +59,7 @@ namespace Calculator
             //Math
             DecimalPlaces = new Stepper()
             {
-                BindingContext = Settings.DecimalPlaces,
+                BindingContext = App.DecimalPlaces,
                 Minimum = 1,
                 Maximum = 15,
                 Increment = 1
@@ -72,7 +72,7 @@ namespace Calculator
             });*/
             //DecimalPlaces.ValueChanged += (sender, e) => Settings.DecimalPlaces.Value = (int)e.NewValue;
             LogBase = new Selector("2", "10");
-            LogBase.Selected += (selected) => Settings.LogarithmBase.Value = selected == 0 ? 2 : 10;
+            LogBase.Selected += (selected) => App.LogarithmBase.Value = selected == 0 ? 2 : 10;
 
             TableSection math = new TableSection()
             {
@@ -83,9 +83,9 @@ namespace Calculator
 
             //Answer Defaults
             Numbers = new Selector(Enum.GetNames(typeof(Crunch.Numbers)));
-            Numbers.Selected += (selected) => Settings.Numbers.Value = (Crunch.Numbers)selected;
+            Numbers.Selected += (selected) => App.Numbers.Value = (Crunch.Numbers)selected;
             Trig = new Selector(Enum.GetNames(typeof(Crunch.Trigonometry)));
-            Trig.Selected += (selected) => Settings.Trigonometry.Value = (Crunch.Trigonometry)selected;
+            Trig.Selected += (selected) => App.Trigonometry.Value = (Crunch.Trigonometry)selected;
 
             TableSection answerDefaults = new TableSection()
             {
@@ -95,14 +95,14 @@ namespace Calculator
             answerDefaults.Add(new LabeledCell("Trigonometry:", Trig));
 
             //Other
-            ClearCanvasWarning = new SwitchCell()
+            ClearCanvasWarning = new SwitchCell
             {
+                BindingContext = App.ClearCanvasWarning,
                 Text = "Clear canvas warning",
-                BindingContext = Settings.ClearCanvasWarning
             };
             ClearCanvasWarning.SetBinding(SwitchCell.OnProperty, "Value", BindingMode.TwoWay);
             //ClearCanvasWarning.OnChanged += (sender, e) => Settings.ClearCanvasWarning = e.Value;
-            ShowFullKeyboard = new SwitchCell()
+            ShowFullKeyboard = new SwitchCell
             {
                 BindingContext = App.Current,
                 Text = "Show full keyboard",
@@ -111,7 +111,7 @@ namespace Calculator
             {
                 if (ShowFullKeyboard.IsEnabled)
                 {
-                    Settings.ShowFullKeyboard.Value = e.Value;
+                    App.ShowFullKeyboard.Value = e.Value;
                 }
             };
             ShowFullKeyboard.SetBinding(Cell.IsEnabledProperty, "Collapsed", converter: new ValueConverter<bool>((b) => !b));
@@ -159,7 +159,7 @@ namespace Calculator
             SwitchCell showTips = new SwitchCell
             {
                 Text = "Show new tips at startup",
-                BindingContext = Settings.ShowTips
+                BindingContext = App.ShowTips
             };
             showTips.SetBinding(SwitchCell.OnProperty, "Value", BindingMode.TwoWay);
 
@@ -233,7 +233,7 @@ namespace Calculator
             {
                 if (await Application.Current.MainPage.DisplayAlert("Wait!", "This will reset all settings to their default values. This cannot be undone. Are you sure you want to continue?", "Yes", "No"))
                 {
-                    Settings.ResetToDefault();
+                    ResetToDefault();
                     Refresh();
                 }
             };
@@ -244,6 +244,14 @@ namespace Calculator
             danger.Add(reset);
 
             return danger;
+        }
+
+        private void ResetToDefault()
+        {
+            foreach(BindableValue setting in new BindableValue[] { App.ClearCanvasWarning, App.DecimalPlaces, App.LogarithmBase, App.Numbers, App.ShowFullKeyboard, App.ShowTips, App.Trigonometry })
+            {
+                setting.ClearValue(setting.ValueProperty);
+            }
         }
 
         private ContentPage FullPageWebView(string url) => new ContentPage

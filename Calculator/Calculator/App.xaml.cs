@@ -165,7 +165,15 @@ namespace Calculator
             
             Resources = new CrunchStyle();
 
-            Settings.Load();
+            bool success = Settings.Load();
+#if DEBUG
+            if (!success)
+            {
+                //Print.Log("Failed to set Setting value from storage (possible type mismatch?). Setting looking for type " + setting.ValueProperty.ReturnType + " and storage value is type " + value.GetType());
+
+                throw new Exception();
+            }
+#endif
 
             Label l = new Label
             {
@@ -183,34 +191,31 @@ namespace Calculator
                 NavigationPage.SetHasNavigationBar(Home, false);
                 TouchScreen.Instance = Home;
 
-                if (Settings.ShouldRunTutorial.Value)
+                if (ShouldRunTutorial.Value)
                 {
                     RunTutorial();
                 }
 #if __IOS__
-                else if (Settings.ShowTips.Value)
+                else if (ShowTips.Value)
                 {
                     var list = new System.Collections.Generic.List<int>();
-                    for (int i = 0; i < Settings.Tips.Length; i++)
+                    for (int i = 0; i < Tips.Count; i++)
                     {
-                        var tip = Settings.Tips[i];
+                        var tip = Tips[i];
                         if (!tip.Item1.Value && tip.Item4.HasFlag(Device.Idiom))
                         {
                             list.Add(i);
                         }
                     }
-                    Print.Log(Settings.ShowTips.Value, list.Count);
+                    Print.Log(ShowTips.Value, list.Count);
 
                     if (list.Count > 0)
                     {
                         int index = list[new Random().Next(list.Count)];
-                        var tip = Settings.Tips[index];
+                        var tip = Tips[index];
                         Home.ShowTip(tip.Item2, tip.Item3);
                         //tip.Item1.Value = true;
                     }
-
-                    //System.Collections.Generic.KeyValuePair<string, string> tip = Settings.Tips.ElementAt(new Random().Next(Settings.Tips.Count));
-                    //Settings.Tips.Remove(tip.Key);
                 }
 #endif
             };
@@ -253,10 +258,12 @@ namespace Calculator
             System.Diagnostics.Debug.WriteLine("on start");
         }
 
-        protected override void OnSleep()
+        protected async override void OnSleep()
         {
             // Handle when your app sleeps
-            Settings.Save();
+            Settings.Store(true);
+            Print.Log("saved", Application.Current.Properties.Count);
+            await Application.Current.SavePropertiesAsync();
         }
 
         protected override void OnResume()
