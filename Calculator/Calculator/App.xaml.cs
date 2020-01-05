@@ -214,7 +214,7 @@ namespace Calculator
                         int index = list[new Random().Next(list.Count)];
                         var tip = Tips[index];
                         Home.ShowTip(tip.Item2, tip.Item3);
-                        //tip.Item1.Value = true;
+                        tip.Item1.Value = true;
                     }
                 }
 #endif

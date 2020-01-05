@@ -142,13 +142,13 @@ namespace Calculator
         protected readonly AbsoluteLayout KeyboardMask;
         public readonly CrunchKeyboard CrunchKeyboard;
 
-        private bool IsKeyboardDocked => App.KeyboardPosition.Equals(KeyboardHidden);
+        private bool IsKeyboardDocked => App.KeyboardPosition.Value.Equals(KeyboardHidden);
         protected readonly Point KeyboardHidden = new Point(-1000, -1000);
 
         //private readonly AbsoluteLayout Screen;
         //private readonly StackLayout Page;
         protected readonly AbsoluteLayout PhantomCursorField;
-        protected readonly Xamarin.Forms.ScrollView CanvasScroll;
+        protected readonly ScrollView CanvasScroll;
         protected Canvas Canvas;
 
         public MainPage()
@@ -336,10 +336,33 @@ namespace Calculator
 
         public void ShowTip(string explanation, string url)
         {
-            WebImage gif = (WebImage)new Image
+            /*WebImage gif = new Image
             {
-                Source = url,// new UriImageSource { CachingEnabled = false, Uri = new Uri(url) },
+                Source = new UriImageSource { CachingEnabled = false, Uri = new Uri("https://static.wixstatic.com/media/4a4e50_ab41263fc30a4a9bb3949bdcb4179a3b~mv2.gif") },
+                //IsAnimationPlaying = true,
+            };
+            gif.ErrorText.Text += "\n\n(all tips can also be viewed in settings)";
+            gif.SizeChanged += (sender, e) =>
+            {
+                Print.Log("start playing gif");
+                gif.Image.IsAnimationPlaying = true;
+            };
+            View errorMessage = gif.ErrorText.ParentView();*/
+            //errorMessage.Remove();
+            WebImage gif = new Image// FFImageLoading.Forms.CachedImage
+            {
+                Source = new UriImageSource { CachingEnabled = false, Uri = new Uri(url) },
                 IsAnimationPlaying = true,
+                //Source = url,
+                //CacheDuration = TimeSpan.Zero,
+                /*LoadingPlaceholder = new FontImageSource
+                {
+                    Glyph = "Loading...",
+                },
+                ErrorPlaceholder = new FontImageSource
+                {
+                    Glyph = "Failed to load image\n\nTap to try again\n\n(all tips can also be viewed in settings)"
+                }*/
             };
             gif.ErrorText.Text += "\n\n(all tips can also be viewed in settings)";
 
@@ -421,6 +444,19 @@ namespace Calculator
                     dismiss
                 }
             };
+
+            /*Action load = async () =>
+            {
+                await System.Threading.Tasks.Task.Delay(2000);
+                
+                if (gif.Image.Bounds.Size.Area() <= 0)
+                {
+                    gif.Reload();
+                }
+
+                gif.Children.Add(errorMessage);
+            };*/
+            //load();
 
             TapGestureRecognizer tgr = new TapGestureRecognizer();
             tgr.Tapped += (sender, e) =>

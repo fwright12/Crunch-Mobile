@@ -30,6 +30,9 @@ namespace Calculator.iOS
             global::Xamarin.Forms.Forms.Init();
             LoadApplication(new App());
 
+            FFImageLoading.Forms.Platform.CachedImageRenderer.Init();
+            FFImageLoading.Forms.Platform.CachedImageRenderer.InitImageSourceHandler();
+
 #if SAMPLE
             UIApplication.SharedApplication.StatusBarHidden = true;
 #endif

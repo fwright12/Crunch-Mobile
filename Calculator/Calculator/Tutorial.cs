@@ -90,7 +90,7 @@ namespace Calculator
             new string[] { "canvas.gif", "Tap anywhere on the canvas to add an equation" },
             new string[] { "answerForms.gif", "Tap answers to see different forms, or the deg/rad label to toggle degrees and radians" },
             new string[] { "moveEquations.gif", "Drag the equals sign to move an equation on the canvas" },
-            new string[] { "dragDropAnswers.gif", "Drag and drop live answers to create links between calculations" },
+            new string[] { "dragDropAnswers.gif", "Drag and drop answers to create live links between calculations" },
         };
 
         private View[] Screens;

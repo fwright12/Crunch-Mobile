@@ -170,7 +170,9 @@ namespace Calculator
             help.Add(tutorial);
             help.Add(support);
             help.Add(tips);
+#if __IOS__
             help.Add(showTips);
+#endif
 
             //Info
             TextCell about = new TextCell
@@ -191,11 +193,14 @@ namespace Calculator
             };
             info.Add(about);
             info.Add(privacy);
-            foreach(TextCell cell in info)
+            if (Device.RuntimePlatform == Device.Android)
             {
-                if (Device.RuntimePlatform == Device.Android)
+                foreach (TableSection section in new TableSection[] { help, info })
                 {
-                    cell.TextColor = CrunchStyle.TEXT_COLOR;
+                    foreach (TextCell cell in section)
+                    {
+                        cell.TextColor = CrunchStyle.TEXT_COLOR;
+                    }
                 }
             }
 
