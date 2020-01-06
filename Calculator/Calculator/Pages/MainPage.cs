@@ -21,6 +21,7 @@ namespace Calculator
     /* To do:
      * Android Button Touch renderer long press problems
      * Problems making original link equation visible when tapped
+     * iOS dock button doesn't work condensed keyboard
      *
      * v2.4
      * Predefined functions (quadratic formula, physics stuff), ability to add custom ones
@@ -336,33 +337,10 @@ namespace Calculator
 
         public void ShowTip(string explanation, string url)
         {
-            /*WebImage gif = new Image
-            {
-                Source = new UriImageSource { CachingEnabled = false, Uri = new Uri("https://static.wixstatic.com/media/4a4e50_ab41263fc30a4a9bb3949bdcb4179a3b~mv2.gif") },
-                //IsAnimationPlaying = true,
-            };
-            gif.ErrorText.Text += "\n\n(all tips can also be viewed in settings)";
-            gif.SizeChanged += (sender, e) =>
-            {
-                Print.Log("start playing gif");
-                gif.Image.IsAnimationPlaying = true;
-            };
-            View errorMessage = gif.ErrorText.ParentView();*/
-            //errorMessage.Remove();
-            WebImage gif = new Image// FFImageLoading.Forms.CachedImage
+            WebImage gif = new Image
             {
                 Source = new UriImageSource { CachingEnabled = false, Uri = new Uri(url) },
                 IsAnimationPlaying = true,
-                //Source = url,
-                //CacheDuration = TimeSpan.Zero,
-                /*LoadingPlaceholder = new FontImageSource
-                {
-                    Glyph = "Loading...",
-                },
-                ErrorPlaceholder = new FontImageSource
-                {
-                    Glyph = "Failed to load image\n\nTap to try again\n\n(all tips can also be viewed in settings)"
-                }*/
             };
             gif.ErrorText.Text += "\n\n(all tips can also be viewed in settings)";
 
@@ -444,19 +422,6 @@ namespace Calculator
                     dismiss
                 }
             };
-
-            /*Action load = async () =>
-            {
-                await System.Threading.Tasks.Task.Delay(2000);
-                
-                if (gif.Image.Bounds.Size.Area() <= 0)
-                {
-                    gif.Reload();
-                }
-
-                gif.Children.Add(errorMessage);
-            };*/
-            //load();
 
             TapGestureRecognizer tgr = new TapGestureRecognizer();
             tgr.Tapped += (sender, e) =>
