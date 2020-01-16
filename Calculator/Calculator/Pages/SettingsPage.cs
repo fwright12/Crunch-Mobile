@@ -163,13 +163,12 @@ namespace Calculator
             };
             showTips.SetBinding(SwitchCell.OnProperty, "Value", BindingMode.TwoWay);
 
-            TableSection help = new TableSection
+            TableSection help = new TableSection("Help")
             {
-                Title = "Help"
+                tutorial,
+                support,
+                tips
             };
-            help.Add(tutorial);
-            help.Add(support);
-            help.Add(tips);
 #if __IOS__
             help.Add(showTips);
 #endif
@@ -206,8 +205,15 @@ namespace Calculator
 
             Refresh();
 
-            TableRoot root = new TableRoot();
-            root.Add(math, answerDefaults, other, help, info, Danger());
+            TableRoot root = new TableRoot
+            {
+                math, 
+                answerDefaults,
+                other,
+                help,
+                info,
+                Danger()
+            };
             
             Content = new TableView()
             {

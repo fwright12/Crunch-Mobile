@@ -15,23 +15,25 @@
     <Compile Include="$(MSBuildThisFileDirectory)App - Copy.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Keyboard\Key.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ModalView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DrawerView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\EditListView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\Keyboard\Key.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\ModalView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Pages\AboutPage.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Answer.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Calculation.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Equation.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)CustomViews.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)FunctionsDrawer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\Math\Answer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\Math\Calculation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\Math\Equation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\CustomViews.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\FunctionsDrawer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graph.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Keyboard\CrunchKeyboard.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\Keyboard\CrunchKeyboard.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)KeyboardManager.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Link.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\Math\Link.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Pages\MainPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Screenshots.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Settings.cs" />
@@ -41,12 +43,14 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)SystemKeyboard.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Tutorial.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Keyboard\VariableRow.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\Keyboard\VariableRow.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\ToolbarView.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="$(MSBuildThisFileDirectory)desmos.html" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)Views\Math\" />
     <Folder Include="$(MSBuildThisFileDirectory)Pages\" />
   </ItemGroup>
 </Project>
