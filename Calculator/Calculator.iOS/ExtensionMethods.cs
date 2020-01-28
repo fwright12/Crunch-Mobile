@@ -45,6 +45,8 @@ namespace Calculator.iOS
             }
         }
 
+        public static Point Convert(this CGPoint point) => new Point(point.X, point.Y);
+
         public static Point Convert(this CGPoint point, IVisualElementRenderer reference) => new Point(reference.Element.Width * point.X / reference.NativeView.Frame.Width, reference.Element.Height * point.Y / reference.NativeView.Frame.Height);
     }
 }

@@ -187,7 +187,7 @@ namespace Calculator
                     })
                 }
             });
-
+            
             for (int i = 0; i < Keys.Length; i++)
             {
                 for (int j = 0; j < Keys[i].Length; j++)
@@ -239,11 +239,7 @@ namespace Calculator
 
         protected override void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            try
-            {
-                base.OnPropertyChanged(propertyName);
-            }
-            catch { }
+            base.OnPropertyChanged(propertyName);
 
             if (propertyName.IsProperty(WidthProperty) || propertyName.IsProperty(HeightProperty))
             {
@@ -292,10 +288,12 @@ namespace Calculator
             }
         }
 
+        public SizeRequest ForceMeasure(double widthConstraint, double heightConstraint) => OnMeasure(widthConstraint, heightConstraint);
+
         protected override SizeRequest OnMeasure(double widthConstraint, double heightConstraint)
         {
             SizeRequest sr = base.OnMeasure(widthConstraint, heightConstraint);
-            
+            //return sr;
             bool idealOrientation = CondensedOrientation == StackOrientation.Horizontal;
             double rows = Keys.Length + (!idealOrientation).ToInt();
             double cols = MIN_COLUMNS + idealOrientation.ToInt() * PERMANENT_KEYS_INCREASE;

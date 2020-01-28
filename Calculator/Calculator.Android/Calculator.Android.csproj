@@ -132,7 +132,7 @@
       <Version>2.4.11.982</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Forms">
-      <Version>4.4.0.991265</Version>
+      <Version>4.4.0.991537</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.GooglePlayServices.Ads.Lite">
       <Version>71.1720.1</Version>
@@ -140,6 +140,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Renderers\BannerAdRenderer.cs" />
+    <Compile Include="Renderers\DrawerListViewRenderer.cs" />
     <Compile Include="Renderers\CanvasRenderer.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="Renderers\KeyboardEntryRenderer.cs" />

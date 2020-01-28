@@ -22,26 +22,29 @@ namespace Calculator.Droid
 
         public static bool RelayTouch<T>(this VisualElementRenderer<T> native, MotionEvent e, Func<Point, TouchState, bool> relay) where T : VisualElement
         {
-            TouchState touchState;
+            TouchState touchState = e.Action.Convert();
 
-            if (e.Action == MotionEventActions.Down)
-            {
-                touchState = TouchState.Down;
-            }
-            else if (e.Action == MotionEventActions.Move)
-            {
-                touchState = TouchState.Moving;
-            }
-            else if (e.Action == MotionEventActions.Up)
-            {
-                touchState = TouchState.Up;
-            }
-            else
+            if ((int)touchState == -1)
             {
                 return native.Element is ITouchable;
             }
 
             return relay(native.ScaleTouch(native.Element, e), touchState);
+        }
+
+        public static TouchState Convert(this MotionEventActions action)
+        {
+            switch (action)
+            {
+                case MotionEventActions.Down:
+                    return TouchState.Down;
+                case MotionEventActions.Move:
+                    return TouchState.Moving;
+                case MotionEventActions.Up:
+                    return TouchState.Up;
+                default:
+                    return (TouchState)(-1);
+            }
         }
 
         public static Point ScaleTouch(this Android.Views.View native, VisualElement shared, MotionEvent e) => new Point(shared.Width * e.GetX() / native.Width, shared.Height * e.GetY() / native.Height);

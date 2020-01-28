@@ -166,9 +166,11 @@
     <CodesignProvision>Crunch Testing</CodesignProvision>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Gestures.cs" />
     <Compile Include="Renderers\BannerAdRenderer.cs" />
     <Compile Include="Renderers\CanvasRenderer.cs" />
     <Compile Include="ExtensionMethods.cs" />
+    <Compile Include="Renderers\DrawerListViewRenderer.cs" />
     <Compile Include="Renderers\iOSDrawerPageRenderer.cs" />
     <Compile Include="Renderers\KeyboardEntryRenderer.cs" />
     <Compile Include="Renderers\LongClickableButtonRenderer.cs" />
@@ -203,7 +205,7 @@
       <Version>2.4.11.982</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Forms">
-      <Version>4.4.0.991265</Version>
+      <Version>4.4.0.991537</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Google.iOS.MobileAds">
       <Version>7.38.0</Version>
@@ -346,4 +348,9 @@
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Import Project="..\Calculator\Calculator.projitems" Label="Shared" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties XamarinHotReloadWrongLinkerErrorInfoBarCalculatoriOSHideInfoBar="True" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>

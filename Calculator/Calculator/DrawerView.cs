@@ -21,14 +21,39 @@ namespace Calculator
         public static void SnapTo(this ListView bindable, double height, double? animationSpeed = null) => SnapToInternal(bindable, null, height, animationSpeed);
         public static void SnapTo(this TableView bindable, double height, double? animationSpeed = null) => SnapToInternal(bindable, null, height, animationSpeed);
 
+        public static void AddSnapPoint(this ListView bindable, params View[] views) => GetSnapPointsList(bindable).AddRange(views);
+        public static void AddSnapPoint(this ListView bindable, params double[] heights)
+        {
+            List<object> snapPoints = GetSnapPointsList(bindable);
+            foreach(double d in heights)
+            {
+                snapPoints.Add(d);
+            }
+        }
+
+        public static SortedSet<double> GetSnapPoints(this ListView bindable)
+        {
+            SortedSet<double> result = new SortedSet<double>();
+            
+            foreach(object o in GetSnapPointsList(bindable))
+            {
+                result.Add(o is double ? (double)o : ((View)o).Height);
+            }
+
+            return result;
+        }
 
 
+
+        private static BindableProperty SnapPointsProperty = BindableProperty.CreateAttached("SnapPoints", typeof(List<object>), typeof(DrawerView), new List<object>());
 
         private static BindableProperty VisibleViewProperty = BindableProperty.CreateAttached("VisibleView", typeof(View), typeof(DrawerView), null);
 
         private static View GetVisibleView(BindableObject view) => (View)view.GetValue(VisibleViewProperty);
 
         private static void SetVisibleView(BindableObject view, View value) => view.SetValue(VisibleViewProperty, value);
+
+        private static List<object> GetSnapPointsList(BindableObject bindable) => (List<object>)bindable.GetValue(SnapPointsProperty);
 
         private static readonly string MOVING_ANIMATION_HANDLE = "Move";
 
@@ -45,7 +70,7 @@ namespace Calculator
             }
             else
             {
-                bindable.AnimateAtSpeed(MOVING_ANIMATION_HANDLE, VisualElement.HeightRequestProperty, bindable.Height, height, 16, (double)animationSpeed, Easing.BounceOut);
+                bindable.AnimateAtSpeed(MOVING_ANIMATION_HANDLE, VisualElement.HeightRequestProperty, bindable.Height, height, 16, (double)animationSpeed, Easing.SpringOut);
             }
 
             View visibleView = GetVisibleView(bindable);
@@ -66,6 +91,13 @@ namespace Calculator
 
                 //Orientation = VisibleView == null ? ScrollOrientation.Vertical : ScrollOrientation.Neither;
             }
+        }
+
+        private static double Bounce(double value)
+        {
+            double a = 3.5 * Math.PI * value;
+            double c = Math.Abs(Math.Pow(a, 1.5)) + 1;
+            return 1 - Math.Abs(Math.Cos(a) * 1 / c);
         }
     }
 }

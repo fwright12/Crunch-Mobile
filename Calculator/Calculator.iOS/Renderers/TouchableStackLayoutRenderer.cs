@@ -22,10 +22,34 @@ namespace Calculator.iOS
             TouchScreenRenderer.AddDrag(this);
         }
 
+        protected override void OnElementChanged(ElementChangedEventArgs<StackLayout> e)
+        {
+            base.OnElementChanged(e);
+
+            if (!(e.NewElement is TouchableStackLayout element) || element.LongClicked == null)
+            {
+                return;
+            }
+            
+            //element.RequestAddLongClick += (sender, e1) =>
+            //{
+                UILongPressGestureRecognizer longPress = new UILongPressGestureRecognizer();
+                longPress.AddTarget(() =>
+                {
+                    if (longPress.State == UIGestureRecognizerState.Began)
+                    {
+                        Print.Log("recognized", longPress.State, Element is TouchableStackLayout, element, element?.LongClicked == null);
+                        element.LongClicked(element, new TouchEventArgs(longPress.LocationInView(this).Convert(), longPress.State.Convert()));
+                    }
+                });
+                AddGestureRecognizer(longPress);
+            //};
+        }
+
         public override UIView HitTest(CGPoint point, UIEvent uievent)
         {
             UIView view = base.HitTest(point, uievent);
-            return view == this && Element is TouchableStackLayout tsl && !tsl.ShouldIntercept ? null : view;
+            return view == this && Element is TouchableStackLayout tsl && !tsl.ShouldIntercept && tsl.LongClicked == null ? null : view;
         }
 
         /*public TouchableStackLayoutRenderer()

@@ -68,7 +68,7 @@
             },
             "Xamarin.Forms": {
               "target": "Package",
-              "version": "[4.4.0.991265, )"
+              "version": "[4.4.0.991537, )"
             },
             "Xamarin.Google.iOS.MobileAds": {
               "target": "Package",

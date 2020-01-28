@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Globalization;
-using System.Linq;
-using System.Text;
 
 using System.Extensions;
+using System.IO;
+using System.Threading;
 using Xamarin.Forms;
 using Xamarin.Forms.Extensions;
 using Xamarin.Forms.MathDisplay;
@@ -14,10 +13,111 @@ namespace Calculator
 {
     public class FunctionsDrawer : Frame
 	{
-        public class ListView : EditListView { }
+        public class ListView : EditListView
+        {
+            public class ScrollToRequestEventArgs : EventArgs
+            {
+                public int X;
+                public int Y;
+                public bool Animated;
+
+                public ScrollToRequestEventArgs(int x, int y, bool animated = false)
+                {
+                    X = x;
+                    Y = y;
+                    Animated = animated;
+                }
+            }
+
+            public event EventHandler<ScrollToRequestEventArgs> ScrollToRequest;
+
+            public ListView()
+            {
+                Scrolled += (sender, e) =>
+                {
+                    if (!ShouldScroll)
+                    {
+                        ScrollTo(0, 0);
+                    }
+                    LastScrollY = e.ScrollY;
+                    //Print.Log("scrolled", e.ScrollY);
+                };
+                /*Scrolled += (sender, e) =>
+                {
+                    //Print.Log("scrolled", e.ScrollY);
+                    if (!ShouldScroll)
+                    {
+                        //LastScrollY = e.ScrollY;
+                        //ScrollTo(0, (int)LastScrollY);
+                        FunctionsDrawer parent = this.Parent<FunctionsDrawer>();
+                        //bool locked = this.IsLocked();
+                        ShouldScroll = Height < parent.MaxDrawerHeight || e.ScrollY <= 0;
+                        //Print.Log("set scrolling", ShouldScroll);
+                        //Scrolling = this.IsLocked();
+                    }
+                };*/
+            }
+
+            public bool ShouldScroll = false;
+            //public bool Scrolling { get; private set; } = false;
+            private double LastTouch;
+            private DateTime LastTime;
+            private double LastScrollY;
+            private double LastMovingSpeed;
+
+            public bool OnScrollEvent(Point point, TouchState state)
+            {
+                FunctionsDrawer parent = this.Parent<FunctionsDrawer>();
+
+                double time = DateTime.Now.Subtract(LastTime).TotalMilliseconds;
+                double distance = state == TouchState.Down ? 0 : LastTouch - point.Y;
+                //Print.Log("touch", LastScrollY, ShouldScroll, state, LastTouch, point.Y, delta);
+                //Print.Log("touch", state, distance / time, distance, time);
+                LastTouch = point.Y;
+                LastTime = DateTime.Now;
+                if (state == TouchState.Moving)
+                {
+                    LastMovingSpeed = Math.Min(parent.TransitionSpeed * 2, Math.Abs(distance) / time);
+                }
+
+                /*if (state != TouchState.Moving && state != TouchState.Up)
+                {
+                    ShouldScroll = false;
+                }*/
+
+                if (!ShouldScroll)
+                {
+                    //SortedSet<double> snapPoints = this.GetSnapPoints();
+                    //HeightRequest = (HeightRequest + delta).Bound(snapPoints.Min, snapPoints.Max);
+                    HeightRequest = Math.Min(parent.MaxDrawerHeight, HeightRequest + distance);
+
+                    if (state == TouchState.Up)
+                    {
+                        //FunctionsDrawer parent = this.Parent<FunctionsDrawer>();
+                        //double height = dy > 0 ? parent.MaxDrawerHeight : parent.Keyboard.Height;
+                        double speed = parent.TransitionSpeed;// * (distance == 0 ? 1 : 2);// LastMovingSpeed;// parent.TransitionSpeed;// distance / time;
+                        if (distance > 0 || (distance == 0 && Math.Abs(Height - parent.MaxDrawerHeight) < Math.Abs(Height - parent.Keyboard.Height)))
+                        {
+                            this.SnapTo(parent.MaxDrawerHeight, speed);
+                        }
+                        else
+                        {
+                            this.SnapTo(parent.Keyboard, speed);
+                        }
+                    }
+                }
+
+                return ShouldScroll = Height == parent.MaxDrawerHeight && LastScrollY >= 0;
+                return ShouldScroll;
+            }
+
+            public void ScrollTo(int x, int y, bool animated = false) => OnScrollToRequest(this, new ScrollToRequestEventArgs(x, y, animated));
+
+            private void OnScrollToRequest(object sender, ScrollToRequestEventArgs e) => ScrollToRequest?.Invoke(sender, e);
+        }
 
         public AbsoluteLayout DropArea;
-        public double TransitionSpeed = 1 / 3.0;
+        public double TransitionSpeed = 0.75;// 2 / 3.0;
 
         private readonly StackLayout AddStackLayout;
         private readonly Button ConfirmAdd;
@@ -27,11 +127,13 @@ namespace Calculator
 
         private readonly AnyVisualState ClosedState;
         private readonly List<double> OpenValues;
+        private readonly string SAVED_FUNCTIONS_FILE_NAME = "functions.txt";
 
         private Equation FunctionToAdd;
-        private ObservableCollection<Expression> Functions;
+        private EditListView.Items Functions;
+        private string Filename => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), SAVED_FUNCTIONS_FILE_NAME);
 
-        private double MaxDrawerHeight => Math.Min(0.9 * this.Parent<View>().Height, Keyboard.Height * 2);
+        private double MaxDrawerHeight => App.Current.Collapsed ? 0.9 * this.Parent<View>().Height : Keyboard.Height * 2;
 
         public FunctionsDrawer(View keyboard)
         {
@@ -49,11 +151,13 @@ namespace Calculator
 
             Padding = new Thickness(0);
             Keyboard = keyboard;
+            HasShadow = false;
+            IsClippedToBounds = true;
 
             Label noVariables;
             Button cancel;
 
-            List<string> text = new List<string>
+            List<string> dummyData = new List<string>
             {
                 "(-b+√(b^2-4ac))/(2a)",
                 "(-b+√(b^2-4ac))/(2a)",
@@ -64,12 +168,26 @@ namespace Calculator
                 "a+b+c+d+e+f+g+h+i+j+k+l+m+n+o+p+q+r+s+t+u+v+w+y+z",
                 "√(x^2+y^2)"
             };
-            Functions = new ObservableCollection<Expression>();
-            foreach (string s in text)
+            Functions = new EditListView.Items();
+            if (File.Exists(Filename))
             {
-                Functions.Add(MakeExpression(s));
-            }
+                string text = File.ReadAllText(Filename).Trim('\n');
+                Print.Log("read from file", text);
+                //text = string.Join('\n', dummyData);
 
+                //foreach (string function in dummyData)
+                foreach (string function in text.Split('\n'))
+                {
+                    if (function.Length == 0)
+                    {
+                        continue;
+                    }
+
+                    Print.Log("found function |" + function + "|", function.Length, function.Length > 0 ? function[0] : -1);
+                    Functions.Add(function);
+                }
+            }
+            
             Content = new StackLayout
             {
                 Orientation = StackOrientation.Vertical,
@@ -77,6 +195,16 @@ namespace Calculator
                 {
                     (AddStackLayout = new StackLayout
                     {
+                        Resources = new ResourceDictionary
+                        {
+                            new StyleSetter<Button>
+                            {
+                                new Setter { Property = Button.TextColorProperty, Value = Color.Default },
+                                new Setter { Property = BackgroundColorProperty, Value = Color.Transparent },
+                                new Setter { Property = Button.FontSizeProperty, Value = NamedSize.Body.On<Button>() },
+                                //new Setter { Property = PaddingProperty, Value = new Thickness(0, 10, 0, 0) }
+                            }
+                        },
                         Orientation = StackOrientation.Vertical,
                         IsVisible = false,
                         Children =
@@ -84,23 +212,26 @@ namespace Calculator
                             new StackLayout
                             {
                                 Orientation = StackOrientation.Horizontal,
+                                Padding = new Thickness(5, 5, 5, 0),
                                 Children =
                                 {
                                     (cancel = new Button
                                     {
-                                        Text = "Cancel"
+                                        VerticalOptions = LayoutOptions.Start,
+                                        Text = "Cancel",
                                     }),
                                     (noVariables = new Label
                                     {
                                         HorizontalOptions = LayoutOptions.CenterAndExpand,
-                                        Text = "Invalid Function!\n(functions must contain variables)",
+                                        VerticalOptions = LayoutOptions.Center,
                                         HorizontalTextAlignment = TextAlignment.Center,
                                         FontSize = NamedSize.Medium.On<Label>(),
                                     }),
                                     (ConfirmAdd = new Button
                                     {
+                                        VerticalOptions = LayoutOptions.Start,
                                         Text = "Add",
-                                        IsEnabled = false
+                                        IsEnabled = false,
                                     })
                                 }
                             },
@@ -112,19 +243,54 @@ namespace Calculator
                     }),
                     (FunctionsList = new ListView
                     {
+                        BackgroundColor = Color.Transparent,
                         ItemsSource = Functions,
-                        Header = keyboard
+                        ItemTemplate = new DataTemplate(() =>
+                        {
+                            EditCell cell = new EditCell();
+                            cell.SetBinding<View, string>(EditCell.ViewProperty, "Value", MakeExpression);
+                            return cell;
+                        }),
+                        SelectionMode = ListViewSelectionMode.None,
+                        IsPullToRefreshEnabled = false,
+                        HasUnevenRows = true,
+                        Header = keyboard,
                     })
                 }
             };
 
+            Label noFunctions = new Label
+            {
+                Text = "\nNo functions yet!\n\nTap the \"+\" button to add one",
+                HorizontalTextAlignment = TextAlignment.Center,
+                FontSize = NamedSize.Large.On<Label>(),
+            };
+
+            FunctionsList.SetBinding<object, int>(ListView.FooterProperty, Functions, "Count", value => value == 0 ? noFunctions : null);
+            FunctionsList.Edit.SetBinding<bool, int>(IsEnabledProperty, Functions, "Count", value => value > 0);
+
+            Functions.CollectionChanged += (sender, e) =>
+            {
+                SaveToken?.Cancel();
+                SaveToken = new CancellationTokenSource();
+                System.Threading.Tasks.Task.Run(SaveFunctions, SaveToken.Token);
+            };
+
+            FunctionsList.ItemTapped += (sender, e) =>
+            {
+                ChangeStatus();
+
+                MainPage mainPage = this.Parent<MainPage>();
+                DropFunction((string)((EditListView.ViewModel)e.Item).Value);
+            };
             FunctionsList.ContextAction += (sender, e) =>
             {
-                if (e.Data == EditListView.ContextActions.Edit)
+                if (e.Value == EditListView.ContextActions.Edit)
                 {
-                    AddEquation((Expression)sender);
+                    AddEquation(((EditListView.ViewModel)sender).Value as string);
                 }
             };
+            FunctionsList.AddSnapPoint(Keyboard);
 
             foreach (View child in FunctionToAdd.Children)
             {
@@ -143,26 +309,34 @@ namespace Calculator
                 }*/
 
                 ConfirmAdd.IsEnabled = e.NewValue == null ? false : e.NewValue.Unknowns.Count > 0;
+                // If there's no answer but there's already an error message, leave the message
+                if (!(e.NewValue == null && noVariables.Text.Length > 0))
+                {
+                    noVariables.Text = ErrorText(e.NewValue);
+                }
             };
-            noVariables.SetBinding(OpacityProperty, ConfirmAdd, "IsEnabled", converter: new ValueConverter<bool, int>(value => 1 - value.ToInt(), null));
+            noVariables.Text = ErrorText(null);
+            //noVariables.SetBinding<string, bool>(Label.TextProperty, ConfirmAdd, "IsEnabled", value => );
+            //noVariables.SetBinding<int, bool>(OpacityProperty, ConfirmAdd, "IsEnabled", value => 1 - value.ToInt());
             
             FunctionsList.Add.Clicked += (sender, e) => AddEquation();
             cancel.Clicked += (sender, e) =>
             {
                 AddStackLayout.IsVisible = false;
-                FunctionsList.SnapTo(MaxDrawerHeight, TransitionSpeed);
+                ChangeStatus();
             };
             ConfirmAdd.Clicked += (sender, e) =>
             {
-                Functions.Insert(0, MakeExpression(FunctionToAdd.LHS.ToString()));
+                Functions.Insert(0, FunctionToAdd.LHS.ToString());
 
                 AddStackLayout.IsVisible = false;
-                FunctionsList.SnapTo(MaxDrawerHeight, TransitionSpeed);
+                ChangeStatus();
             };
 
             this.WhenPropertyChanged(CornerRadiusProperty, (sender, e) =>
             {
-                AddStackLayout.Padding = (FunctionsList.Header as View).Margin = new Thickness(0, CornerRadius, 0, 0);
+                (FunctionsList.Header as View).Margin = new Thickness(0, CornerRadius, 0, 0);
+                //AddStackLayout.Padding = 
             });
             FunctionsList.WhenPropertyChanged(HeightProperty, (sender, e) =>
             {
@@ -175,20 +349,21 @@ namespace Calculator
                 Transition(percent);
             });
 
-            FunctionsList.SnapTo(Keyboard);
+            FunctionsList.SnapTo(keyboard);
         }
 
         public void ChangeStatus()
         {
             FunctionsList.Editing = false;
 
-            if (FunctionsList.IsLocked())
+            if (FunctionsList.HeightRequest == MaxDrawerHeight)
             {
-                FunctionsList.SnapTo(MaxDrawerHeight, TransitionSpeed);
+                FunctionsList.ScrollTo(0, 0, true);
+                FunctionsList.SnapTo(Keyboard, TransitionSpeed);
             }
             else
             {
-                FunctionsList.SnapTo(Keyboard, TransitionSpeed);
+                FunctionsList.SnapTo(MaxDrawerHeight, TransitionSpeed);
             }
         }
 
@@ -206,19 +381,15 @@ namespace Calculator
             {
                 (FunctionsList.Header as View).Margin = new Thickness(0);
             }
-            if (percent == 0)
-            {
-                BackgroundColor = CrunchStyle.BACKGROUND_COLOR;
-            }
         }
 
-        private void AddEquation(Expression existing = null)
+        private void AddEquation(string existing = null)
         {
             FunctionToAdd.LHS.Children.Clear();
             SoftKeyboard.MoveCursor(FunctionToAdd.LHS);
             if (existing != null)
             {
-                SoftKeyboard.Type(existing.ToString());
+                SoftKeyboard.Type(existing);
             }
 
             ConfirmAdd.Text = existing == null ? "Add" : "Update";
@@ -229,38 +400,100 @@ namespace Calculator
 
         private Expression MakeExpression(string text)
         {
+            if (text == null)
+            {
+                return null;
+            }
+
             Expression expression = new Expression(Reader.Render(text))
             {
                 FontSize = 33,
+                HorizontalOptions = LayoutOptions.FillAndExpand
             };
-            expression.Touch += DropEquation;
-
+            //expression.Touch += DragFunction;
+            expression.OnRequestAddLongClick(DragFunction);
+            
             return expression;
         }
 
-        private void DropEquation(object sender, TouchEventArgs e)
+        private string ErrorText(Crunch.Operand answer)
         {
-            if (e.State != TouchState.Moving)
+            string error = "";
+
+            if (!ConfirmAdd.IsEnabled)
+            {
+                if (answer?.Unknowns.Count == 0)
+                {
+                    error = "Function must contain variables!";
+                }
+                else
+                {
+                    error = "Invalid Function!";
+                }
+            }
+
+            return error;
+        }
+
+        private CancellationTokenSource SaveToken = null;
+
+        private void SaveFunctions()
+        {
+            string text = "";
+
+            foreach (EditListView.ViewModel vm in Functions)
+            {
+                SaveToken.Token.ThrowIfCancellationRequested();
+                text += vm.Value.ToString() + '\n';
+            }
+
+            File.WriteAllText(Filename, text);
+        }
+
+        private void DragFunction(object sender, TouchEventArgs e)
+        {
+            /*if (e.State != TouchState.Moving)
             {
                 return;
-            }
+            }*/
 
             Expression copy = new Expression(Reader.Render((sender as Expression).ToString()));
             TouchScreen.BeginDrag(copy, this.Root<AbsoluteLayout>(), TouchScreen.LastTouch.Subtract(e.Point));
             ChangeStatus();
 
-            TouchScreen.Dragging += (state) =>
+            TouchScreen.Dragging += (sender1, e1) =>
             {
-                if (state != DragState.Ended)
+                if (e1.Value != DragState.Ended)
                 {
                     return;
                 }
 
-                this.Parent<MainPage>().AddCalculation(copy.Bounds.Location.Subtract(DropArea.PositionOn(copy.Parent<VisualElement>())), TouchState.Up);
+                DropFunction(sender.ToString(), copy.Bounds.Location.Subtract(DropArea.PositionOn(copy.Parent<VisualElement>())));
                 copy.Remove();
-
-                SoftKeyboard.Type((sender as Expression).ToString());
             };
+        }
+
+        private void DropFunction(string function, Point? point = null)
+        {
+            if (point.HasValue)
+            {
+                this.Parent<MainPage>().AddCalculation(point.Value, TouchState.Up);
+            }
+            else
+            {
+                this.Parent<MainPage>().AddCalculation(TouchState.Up);
+            }
+
+            Answer answer = SoftKeyboard.Cursor.Parent<Equation>().RHS as Answer;
+            answer.NumberChoice = Crunch.Numbers.Exact;
+            SoftKeyboard.Type(function);
+            KeyboardManager.MoveCursor(KeyboardManager.CursorKey.Down);
+        }
+
+        protected override void OnParentSet()
+        {
+            base.OnParentSet();
+            FunctionsList.AddSnapPoint(MaxDrawerHeight);
         }
     }
 }

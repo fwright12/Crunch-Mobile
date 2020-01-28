@@ -100,9 +100,9 @@ namespace Calculator
             };
             //MainPage.VisiblePage.MakeDraggable(this, view);
 
-            TouchScreen.Dragging += (state1) =>
+            TouchScreen.Dragging += (sender, e) =>
             {
-                if (state1 == DragState.Ended)
+                if (e.Value == DragState.Ended)
                 {
                     this.Remove();
 

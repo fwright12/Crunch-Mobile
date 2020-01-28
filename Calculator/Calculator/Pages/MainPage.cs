@@ -19,12 +19,17 @@ namespace Calculator
     //Radical - right half is about 1/2 of horizontal, bottom left takes up about 1/2 of vertical, thickness is 0.1, horizontal bar is about 1/3 of horizontal
 
     /* To do:
-     * Android Button Touch renderer long press problems
-     * Problems making original link equation visible when tapped
-     * iOS dock button doesn't work condensed keyboard
-     *
      * v2.4
      * Predefined functions (quadratic formula, physics stuff), ability to add custom ones
+     * Problems making original link equation visible when tapped
+     * Restore advertisement
+     * Landscape mode
+     * toolbar covers bottom of list
+     * remove button padding
+     * how to add functions to canvas
+     * 
+     * Android Button Touch renderer long press problems
+     * iOS dock button doesn't work condensed keyboard
      * 
      * v3.0
      * Makeover - color scheme, better icons
@@ -65,9 +70,9 @@ namespace Calculator
     public delegate void RenderedEventHandler();
 
 #if DEBUG
-    public class Test : ContentPage
+    public class AbsoluteLayoutMeasureProblemsDemo : ContentPage
     {
-        public Test()
+        public AbsoluteLayoutMeasureProblemsDemo()
         {
             AbsoluteLayout a = new AbsoluteLayout
             {
@@ -139,7 +144,7 @@ namespace Calculator
         protected int ExtraPadding = 100;
 
         //private CrunchKeyboard VirtualKeyboard;
-        public readonly Layout<View> FullKeyboardView;
+        public readonly View FullKeyboardView;
         protected readonly AbsoluteLayout KeyboardMask;
         public readonly CrunchKeyboard CrunchKeyboard;
 
@@ -165,21 +170,23 @@ namespace Calculator
             {
                 Children =
                 {
-                    (CanvasScroll = new ScrollView
                     {
-                        Content = Canvas = new Canvas { },
-                        Orientation = ScrollOrientation.Both,
-                    }),
+                        (CanvasScroll = new ScrollView
+                        {
+                            Content = Canvas = new Canvas { },
+                            Orientation = ScrollOrientation.Both,
+                        }),
+                        new Rectangle(0, 0, 1, 1),
+                        AbsoluteLayoutFlags.SizeProportional
+                    },
                     (PhantomCursor = new CursorView
                     {
                         BindingContext = SoftKeyboard.Cursor,
                         Color = Color.Red,
-                        IsVisible = false
+                        IsVisible = false,
                     })
                 }
             };
-            AbsoluteLayout.SetLayoutBounds(CanvasScroll, new Rectangle(0, 0, 1, 1));
-            AbsoluteLayout.SetLayoutFlags(CanvasScroll, AbsoluteLayoutFlags.SizeProportional);
             PhantomCursor.SetBinding(HeightRequestProperty, "Height");
 
             //Canvas.Children.Add(new Label { Text = "⚙⛭", FontFamily = CrunchStyle.SYMBOLA_FONT, FontSize = 50 }, new Point(0, 100));
@@ -189,25 +196,59 @@ namespace Calculator
             canvas.Children.Add(new Expression(Render.Math("log_-9(4)")), new Point(200, 200));
             canvas.Children.Add(new Expression(Render.Math("log_-9-4")), new Point(300, 300));*/
 
-            AbsoluteLayout maskedKeys = new AbsoluteLayout
+            //AbsoluteLayout maskedKeys;
+            CrunchKeyboard = new CrunchKeyboard();
+
+            StackLayout keyboardAndVariables = new TouchableStackLayout
             {
                 BindingContext = CrunchKeyboard,
-                HorizontalOptions = LayoutOptions.Start,
-                VerticalOptions = LayoutOptions.Start,
+                Orientation = StackOrientation.Vertical,
                 Children =
                 {
-                    (CrunchKeyboard = new CrunchKeyboard())
+                    new AbsoluteLayout
+                    {
+                        HorizontalOptions = LayoutOptions.Start,
+                        VerticalOptions = LayoutOptions.Start,
+                        Children =
+                        {
+                            CrunchKeyboard,
+                            {
+                                new AbsoluteLayout
+                                {
+                                    IsVisible = false,
+                                    BackgroundColor = Color.Gray,
+                                    Opacity = 0.875,
+                                },
+                                new Rectangle(0, 0, 1, 1),
+                                AbsoluteLayoutFlags.SizeProportional
+                            }
+                        }
+                    },
                 }
             };
-            maskedKeys.SetBinding(IsVisibleProperty, "IsVisible");
-            maskedKeys.Children.Add(KeyboardMask = new AbsoluteLayout
+
+            //maskedKeys.SetBinding(IsVisibleProperty, CrunchKeyboard, "IsVisible");
+            //KeyboardMask.SetBinding(IsVisibleProperty, PhantomCursor, "IsVisible");
+            keyboardAndVariables.SetBinding(StackLayout.OrientationProperty, "Orientation", converter: new ValueConverter<StackOrientation>(StackLayoutExtensions.Invert));
+
+            KeyboardMask = new AbsoluteLayout
             {
-                IsVisible = false,
                 BackgroundColor = Color.Gray,
                 Opacity = 0.875,
-                BindingContext = PhantomCursor,
-            }, new Rectangle(0, 0, 1, 1), AbsoluteLayoutFlags.SizeProportional);
-            KeyboardMask.SetBinding(IsVisibleProperty, "IsVisible");
+            };
+
+            PhantomCursor.WhenPropertyChanged(IsVisibleProperty, (sender, e) =>
+            {
+                if (PhantomCursor.IsVisible)
+                {
+                    PhantomCursorField.Children.Add(KeyboardMask, new Rectangle(CrunchKeyboard.PositionOn(PhantomCursorField), CrunchKeyboard.Bounds.Size), AbsoluteLayoutFlags.None);
+                }
+                else
+                {
+                    KeyboardMask.Remove();
+                }
+            });
+
             App.ShowFullKeyboard.WhenPropertyChanged(App.ShowFullKeyboard.ValueProperty, (sender, e) =>
             //Settings.KeyboardChanged += (e) =>
             {
@@ -215,6 +256,17 @@ namespace Calculator
                 ResizeKeyboard();
             });
             
+            FullKeyboardView = FunctionsDrawer = new FunctionsDrawer(keyboardAndVariables)
+            {
+                DropArea = Canvas,
+            };
+            FullKeyboardView.SetBinding(IsVisibleProperty, "IsVisible");
+
+            PhantomCursorField.Children.Add(FullKeyboardView, new Rectangle(1, 1, -1, -1), AbsoluteLayoutFlags.PositionProportional);
+
+            //PhantomCursorField.Children.Add(keyboardAndVariables, new Point(0, 0));
+            //PhantomCursorField.Children.Add(FullKeyboardView = keyboardAndVariables, new Rectangle(1, 1, 1, -1), AbsoluteLayoutFlags.PositionProportional | AbsoluteLayoutFlags.WidthProportional);
+
             VariableRow variables = new VariableRow
             {
                 BindingContext = CrunchKeyboard,
@@ -222,50 +274,7 @@ namespace Calculator
                 VerticalOptions = LayoutOptions.End
             };
             variables.SetBinding(VariableRow.SpacingProperty, "Spacing");
-            CrunchKeyboard.SizeChanged += (sender, e) =>
-            {
-                variables.ButtonSize = CrunchKeyboard.ButtonWidth(CrunchKeyboard.Width, CrunchKeyboard.Columns) / 2;
-            };
-
-            FullKeyboardView = new TouchableStackLayout
-            {
-                BindingContext = CrunchKeyboard,
-                Orientation = StackOrientation.Vertical,
-                Children =
-                {
-                    maskedKeys
-                }
-            };
-            FullKeyboardView.SetBinding(IsVisibleProperty, "IsVisible");
-            FullKeyboardView.SetBinding(StackLayout.OrientationProperty, "Orientation", converter: new ValueConverter<StackOrientation>(StackLayoutExtensions.Invert));
-            //PhantomCursorField.Children.Add(FullKeyboardView, new Rectangle(1, 1, -1, -1), AbsoluteLayoutFlags.PositionProportional);
-            FunctionsDrawer = new FunctionsDrawer(FullKeyboardView)
-            {
-                DropArea = Canvas
-            };
-            PhantomCursorField.Children.Add(FunctionsDrawer, new Rectangle(1, 1, 1, -1), AbsoluteLayoutFlags.PositionProportional | AbsoluteLayoutFlags.WidthProportional);// AbsoluteLayoutFlags.PositionProportional | AbsoluteLayoutFlags.WidthProportional);
-            //AbsoluteLayout.SetLayoutBounds(FunctionsDrawer, new Rectangle(0, 0, App.Current.Collapsed ? 1 : 400, 0.9));
-            //AbsoluteLayout.SetLayoutFlags(FunctionsDrawer, App.Current.Collapsed ? AbsoluteLayoutFlags.SizeProportional : AbsoluteLayoutFlags.HeightProportional);
-
-            /*FunctionsDrawer drawer = new FunctionsDrawer();
-            drawer.IsVisible = true;
-            ScrollView test = new ScrollView
-            {
-                Orientation = ScrollOrientation.Vertical,
-                Content = new StackLayout
-                {
-                    Orientation = StackOrientation.Vertical,
-                    Children =
-                    {
-                        FullKeyboardView,
-                        drawer
-                    }
-                }
-            };
-            test.BindingContext = FullKeyboardView;
-            test.SetBinding(HeightRequestProperty, "Height");
-            PhantomCursorField.Children.Add(test, new Rectangle(1, 1, -1, -1), AbsoluteLayoutFlags.PositionProportional);*/
-
+            
             KeyboardManager.KeyboardChanged += (keyboard) =>
             {
                 variables.RemoveBinding(StackLayout.OrientationProperty);
@@ -275,7 +284,7 @@ namespace Calculator
                 {
                     variables.LengthBinding = CrunchKeyboard;
                     variables.SetBinding(StackLayout.OrientationProperty, "Orientation");
-                    FullKeyboardView.Children.Insert(0, variables);
+                    keyboardAndVariables.Children.Insert(0, variables);
                 }
                 else if (keyboard == SystemKeyboard.Instance)
                 {
@@ -283,7 +292,7 @@ namespace Calculator
                     PhantomCursorField.Children.Add(variables, new Rectangle(1, 1, 1, -1), AbsoluteLayoutFlags.PositionProportional | AbsoluteLayoutFlags.WidthProportional);
                 }
             };
-
+            
             //Set up for keyboards
             SystemKeyboard.Setup(PhantomCursorField);
             WireUpKeyboard(CrunchKeyboard);
@@ -292,7 +301,34 @@ namespace Calculator
 
             SettingsMenuSetUp();
 
-            CanvasScroll.Scrolled += AdjustKeyboardPosition;
+            CrunchKeyboard.SizeChanged += (sender, e) =>
+            {
+                variables.ButtonSize = CrunchKeyboard.ButtonWidth(CrunchKeyboard.Width, CrunchKeyboard.Columns) / 2;
+
+                FullKeyboardView.WidthRequest = CrunchKeyboard.Width + (CrunchKeyboard.Orientation == StackOrientation.Horizontal ? 0 : variables.ButtonSize + CrunchKeyboard.Spacing);
+
+                if (CrunchKeyboard.IsCondensed)
+                {
+                    if (CrunchKeyboard.Orientation == StackOrientation.Horizontal)
+                    {
+                        AbsoluteLayout.SetLayoutBounds(CanvasScroll, new Rectangle(0, 0, 1, PhantomCursorField.Height - CrunchKeyboard.Height));
+                        AbsoluteLayout.SetLayoutFlags(CanvasScroll, AbsoluteLayoutFlags.WidthProportional);
+                    }
+                    else
+                    {
+                        AbsoluteLayout.SetLayoutBounds(CanvasScroll, new Rectangle(0, 0, PhantomCursorField.Width - CrunchKeyboard.Width, 1));
+                        AbsoluteLayout.SetLayoutFlags(CanvasScroll, AbsoluteLayoutFlags.HeightProportional);
+                    }
+                }
+                else
+                {
+                    AbsoluteLayout.SetLayoutBounds(CanvasScroll, new Rectangle(0, 0, 1, 1));
+                    AbsoluteLayout.SetLayoutFlags(CanvasScroll, AbsoluteLayoutFlags.SizeProportional);
+                }
+            };
+
+            //CanvasScroll.Scrolled += AdjustKeyboardPosition;
+            CanvasScroll.Scrolled += AdjustKeyboard;
             Canvas.Touch += AddCalculation;
             FocusChanged += SwitchCalculationFocus;
 
@@ -300,39 +336,9 @@ namespace Calculator
             ScreenShot();
 #endif
 
+            Canvas.DescendantAdded += OnDescendantAdded;
             SizeChanged += (sender, e) => OnSizeChanged();
-            this.PropertyChangedPlusEquals(PaddingProperty, OnSizeChanged);
-            // Touch stuff
-            DescendantAdded += (sender, e) =>
-            {
-                if (e.Element is Calculation)
-                {
-                    //(e.Element as Calculation).Touch += DragOnCanvas;
-                }
-                else if (e.Element is Equation equation)
-                {
-                    if (e.Element.GetType() == typeof(Equation))
-                    {
-                        equation.LHS.Touch += EquationMoveCursor;
-                    }
-                    if (equation.RHS is Answer)
-                    {
-                        equation.RHS.Touch += DragAnswer;
-                    }
-                    
-                    equation.Touch += MoveCalculation;
-                }
-                else if (e.Element is Link link)
-                {
-                    link.PropertyChanged += (sender1, e1) =>
-                    {
-                        if (e1.PropertyName == ContentView.ContentProperty.PropertyName)
-                        {
-                            link.MathContent.Touch += DragLink;
-                        }
-                    };
-                }
-            };
+            this.WhenPropertyChanged(PaddingProperty, (sender, e) => OnSizeChanged());
 
             FixDynamicLag("");
         }
@@ -433,7 +439,7 @@ namespace Calculator
                     dismiss
                 }
             };
-
+            
             TapGestureRecognizer tgr = new TapGestureRecognizer();
             tgr.Tapped += (sender, e) =>
             {
@@ -456,7 +462,7 @@ namespace Calculator
 #endif
 
         private double SettingsButtonSize = 50;
-        private static BannerAd ad;
+        private BannerAd ad;
 
         private FunctionsDrawer FunctionsDrawer;
         protected AnythingButton SettingsMenuButton;
@@ -488,7 +494,7 @@ namespace Calculator
             Button functionsMenuButton = new Button
             {
                 Text = "f(x)",
-                FontSize = 25,
+                FontSize = NamedSize.Large.On<Button>(),
             };
             functionsMenuButton.Clicked += (sender, e) =>
             {
@@ -521,7 +527,7 @@ namespace Calculator
                 {
                     key.LongClick += (sender, e) =>
                     {
-                        if (SoftKeyboard.Cursor.Parent == null)
+                        if (!SoftKeyboard.Cursor.IsDescendantOf(Canvas))
                         {
                             return;
                         }
@@ -552,7 +558,7 @@ namespace Calculator
                 {
                     DockKeyboard(false);
 
-                    TouchScreen.Dragging += (e1) =>
+                    TouchScreen.Dragging += (sender1, e1) =>
                     {
                         App.KeyboardPosition.Value = AbsoluteLayout.GetLayoutBounds(FullKeyboardView).Location;
                     };
@@ -582,17 +588,14 @@ namespace Calculator
             if (keystroke == KeyboardManager.BACKSPACE)
             {
                 //if (CalculationFocus != null)
-                if (SoftKeyboard.Cursor.Parent != null)
-                {
-                    SoftKeyboard.Delete();
-                }
+                SoftKeyboard.Delete();
             }
             else
             {
                 //if (CalculationFocus == null)
                 if (SoftKeyboard.Cursor.Parent == null)
                 {
-                    AddCalculation(new Point(0, 50), TouchState.Up);
+                    AddCalculation(TouchState.Up);
                 }
 
                 SoftKeyboard.Type(keystroke.ToString());
@@ -603,7 +606,7 @@ namespace Calculator
         {
             if (CalculationFocus == null)
             {
-                return;
+                //return;
             }
 
             if (key == KeyboardManager.CursorKey.Left)
@@ -618,14 +621,14 @@ namespace Calculator
             {
                 if (!SoftKeyboard.Up())
                 {
-                    CalculationFocus?.Up();
+                    SoftKeyboard.Cursor.Parent<Calculation>()?.Up();
                 }
             }
             else if (key == KeyboardManager.CursorKey.Down)
             {
                 if (!SoftKeyboard.Down())
                 {
-                    CalculationFocus?.Down();
+                    SoftKeyboard.Cursor.Parent<Calculation>()?.Down();
                 }
             }
         }
@@ -634,6 +637,7 @@ namespace Calculator
 
         private void LoadAd()
         {
+            return;
             if (Width < 0)
             {
                 return;
@@ -712,6 +716,9 @@ namespace Calculator
             AbsoluteLayout.SetLayoutBounds(FullKeyboardView, new Rectangle(keyboardPosition, new Size(-1, -1)));
 
             AbsoluteLayout.SetLayoutBounds(CrunchKeyboard, new Rectangle(0, 0, size.Width, size.Height));
+            
+            //CrunchKeyboard.WidthRequest = size.Width;
+            //CrunchKeyboard.HeightRequest = size.Height;
 
             Print.Log("measured keyboard", collapsed, size);
             App.Current.CollapsedChanged(collapsed);
@@ -755,6 +762,19 @@ namespace Calculator
             FocusChanged?.Invoke(CalculationFocus, newFocus);
             CalculationFocus = newFocus;
         }
+        
+        private Point LastScroll = Point.Zero;
+
+        public void AdjustKeyboard(object sender, ScrolledEventArgs e)
+        {
+            Point delta = new Point(LastScroll.X - e.ScrollX, LastScroll.Y - e.ScrollY);
+            LastScroll = new Point(e.ScrollX, e.ScrollY);
+            
+            if (!CrunchKeyboard.IsCondensed && IsKeyboardDocked)
+            {
+                FullKeyboardView.MoveTo(FullKeyboardView.X + delta.X, FullKeyboardView.Y + delta.Y);
+            }
+        }
 
         private void AdjustKeyboardPosition(object sender, EventArgs e) => AdjustKeyboardPosition();
 
@@ -767,6 +787,8 @@ namespace Calculator
         }
 
         private void AddCalculation(object sender, TouchEventArgs e) => AddCalculation(e.Point, e.State);
+        
+        public void AddCalculation(TouchState state) => AddCalculation(new Point(0, SettingsButtonSize), state);
 
         public void AddCalculation(Point point, TouchState state)
         {
@@ -799,6 +821,120 @@ namespace Calculator
             Canvas.Children.Add(calculation, point);
         }
 
+        private void OnDescendantAdded(object sender, ElementEventArgs e)
+        {
+            if (e.Element is Calculation)
+            {
+                //(e.Element as Calculation).Touch += DragOnCanvas;
+            }
+            else if (e.Element is Equation equation)
+            {
+                if (e.Element.GetType() == typeof(Equation))
+                {
+                    equation.LHS.Touch += EquationMoveCursor;
+                }
+                if (equation.RHS is Answer)
+                {
+                    equation.RHS.Touch += DragAnswer;
+                }
+
+                equation.Touch += MoveCalculation;
+            }
+            else if (e.Element is Link link)
+            {
+                link.PropertyChanged += (sender1, e1) =>
+                {
+                    if (e1.PropertyName == ContentView.ContentProperty.PropertyName)
+                    {
+                        link.MathContent.Touch += DragLink;
+                    }
+                };
+            }
+        }
+
+#if false
+        private void OnDescendantAdded1(object sender, ElementEventArgs e)
+        {
+            if (e.Element is Calculation)
+            {
+                //(e.Element as Calculation).Touch += DragOnCanvas;
+            }
+            else if (e.Element is Equation equation)
+            {
+                if (e.Element.GetType() == typeof(Equation))
+                {
+                    equation.LHS.Touch += EquationMoveCursor;
+                }
+                if (equation.RHS is Answer)
+                {
+                    equation.RHS.Touch += (sender1, e1) => Drag(equation, e1, Canvas, (sender2, e2) =>
+                    {
+                        /*Link link = new Link(answer);
+                        link.MathContent.Touch += DragLink;
+                        TouchScreen.BeginDrag(link, PhantomCursorField, answer);
+                        StartDraggingLink(link);*/
+                    });
+                    //equation.RHS.Touch += DragAnswer;
+                }
+
+                //equation.Touch += MoveCalculation;
+                equation.Touch += (sender1, e1) => Drag(sender1 as Calculation ?? (sender1 as View)?.Parent<Calculation>() ?? sender1 as View, e1, Canvas, (sender2, e2) =>
+                {
+                    if (e2.Value != DragState.Ended)
+                    {
+                        return;
+                    }
+
+                    AdjustKeyboardPosition();
+                });
+            }
+            else if (e.Element is Link link)
+            {
+                BoxView placeholder = new BoxView();
+
+                link.WhenPropertyChanged(ContentView.ContentProperty, (sender1, e1) =>
+                {
+                    ((Link)sender1).MathContent.MakeDraggable(PhantomCursorField, (sender2, e2) =>
+                    {
+                        if (e2.Value == DragState.Started)
+                        {
+                            placeholder = link.StartDrag();
+                        }
+                        else
+                        {
+                            Tuple<Expression, int> target = ExampleDrop(link);
+
+                            if (e2.Value == DragState.Moving && target != null)
+                            {
+                                target.Item1.Insert(target.Item2, placeholder);
+                            }
+                        }
+                    });
+                });
+
+                /*link.PropertyChanged += (sender1, e1) =>
+                {
+                    if (e1.PropertyName == ContentView.ContentProperty.PropertyName)
+                    {
+                        link.MathContent.Touch += DragLink;
+                    }
+                };*/
+            }
+        }
+
+        private void Drag(View sender, TouchEventArgs e, Layout<View> dropArea, EventHandler<EventArgs<DragState>> onDrag = null, View start = null)
+        {
+            if (e.State == TouchState.Moving)
+            {
+                TouchScreen.BeginDrag(sender, dropArea, start ?? sender);
+                if (onDrag != null)
+                {
+                    TouchScreen.Dragging += onDrag;
+                }
+            }
+        }
+#endif
+
         private void MoveCalculation(object sender, TouchEventArgs e)
         {
             View draggable = sender as Calculation ?? (sender as View)?.Parent<Calculation>() ?? sender as View;
@@ -809,9 +945,9 @@ namespace Calculator
                 TouchScreen.BeginDrag(draggable, Canvas);
                 TouchScreen.FatFinger = backup;
 
-                TouchScreen.Dragging += (e1) =>
+                TouchScreen.Dragging += (sender1, e1) =>
                 {
-                    if (e1 != DragState.Ended)
+                    if (e1.Value != DragState.Ended)
                     {
                         return;
                     }
@@ -856,11 +992,11 @@ namespace Calculator
         {
             BoxView placeholder = link.StartDrag();
 
-            TouchScreen.Dragging += (state) =>
+            TouchScreen.Dragging += (sender, e) =>
             {
                 Tuple<Expression, int> target = ExampleDrop(link);
 
-                if (state == DragState.Moving && target != null)
+                if (e.Value == DragState.Moving && target != null)
                 {
                     target.Item1.Insert(target.Item2, placeholder);
                 }
@@ -883,10 +1019,12 @@ namespace Calculator
 
         public void EnterCursorMode(Point start, double speed = 1)
         {
-            if (CalculationFocus == null)
+            //if (CalculationFocus == null)
+            //if (SoftKeyboard.Cursor.Parent == null)
+            /*if (!SoftKeyboard.Cursor.IsDescendantOf(Canvas))
             {
                 return;
-            }
+            }*/
 
             PhantomCursor.IsVisible = true;
 
@@ -897,9 +1035,9 @@ namespace Calculator
             }
             TouchScreen.BeginDrag(PhantomCursor, PhantomCursorField, start, speed);
 
-            TouchScreen.Dragging += (state) =>
+            TouchScreen.Dragging += (sender, e) =>
             {
-                if (state == DragState.Ended)
+                if (e.Value == DragState.Ended)
                 {
                     ExitCursorMode();
                 }
