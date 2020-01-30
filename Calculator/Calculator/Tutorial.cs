@@ -304,7 +304,7 @@ namespace Calculator
                     }
                 }
             };
-            PhantomCursorField.Children.Insert(0, main);
+            Screen.Children.Insert(0, main);
 
             CrunchKeyboard.SizeChanged += (sender, e) =>
             {

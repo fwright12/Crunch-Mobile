@@ -10,22 +10,24 @@ using Xamarin.Forms;
 using Xamarin.Forms.Extensions;
 using Xamarin.Forms.Platform.iOS;
 
-[assembly: ExportRenderer(typeof(Calculator.FunctionsDrawer.ListView), typeof(Calculator.iOS.DrawerListViewRenderer))]
+[assembly: ExportRenderer(typeof(ListView), typeof(Calculator.iOS.DrawerListViewRenderer))]
 
 namespace Calculator.iOS
 {
     public class DrawerListViewRenderer : ListViewRenderer
     {
-        protected override void OnElementChanged(ElementChangedEventArgs<ListView> e)
+        protected override void OnElementChanged(ElementChangedEventArgs<Xamarin.Forms.ListView> e)
         {
             base.OnElementChanged(e);
 
-            AddGestureRecognizer(new UIDrawerGestureRecognizer(Control, Element as FunctionsDrawer.ListView)
+            AddGestureRecognizer(new UIDrawerGestureRecognizer(Control, Element as ListView)
             {
                 CancelsTouchesInView = false
             });
 
-            if (e.OldElement is FunctionsDrawer.ListView oldElement)
+            Scrollable.ScrollRequestProperty.ListenFor(ScrollToRequest, e.OldElement, e.NewElement);
+
+            /*if (e.OldElement is FunctionsDrawer.ListView oldElement)
             {
                 oldElement.ScrollToRequest -= ScrollToRequest;
             }
@@ -36,20 +38,20 @@ namespace Calculator.iOS
                 {
                     //Control.Editing = newElement.Editing;
                 });*/
-            }
+            //}
 
             //Control.AllowsMultipleSelectionDuringEditing = true;
         }
 
-        private void ScrollToRequest(object sender, FunctionsDrawer.ListView.ScrollToRequestEventArgs e) => Control.SetContentOffset(new CoreGraphics.CGPoint(e.X, e.Y), e.Animated);
+        private void ScrollToRequest(object sender, ScrollToPositionRequestEventArgs e) => Control.SetContentOffset(new CoreGraphics.CGPoint(e.X, e.Y), e.Animated);
 
         public class UIDrawerGestureRecognizer : UIGestureRecognizer
         {
             private UIScrollView NativeScrollView;
-            private FunctionsDrawer.ListView SharedScrollView;
+            private ListView SharedScrollView;
             private Token Target;
 
-            public UIDrawerGestureRecognizer(UIScrollView nativeScrollView, FunctionsDrawer.ListView sharedScrollView)
+            public UIDrawerGestureRecognizer(UIScrollView nativeScrollView, ListView sharedScrollView)
             {
                 NativeScrollView = nativeScrollView;
                 SharedScrollView = sharedScrollView;
@@ -88,7 +90,8 @@ namespace Calculator.iOS
 
             public void ShouldScroll()
             {
-                bool temp = SharedScrollView?.OnScrollEvent(LocationInView(null).Convert(), State.Convert()) ?? true;
+                bool temp = SharedScrollView?.GetSwipeListener().OnSwipeEvent(LocationInView(null).Convert(), State.Convert()) ?? false;
+                //bool temp = SharedScrollView?.OnScrollEvent(LocationInView(null).Convert(), State.Convert()) ?? true;
                 //Print.Log("touch", Control.ContentOffset.Y, temp, touch.LocationInView(null));
                 //Print.Log("touch", temp, NativeScrollView.PanGestureRecognizer.State, State);
                 //if (Control.ContentOffset.Y < 0)

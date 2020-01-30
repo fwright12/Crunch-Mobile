@@ -9,20 +9,87 @@ namespace Calculator
 {
     public static class DrawerView
     {
-        public static bool IsLocked(this ScrollView bindable) => GetVisibleView(bindable) != null;
-        public static bool IsLocked(this ListView bindable) => GetVisibleView(bindable) != null;
-        public static bool IsLocked(this TableView bindable) => GetVisibleView(bindable) != null;
+        public class ScrollSpy
+        {
+            public delegate bool TouchEventHandler(Point point, TouchState state);
 
-        public static void SnapTo(this ScrollView bindable, View view = null, double? animationSpeed = null) => SnapToInternal(bindable, view, null, animationSpeed);
-        public static void SnapTo(this ListView bindable, View view = null, double? animationSpeed = null) => SnapToInternal(bindable, view, null, animationSpeed);
-        public static void SnapTo(this TableView bindable, View view = null, double? animationSpeed = null) => SnapToInternal(bindable, view, null, animationSpeed);
+            public View Drawer { get; set; }
+            private readonly ListView Scrollable;
 
-        public static void SnapTo(this ScrollView bindable, double height, double? animationSpeed = null) => SnapToInternal(bindable, null, height, animationSpeed);
-        public static void SnapTo(this ListView bindable, double height, double? animationSpeed = null) => SnapToInternal(bindable, null, height, animationSpeed);
-        public static void SnapTo(this TableView bindable, double height, double? animationSpeed = null) => SnapToInternal(bindable, null, height, animationSpeed);
+            public ScrollSpy(ListView scrollable)
+            {
+                Drawer = Scrollable = scrollable;
 
-        public static void AddSnapPoint(this ListView bindable, params View[] views) => GetSnapPointsList(bindable).AddRange(views);
-        public static void AddSnapPoint(this ListView bindable, params double[] heights)
+                scrollable.Scrolled += (sender, e) =>
+                {
+                    LastScrollY = e.ScrollY;
+                    //Print.Log("scrolled", e.ScrollY);
+
+#if __IOS__
+                    if (!ShouldScroll)
+                    {
+                        Scrollable.ScrollToPosition(0, 0);
+                    }
+#endif
+                };
+            }
+
+            private bool ShouldScroll = false;
+            private double LastTouch;
+            private double LastScrollY;
+
+            public bool OnSwipeEvent(Point point, TouchState state)
+            {
+                FunctionsDrawer parent = Scrollable.Parent<FunctionsDrawer>();
+
+                double distance = state == TouchState.Down ? 0 : LastTouch - point.Y;
+                //Print.Log("touch", LastScrollY, ShouldScroll, state, LastTouch, point.Y);
+                //Print.Log("touch", state, distance / time, distance, time);
+                LastTouch = point.Y;
+
+                if (!ShouldScroll)
+                {
+                    //SortedSet<double> snapPoints = this.GetSnapPoints();
+                    //HeightRequest = (HeightRequest + delta).Bound(snapPoints.Min, snapPoints.Max);
+                    Drawer.HeightRequest = Math.Min(parent.MaxDrawerHeight, Drawer.HeightRequest + distance);
+
+                    if (state == TouchState.Up)
+                    {
+                        double speed = parent.TransitionSpeed;
+
+                        if (distance > 0 || (distance == 0 && Math.Abs(Drawer.Height - parent.MaxDrawerHeight) < Math.Abs(Drawer.Height - parent.Keyboard.Height)))
+                        {
+                            Drawer.SnapTo(parent.MaxDrawerHeight, speed);
+                        }
+                        else
+                        {
+                            Drawer.SnapTo(parent.Keyboard, speed);
+                        }
+                    }
+                }
+
+                ShouldScroll = Drawer.Height == parent.MaxDrawerHeight && LastScrollY >= 0;
+
+                return !ShouldScroll;
+            }
+        }
+
+        public static BindableProperty SwipeListenerProperty = BindableProperty.CreateAttached("SwipeListener", typeof(ScrollSpy), typeof(DrawerView), null, defaultValueCreator: value => new ScrollSpy((dynamic)value));
+
+        public static ScrollSpy GetSwipeListener(this ListView listView) => (ScrollSpy)listView.GetValue(SwipeListenerProperty);
+
+        public static void SetSwipeListener(this ListView listView, ScrollSpy listener) => listView.SetValue(SwipeListenerProperty, listener);
+
+
+
+        public static bool IsLocked(this View bindable) => GetVisibleView(bindable) != null;
+
+        public static void SnapTo(this View bindable, View view = null, double? animationSpeed = null) => SnapToInternal(bindable, view, null, animationSpeed);
+
+        public static void SnapTo(this View bindable, double height, double? animationSpeed = null) => SnapToInternal(bindable, null, height, animationSpeed);
+
+        public static void AddSnapPoint(this View bindable, params View[] views) => GetSnapPointsList(bindable).AddRange(views);
+        public static void AddSnapPoint(this View bindable, params double[] heights)
         {
             List<object> snapPoints = GetSnapPointsList(bindable);
             foreach(double d in heights)
@@ -31,7 +98,7 @@ namespace Calculator
             }
         }
 
-        public static SortedSet<double> GetSnapPoints(this ListView bindable)
+        public static SortedSet<double> GetSnapPoints(this View bindable)
         {
             SortedSet<double> result = new SortedSet<double>();
             
@@ -64,7 +131,7 @@ namespace Calculator
             double height = unsafeHeight ?? view?.Height ?? -1;
             Print.Log("snapping to", height, bindable.Height, animationSpeed);
 
-            if (animationSpeed == null)
+            if (animationSpeed == null || bindable.Height == height)
             {
                 bindable.HeightRequest = height;
             }

@@ -153,7 +153,7 @@ namespace Calculator
 
         //private readonly AbsoluteLayout Screen;
         //private readonly StackLayout Page;
-        protected readonly AbsoluteLayout PhantomCursorField;
+        protected readonly AbsoluteLayout Screen;
         protected readonly ScrollView CanvasScroll;
         protected Canvas Canvas;
 
@@ -166,7 +166,7 @@ namespace Calculator
             Text.CreateRightParenthesis = () => new TextImage(new Image() { Source = "rightParenthesis.png", HeightRequest = 0, WidthRequest = App.TextWidth, Aspect = Aspect.Fill }, ")");
             Text.CreateRadical = () => new Image() { Source = "radical.png", HeightRequest = 0, WidthRequest = App.TextWidth * 2, Aspect = Aspect.Fill };
             
-            Content = PhantomCursorField = new AbsoluteLayout
+            Content = Screen = new AbsoluteLayout
             {
                 Children =
                 {
@@ -241,7 +241,7 @@ namespace Calculator
             {
                 if (PhantomCursor.IsVisible)
                 {
-                    PhantomCursorField.Children.Add(KeyboardMask, new Rectangle(CrunchKeyboard.PositionOn(PhantomCursorField), CrunchKeyboard.Bounds.Size), AbsoluteLayoutFlags.None);
+                    Screen.Children.Add(KeyboardMask, new Rectangle(CrunchKeyboard.PositionOn(Screen), CrunchKeyboard.Bounds.Size), AbsoluteLayoutFlags.None);
                 }
                 else
                 {
@@ -260,9 +260,10 @@ namespace Calculator
             {
                 DropArea = Canvas,
             };
+            FunctionsDrawer.Content.SetBinding<StackOrientation, StackOrientation>(StackLayout.OrientationProperty, CrunchKeyboard, "Orientation", StackLayoutExtensions.Invert);
             FullKeyboardView.SetBinding(IsVisibleProperty, "IsVisible");
 
-            PhantomCursorField.Children.Add(FullKeyboardView, new Rectangle(1, 1, -1, -1), AbsoluteLayoutFlags.PositionProportional);
+            Screen.Children.Add(FullKeyboardView, new Rectangle(1, 1, -1, -1), AbsoluteLayoutFlags.PositionProportional);
 
             //PhantomCursorField.Children.Add(keyboardAndVariables, new Point(0, 0));
             //PhantomCursorField.Children.Add(FullKeyboardView = keyboardAndVariables, new Rectangle(1, 1, 1, -1), AbsoluteLayoutFlags.PositionProportional | AbsoluteLayoutFlags.WidthProportional);
@@ -289,12 +290,12 @@ namespace Calculator
                 else if (keyboard == SystemKeyboard.Instance)
                 {
                     variables.Orientation = StackOrientation.Horizontal;
-                    PhantomCursorField.Children.Add(variables, new Rectangle(1, 1, 1, -1), AbsoluteLayoutFlags.PositionProportional | AbsoluteLayoutFlags.WidthProportional);
+                    Screen.Children.Add(variables, new Rectangle(1, 1, 1, -1), AbsoluteLayoutFlags.PositionProportional | AbsoluteLayoutFlags.WidthProportional);
                 }
             };
             
             //Set up for keyboards
-            SystemKeyboard.Setup(PhantomCursorField);
+            SystemKeyboard.Setup(Screen);
             WireUpKeyboard(CrunchKeyboard);
             KeyboardManager.AddKeyboard(SystemKeyboard.Instance, CrunchKeyboard);
             KeyboardManager.SwitchTo(CrunchKeyboard);
@@ -305,25 +306,29 @@ namespace Calculator
             {
                 variables.ButtonSize = CrunchKeyboard.ButtonWidth(CrunchKeyboard.Width, CrunchKeyboard.Columns) / 2;
 
-                FullKeyboardView.WidthRequest = CrunchKeyboard.Width + (CrunchKeyboard.Orientation == StackOrientation.Horizontal ? 0 : variables.ButtonSize + CrunchKeyboard.Spacing);
+                FunctionsDrawer.FunctionsList.WidthRequest = CrunchKeyboard.Width + (CrunchKeyboard.Orientation == StackOrientation.Horizontal ? 0 : variables.ButtonSize + CrunchKeyboard.Spacing);
 
-                if (CrunchKeyboard.IsCondensed)
+                if (CrunchKeyboard.Orientation == StackOrientation.Horizontal)
                 {
-                    if (CrunchKeyboard.Orientation == StackOrientation.Horizontal)
+                    //FullKeyboardView.SizeRequest(CrunchKeyboard.Width + (CrunchKeyboard.Orientation == StackOrientation.Horizontal ? 0 : variables.ButtonSize + CrunchKeyboard.Spacing), -1);
+
+                    if (CrunchKeyboard.IsCondensed)
                     {
-                        AbsoluteLayout.SetLayoutBounds(CanvasScroll, new Rectangle(0, 0, 1, PhantomCursorField.Height - CrunchKeyboard.Height));
+                        AbsoluteLayout.SetLayoutBounds(CanvasScroll, new Rectangle(0, 0, 1, Screen.Height - CrunchKeyboard.Height));
                         AbsoluteLayout.SetLayoutFlags(CanvasScroll, AbsoluteLayoutFlags.WidthProportional);
                     }
                     else
                     {
-                        AbsoluteLayout.SetLayoutBounds(CanvasScroll, new Rectangle(0, 0, PhantomCursorField.Width - CrunchKeyboard.Width, 1));
-                        AbsoluteLayout.SetLayoutFlags(CanvasScroll, AbsoluteLayoutFlags.HeightProportional);
+                        AbsoluteLayout.SetLayoutBounds(CanvasScroll, new Rectangle(0, 0, 1, 1));
+                        AbsoluteLayout.SetLayoutFlags(CanvasScroll, AbsoluteLayoutFlags.SizeProportional);
                     }
                 }
                 else
                 {
-                    AbsoluteLayout.SetLayoutBounds(CanvasScroll, new Rectangle(0, 0, 1, 1));
-                    AbsoluteLayout.SetLayoutFlags(CanvasScroll, AbsoluteLayoutFlags.SizeProportional);
+                    //FullKeyboardView.SizeRequest(-1, CrunchKeyboard.Height);
+
+                    AbsoluteLayout.SetLayoutBounds(CanvasScroll, new Rectangle(0, 0, Screen.Width - CrunchKeyboard.Width, 1));
+                    AbsoluteLayout.SetLayoutFlags(CanvasScroll, AbsoluteLayoutFlags.HeightProportional);
                 }
             };
 
@@ -362,7 +367,7 @@ namespace Calculator
                 App.TutorialRunning = false;
             };
 
-            PhantomCursorField.Children.Add(popup, new Rectangle(0.5, 0.5, -1, -1), AbsoluteLayoutFlags.PositionProportional);
+            Screen.Children.Add(popup, new Rectangle(0.5, 0.5, -1, -1), AbsoluteLayoutFlags.PositionProportional);
         }
 
         public void ShowTip(string explanation, string url)
@@ -447,7 +452,7 @@ namespace Calculator
             };
             dismiss.GestureRecognizers.Add(tgr);
 
-            PhantomCursorField.Children.Add(popup, new Rectangle(0.5, 0.5, -1, -1), AbsoluteLayoutFlags.PositionProportional);
+            Screen.Children.Add(popup, new Rectangle(0.5, 0.5, -1, -1), AbsoluteLayoutFlags.PositionProportional);
         }
 
 #if DEBUG
@@ -501,8 +506,8 @@ namespace Calculator
                 FunctionsDrawer.ChangeStatus();
             };
 
-            PhantomCursorField.Children.Add(SettingsMenuButton, new Rectangle(0, 0, SettingsButtonSize, SettingsButtonSize), AbsoluteLayoutFlags.PositionProportional);
-            PhantomCursorField.Children.Add(functionsMenuButton, new Rectangle(1, 0, SettingsButtonSize, SettingsButtonSize), AbsoluteLayoutFlags.PositionProportional);
+            Screen.Children.Add(SettingsMenuButton, new Rectangle(0, 0, SettingsButtonSize, SettingsButtonSize), AbsoluteLayoutFlags.PositionProportional);
+            Screen.Children.Add(functionsMenuButton, new Rectangle(1, 0, SettingsButtonSize, SettingsButtonSize), AbsoluteLayoutFlags.PositionProportional);
         }
 
         private void WireUpKeyboard(CrunchKeyboard keyboard)
@@ -535,11 +540,11 @@ namespace Calculator
                         Point start;
                         if (!CrunchKeyboard.IsCondensed && !IsKeyboardDocked)
                         {
-                            start = new Point(TouchScreen.FirstTouch.X, FullKeyboardView.PositionOn(PhantomCursorField).Y - SoftKeyboard.Cursor.Height);
+                            start = new Point(TouchScreen.FirstTouch.X, FullKeyboardView.PositionOn(Screen).Y - SoftKeyboard.Cursor.Height);
                         }
                         else
                         {
-                            start = SoftKeyboard.Cursor.PositionOn(PhantomCursorField);
+                            start = SoftKeyboard.Cursor.PositionOn(Screen);
                         }
 
                         EnterCursorMode(start, 2);
@@ -562,7 +567,7 @@ namespace Calculator
                     {
                         App.KeyboardPosition.Value = AbsoluteLayout.GetLayoutBounds(FullKeyboardView).Location;
                     };
-                    TouchScreen.BeginDrag(FullKeyboardView, PhantomCursorField);
+                    TouchScreen.BeginDrag(FullKeyboardView, Screen);
                 }
             };
         }
@@ -593,9 +598,10 @@ namespace Calculator
             else
             {
                 //if (CalculationFocus == null)
-                if (SoftKeyboard.Cursor.Parent == null)
+                //if (SoftKeyboard.Cursor.Parent<Canvas>() == null)
+                if (!SoftKeyboard.Cursor.IsDescendantOf(this))
                 {
-                    AddCalculation(TouchState.Up);
+                    AddCalculation();
                 }
 
                 SoftKeyboard.Type(keystroke.ToString());
@@ -659,11 +665,11 @@ namespace Calculator
 
                 if (isCondensedLandscape)
                 {
-                    PhantomCursorField.Children.Add(ad, new Rectangle(SettingsButtonSize + Padding.Left, 0, width, -1), AbsoluteLayoutFlags.None);
+                    Screen.Children.Add(ad, new Rectangle(SettingsButtonSize + Padding.Left, 0, width, -1), AbsoluteLayoutFlags.None);
                 }
                 else
                 {
-                    PhantomCursorField.Children.Add(ad, new Rectangle(0.5, 0, width, -1), AbsoluteLayoutFlags.XProportional);
+                    Screen.Children.Add(ad, new Rectangle(0.5, 0, width, -1), AbsoluteLayoutFlags.XProportional);
                 }
 #endif
             }
@@ -786,16 +792,19 @@ namespace Calculator
             }
         }
 
-        private void AddCalculation(object sender, TouchEventArgs e) => AddCalculation(e.Point, e.State);
-        
-        public void AddCalculation(TouchState state) => AddCalculation(new Point(0, SettingsButtonSize), state);
-
-        public void AddCalculation(Point point, TouchState state)
+        private void AddCalculation(object sender, TouchEventArgs e)
         {
-            if (state != TouchState.Up)
+            if (e.State != TouchState.Up)
             {
                 return;
             }
+
+            AddCalculation(e.Point);
+        }
+
+        public void AddCalculation(Point? location = null)
+        {
+            Point point = location.HasValue ? location.Value : new Point(CanvasScroll.ScrollX, CanvasScroll.ScrollY + SettingsButtonSize);
 
             Calculation calculation = new Calculation() { RecognizeVariables = true };
             FocusOnCalculation(calculation);
@@ -961,7 +970,7 @@ namespace Calculator
         {
             if (sender is View view && e.State == TouchState.Down)
             {
-                EnterCursorMode(view.PositionOn(PhantomCursorField).Add(e.Point));//.Add(new Point(-MainPage.phantomCursor.Width / 2, -Text.MaxTextHeight))));
+                EnterCursorMode(view.PositionOn(Screen).Add(e.Point));//.Add(new Point(-MainPage.phantomCursor.Width / 2, -Text.MaxTextHeight))));
             }
         }
 
@@ -971,7 +980,7 @@ namespace Calculator
             {
                 Link link = new Link(answer);
                 link.MathContent.Touch += DragLink;
-                TouchScreen.BeginDrag(link, PhantomCursorField, answer);
+                TouchScreen.BeginDrag(link, Screen, answer);
                 StartDraggingLink(link);
             }
         }
@@ -984,7 +993,7 @@ namespace Calculator
                 {
                     StartDraggingLink(link);
                 }
-                TouchScreen.BeginDrag(link, PhantomCursorField);
+                TouchScreen.BeginDrag(link, Screen);
             }
         }
 
@@ -1029,11 +1038,11 @@ namespace Calculator
             PhantomCursor.IsVisible = true;
 
             //Put the cursor in the middle of the screen if it's off the screen
-            if (!new Rectangle(Point.Zero, PhantomCursorField.Bounds.Size).Contains(new Rectangle(start, PhantomCursor.Bounds.Size)))
+            if (!new Rectangle(Point.Zero, Screen.Bounds.Size).Contains(new Rectangle(start, PhantomCursor.Bounds.Size)))
             {
-                start = new Point((PhantomCursorField.Width - PhantomCursor.Width) / 2, (PhantomCursorField.Height - PhantomCursor.Height) / 2);
+                start = new Point((Screen.Width - PhantomCursor.Width) / 2, (Screen.Height - PhantomCursor.Height) / 2);
             }
-            TouchScreen.BeginDrag(PhantomCursor, PhantomCursorField, start, speed);
+            TouchScreen.BeginDrag(PhantomCursor, Screen, start, speed);
 
             TouchScreen.Dragging += (sender, e) =>
             {

@@ -162,8 +162,8 @@ namespace Calculator
                 Operand updated;
 
                 Print.Log("evaluating " + text);
-
-                Print.Quiet = true;
+                //Crunch.Math.Evaluate("((8.0)/(1))");
+                //Print.Quiet = true;
                 try
                 {
                     updated = Crunch.Math.Evaluate(text);
@@ -173,7 +173,7 @@ namespace Calculator
                     Print.Log("error evaluating", e.Message);
                     updated = null;
                 }
-
+                Print.Log("answer is", updated);
                 ans.Update(updated);
                 Print.Quiet = false;
 
