@@ -11,8 +11,6 @@ namespace Calculator
     {
         public class ScrollSpy
         {
-            public delegate bool TouchEventHandler(Point point, TouchState state);
-
             public View Drawer { get; set; }
             private readonly ListView Scrollable;
 
@@ -112,7 +110,7 @@ namespace Calculator
 
 
 
-        private static BindableProperty SnapPointsProperty = BindableProperty.CreateAttached("SnapPoints", typeof(List<object>), typeof(DrawerView), new List<object>());
+        private static BindableProperty SnapPointsProperty = BindableProperty.CreateAttached("SnapPoints", typeof(List<object>), typeof(DrawerView), null, defaultValueCreator: value => new List<object>());
 
         private static BindableProperty VisibleViewProperty = BindableProperty.CreateAttached("VisibleView", typeof(View), typeof(DrawerView), null);
 

@@ -22,6 +22,7 @@ namespace Calculator.iOS
         {
             UIPanGestureRecognizer pgr = TouchScreenRenderer.AddDrag(this);
             pgr.CancelsTouchesInView = false;
+            pgr.ShouldRecognizeSimultaneously = (a, b) => false;
 
             UILongPressGestureRecognizer longPress = new UILongPressGestureRecognizer
             {

@@ -562,3 +562,7 @@ C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Andro
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\System.Extensions.dll.mdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\Crunch.dll.mdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\bin\Debug\Crunch.Machine.dll.mdb
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\100\android\src\crc649bf02d5081ca6e8d\Test.java
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\100\android\src\crc649bf02d5081ca6e8d\GestureRecognizerImplementation.java
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\100\android\src\crc649bf02d5081ca6e8d\Touch.java
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\100\android\src\crc649bf02d5081ca6e8d\TouchEnabledVisualElementRenderer_1.java

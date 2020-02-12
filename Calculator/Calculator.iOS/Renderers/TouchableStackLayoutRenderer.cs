@@ -15,20 +15,46 @@ using CoreGraphics;
 
 namespace Calculator.iOS
 {
+    public class TouchEnabledVisualElementRenderer<TElement> : VisualElementRenderer<TElement>
+        where TElement : VisualElement
+    {
+        protected Touch Touch;
+
+        public TouchEnabledVisualElementRenderer()
+        {
+            Touch = Create(this); 
+        }
+
+        public static Touch Create(IVisualElementRenderer renderer) => new Touch(renderer);
+
+        public override void TouchesBegan(NSSet touches, UIEvent evt) => Touch.TouchesBegan(touches, evt);
+
+        public override void TouchesMoved(NSSet touches, UIEvent evt) => Touch.TouchesMoved(touches, evt);
+
+        public override void TouchesEnded(NSSet touches, UIEvent evt) => Touch.TouchesEnded(touches, evt);
+
+        public override void TouchesCancelled(NSSet touches, UIEvent evt) => Touch.TouchesCancelled(touches, evt);
+
+        public override UIView HitTest(CGPoint point, UIEvent uievent) => Touch.HitTest(point, uievent);
+    }
+
     public class TouchableStackLayoutRenderer : VisualElementRenderer<StackLayout>
     {
-        public TouchableStackLayoutRenderer()
+        public TouchableStackLayoutRenderer() : base()
         {
             TouchScreenRenderer.AddDrag(this);
+            new Touch(this);
         }
 
         protected override void OnElementChanged(ElementChangedEventArgs<StackLayout> e)
         {
             base.OnElementChanged(e);
-
+            
+            //e.NewElement?.MakeGestureRecognizable(NativeView);
+            return;
             if (!(e.NewElement is TouchableStackLayout element) || element.LongClicked == null)
             {
-                return;
+                //return;
             }
             
             //element.RequestAddLongClick += (sender, e1) =>
@@ -38,8 +64,8 @@ namespace Calculator.iOS
                 {
                     if (longPress.State == UIGestureRecognizerState.Began)
                     {
-                        Print.Log("recognized", longPress.State, Element is TouchableStackLayout, element, element?.LongClicked == null);
-                        element.LongClicked(element, new TouchEventArgs(longPress.LocationInView(this).Convert(), longPress.State.Convert()));
+                        Print.Log("recognized", longPress.State, Element is TouchableStackLayout, e.NewElement);
+                        //element.LongClicked(element, new TouchEventArgs(longPress.LocationInView(this).Convert(), longPress.State.Convert()));
                     }
                 });
                 AddGestureRecognizer(longPress);
@@ -49,7 +75,7 @@ namespace Calculator.iOS
         public override UIView HitTest(CGPoint point, UIEvent uievent)
         {
             UIView view = base.HitTest(point, uievent);
-            return view == this && Element is TouchableStackLayout tsl && !tsl.ShouldIntercept && tsl.LongClicked == null ? null : view;
+            return view == this && Element is TouchableStackLayout tsl && !tsl.ShouldIntercept && GestureRecognizers.Length <= 1 ? null : view;
         }
 
         /*public TouchableStackLayoutRenderer()

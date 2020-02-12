@@ -85,7 +85,8 @@ namespace Calculator
             new Tip(Settings.Register<bool>("cursor mode tip"), "If you long press the keyboard, you can drag the cursor", "https://static.wixstatic.com/media/4a4e50_9c931692184c46e29c82dd2d64ff3c14~mv2.gif", TargetIdiom.Phone | TargetIdiom.Tablet),
             new Tip(Settings.Register<bool>("move keyboard tip"), "You can drag the keyboard by the \u25BD key to move the keyboard around the screen", "https://static.wixstatic.com/media/4a4e50_4f4048250d6e4d6896082ad53c57c384~mv2.gif", TargetIdiom.Tablet),
             new Tip(Settings.Register<bool>("default answers tip"), "You can choose the default format for answers in settings", "https://static.wixstatic.com/media/4a4e50_afe479ab52874b8aabf1403c7ec3f2ff~mv2.gif", TargetIdiom.Phone | TargetIdiom.Tablet),
-            new Tip(Settings.Register<bool>("clear canvas tip"), "You can clear the canvas by long pressing the DEL key", "https://static.wixstatic.com/media/4a4e50_ab41263fc30a4a9bb3949bdcb4179a3b~mv2.gif", TargetIdiom.Phone | TargetIdiom.Tablet)
+            new Tip(Settings.Register<bool>("clear canvas tip"), "You can clear the canvas by long pressing the DEL key", "https://static.wixstatic.com/media/4a4e50_ab41263fc30a4a9bb3949bdcb4179a3b~mv2.gif", TargetIdiom.Phone | TargetIdiom.Tablet),
+            new Tip(Settings.Register<bool>("functions drawer tip"), "You can drop stored functions onto the canvas for quicker calcuations", "https://static.wixstatic.com/media/4a4e50_972f1465e4c644dea54b889a9ca1a072~mv2.gif", TargetIdiom.Phone | TargetIdiom.Tablet)
         };
     }
 }

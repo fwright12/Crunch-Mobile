@@ -207,7 +207,7 @@ namespace Calculator
                     {
                         if (Keys[i].Length - j > MIN_COLUMNS)
                         {
-                            Keys[i][j].Clicked += (sender, e) => Scroll.ScrollToAsync(Keypad, ScrollToPosition.End, false);
+                            //Keys[i][j].Clicked += (sender, e) => Scroll.ScrollToAsync(Keypad, ScrollToPosition.End, false);
                         }
                     }
 

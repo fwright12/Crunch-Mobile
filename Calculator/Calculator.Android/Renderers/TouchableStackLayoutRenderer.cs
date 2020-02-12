@@ -18,12 +18,35 @@ using Xamarin.Forms.Extensions;
 
 namespace Calculator.Droid
 {
+    public class TouchEnabledVisualElementRenderer<TElement> : VisualElementRenderer<TElement>
+        where TElement : VisualElement
+    {
+        protected Touch TouchImplementation;
+
+        public TouchEnabledVisualElementRenderer(Context context) : base(context)
+        {
+            TouchImplementation = new Touch(context, this);
+        }
+
+        public override bool DispatchTouchEvent(MotionEvent e) => TouchImplementation.DispatchTouchEvent(e);
+
+        public override bool OnInterceptTouchEvent(MotionEvent ev) => TouchImplementation.OnInterceptTouchEvent(ev);
+
+        public override bool OnTouchEvent(MotionEvent e) => TouchImplementation.OnTouchEvent(e);
+    }
+
     public class TouchableStackLayoutRenderer : VisualElementRenderer<StackLayout>
     {
-        public TouchableStackLayoutRenderer(Context context) : base(context) { }
+        public Touch TouchImplementation;
+
+        public TouchableStackLayoutRenderer(Context context) : base(context)
+        {
+            //TouchImplementation = new Touch(context, this);
+        }
 
         public override bool OnTouchEvent(MotionEvent e)
         {
+            //TouchImplementation.OnTouchEvent(e);
             bool wants = base.OnTouchEvent(e);
             //Print.Log("touch", wants, e.Action, "intercepting: " + (Element is TouchableStackLayout && (Element as TouchableStackLayout).ShouldIntercept), Element, Element?.GetType());
             
@@ -42,7 +65,7 @@ namespace Calculator.Droid
         public override bool OnInterceptTouchEvent(MotionEvent ev)
         {
             bool wants = base.OnInterceptTouchEvent(ev);
-
+            
             if (Element is TouchableStackLayout && (Element as TouchableStackLayout).ShouldIntercept)
             {
                 if (ev.Action == MotionEventActions.Move)

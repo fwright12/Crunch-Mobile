@@ -1,4 +1,4 @@
-﻿#if SAMPLE
+﻿#if DEBUG
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -61,16 +61,16 @@ namespace Calculator
 
             ShowOptions();
 
-            canvas.SizeChanged += (sender, e) =>
+            Canvas.SizeChanged += (sender, e) =>
             {
-                if (canvas.Children.Count == 0)
+                if (Canvas.Children.Count == 0)
                 {
                     ShowOptions();
                 }
             };
         }
 
-        private void ShowOptions() => canvas.Children.Add(Options, new Rectangle(0.5, 0.5, -1, -1), AbsoluteLayoutFlags.PositionProportional);
+        private void ShowOptions() => Canvas.Children.Add(Options, new Rectangle(0.5, 0.5, -1, -1), AbsoluteLayoutFlags.PositionProportional);
 
         private Queue<Action> Screenshots = new Queue<Action>();
 
@@ -82,7 +82,7 @@ namespace Calculator
             }
 
             NextSlide(null, new TouchEventArgs(Point.Zero, TouchState.Up));
-            canvas.Touch += NextSlide;
+            Canvas.Touch += NextSlide;
         }
 
         private void NextSlide(object sender, TouchEventArgs e)
@@ -96,7 +96,7 @@ namespace Calculator
 
             if (Screenshots.Count == 0)
             {
-                canvas.Touch -= NextSlide;
+                Canvas.Touch -= NextSlide;
                 ShowOptions();
                 //AddCalculation(e.Point, e.State);
                 return;
@@ -107,40 +107,40 @@ namespace Calculator
 
         private void AssignVariables()
         {
-            AddCalculation(new Point(canvasScroll.Width * .07, canvasScroll.Height * .4), TouchState.Up);
+            AddCalculation(new Point(CanvasScroll.Width * .07, CanvasScroll.Height * .4));
             SoftKeyboard.Type("x^2+5x+3");
         }
 
         private void MoveCursor()
         {
-            AddCalculation(new Point(canvasScroll.Width * .07, canvasScroll.Height * .6), TouchState.Up);
+            AddCalculation(new Point(CanvasScroll.Width * .07, CanvasScroll.Height * .6));
             SoftKeyboard.Type("9*6/8");
 
-            AddCalculation(new Point(canvasScroll.Width * .37, canvasScroll.Height * .03), TouchState.Up);
+            AddCalculation(new Point(CanvasScroll.Width * .37, CanvasScroll.Height * .03));
             SoftKeyboard.Type("3+sqrt(4)");
         }
 
         private void AnswerForms()
         {
-            canvas.Children.Add(new Equation("9*6/8"), new Rectangle(.19, .15, -1, -1), AbsoluteLayoutFlags.PositionProportional);
+            Canvas.Children.Add(new Equation("9*6/8"), new Rectangle(.19, .15, -1, -1), AbsoluteLayoutFlags.PositionProportional);
 
             Equation e = new Equation("3^2+5/4");
-            Operand o = Crunch.Reader.Evaluate(e.LHS.ToString());
+            Operand o = Crunch.Math.Evaluate(e.LHS.ToString());
             o = o.Format(Polynomials.Expanded, Numbers.Decimal, Trigonometry.Degrees);
             e.Children.RemoveAt(2);
             e.Children.Add(new Expression(Xamarin.Forms.MathDisplay.Reader.Render(o.ToString())));
 
-            canvas.Children.Add(e, new Rectangle(.61, .78, -1, -1), AbsoluteLayoutFlags.PositionProportional);
+            Canvas.Children.Add(e, new Rectangle(.61, .78, -1, -1), AbsoluteLayoutFlags.PositionProportional);
         }
 
         private void CustomVariables()
         {
-            AddCalculation(new Point(canvasScroll.Width * .07, canvasScroll.Height * .6), TouchState.Up);
+            AddCalculation(new Point(CanvasScroll.Width * .07, CanvasScroll.Height * .6));
             SoftKeyboard.Type("sqrt(x)+2");
             CalculationFocus.Down();
             SoftKeyboard.Type("4*6.3");
 
-            AddCalculation(new Point(canvasScroll.Width * .37, canvasScroll.Height * .03), TouchState.Up);
+            AddCalculation(new Point(CanvasScroll.Width * .37, CanvasScroll.Height * .03));
             SoftKeyboard.Type("x^2+5x+3");
             CalculationFocus.Down();
             SoftKeyboard.Type("2");
@@ -148,7 +148,7 @@ namespace Calculator
 
         private void DragDropAnswers()
         {
-            AddCalculation(Point.Zero, TouchState.Up);
+            AddCalculation(Point.Zero);
             SoftKeyboard.Type("9*3.47+4");
 
             //AddCalculation(Point.Zero, TouchState.Up);
@@ -165,23 +165,23 @@ namespace Calculator
 
         private void InfiniteCanvas()
         {
-            canvas.Children.Add(new Equation("9*6-3"), Point.Zero);
-            canvas.Children.Add(new Equation("9/8+5*6"), new Point(canvasScroll.Width - 186, canvasScroll.Height - 52));
-            canvas.WidthRequest = canvas.Width + 100;
-            canvas.HeightRequest = canvas.Height + 100;
+            Canvas.Children.Add(new Equation("9*6-3"), Point.Zero);
+            Canvas.Children.Add(new Equation("9/8+5*6"), new Point(CanvasScroll.Width - 186, CanvasScroll.Height - 52));
+            Canvas.WidthRequest = Canvas.Width + 100;
+            Canvas.HeightRequest = Canvas.Height + 100;
 
-            canvasScroll.HorizontalScrollBarVisibility = ScrollBarVisibility.Always;
-            canvasScroll.VerticalScrollBarVisibility = ScrollBarVisibility.Always;
+            CanvasScroll.HorizontalScrollBarVisibility = ScrollBarVisibility.Always;
+            CanvasScroll.VerticalScrollBarVisibility = ScrollBarVisibility.Always;
         }
 
         private void ExplainUI()
         {
-            AddCalculation(new Point(canvasScroll.Width * .31, canvasScroll.Height * .64), TouchState.Up);
+            AddCalculation(new Point(CanvasScroll.Width * .31, CanvasScroll.Height * .64));
             SoftKeyboard.Type("log100");
             CalculationFocus.Down();
             SoftKeyboard.Type("9*6.3");
 
-            AddCalculation(new Point(canvasScroll.Width * .08, canvasScroll.Height * .06), TouchState.Up);
+            AddCalculation(new Point(CanvasScroll.Width * .08, CanvasScroll.Height * .06));
             SoftKeyboard.Type("sqrt(x)");
             CalculationFocus.Down();
             SoftKeyboard.Type("5");

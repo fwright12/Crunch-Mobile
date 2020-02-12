@@ -110,7 +110,7 @@ namespace Calculator
             //ListView.SetBinding(Xamarin.Forms.ListView.HeaderProperty, this, "Header", mode: BindingMode.TwoWay);
             //ListView.WhenPropertyChanged(Xamarin.Forms.ListView.HeaderProperty, HeaderChanged);
             HeaderChanged(null, null);
-
+            
             ListView.ItemTemplate.SetBinding(EditCell.EditingProperty, new Binding("Editing", source: this));
             if (ListView is ActionableListView actionableListView)
             {
@@ -135,7 +135,7 @@ namespace Calculator
             }
             catch
             {
-                System.Diagnostics.Debug.WriteLine("Failed to remove item from the ListView. To support item removal, ItemsSource must be set to a type that has a 'Remove(T item)' function (where T is the type of the Enumeration) and implements INotifyCollectionChanged. Consider using an ObservableCollection");
+                System.Diagnostics.Debug.WriteLine("Failed to remove item from the ListView. " + ListView.ItemsSource.GetType() + " does not support removal of " + sender.GetType() + " or does not implement INotifyCollectionChanged. Consider using an ObservableCollection");
             }
         }
 
@@ -152,14 +152,6 @@ namespace Calculator
 
         private void OnDeleteSelected()
         {
-            /*for (int i = 0; i < ListView.ItemsSource.Count; i++)
-            {
-                if (ListView.ItemsSource[i].IsSelected)
-                {
-                    ListView.ItemsSource.RemoveAt(i--);
-                }
-            }*/
-
             DeleteSelected?.Invoke();
             Editing = false;
         }
@@ -205,8 +197,6 @@ namespace Calculator
 
                 ViewHolder.HorizontalOptions = LayoutOptions.FillAndExpand;
                 Selected.SetBinding<double, bool>(WidthRequestProperty, this, "Editing", value => value ? -1 : 0);
-                //Selected.SetBinding(CheckBox.IsCheckedProperty, "IsSelected", BindingMode.OneWayToSource);
-                //Selected.SetBinding(IsVisibleProperty, this, "Editing");
 
                 Selected.WhenPropertyChanged(CheckBox.IsCheckedProperty, (sender, e) =>
                 {
@@ -224,6 +214,16 @@ namespace Calculator
                         parent.DeleteSelected -= DeleteMe;
                     }
                 });
+            }
+
+            protected override void OnTapped()
+            {
+                base.OnTapped();
+
+                if (Editing)
+                {
+                    Selected.IsChecked = !Selected.IsChecked;
+                }
             }
 
             private void DeleteMe()
@@ -245,55 +245,4 @@ namespace Calculator
             private static void OnViewPropertyChanged(BindableObject bindable, object oldValue, object newValue) => ((EditCell)bindable).View = (View)newValue;
         }
     }
-
-    /*public class EditListView1 : ListView<EditListView.ContextActions>
-    {
-        new public Items ItemsSource
-        {
-            get => _ItemsSource;
-            set => base.ItemsSource = _ItemsSource = value;
-        }
-        private Items _ItemsSource;
-
-        public class ViewModel
-        {
-            public object Value { get; set; }
-
-            public bool IsSelected { get; set; }
-
-            public bool Test { get; set; }
-
-            public ViewModel(object value)
-            {
-                Value = value;
-            }
-        }
-
-        public class Items : ObservableCollection<ViewModel>
-        {
-            public void Add(object item) => base.Add(new ViewModel(item));
-            public void Insert(int index, object item) => base.Insert(index, new ViewModel(item));
-        }
-
-        protected override void SetupContent(Cell content, int index)
-        {
-            base.SetupContent(content, index);
-
-            if (!(content is EditCell editCell))
-            {
-                throw new Exception("The cell template for EditListView must be of or derived from EditCell");
-            }
-            return;
-            EditListView parent = this.Parent<EditListView>();
-
-            //editCell.Selected.SetBinding<double, bool>(WidthRequestProperty, parent, "Editing", value => value ? -1 : 0);
-            parent.WhenPropertyChanged(EditListView.EditingProperty, (sender, e) =>
-            {
-                if (!parent.Editing)
-                {
-                    //editCell.Selected.IsChecked = false;
-                }
-            });
-        }
-    }*/
 }

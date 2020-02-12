@@ -26,6 +26,15 @@ namespace Calculator.Droid
 
             Android.Gms.Ads.MobileAds.Initialize(ApplicationContext, "ca-app-pub-1795523054003202~5967496762");
         }
+
+        public static event EventHandler<EventArgs<Android.Support.V7.View.ActionMode>> ContextMenuAppeared;
+
+        public override Android.Support.V7.View.ActionMode StartSupportActionMode(global::Android.Support.V7.View.ActionMode.ICallback callback)
+        {
+            var LastActionMode = base.StartSupportActionMode(callback);
+            ContextMenuAppeared?.Invoke(this, new EventArgs<Android.Support.V7.View.ActionMode>(LastActionMode));
+            return LastActionMode;
+        }
     }
 }
 

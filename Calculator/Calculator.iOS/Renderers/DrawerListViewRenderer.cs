@@ -10,22 +10,31 @@ using Xamarin.Forms;
 using Xamarin.Forms.Extensions;
 using Xamarin.Forms.Platform.iOS;
 
-[assembly: ExportRenderer(typeof(ListView), typeof(Calculator.iOS.DrawerListViewRenderer))]
+[assembly: ExportRenderer(typeof(Calculator.FunctionsDrawer.ListView), typeof(Calculator.iOS.DrawerListViewRenderer))]
 
 namespace Calculator.iOS
 {
     public class DrawerListViewRenderer : ListViewRenderer
     {
-        protected override void OnElementChanged(ElementChangedEventArgs<Xamarin.Forms.ListView> e)
+        protected override void OnElementChanged(ElementChangedEventArgs<ListView> e)
         {
             base.OnElementChanged(e);
-
+            
             AddGestureRecognizer(new UIDrawerGestureRecognizer(Control, Element as ListView)
             {
                 CancelsTouchesInView = false
             });
 
-            Scrollable.ScrollRequestProperty.ListenFor(ScrollToRequest, e.OldElement, e.NewElement);
+            /*if (e.OldElement != e.NewElement)
+            {
+                e.NewElement?.WhenPropertyChanged(EditListView.EditingProperty, (sender, e1) =>
+                {
+                    Control.AllowsMultipleSelection = sender is EditListView editListView && editListView.Editing;
+                });
+            }*/
+            
+            e.NewElement.SetNativeImplementation(Scrollable.NativeScrollImplementationProperty, ScrollToRequest);
+            //Scrollable.ScrollRequestProperty.ListenFor(ScrollToRequest, e.OldElement, e.NewElement);
 
             /*if (e.OldElement is FunctionsDrawer.ListView oldElement)
             {
@@ -43,7 +52,7 @@ namespace Calculator.iOS
             //Control.AllowsMultipleSelectionDuringEditing = true;
         }
 
-        private void ScrollToRequest(object sender, ScrollToPositionRequestEventArgs e) => Control.SetContentOffset(new CoreGraphics.CGPoint(e.X, e.Y), e.Animated);
+        private void ScrollToRequest(ScrollToPositionRequestEventArgs e) => Control.SetContentOffset(new CoreGraphics.CGPoint(e.X, e.Y), e.Animated);
 
         public class UIDrawerGestureRecognizer : UIGestureRecognizer
         {

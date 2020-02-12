@@ -1,4 +1,4 @@
-﻿#if SAMPLE
+﻿#if DEBUG
 using System;
 using UIKit;
 using CoreGraphics;

@@ -53,7 +53,7 @@
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 	<key>CFBundleVersion</key>
-	<string>10.0</string>
+	<string>10.2</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Symbola.ttf</string>

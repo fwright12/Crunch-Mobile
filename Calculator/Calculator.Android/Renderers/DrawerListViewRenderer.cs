@@ -13,7 +13,7 @@ using Java.Interop;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.Android;
 
-[assembly: ExportRenderer(typeof(Xamarin.Forms.ListView), typeof(Calculator.Droid.DrawerListViewRenderer))]
+[assembly: ExportRenderer(typeof(Calculator.FunctionsDrawer.ListView), typeof(Calculator.Droid.DrawerListViewRenderer))]
 
 namespace Calculator.Droid
 {
@@ -25,48 +25,46 @@ namespace Calculator.Droid
         {
             base.OnElementChanged(e);
 
-            Scrollable.ScrollRequestProperty.ListenFor(ScrollToRequest, e.OldElement, e.NewElement);
-
-            if (e.NewElement is Element)
+            e.NewElement.SetNativeImplementation(Scrollable.NativeScrollImplementationProperty, ScrollToRequest);
+            //Scrollable.ScrollRequestProperty.ListenFor(ScrollToRequest, e.OldElement, e.NewElement);
+            
+            Control.ScrollChange += (sender, e1) =>
             {
-                Control.ScrollChange += (sender, e1) =>
+                if (!ScrollStarted)
                 {
-                    if (!ScrollStarted)
-                    {
-                        //Control.SmoothScrollToPosition(0);
-                    }
-                    ScrollStarted = true;
-                };
-            }
-
-            return;
-
-            Control.ScrollStateChanged += (sender, e1) =>
-            {
-                Print.Log("scroll state changed", e1.ScrollState);
+                    //Control.SmoothScrollToPosition(0);
+                }
+                ScrollStarted = true;
             };
+            /*MainActivity.ContextMenuAppeared += (sender, e1) =>
+            {
+                Print.Log("context menu appeared");
+                (Element as FunctionsDrawer.ListView).ContextActionsShowing = true;
+            };*/
         }
 
         private bool ScrollStarted = false;
 
-        private void ScrollToRequest(object sender, ScrollToPositionRequestEventArgs e)
+        private void ScrollToRequest(ScrollToPositionRequestEventArgs e)
         {
             Control.SmoothScrollToPosition(0);
         }
 
         public override bool DispatchTouchEvent(MotionEvent e)
         {
-            if (e.Action == MotionEventActions.Up)
+            bool block = (e.Action == MotionEventActions.Down || ScrollStarted) && ((Element as Xamarin.Forms.ListView)?.GetSwipeListener().OnSwipeEvent(new Point(e.RawX, e.RawY), e.Action.Convert()) ?? false);
+
+            if (e.Action != MotionEventActions.Move)
             {
                 ScrollStarted = false;
             }
 
-            //return base.DispatchTouchEvent(e);
-            //bool block = ScrollStarted && !((Element as IScrollable)?.OnScrollEvent(new Point(e.RawX, e.RawY), e.Action.Convert()) ?? true);
+            if (e.Action == MotionEventActions.Down || !block)
+            {
+                block = base.DispatchTouchEvent(e);
+            }
 
-            bool block = ScrollStarted && ((Element as Xamarin.Forms.ListView)?.GetSwipeListener().OnSwipeEvent(new Point(e.RawX, e.RawY), e.Action.Convert()) ?? false);
-
-            return block || base.DispatchTouchEvent(e);
+            return block;
         }
     }
 }

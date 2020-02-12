@@ -304,9 +304,11 @@ namespace Calculator
                     }
                 }
             };
-            Screen.Children.Insert(0, main);
+            CanvasArea.Children.Add(main, new Rectangle(0, 0, 1, 1), AbsoluteLayoutFlags.SizeProportional);
 
-            CrunchKeyboard.SizeChanged += (sender, e) =>
+            CrunchKeyboard.SizeChanged += (sender, e) => change(0);
+
+            /*CrunchKeyboard.SizeChanged += (sender, e) =>
             {
                 if (CrunchKeyboard.IsCondensed)
                 {
@@ -322,7 +324,7 @@ namespace Calculator
                 AbsoluteLayout.SetLayoutFlags(KeyboardMask, AbsoluteLayoutFlags.None);
 
                 change(0);
-            };
+            };*/
         }
 
         private void End()
@@ -337,6 +339,7 @@ namespace Calculator
 
         private void ExplainKeyboard()
         {
+            PhantomCursor.IsVisible = true;
             if (!CrunchKeyboard.IsCondensed)
             {
                 CrunchKeyboard.IsVisible = true;
