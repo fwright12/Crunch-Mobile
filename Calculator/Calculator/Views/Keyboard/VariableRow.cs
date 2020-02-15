@@ -45,7 +45,7 @@ namespace Calculator
         private VisualElement _LengthBinding;
 
         private double OrientedLength;// => LengthBinding == null ? 0 : (Orientation == StackOrientation.Horizontal ? LengthBinding.Width : LengthBinding.Height);
-        private double BarSize => OrientedLength - ButtonSize - Spacing;
+        private double BarSize;// => OrientedLength - ButtonSize - Spacing;
 
         private double ExpandButtonRotation => (Orientation == StackOrientation.Horizontal ? 0 : 90) + (Expanded ? 180 + NumRotations * 360 : 0);
 
@@ -173,7 +173,7 @@ namespace Calculator
             ExpandButton.RotateTo(ExpandButtonRotation, TransitionTime, Easing.SinInOut);
             //Print.Log(OrientedLength, Width, Height);
             double start = 0;
-            double end = BarSize;
+            double end = BarSize - ButtonSize - Spacing;
             if (!Expanded)
             {
                 System.Extensions.Misc.Swap(ref start, ref end);
@@ -240,7 +240,8 @@ namespace Calculator
         protected override SizeRequest OnMeasure(double widthConstraint, double heightConstraint)
         {
             //Print.Log("measuring variables", widthConstraint, heightConstraint, LengthBinding, LengthBinding.Bounds.Size);
-            //return base.OnMeasure(widthConstraint, heightConstraint);
+            BarSize = widthConstraint;// - ButtonSize - Spacing;
+            return base.OnMeasure(widthConstraint, heightConstraint);
 
             SizeRequest sr = base.OnMeasure(widthConstraint, heightConstraint);
             /*if (!double.IsInfinity(heightConstraint))

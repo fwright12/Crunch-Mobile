@@ -48,7 +48,7 @@ namespace Calculator
                     new Setter { Property = Label.TextColorProperty, Value = TEXT_COLOR }
                 }
             });
-            Print.Log("here");
+            
             //Pages
             Add(new Style(typeof(ContentPage))
             {
@@ -59,8 +59,8 @@ namespace Calculator
                     {
                         if (!(page is SettingsPage))
                         {
-                            page.LayoutChanged += (sender, e) => SetPadding(sender as Page);
-                            page.Appearing += (sender, e) => SetPadding(sender as Page);
+                            //page.LayoutChanged += (sender, e) => SetPadding(sender as Page);
+                            //page.Appearing += (sender, e) => SetPadding(sender as Page);
                         }
                     })
                 },

@@ -187,7 +187,7 @@ namespace Calculator
                         availableHeight -= Math.Max(0, AddFunctionLayout.Height);
                     }
                     availableHeight *= 0.9;
-                    return App.Current.Collapsed ? availableHeight : Math.Min(availableHeight, Keyboard.Height * 2);
+                    return App.Current.Home.Collapsed ? availableHeight : Math.Min(availableHeight, Keyboard.Height * 2);
                 }
             }
         }
@@ -203,7 +203,7 @@ namespace Calculator
                 {
                     new AnySetter { Action = value => CornerRadius = (float)(dynamic)value, Value = 0 },
                     new AnySetter<double> { Action = value => BackgroundColor = new Color(255, 255, 255, value), Value = 0 },
-                    new AnySetter<double> { Action = value => (FunctionsList.ListView.Header as Layout<View>).Padding = new Thickness(0, value, 0, 0), Value = 0 },
+                    //new AnySetter<double> { Action = value => (FunctionsList.ListView.Header as Layout<View>).Padding = new Thickness(0, value, 0, 0), Value = 0 },
                 }
             };
             OpenValues = new List<double> { 20, 1, 20 };
@@ -213,26 +213,23 @@ namespace Calculator
             HasShadow = false;
             IsClippedToBounds = true;
 
-            List<string> dummyData = new List<string>
-            {
-                "√(a^2+b^2)",
-                "(-b+√(b^2-4ac))/(2a)",
-                "p(1+r/n)^(n/t)",
-                "√(b^2+c^2-2bccos\u03B8)",
-                "1/2mv^2",
-                "ut+1/2at^2",
-                "(GMm)/(r^2)",
-#if DEBUG
-                //"a+b+c+d+e+f+g+h+i+j+k+l+m+n+o+p+q+r+s+t+u+v+w+y+z",
-#endif
-            };
             Functions = new ObservableCollection<FunctionViewModel>();
             if (File.Exists(Filename))
             {
                 string text = File.ReadAllText(Filename).Trim('\n');
                 Print.Log("read from file", text);
-#if DEBUG || SAMPLE
-                text = string.Join('\n', dummyData);
+#if DEBUG
+                text = string.Join('\n', new List<string>
+                {
+                    "√(a^2+b^2)",
+                    "(-b+√(b^2-4ac))/(2a)",
+                    "p(1+r/n)^(n/t)",
+                    "√(b^2+c^2-2bccos\u03B8)",
+                    "1/2mv^2",
+                    "ut+1/2at^2",
+                    "(GMm)/(r^2)",
+                    //"a+b+c+d+e+f+g+h+i+j+k+l+m+n+o+p+q+r+s+t+u+v+w+y+z",
+                });
 #endif
 
                 foreach (string function in text.Split('\n'))
@@ -280,10 +277,11 @@ namespace Calculator
                         SelectionMode = ListViewSelectionMode.None,
                         IsPullToRefreshEnabled = false,
                         HasUnevenRows = true,
-                        Header = keyboard,
+                        Header = Keyboard,
                     })
                 }
             };
+            //(listView.Header as View).SizeChanged += (sender, e) => Print.Log("header size changed", ((View)sender).Bounds.Size);
 
             AddFunctionLayout.ConfirmAdd.Clicked += (sender, e) =>
             {

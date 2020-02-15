@@ -231,7 +231,7 @@ namespace Calculator.iOS
 
         public override void SendEvent(UIEvent evt)
         {
-            if (evt.Type == UIEventType.Touches)
+            if (App.Current.GetInSampleMode() && evt.Type == UIEventType.Touches)
             {
                 if (active)
                 {

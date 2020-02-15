@@ -19,21 +19,12 @@ namespace Calculator
     //Radical - right half is about 1/2 of horizontal, bottom left takes up about 1/2 of vertical, thickness is 0.1, horizontal bar is about 1/3 of horizontal
 
     /* To do:
-     * v2.4
-     * Predefined functions (quadratic formula, physics stuff), ability to add custom ones
-     * Problems making original link equation visible when tapped
-     * Restore advertisement
-     * Landscape mode
-     * toolbar covers bottom of list
-     * remove button padding
-     * how to add functions to canvas
-     * remove keyboard scroll back
-     * start typing when cursor is not visible
-     * ios drawer swipe conflicts with drag keyboard, scroll variables landscape
-     * ios floating keyboard when docked
+     * v2.4.1
+     * Fix ios safe area issues
+     * Show full keyboard broken
+     * 
      * 
      * Android Button Touch renderer long press problems
-     * iOS dock button doesn't work condensed keyboard
      * Make TouchInterface use variant eventhandler
      * 
      * v3.0
@@ -135,8 +126,16 @@ namespace Calculator
     }
 #endif
 
-    public partial class MainPage : ContentPage
+    public class MainPage : ContentPage
     {
+        public static readonly BindableProperty CollapsedProperty = BindableProperty.Create("Collapsed", typeof(bool), typeof(MainPage));
+
+        public bool Collapsed
+        {
+            get { return (bool)GetValue(CollapsedProperty); }
+            private set { SetValue(CollapsedProperty, value); }
+        }
+
         public static int FontSize => 20;
 
         public static double ParenthesesWidth;
@@ -217,14 +216,14 @@ namespace Calculator
                 Orientation = StackOrientation.Vertical,
                 Children =
                 {
+                    CrunchKeyboard,
                     new AbsoluteLayout
                     {
                         HorizontalOptions = LayoutOptions.Start,
                         VerticalOptions = LayoutOptions.Start,
                         Children =
                         {
-                            CrunchKeyboard,
-                            {
+                            /*{
                                 new AbsoluteLayout
                                 {
                                     IsVisible = false,
@@ -233,7 +232,7 @@ namespace Calculator
                                 },
                                 new Rectangle(0, 0, 1, 1),
                                 AbsoluteLayoutFlags.SizeProportional
-                            }
+                            }*/
                         }
                     },
                 }
@@ -264,7 +263,7 @@ namespace Calculator
             App.ShowFullKeyboard.WhenPropertyChanged(App.ShowFullKeyboard.ValueProperty, (sender, e) =>
             //Settings.KeyboardChanged += (e) =>
             {
-                CrunchKeyboard.Remeasure();
+                //CrunchKeyboard.Remeasure();
                 ResizeKeyboard();
             });
 
@@ -276,12 +275,12 @@ namespace Calculator
                 HasShadow = false,
                 Padding = new Thickness(0, 0, 0, 5),
             };
-
+            //keyboardAndVariables.SizeChanged += (sender, e) => Print.Log("keyboard size changed", ((View)sender).Bounds.Size);
             FullKeyboardView = FunctionsDrawer = new FunctionsDrawer(keyboardAndVariables, addFunctionLayout)
             {
                 DropArea = Canvas,
             };
-            FullKeyboardView.SetBinding(IsVisibleProperty, CrunchKeyboard, "IsVisible");
+            //CrunchKeyboard.SetBinding(IsVisibleProperty, CrunchKeyboard, "IsVisible");
 
             FunctionsDrawer.Content.SetBinding<Color, StackOrientation>(BackgroundColorProperty, CrunchKeyboard, "Orientation", value => value == StackOrientation.Horizontal ? Color.Transparent : Color.White);
             keyboardAndVariables.SetBinding<Color, StackOrientation>(BackgroundColorProperty, CrunchKeyboard, "Orientation", value => value == StackOrientation.Horizontal ? Color.Transparent : CrunchStyle.BACKGROUND_COLOR);
@@ -296,21 +295,74 @@ namespace Calculator
             landscapeAddFunctionLayout.SetBinding<View, StackOrientation>(ContentView.ContentProperty, CrunchKeyboard, "Orientation", value => value == StackOrientation.Horizontal ? null : addFunctionLayout);
             CanvasArea.Children.Add(landscapeAddFunctionLayout, new Rectangle(0.5, 0.5, 1, -1), AbsoluteLayoutFlags.PositionProportional | AbsoluteLayoutFlags.WidthProportional);
 
-            Screen.Children.Add(FullKeyboardView, new Rectangle(1, 1, -1, -1), AbsoluteLayoutFlags.PositionProportional);
+            Screen.Children.Add(FullKeyboardView);
+            AbsoluteLayout.SetLayoutFlags(FullKeyboardView, AbsoluteLayoutFlags.PositionProportional);
+
+            void SafeInsetsChanged()
+            {
+                Thickness safeInsets = Xamarin.Forms.PlatformConfiguration.iOSSpecific.Page.SafeAreaInsets(On<Xamarin.Forms.PlatformConfiguration.iOS>());
+
+                CanvasArea.Padding = new Thickness(
+                    Math.Max(CrunchStyle.PAGE_PADDING, safeInsets.Left),
+                    Math.Max(CrunchStyle.PAGE_PADDING, safeInsets.Top),
+                    Math.Max(CrunchStyle.PAGE_PADDING, safeInsets.Right),
+                    0);
+
+                Thickness keyboardPadding = new Thickness(CanvasArea.Padding.Left, 0, CanvasArea.Padding.Right, Math.Max(CrunchStyle.PAGE_PADDING, safeInsets.Bottom));
+                if (CrunchKeyboard.Orientation == StackOrientation.Horizontal)
+                {
+                    keyboardPadding.Top = 0;
+                }
+                else
+                {
+                    //keyboardPadding.Left = 0;
+                }
+                Print.Log("padding", keyboardPadding.Left, CanvasArea.Padding.Left);
+                keyboardAndVariables.Padding = keyboardPadding;
+
+                //FunctionsDrawer.FunctionsList.ListView.Margin.Bottom = 0;
+
+                //OnSizeChanged();
+            };
+
+            this.WhenPropertyChanged(Xamarin.Forms.PlatformConfiguration.iOSSpecific.Page.SafeAreaInsetsProperty, (sender, e) => SafeInsetsChanged());
+            SafeInsetsChanged();
 
             //PhantomCursorField.Children.Add(keyboardAndVariables, new Point(0, 0));
             //PhantomCursorField.Children.Add(FullKeyboardView = keyboardAndVariables, new Rectangle(1, 1, 1, -1), AbsoluteLayoutFlags.PositionProportional | AbsoluteLayoutFlags.WidthProportional);
 
             VariableRow variables = new VariableRow
             {
-                BindingContext = CrunchKeyboard,
                 HorizontalOptions = LayoutOptions.End,
-                VerticalOptions = LayoutOptions.End
+                VerticalOptions = LayoutOptions.End,
+                Orientation = StackOrientation.Horizontal
             };
-            variables.SetBinding(VariableRow.SpacingProperty, "Spacing");
-            
+            variables.BindingContext = CrunchKeyboard;
+            variables.SetBinding(StackLayout.SpacingProperty, "Spacing");
+            variables.ButtonSize = 33;
+            keyboardAndVariables.Children.Insert(0, variables);
+            //variables.LengthBinding = CrunchKeyboard;
+            //variables.SetBinding(StackLayout.OrientationProperty, "Orientation");
+
+            Crunch.Mobile.SoftKeyboard.SizeChanged += (sender, e) =>
+            {
+                OnScreenKeyboardSizeChanged(e.Value.Width, e.Value.Height);
+            };
+
             KeyboardManager.KeyboardChanged += (keyboard) =>
             {
+                return;
+                if (keyboard == CrunchKeyboard)
+                {
+                    //OnKeyboardSizeChanged(keyboardAndVariables.Width, keyboardAndVariables.Height);
+                }
+                else if (keyboard == SystemKeyboard.Instance)
+                {
+                    //OnKeyboardSizeChanged(Width, 0);
+                }
+
+                return;
+
                 variables.RemoveBinding(StackLayout.OrientationProperty);
                 variables.Remove();
 
@@ -337,35 +389,15 @@ namespace Calculator
 
             CrunchKeyboard.SizeChanged += (sender, e) =>
             {
-                variables.ButtonSize = CrunchKeyboard.ButtonWidth(CrunchKeyboard.Width, CrunchKeyboard.Columns) / 2;
+                //Print.Log("keyboard size changed", CrunchKeyboard.Bounds.Size);
+                //variables.ButtonSize = CrunchKeyboard.ButtonWidth(CrunchKeyboard.Width, CrunchKeyboard.Columns) / 2;
 
-                FunctionsDrawer.WidthRequest = CrunchKeyboard.Width + (CrunchKeyboard.Orientation == StackOrientation.Horizontal ? 0 : variables.ButtonSize + CrunchKeyboard.Spacing);
+                //FunctionsDrawer.WidthRequest = CrunchKeyboard.Width + (CrunchKeyboard.Orientation == StackOrientation.Horizontal ? 0 : variables.ButtonSize + CrunchKeyboard.Spacing);
             };
 
             keyboardAndVariables.SizeChanged += (sender, e) =>
             {
-                if (CrunchKeyboard.Orientation == StackOrientation.Horizontal)
-                {
-                    //FullKeyboardView.SizeRequest(CrunchKeyboard.Width + (CrunchKeyboard.Orientation == StackOrientation.Horizontal ? 0 : variables.ButtonSize + CrunchKeyboard.Spacing), -1);
-
-                    if (App.Current.Collapsed)
-                    {
-                        AbsoluteLayout.SetLayoutBounds(CanvasArea, new Rectangle(0, 0, 1, Screen.Height - keyboardAndVariables.Height));
-                        AbsoluteLayout.SetLayoutFlags(CanvasArea, AbsoluteLayoutFlags.WidthProportional);
-                    }
-                    else
-                    {
-                        AbsoluteLayout.SetLayoutBounds(CanvasArea, new Rectangle(0, 0, 1, 1));
-                        AbsoluteLayout.SetLayoutFlags(CanvasArea, AbsoluteLayoutFlags.SizeProportional);
-                    }
-                }
-                else
-                {
-                    //FullKeyboardView.SizeRequest(-1, CrunchKeyboard.Height);
-
-                    AbsoluteLayout.SetLayoutBounds(CanvasArea, new Rectangle(0, 0, Screen.Width - keyboardAndVariables.Width - CrunchStyle.PAGE_PADDING, 1));
-                    AbsoluteLayout.SetLayoutFlags(CanvasArea, AbsoluteLayoutFlags.HeightProportional);
-                }
+                //OnKeyboardSizeChanged(keyboardAndVariables.Width, keyboardAndVariables.Height);
             };
 
             CanvasScroll.Scrolled += AdjustKeyboardPosition;
@@ -373,18 +405,45 @@ namespace Calculator
             Canvas.Touch += AddCalculation;
             FocusChanged += SwitchCalculationFocus;
 
-#if SAMPLE
-            ScreenShot();
-#endif
-
             Canvas.DescendantAdded += OnDescendantAdded;
             SizeChanged += (sender, e) => OnSizeChanged();
-            this.WhenPropertyChanged(PaddingProperty, (sender, e) => OnSizeChanged());
+            CanvasArea.WhenPropertyChanged(PaddingProperty, (sender, e) => OnSizeChanged());
 
+            void FixDynamicLag(object o) => Print.Log(o as dynamic);
             FixDynamicLag("");
         }
 
-        void FixDynamicLag(object o) => Print.Log(o as dynamic);
+        private void OnScreenKeyboardSizeChanged(double width, double height)
+        {
+            Collapsed = true;
+            Size screenSize = App.Current.MainPage.Bounds.Size;
+
+            Print.Log("on screen keyboard size changed", width, height, screenSize);
+
+            if (Collapsed)
+            {
+                if (screenSize.Height >= screenSize.Width)
+                {
+                    AbsoluteLayout.SetLayoutBounds(CanvasArea, new Rectangle(0, 0, 1, screenSize.Height - height));
+                    AbsoluteLayout.SetLayoutFlags(CanvasArea, AbsoluteLayoutFlags.WidthProportional);
+                }
+                else
+                {
+                    AbsoluteLayout.SetLayoutBounds(CanvasArea, new Rectangle(0, 0, screenSize.Width - width - CrunchStyle.PAGE_PADDING, 1));
+                    AbsoluteLayout.SetLayoutFlags(CanvasArea, AbsoluteLayoutFlags.HeightProportional);
+                }
+            }
+            else
+            {
+                AbsoluteLayout.SetLayoutBounds(CanvasArea, new Rectangle(0, 0, 1, 1));
+                AbsoluteLayout.SetLayoutFlags(CanvasArea, AbsoluteLayoutFlags.SizeProportional);
+            }
+
+            Point keyboardPosition = Collapsed ? new Point(1, 1) : App.KeyboardPosition.Value;
+            AbsoluteLayout.SetLayoutBounds(FullKeyboardView, new Rectangle(keyboardPosition, new Size(width, -1)));
+
+            //Collapsed = collapsed;
+        }
 
         public void Tutorial()
         {
@@ -571,6 +630,9 @@ namespace Calculator
             {
                 HorizontalOptions = LayoutOptions.FillAndExpand,
             });
+#if DEBUG
+            App.Current.SetBinding<bool, bool>(Screenshots.InSampleModeProperty, AdSpace, "IsVisible", convertBack: value => !value, mode: BindingMode.OneWayToSource);
+#endif
             AbsoluteLayout.SetLayoutFlags(AdSpace, AbsoluteLayoutFlags.XProportional);
             //Screen.Children.Add(SettingsMenuButton, new Rectangle(0, 0, SettingsButtonSize, SettingsButtonSize), AbsoluteLayoutFlags.PositionProportional);
             //Screen.Children.Add(functionsMenuButton, new Rectangle(1, 0, SettingsButtonSize, SettingsButtonSize), AbsoluteLayoutFlags.PositionProportional);
@@ -627,7 +689,7 @@ namespace Calculator
             };
             CrunchKeyboard.DockButton.Touch += (sender, e) =>
             {
-                if (!App.Current.Collapsed && e.State == TouchState.Moving)
+                if (!Collapsed && e.State == TouchState.Moving)
                 {
                     DockKeyboard(false);
 
@@ -717,7 +779,7 @@ namespace Calculator
             }
             
             bool isCondensedLandscape = KeyboardManager.Current == CrunchKeyboard && CrunchKeyboard.Orientation == StackOrientation.Vertical && CrunchKeyboard.IsCondensed;
-            int width = (int)Math.Min(320, Width - Padding.Left * 2 - Padding.Right * 2 - SettingsButtonSize * 2 - (isCondensedLandscape ? CrunchKeyboard.Width : 0));
+            int width = (int)Math.Min(320, AdSpace.Width);
             
             if (width != MaxBannerWidth)
             {
@@ -727,7 +789,7 @@ namespace Calculator
                 {
                     ad.Remove();
                 }*/
-#if !SAMPLE
+
                 AdSpace.Content = ad = new BannerAd();
                 AbsoluteLayout.SetLayoutBounds(AdSpace, new Rectangle(0.5, 0, width, -1));
 
@@ -739,7 +801,6 @@ namespace Calculator
                 {
                     Screen.Children.Add(ad, new Rectangle(0.5, 0, width, -1), AbsoluteLayoutFlags.XProportional);
                 }*/
-#endif
             }
         }
 
@@ -747,9 +808,8 @@ namespace Calculator
 
         private void OnSizeChanged()
         {
-            Print.Log("page size changed", Width, Height, Padding.Left, Padding.Top);
+            //Print.Log("page size changed", CanvasArea.Width, CanvasArea.Height, Padding.Left, Padding.Top);
 
-            ResizeKeyboard();
             if (!Loaded)
             {
                 CrunchKeyboard.SizeChanged += (sender, e) => LoadAd();
@@ -760,11 +820,11 @@ namespace Calculator
             ExtraPadding = (int)Math.Max(Width, Height);
         }
 
-        private void ResizeKeyboard() => ResizeKeyboard(Width - Padding.Left - Padding.Right, Height - Padding.Top - Padding.Bottom);
+        private void ResizeKeyboard() => ResizeKeyboard(Width - CanvasArea.Padding.HorizontalThickness, Height - CanvasArea.Padding.VerticalThickness);
 
         private void ResizeKeyboard(double widthConstraint, double heightConstraint)
         {
-            CrunchKeyboard.Orientation = heightConstraint >= widthConstraint ? StackOrientation.Horizontal : StackOrientation.Vertical;
+            /*CrunchKeyboard.Orientation = heightConstraint >= widthConstraint ? StackOrientation.Horizontal : StackOrientation.Vertical;
 
             Size size = CrunchKeyboard.Measure(widthConstraint, heightConstraint).Request;
 
@@ -787,18 +847,18 @@ namespace Calculator
             }
 
             Point keyboardPosition = collapsed ? new Point(1, 1) : App.KeyboardPosition.Value;
-            AbsoluteLayout.SetLayoutBounds(FullKeyboardView, new Rectangle(keyboardPosition, new Size(-1, -1)));
+            AbsoluteLayout.SetLayoutBounds(FullKeyboardView, new Rectangle(keyboardPosition, new Size(-1, -1)));*/
 
-            AbsoluteLayout.SetLayoutBounds(CrunchKeyboard, new Rectangle(0, 0, size.Width, size.Height));
-            
+            //AbsoluteLayout.SetLayoutBounds(CrunchKeyboard, new Rectangle(0, 0, size.Width, size.Height));
+
             //CrunchKeyboard.WidthRequest = size.Width;
             //CrunchKeyboard.HeightRequest = size.Height;
 
-            Print.Log("measured keyboard", collapsed, size);
-            App.Current.CollapsedChanged(collapsed);
+            //Print.Log("measured keyboard", collapsed, size);
+            //App.Current.CollapsedChanged(collapsed);
 
-            CrunchKeyboard.DockButton.Text = collapsed ? "" : "\u25BD"; //white down-pointing triangle
-            CrunchKeyboard.DockButton.IsEnabled = !collapsed;
+            //CrunchKeyboard.DockButton.Text = collapsed ? "" : "\u25BD"; //white down-pointing triangle
+            //CrunchKeyboard.DockButton.IsEnabled = !collapsed;
         }
 
         private void DockKeyboard(bool isDocked)
@@ -844,7 +904,7 @@ namespace Calculator
             Point delta = new Point(LastScroll.X - e.ScrollX, LastScroll.Y - e.ScrollY);
             LastScroll = new Point(e.ScrollX, e.ScrollY);
             
-            if (!App.Current.Collapsed && IsKeyboardDocked)
+            if (!Collapsed && IsKeyboardDocked)
             {
                 FullKeyboardView.MoveTo(FullKeyboardView.X + delta.X, FullKeyboardView.Y + delta.Y);
             }
@@ -854,7 +914,7 @@ namespace Calculator
 
         private void AdjustKeyboardPosition()
         {
-            if (!App.Current.Collapsed && IsKeyboardDocked && CalculationFocus != null)
+            if (!Collapsed && IsKeyboardDocked && CalculationFocus != null)
             {
                 FullKeyboardView.MoveTo(CalculationFocus.X - CanvasScroll.ScrollX, CalculationFocus.Y + CalculationFocus.Height - CanvasScroll.ScrollY);
             }

@@ -75,8 +75,8 @@ namespace Calculator
 
             if (Current != null)
             {
-                Current.Enable();
                 Current.Typed += Type;
+                Current.Enable();
             }
 
             KeyboardChanged?.Invoke(Current);

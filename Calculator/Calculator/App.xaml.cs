@@ -11,27 +11,17 @@ using Xamarin.Forms.MathDisplay;
 
 namespace Calculator
 {
-    //public enum UILayout { Condensed, Full };
-
     public partial class App : Application
     {
         new public static App Current => Application.Current as App;
 
-        public static MainPage Home;
+        public MainPage Home;
         public static double TextHeight { get; private set; }
         public static double TextWidth { get; private set; }
 
         private readonly MasterDetailPage Root;
-        private readonly NavigationPage SideNavigation;
+        private NavigationPage SideNavigation;
         private NavigationPage FullNavigation;
-
-        public static readonly BindableProperty CollapsedProperty = BindableProperty.Create("Collapsed", typeof(bool), typeof(App));
-        
-        public bool Collapsed
-        {
-            get { return (bool)GetValue(CollapsedProperty); }
-            private set { SetValue(CollapsedProperty, value); }
-        }
 
         //public static bool IsCondensed => Home.CrunchKeyboard.IsCondensed;
 
@@ -51,15 +41,9 @@ namespace Calculator
             return false;
         }
 
-        public void CollapsedChanged(bool collapsed)
+        private void CollapsedChanged(bool collapsed)
         {
-            if (collapsed == Collapsed)
-            {
-                return;
-            }
-            Collapsed = collapsed;
-
-            Print.Log("app layout changed", Collapsed, Root.IsPresented);
+            Print.Log("app layout changed", Home.Collapsed, Root.IsPresented);
 
             if (collapsed && Root.IsPresented)
             {
@@ -88,7 +72,7 @@ namespace Calculator
             //FullNavigation.PushAsync(new SettingsPage());
             //return;
             Print.Log("showing settings");
-            if (Collapsed)
+            if (Home.Collapsed)
             {
                 FullNavigation.PushAsync(new SettingsPage(), animated);
             }
@@ -188,9 +172,14 @@ namespace Calculator
                 TextWidth = l.Width;
 
                 Root.Detail = FullNavigation = new NavigationPage(Home = new MainPage());
+                Root.Master = SideNavigation = new NavigationPage(new SettingsPage())
+                {
+                    Title = "Settings"
+                };
                 NavigationPage.SetHasNavigationBar(Home, false);
                 TouchScreen.Instance = Home;
-
+                Home.WhenPropertyChanged(Calculator.MainPage.CollapsedProperty, (sender1, e1) => CollapsedChanged(Home.Collapsed));
+                
                 if (ShouldRunTutorial.Value)
                 {
                     RunTutorial();
@@ -220,15 +209,12 @@ namespace Calculator
 #endif
             };
 
-            Collapsed = Device.Idiom != TargetIdiom.Tablet;
+            //Collapsed = Device.Idiom != TargetIdiom.Tablet;
             MainPage = Root = new MasterDetailPage
             {
                 Title = "Home",
                 Detail = new ContentPage { Content = new StackLayout { Children = { l } } },
-                Master = SideNavigation = new NavigationPage(new SettingsPage())
-                {
-                    Title = "Settings"
-                },
+                Master = new ContentPage { Title = "Settings" },
                 MasterBehavior = MasterBehavior.Popover,
 #if __IOS__
                 IsGestureEnabled = false

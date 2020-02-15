@@ -33,15 +33,16 @@ namespace Calculator.iOS
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init();
             FFImageLoading.Forms.Platform.CachedImageRenderer.InitImageSourceHandler();
 
-#if SAMPLE
-            UIApplication.SharedApplication.StatusBarHidden = true;
+#if DEBUG
+            Xamarin.Forms.Extensions.BindableObjectExtensions.WhenPropertyChanged(App.Current, Screenshots.InSampleModeProperty, (sender, e) => UIApplication.SharedApplication.StatusBarHidden = App.Current.GetInSampleMode());
 #endif
-
+            
             return base.FinishedLaunching(app, options);
         }
 
-#if SAMPLE
-        static ShowTouchesWindow theWindow;
+#if DEBUG
+        private static ShowTouchesWindow theWindow;
+
         public override UIWindow Window
         {
             get

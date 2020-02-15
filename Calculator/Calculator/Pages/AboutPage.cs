@@ -14,6 +14,7 @@ namespace Calculator
         public AboutPage()
         {
             Title = "About Crunch";
+            Padding = new Thickness(CrunchStyle.PAGE_PADDING).MakeSafe(this);
 
             Resources = new ResourceDictionary();
             Resources.Add(new Style(typeof(Label))

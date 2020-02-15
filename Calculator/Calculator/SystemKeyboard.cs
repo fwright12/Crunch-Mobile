@@ -25,7 +25,7 @@ namespace Calculator
             layout.Children.Add(RawInstance = new KeyboardEntry(), new Point(-1000, -1000));
         }
 
-        public class KeyboardEntry : Entry, IKeyboard
+        public class KeyboardEntry : Entry, IKeyboard, Crunch.Mobile.ISoftKeyboard
         {
             public KeystrokeEventHandler Typed { get; set; }
 
@@ -46,6 +46,8 @@ namespace Calculator
                     Reset();
                 };
             }
+
+            public Size MeasureOnscreenSize() => new Size(Application.Current.MainPage.Width, 0);
 
             public void Disable()
             {

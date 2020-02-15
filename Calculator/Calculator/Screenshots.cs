@@ -10,7 +10,7 @@ using Crunch;
 
 namespace Calculator
 {
-    public partial class MainPage
+    public static class Screenshots
     {
         /* Store video / screenshots:
          *      Canvas - enter 9*6/8 (top), 5pi+5 (bottom), and sin30 (middle)
@@ -29,9 +29,16 @@ namespace Calculator
          *      Default answer formats - Enter sin30*2/3, change settings, enter again
          */
 
-        private StackLayout Options;
+        public static BindableProperty InSampleModeProperty = BindableProperty.CreateAttached("InSampleMode", typeof(bool), typeof(Screenshots), false);
 
-        public void ScreenShot()
+        public static bool GetInSampleMode(this App app) => (bool)app.GetValue(InSampleModeProperty);
+
+        public static void SetInSampleMode(this App app, bool value) => app.SetValue(InSampleModeProperty, value);
+
+        private static MainPage MainPage;
+        private static StackLayout Options;
+
+        public static void ScreenShot()
         {
             Button screenshots = new Button
             {
@@ -43,13 +50,13 @@ namespace Calculator
             {
                 Text = "Tips & Tricks",
             };
-            tipsAndTricks.Clicked += (sender, e) => { ClearCanvas(); DragDropAnswers(); };
+            tipsAndTricks.Clicked += (sender, e) => { DragDropAnswers(); };
 
-            Button custom = new Button
+            /*Button custom = new Button
             {
                 Text = "Custom",
             };
-            custom.Clicked += (sender, e) => ClearCanvas();
+            custom.Clicked += (sender, e) => ClearCanvas();*/
 
             Options = new StackLayout
             {
@@ -57,55 +64,86 @@ namespace Calculator
             };
             Options.Children.Add(screenshots);
             Options.Children.Add(tipsAndTricks);
-            Options.Children.Add(custom);
+            //Options.Children.Add(custom);
 
-            ShowOptions();
+            //ShowOptions();
 
-            Canvas.SizeChanged += (sender, e) =>
+            /*Canvas.SizeChanged += (sender, e) =>
             {
                 if (Canvas.Children.Count == 0)
                 {
                     ShowOptions();
                 }
-            };
+            };*/
         }
 
-        private void ShowOptions() => Canvas.Children.Add(Options, new Rectangle(0.5, 0.5, -1, -1), AbsoluteLayoutFlags.PositionProportional);
+        //private void ShowOptions() => Canvas.Children.Add(Options, new Rectangle(0.5, 0.5, -1, -1), AbsoluteLayoutFlags.PositionProportional);
 
-        private Queue<Action> Screenshots = new Queue<Action>();
+        private static Queue<Action> Screens = new Queue<Action>();
 
-        private void SlideShow(params Action[] slides)
+        private static void SlideShow(params Action[] slides)
         {
             foreach(Action action in slides)
             {
-                Screenshots.Enqueue(action);
+                Screens.Enqueue(action);
             }
 
             NextSlide(null, new TouchEventArgs(Point.Zero, TouchState.Up));
-            Canvas.Touch += NextSlide;
+            //Canvas.Touch += NextSlide;
         }
 
-        private void NextSlide(object sender, TouchEventArgs e)
+        private static void NextSlide(object sender, TouchEventArgs e)
         {
             if (e.State != TouchState.Up)
             {
                 return;
             }
 
-            ClearCanvas();
-
-            if (Screenshots.Count == 0)
+            if (Screens.Count == 0)
             {
-                Canvas.Touch -= NextSlide;
-                ShowOptions();
+                //Canvas.Touch -= NextSlide;
+                //ShowOptions();
                 //AddCalculation(e.Point, e.State);
                 return;
             }
 
-            Screenshots.Dequeue()?.Invoke();
+            Screens.Dequeue()?.Invoke();
         }
 
-        private void AssignVariables()
+        private static void ExplainUI()
+        {
+            /*AddCalculation(new Point(CanvasScroll.Width * .31, CanvasScroll.Height * .64));
+            SoftKeyboard.Type("log100");
+            CalculationFocus.Down();
+            SoftKeyboard.Type("9*6.3");
+
+            AddCalculation(new Point(CanvasScroll.Width * .08, CanvasScroll.Height * .06));
+            SoftKeyboard.Type("sqrt(x)");
+            CalculationFocus.Down();
+            SoftKeyboard.Type("5");
+            CalculationFocus.Up();
+            CalculationFocus.Up();
+            SoftKeyboard.Type("x^2+5x+3");*/
+        }
+
+        private static void DragDropAnswers()
+        {
+            /*AddCalculation(Point.Zero);
+            SoftKeyboard.Type("9*3.47+4");
+            
+            //AddCalculation(Point.Zero, TouchState.Up);
+            Equation e2 = new Equation();
+            e2.LHS.Children.Add(new Link(e1.RHS as Answer));
+            e2.Update();
+            canvas.Children.Add(e2, Point.Zero);// new Rectangle(.61, .49, -1, -1), AbsoluteLayoutFlags.PositionProportional);
+            */
+            /*Equation e3 = new Equation("sin");
+            e3.LHS.Children.Add(new Link(e1.RHS as Answer));
+            e3.Update();
+            canvas.Children.Add(e3, new Rectangle(.42, .89, -1, -1), AbsoluteLayoutFlags.PositionProportional);*/
+        }
+
+        /*private void AssignVariables()
         {
             AddCalculation(new Point(CanvasScroll.Width * .07, CanvasScroll.Height * .4));
             SoftKeyboard.Type("x^2+5x+3");
@@ -146,23 +184,6 @@ namespace Calculator
             SoftKeyboard.Type("2");
         }
 
-        private void DragDropAnswers()
-        {
-            AddCalculation(Point.Zero);
-            SoftKeyboard.Type("9*3.47+4");
-
-            //AddCalculation(Point.Zero, TouchState.Up);
-            /*Equation e2 = new Equation();
-            e2.LHS.Children.Add(new Link(e1.RHS as Answer));
-            e2.Update();
-            canvas.Children.Add(e2, Point.Zero);// new Rectangle(.61, .49, -1, -1), AbsoluteLayoutFlags.PositionProportional);
-            */
-            /*Equation e3 = new Equation("sin");
-            e3.LHS.Children.Add(new Link(e1.RHS as Answer));
-            e3.Update();
-            canvas.Children.Add(e3, new Rectangle(.42, .89, -1, -1), AbsoluteLayoutFlags.PositionProportional);*/
-        }
-
         private void InfiniteCanvas()
         {
             Canvas.Children.Add(new Equation("9*6-3"), Point.Zero);
@@ -172,23 +193,7 @@ namespace Calculator
 
             CanvasScroll.HorizontalScrollBarVisibility = ScrollBarVisibility.Always;
             CanvasScroll.VerticalScrollBarVisibility = ScrollBarVisibility.Always;
-        }
-
-        private void ExplainUI()
-        {
-            AddCalculation(new Point(CanvasScroll.Width * .31, CanvasScroll.Height * .64));
-            SoftKeyboard.Type("log100");
-            CalculationFocus.Down();
-            SoftKeyboard.Type("9*6.3");
-
-            AddCalculation(new Point(CanvasScroll.Width * .08, CanvasScroll.Height * .06));
-            SoftKeyboard.Type("sqrt(x)");
-            CalculationFocus.Down();
-            SoftKeyboard.Type("5");
-            CalculationFocus.Up();
-            CalculationFocus.Up();
-            SoftKeyboard.Type("x^2+5x+3");
-        }
+        }*/
     }
 }
 #endif

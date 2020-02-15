@@ -8,21 +8,6 @@ using System.Extensions;
 using Xamarin.Forms;
 using Xamarin.Forms.Extensions;
 
-/*namespace Xamarin.Forms.Extensions
-{
-    public class TableRoot
-    {
-        public Xamarin.Forms.TableRoot Value;
-        public IList<TableSection> Sections
-        {
-            get => Value.ToList<TableSection>();
-            set => Value.Add(value);
-        }
-        
-        public static implicit operator Xamarin.Forms.TableRoot(TableRoot root) => root.Value;
-    }
-}*/
-
 namespace Calculator
 {
 	public class SettingsPage : ContentPage
@@ -49,7 +34,7 @@ namespace Calculator
 
         private void RefreshShowFullKeyboard()
         {
-            ShowFullKeyboard.On = App.Current.Collapsed ? false : App.ShowFullKeyboard.Value;
+            ShowFullKeyboard.On = App.Current.Home.Collapsed ? false : App.ShowFullKeyboard.Value;
         }
 
         public SettingsPage()
@@ -115,7 +100,7 @@ namespace Calculator
                 }
             };
             ShowFullKeyboard.SetBinding(Cell.IsEnabledProperty, "Collapsed", converter: new ValueConverter<bool>((b) => !b));
-            App.Current.WhenPropertyChanged(DrawerPage.CollapsedProperty, (sender, e) => RefreshShowFullKeyboard());
+            //App.Current.WhenPropertyChanged(DrawerPage.CollapsedProperty, (sender, e) => RefreshShowFullKeyboard());
 
             TableSection other = new TableSection()
             {
@@ -214,17 +199,38 @@ namespace Calculator
                 info,
                 Danger()
             };
-            
+
+#if DEBUG
+            SwitchCell sampleMode;
+
+            TableSection sample = new TableSection("Developer Options")
+            {
+                (sampleMode = new SwitchCell
+                {
+                    Text = "Sampling",
+                    On = App.Current.GetInSampleMode()
+                })
+            };
+
+            sampleMode.OnChanged += (sender, e) => App.Current.SetInSampleMode(e.Value);
+
+            root.Insert(root.Count - 1, sample);
+#endif
             Content = new TableView()
             {
                 Root = root,
                 VerticalOptions = LayoutOptions.FillAndExpand,
                 Intent = TableIntent.Settings,
 #if __IOS__
-                BackgroundColor = Color.LightGray,
+                BackgroundColor = Color.Transparent,
 #endif
                 HasUnevenRows = true
             };
+
+#if __IOS__
+            BackgroundColor = Color.LightGray;
+#endif
+            Xamarin.Forms.PlatformConfiguration.iOSSpecific.Page.SetUseSafeArea(this, true);
         }
 
         private TableSection Danger()
@@ -264,16 +270,6 @@ namespace Calculator
                 setting.ClearValue(setting.ValueProperty);
             }
         }
-
-        private ContentPage FullPageWebView(string url) => new ContentPage
-        {
-            Content = new WebView
-            {
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-                VerticalOptions = LayoutOptions.FillAndExpand,
-                Source = url
-            }
-        };
     }
 
     public class LabelCell : ViewCell

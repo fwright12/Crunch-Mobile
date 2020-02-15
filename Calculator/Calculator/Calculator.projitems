@@ -16,6 +16,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)DrawerView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SoftKeyboard.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\EditListView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\Keyboard\Key.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\ModalView.cs" />
