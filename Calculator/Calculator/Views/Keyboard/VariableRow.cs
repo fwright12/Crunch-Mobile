@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 
+using System.Extensions;
 using Xamarin.Forms;
 using Xamarin.Forms.Extensions;
 
@@ -14,6 +15,8 @@ namespace Calculator
     {
         public static readonly BindableProperty ButtonSizeProperty = BindableProperty.Create("ButtonSize", typeof(double), typeof(VariableRow));
 
+        public static readonly BindableProperty ExpandedProperty = BindableProperty.Create("Expanded", typeof(bool), typeof(VariableRow));
+
         public double ButtonSize
         {
             get { return (double)GetValue(ButtonSizeProperty); }
@@ -22,6 +25,8 @@ namespace Calculator
 
         public bool Expanded
         {
+            //get => (bool)GetValue(ExpandedProperty);
+            //set => SetValue(ExpandedProperty, value);
             get => App.VariableRowExpanded.Value;
             set => App.VariableRowExpanded.Value = value;
         }
@@ -33,10 +38,10 @@ namespace Calculator
             {
                 if (_LengthBinding != null)
                 {
-                    _LengthBinding.MeasureInvalidated -= InvalidateMeasure;
+                    //_LengthBinding.MeasureInvalidated -= InvalidateMeasure;
                 }
                 _LengthBinding = value;
-                _LengthBinding.MeasureInvalidated += InvalidateMeasure;
+                //_LengthBinding.MeasureInvalidated += InvalidateMeasure;
 
                 InvalidateMeasure();
                 //Reload();
@@ -47,11 +52,9 @@ namespace Calculator
         private double OrientedLength;// => LengthBinding == null ? 0 : (Orientation == StackOrientation.Horizontal ? LengthBinding.Width : LengthBinding.Height);
         private double BarSize;// => OrientedLength - ButtonSize - Spacing;
 
-        private double ExpandButtonRotation => (Orientation == StackOrientation.Horizontal ? 0 : 90) + (Expanded ? 180 + NumRotations * 360 : 0);
-
         private readonly int RecentlyUsed = 10;
-        private readonly double NumRotations = 1;
-        private readonly uint TransitionTime = 500;
+        private readonly uint NumRotations = 1;
+        private readonly double TransitionSpeed = 0.5;
 
         private readonly StackLayout Variables;
         private readonly ScrollView Scroll;
@@ -60,14 +63,21 @@ namespace Calculator
 
         public VariableRow()
         {
-            this.WhenDescendantAdded<Button>((button) =>
+            Resources.Add(new Style(typeof(Button))
+            {
+                Setters =
+                {
+                    new Setter { Property = Button.FontSizeProperty, Value = 12 }
+                }
+            });
+            /*this.WhenDescendantAdded<Button>((button) =>
             {
                 button.BindingContext = this;
-                button.FontSize = 12;
+                //button.FontSize = 12;
 
                 button.SetBinding(Button.WidthRequestProperty, "ButtonSize");
                 button.SetBinding(Button.HeightRequestProperty, "ButtonSize");
-            });
+            });*/
             this.WhenDescendantAdded<StackLayout>((stacklayout) =>
             {
                 stacklayout.BindingContext = this;
@@ -77,7 +87,9 @@ namespace Calculator
 
 #if DEBUG
             if (Device.RuntimePlatform == Device.Android)
-                Expanded = true;
+            {
+                Expanded = false;
+            }
 #endif
 
             LabelButton keyboard = new Button
@@ -101,16 +113,28 @@ namespace Calculator
                         Content = Variables = new StackLayout { },
                         HorizontalOptions = LayoutOptions.FillAndExpand,
                         VerticalOptions = LayoutOptions.FillAndExpand,
-                        HorizontalScrollBarVisibility = ScrollBarVisibility.Never,
+                        WidthRequest = 0,
+                        HeightRequest = 0
                     })
                 }
             };
 
+            App.VariableRowExpanded.Bind<bool>(App.VariableRowExpanded.ValueProperty, value =>
+            {
+                this.SetValues(value ? LayoutOptions.Fill : LayoutOptions.End, HorizontalOptionsProperty, VerticalOptionsProperty);
+                Bar.SetValues(value ? LayoutOptions.FillAndExpand : LayoutOptions.Fill, HorizontalOptionsProperty, VerticalOptionsProperty);
+                Bar.SetValues(value ? -1 : 1, WidthRequestProperty, HeightRequestProperty);
+            });
+            Bar.SizeChanged += (sender, e) =>
+            {
+                Bar.Opacity = ((Orientation == StackOrientation.Horizontal && Bar.Width > 1) || (Orientation == StackOrientation.Vertical && Bar.Height > 1)).ToInt();
+            };
+            //Bar.SetBinding<double, double>(OpacityProperty, Bar, "Width", value => value > 1 ? 1 : 0);
             ExpandButton = new Button
             {
                 Text = "◁",
                 FontFamily = CrunchStyle.SYMBOLA_FONT,
-                FontSize = 15
+                FontSize = 15,
             };
             ExpandButton.Button.Clicked += Change;
 
@@ -146,8 +170,28 @@ namespace Calculator
                 Variables.Children.Add(button);
             }
 
-            OnPropertyChanged(OrientationProperty.PropertyName);
+            this.Bind<double>(ButtonSizeProperty, value =>
+            {
+                keyboard.SizeRequest(ButtonSize);
+
+                foreach(View child in Variables.Children)
+                {
+                    child.SizeRequest(ButtonSize);
+                }
+
+                ExpandButton.SizeRequest(ButtonSize);
+            });
+
+            Scroll.SetBinding<ScrollOrientation, StackOrientation>(ScrollView.OrientationProperty, this, "Orientation", value => value == StackOrientation.Horizontal ? ScrollOrientation.Horizontal : ScrollOrientation.Vertical);
+
+            this.Bind<StackOrientation>(OrientationProperty, value =>
+            {
+                ExpandButton.Rotation = GetExpandButtonRotation(Expanded, value);
+            });
+            //OnPropertyChanged(OrientationProperty.PropertyName);
         }
+
+        private double GetExpandButtonRotation(bool expanded, StackOrientation orientation) => (orientation == StackOrientation.Horizontal ? 0 : 90) + (expanded ? 180 + NumRotations * 360 : 0);
 
         protected override void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
@@ -158,22 +202,50 @@ namespace Calculator
                 return;
             }
             
-            ExpandButton.Rotation = ExpandButtonRotation;
-            Scroll.Orientation = Orientation == StackOrientation.Horizontal ? ScrollOrientation.Horizontal : ScrollOrientation.Vertical;
-
-            Reload();
+            //ExpandButton.Rotation = ExpandButtonRotation;
+            //Scroll.Orientation = Orientation == StackOrientation.Horizontal ? ScrollOrientation.Horizontal : ScrollOrientation.Vertical;
+            
+            //Reload();
         }
+
+        private Size LastAllocatedSize;
 
         private void Change(object sender, EventArgs e) => Change();
 
         private void Change()
-        {
-            Expanded = !Expanded;
+        {            
+            bool horizontal = Orientation == StackOrientation.Horizontal;
+            BindableProperty dimension = horizontal ? WidthProperty : HeightProperty;
+            BindableProperty dimensionRequest = horizontal ? WidthRequestProperty : HeightRequestProperty;
 
-            ExpandButton.RotateTo(ExpandButtonRotation, TransitionTime, Easing.SinInOut);
+            VisualElement parent = this.Parent<VisualElement>();
+            //(horizontal ? LastAllocatedSize.Width : LastAllocatedSize.Height)
+            double start = Bar.GetValue<double>(dimension);
+            double end = Expanded ? 0 : (horizontal ? AvailableSpace.Width : AvailableSpace.Height) - ButtonSize - Spacing;
+            //double end = Expanded ? 0 : parent.GetValue<double>(dimension) - ButtonSize - Spacing - 20;
+
+            // Get the rotation for the new Expanded value (which will be the opposite of what it is now)
+            double rotation = GetExpandButtonRotation(!Expanded, Orientation);
+            ExpandButton.RotateTo(rotation, (uint)(Math.Abs(start - end) / TransitionSpeed), Easing.SinInOut);
+
+            if (end == 0)
+            {
+                Expanded = false;
+            }
+
+            Bar.AnimateAtSpeed("Transition", dimensionRequest, start, end, 16, TransitionSpeed, Easing.SinInOut, (final, cancelled) =>
+            {
+                if (end > 0)
+                {
+                    Expanded = true;
+                }
+            });
+
+            return;
+
             //Print.Log(OrientedLength, Width, Height);
-            double start = 0;
-            double end = BarSize - ButtonSize - Spacing;
+            start = 0;
+            end = BarSize - ButtonSize - Spacing;
             if (!Expanded)
             {
                 System.Extensions.Misc.Swap(ref start, ref end);
@@ -183,7 +255,7 @@ namespace Calculator
 
             Bar.IsVisible = true;
             Animation collapse = new Animation(size => Resize(Bar, size), start, end);
-            collapse.Commit(this, "Collapse", 1, TransitionTime, Easing.SinInOut, (a, b) =>
+            collapse.Commit(this, "Collapse", 1, 80, Easing.SinInOut, (a, b) =>
             {
                 Bar.IsVisible = Expanded;
                 Resize(Bar, -1);
@@ -235,12 +307,19 @@ namespace Calculator
             }
         }
 
-        private void InvalidateMeasure(object sender, EventArgs e) => InvalidateMeasure();
+        //private void InvalidateMeasure(object sender, EventArgs e) => InvalidateMeasure();
+
+        private Size AvailableSpace;
 
         protected override SizeRequest OnMeasure(double widthConstraint, double heightConstraint)
         {
             //Print.Log("measuring variables", widthConstraint, heightConstraint, LengthBinding, LengthBinding.Bounds.Size);
-            BarSize = widthConstraint;// - ButtonSize - Spacing;
+            //LastAllocatedSize = new Size(widthConstraint, heightConstraint);
+
+            AvailableSpace = new Size(widthConstraint, heightConstraint);
+
+            //Print.Log("measuring variable row", widthConstraint, heightConstraint);
+            BarSize = Orientation == StackOrientation.Horizontal ? widthConstraint : heightConstraint;// - ButtonSize - Spacing;
             return base.OnMeasure(widthConstraint, heightConstraint);
 
             SizeRequest sr = base.OnMeasure(widthConstraint, heightConstraint);

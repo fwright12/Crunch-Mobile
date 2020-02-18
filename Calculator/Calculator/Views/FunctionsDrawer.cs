@@ -175,8 +175,8 @@ namespace Calculator
             get
             {
                 double availableHeight = this.Parent<View>().Height;
-
-                if (availableHeight == Keyboard.Height)
+                
+                if (availableHeight <= Keyboard.Height)
                 {
                     return availableHeight;
                 }

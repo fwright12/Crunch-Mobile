@@ -19,10 +19,7 @@ namespace Crunch.Mobile
         {
             Calculator.KeyboardManager.KeyboardChanged += (sender) =>
             {
-                if (sender is ISoftKeyboard softKeyboard)
-                {
-                    SizeChanged?.Invoke(softKeyboard, new EventArgs<Size>(softKeyboard.MeasureOnscreenSize()));
-                }
+                SizeChanged?.Invoke(sender, new EventArgs<Size>((sender as ISoftKeyboard)?.MeasureOnscreenSize() ?? Size.Zero));
             };
         }
 

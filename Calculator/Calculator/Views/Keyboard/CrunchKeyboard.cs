@@ -223,25 +223,46 @@ namespace Calculator
                 }
             }
 
-            SizeChanged += (sender, e) => ResetScroll();
-            App.Current.MainPage.SizeChanged += (sender, e) =>
+            SizeChanged += (sender, e) =>
             {
-                Print.Log("display size changed", ((VisualElement)sender).Bounds.Size);
-                Crunch.Mobile.SoftKeyboard.OnSizeChanged(this, new EventArgs<Size>(MeasureOnscreenSize()));
+                ResetScroll();
+                Crunch.Mobile.SoftKeyboard.OnSizeChanged(this, new EventArgs<Size>(Bounds.Size));
             };
+            App.Current.MainPage.SizeChanged += (sender, e) => ScreenSizeChanged();
+            ScreenSizeChanged();
 
             Orientation = StackOrientation.Horizontal;
             OnPropertyChanged(OrientationProperty.PropertyName);
         }
+
+        private void ScreenSizeChanged()
+        {
+            Size bounds = App.Current.MainPage.Bounds.Size;
+
+            Orientation = bounds.Height >= bounds.Width ? StackOrientation.Horizontal : StackOrientation.Vertical;
+
+            Size size = MeasureOnscreenSize();
+            this.SizeRequest(size);
+
+            Print.Log("display size changed", App.Current.MainPage.Bounds.Size, size);
+        }
+
+        protected override void OnSizeAllocated(double width, double height)
+        {
+            base.OnSizeAllocated(width, height);
+            Print.Log("size allocated", width, height);
+        }
+
+        private Size MeasuredSize;
 
         public Size MeasureOnscreenSize()
         {
             double width = App.Current.MainPage.Width;
             double height = App.Current.MainPage.Height;
 
-            Orientation = height >= width ? StackOrientation.Horizontal : StackOrientation.Vertical;
+            //Orientation = height >= width ? StackOrientation.Horizontal : StackOrientation.Vertical;
 
-            Size size = OnMeasure(width, height).Request;
+            Size size = GetSize(width, height);// OnMeasure(width, height).Request;
 
             bool collapsed = !size.Equals(FullSize);
 
@@ -256,10 +277,10 @@ namespace Calculator
                     size.Width = Math.Min(size.Width, width / 2);
                 }
             }
-            else
+            /*else
             {
                 Orientation = StackOrientation.Horizontal;
-            }
+            }*/
 
             return size;
         }
@@ -279,20 +300,6 @@ namespace Calculator
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-        protected override void OnSizeAllocated(double width, double height)
-        {
-            //Print.Log("size allocated", width, height, IsCondensed);
-            base.OnSizeAllocated(width, height);
-
-            if (DockButton == null)
-            {
-                return;
-            }
-
-            DockButton.Text = IsCondensed ? "" : "\u25BD"; //white down-pointing triangle
-            DockButton.IsEnabled = !IsCondensed;
-        }
 
         protected override void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
@@ -321,6 +328,9 @@ namespace Calculator
                 }
 
                 Keypad.WidthRequest = PaddedButtonsWidth(Keys[0].Length, buttonSize);
+
+                DockButton.Text = IsCondensed ? "" : "\u25BD"; //white down-pointing triangle
+                DockButton.IsEnabled = !IsCondensed;
             }
             
             if (PermanentKeys != null && propertyName.IsProperty(OrientationProperty))
@@ -353,7 +363,14 @@ namespace Calculator
         protected override SizeRequest OnMeasure(double widthConstraint, double heightConstraint)
         {
             SizeRequest sr = base.OnMeasure(widthConstraint, heightConstraint);
+            //sr.Request = new Size(300, 300);// GetSize(widthConstraint, heightConstraint);
+            return sr;
+        }
 
+        private Size GetSize(double widthConstraint, double heightConstraint)
+        {
+            widthConstraint = Math.Min(widthConstraint, App.Current.MainPage.Width);
+            heightConstraint = Math.Min(heightConstraint, App.Current.MainPage.Height);
             //SizeRequest sr = base.OnMeasure(widthConstraint, heightConstraint);
             //return sr;
             bool idealOrientation = CondensedOrientation == StackOrientation.Horizontal;
@@ -365,11 +382,11 @@ namespace Calculator
             Size fitHeight = new Size(Math.Min(widthConstraint, PaddedButtonsWidth(cols, ButtonWidth(heightConstraint, rows))), heightConstraint);
             Size condensed = fitWidth.Area() < fitHeight.Area() ? fitWidth : fitHeight;
 
-            Print.Log("measuring", widthConstraint, heightConstraint, App.ShowFullKeyboard.Value);
+            Print.Log("measuring", widthConstraint, heightConstraint, condensed, App.ShowFullKeyboard.Value);
             Size fullSize = App.ShowFullKeyboard.Value ? FullSize : new Size(PaddedButtonsWidth(MIN_COLUMNS + PERMANENT_KEYS_INCREASE, MAX_BUTTON_SIZE), PaddedButtonsWidth(Keys.Length, MAX_BUTTON_SIZE));
-            sr.Request = FullSize.Width < widthConstraint && FullSize.Height < heightConstraint && FullSize.Area() < condensed.Area() ? fullSize : condensed;
+            return FullSize.Width < widthConstraint && FullSize.Height < heightConstraint && FullSize.Area() < condensed.Area() ? fullSize : condensed;
 
-            return sr;
+            //return sr;
         }
 
         public double PaddedButtonsWidth(double numButtons, double buttonSize) => buttonSize * numButtons + Spacing * ((int)numButtons - 1);
