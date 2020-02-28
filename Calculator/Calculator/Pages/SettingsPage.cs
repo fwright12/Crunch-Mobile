@@ -99,6 +99,7 @@ namespace Calculator
                     App.ShowFullKeyboard.Value = e.Value;
                 }
             };
+            // Fix this!!! Collapsed no longer exists on App.Current
             ShowFullKeyboard.SetBinding(Cell.IsEnabledProperty, "Collapsed", converter: new ValueConverter<bool>((b) => !b));
             //App.Current.WhenPropertyChanged(DrawerPage.CollapsedProperty, (sender, e) => RefreshShowFullKeyboard());
 

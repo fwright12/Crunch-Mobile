@@ -35,11 +35,11 @@ namespace Calculator
         {
             ContextActions =
             {
-                new MenuItem
+                new MenuItemTemplate(() => new MenuItem
                 {
                     Text = "Delete",
                     IsDestructive = true
-                }
+                })
             }
         })
         { }
@@ -122,7 +122,6 @@ namespace Calculator
                     }
                 };
             }
-            ListView.GetSwipeListener().Drawer = this;
         }
 
         public static implicit operator EditListView(ListView listView) => new EditListView(listView);

@@ -106,9 +106,9 @@ namespace Calculator
 
             if (Device.RuntimePlatform == Device.Android)
             {
-                var keyboards = new System.Collections.Generic.List<IKeyboard>(KeyboardManager.Connected()).ToArray();
-                IKeyboard current = KeyboardManager.Current;
-                KeyboardManager.ClearKeyboards();
+                var keyboards = new System.Collections.Generic.List<ISoftKeyboard>(SoftKeyboardManager.Connected()).ToArray();
+                ISoftKeyboard current = SoftKeyboardManager.Current;
+                SoftKeyboardManager.ClearKeyboards();
                 
                 MainPageTutorial tutorial = new MainPageTutorial();
                 await ReplaceCurrentPage(tutorial);
@@ -123,9 +123,9 @@ namespace Calculator
 
                 tutorial.Completed += async () =>
                 {
-                    KeyboardManager.ClearKeyboards();
-                    KeyboardManager.AddKeyboard(keyboards);
-                    KeyboardManager.SwitchTo(current);
+                    SoftKeyboardManager.ClearKeyboards();
+                    SoftKeyboardManager.AddKeyboard(keyboards);
+                    SoftKeyboardManager.SwitchTo(current);
 
                     await ReplaceCurrentPage(Home);
                     TutorialRunning = false;
@@ -178,7 +178,7 @@ namespace Calculator
                 };
                 NavigationPage.SetHasNavigationBar(Home, false);
                 TouchScreen.Instance = Home;
-                Home.WhenPropertyChanged(Calculator.MainPage.CollapsedProperty, (sender1, e1) => CollapsedChanged(Home.Collapsed));
+                Home.Bind<bool>("Collapsed", value => CollapsedChanged(value));
                 
                 if (ShouldRunTutorial.Value)
                 {

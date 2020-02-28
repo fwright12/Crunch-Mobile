@@ -32,7 +32,7 @@ namespace Calculator.iOS
                     Control.AllowsMultipleSelection = sender is EditListView editListView && editListView.Editing;
                 });
             }*/
-            
+            //Control.InsetsContentViewsToSafeArea = false;
             e.NewElement.SetNativeImplementation(Scrollable.NativeScrollImplementationProperty, ScrollToRequest);
             //Scrollable.ScrollRequestProperty.ListenFor(ScrollToRequest, e.OldElement, e.NewElement);
 
@@ -50,6 +50,17 @@ namespace Calculator.iOS
             //}
 
             //Control.AllowsMultipleSelectionDuringEditing = true;
+        }
+
+        public override void SafeAreaInsetsDidChange()
+        {
+            base.SafeAreaInsetsDidChange();
+            Control.ContentInset = SafeAreaInsets;
+            //Control.InsetsContentViewsToSafeArea = true;
+            //Print.Log("safe insets changed", Control.ContentInset);
+            //Print.Log("safe insets changed", SafeAreaInsets, SafeAreaInsets.Bottom);
+            //Print.Log("\t" + Control.InsetsContentViewsToSafeArea, Control.AdjustedContentInset);
+            //Control.ContentInset = SafeAreaInsets;
         }
 
         private void ScrollToRequest(ScrollToPositionRequestEventArgs e) => Control.SetContentOffset(new CoreGraphics.CGPoint(e.X, e.Y), e.Animated);

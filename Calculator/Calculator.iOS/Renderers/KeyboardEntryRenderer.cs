@@ -24,7 +24,7 @@ namespace Calculator.iOS
             {
                 Print.Log("keyboard will hide");
                 HiddenBySystem = true;
-                AdjustResize(0);
+                //AdjustResize(0);
             });
             UIKeyboard.Notifications.ObserveWillShow((sender, e) =>
             {
@@ -38,7 +38,9 @@ namespace Calculator.iOS
 
             UIKeyboard.Notifications.ObserveDidShow((sender, e) =>
             {
-                AdjustResize(UIKeyboard.FrameEndFromNotification(e.Notification).Height);
+                CoreGraphics.CGRect rect = UIKeyboard.FrameEndFromNotification(e.Notification);
+                (Element as SystemKeyboard.KeyboardEntry)?.OnOnscreenSizeChanged(new Size(rect.Width, rect.Height));
+                //AdjustResize(UIKeyboard.FrameEndFromNotification(e.Notification).Height);
             });
         }
 

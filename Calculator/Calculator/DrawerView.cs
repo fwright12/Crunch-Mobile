@@ -7,12 +7,31 @@ using Xamarin.Forms.Extensions;
 
 namespace Calculator
 {
+    public class SnapPoint
+    {
+        
+        public double Value
+        {
+            get => _Value;
+            set
+            {
+
+
+                _Value = value;
+            }
+        }
+        private double _Value;
+    }
+
     public static class DrawerView
     {
         public class ScrollSpy
         {
             public View Drawer { get; set; }
+            public object State { get; private set; }
+
             private readonly ListView Scrollable;
+            private Dictionary<object, double> States = new Dictionary<object, double>();
 
             public ScrollSpy(ListView scrollable)
             {
@@ -30,6 +49,22 @@ namespace Calculator
                     }
 #endif
                 };
+            }
+
+            public void AddState(object key, double value) => States.Add(key, value);
+
+            public void RemoveState(object key) => States.Remove(key);
+
+            public double GetSize(object key) => States[key];
+
+            public void SetSize(object key, double value)
+            {
+                States[key] = value;
+
+                if (key == State)
+                {
+                    Drawer.HeightRequest = value;
+                }
             }
 
             private bool ShouldScroll = false;
@@ -61,7 +96,7 @@ namespace Calculator
                         }
                         else
                         {
-                            Drawer.SnapTo(parent.Keyboard, speed);
+                            Drawer.SnapTo(parent.MinDrawerHeight, speed);
                         }
                     }
                 }

@@ -10,7 +10,7 @@ namespace Calculator
 {
     public static class SystemKeyboard
     {
-        public static IKeyboard Instance => RawInstance;
+        public static ISoftKeyboard Instance => RawInstance;
         //public static bool IsShowing => KeyboardManager.Current == Instance;
 
         private static KeyboardEntry RawInstance = null;
@@ -25,9 +25,11 @@ namespace Calculator
             layout.Children.Add(RawInstance = new KeyboardEntry(), new Point(-1000, -1000));
         }
 
-        public class KeyboardEntry : Entry, IKeyboard, Crunch.Mobile.ISoftKeyboard
+        public class KeyboardEntry : Entry, ISoftKeyboard
         {
-            public KeystrokeEventHandler Typed { get; set; }
+            public event KeystrokeEventHandler Typed;
+            public event EventHandler OnscreenSizeChanged;
+            public Size Size { get; private set; }
 
             public bool Showing = false;
 
@@ -47,8 +49,6 @@ namespace Calculator
                 };
             }
 
-            public Size MeasureOnscreenSize() => new Size(Application.Current.MainPage.Width, 0);
-
             public void Disable()
             {
                 Showing = false;
@@ -64,7 +64,13 @@ namespace Calculator
 
             public void DismissedBySystem()
             {
-                KeyboardManager.NextKeyboard();
+                SoftKeyboardManager.NextKeyboard();
+            }
+
+            public void OnOnscreenSizeChanged(Size size)
+            {
+                Size = size;
+                OnscreenSizeChanged?.Invoke(this, new EventArgs());
             }
 
             protected override void OnParentSet()

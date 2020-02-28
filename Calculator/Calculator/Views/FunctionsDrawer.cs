@@ -142,6 +142,12 @@ namespace Calculator
 
     public class FunctionsDrawer : Frame
 	{
+        public enum State
+        {
+            Open,
+            Closed
+        };
+
         public class ListView : ActionableListView
         {
             public bool ContextActionsShowing = false;
@@ -174,8 +180,25 @@ namespace Calculator
         {
             get
             {
-                double availableHeight = this.Parent<View>().Height;
-                
+                MainPage parent = this.Parent<MainPage>();
+                double availableHeight = parent.Height;
+
+                if (parent.DisplayMode == MainPage.Display.CondensedPortrait)
+                {
+                    availableHeight -= 50 + CrunchStyle.PAGE_PADDING * 2;
+                }
+                else if (parent.DisplayMode == MainPage.Display.Expanded)
+                {
+                    availableHeight = Math.Min(availableHeight * 0.9, Keyboard.Height * 2);
+                }
+
+                if (AddFunctionLayout.IsVisible && parent.DisplayMode != MainPage.Display.CondensedLandscape)
+                {
+                    availableHeight -= Math.Max(0, AddFunctionLayout.Height);
+                }
+
+                return availableHeight;
+
                 if (availableHeight <= Keyboard.Height)
                 {
                     return availableHeight;
@@ -192,10 +215,22 @@ namespace Calculator
             }
         }
 
+        public double MinDrawerHeight => SoftKeyboardManager.Current == SystemKeyboard.Instance ? Keyboard.Height : (SoftKeyboardManager.Size.Height + (Keyboard is StackLayout stackLayout && stackLayout.Orientation == StackOrientation.Vertical ? 33 : 0));
+        private double BottomPadding;
+        public void SetBottomPadding(double value)
+        {
+            BottomPadding = value;
+            SnapKeyboard();
+        }
+
         public FunctionsDrawer(View keyboard, AddFunction addFunctionLayout)
         {
             Keyboard = keyboard;
             AddFunctionLayout = addFunctionLayout;
+
+            ActionableListView listView = null;
+            Label noFunctions;
+            BoxView cover = null;
 
             ClosedState = new AnyVisualState
             {
@@ -203,11 +238,12 @@ namespace Calculator
                 {
                     new AnySetter { Action = value => CornerRadius = (float)(dynamic)value, Value = 0 },
                     new AnySetter<double> { Action = value => BackgroundColor = new Color(255, 255, 255, value), Value = 0 },
-                    //new AnySetter<double> { Action = value => (FunctionsList.ListView.Header as Layout<View>).Padding = new Thickness(0, value, 0, 0), Value = 0 },
+                    new AnySetter<double> { Action = value => cover.Opacity = value, Value = 1 },
+                    new AnySetter<double> { Action = value => (listView.Header as View).Margin = new Thickness(0, value, 0, 0), Value = 0 },
                 }
             };
-            OpenValues = new List<double> { 20, 1, 20 };
-
+            OpenValues = new List<double> { 20, 1, 0, 20 };
+            
             BackgroundColor = Color.Transparent;
             Padding = new Thickness(0);
             HasShadow = false;
@@ -219,16 +255,16 @@ namespace Calculator
                 string text = File.ReadAllText(Filename).Trim('\n');
                 Print.Log("read from file", text);
 #if DEBUG
-                text = string.Join('\n', new List<string>
+                text = string.Join('\n', new string[]
                 {
                     "√(a^2+b^2)",
+                    "a+b+c+d+e+f+g+h+i+j+k+l+m+n+o+p+q+r+s+t+u+v+w+y+z",
                     "(-b+√(b^2-4ac))/(2a)",
                     "p(1+r/n)^(n/t)",
                     "√(b^2+c^2-2bccos\u03B8)",
                     "1/2mv^2",
                     "ut+1/2at^2",
                     "(GMm)/(r^2)",
-                    //"a+b+c+d+e+f+g+h+i+j+k+l+m+n+o+p+q+r+s+t+u+v+w+y+z",
                 });
 #endif
 
@@ -239,49 +275,75 @@ namespace Calculator
                         continue;
                     }
 
-                    Print.Log("found function |" + function + "|", function.Length, function.Length > 0 ? function[0] : -1);
+                    //Print.Log("found function |" + function + "|", function.Length, function.Length > 0 ? function[0] : -1);
                     Functions.Add(function);
                 }
             }
-
-            ActionableListView listView;
-            Label noFunctions;
-
+            
             Content = new StackLayout
             {
                 Orientation = StackOrientation.Vertical,
                 Children =
                 {
-                    (FunctionsList = listView = new ListView
+                    new AbsoluteLayout
                     {
-                        BackgroundColor = Color.Transparent,
-                        ItemsSource = Functions,
-                        ItemTemplate = new DataTemplate(() =>
+                        Children =
                         {
-                            EditCell cell = new EditCell();
-                            cell.SetBinding<View, string>(EditCell.ViewProperty, "String", MakeExpression);
-                            return cell;
-                        }),
-                        ContextActions =
-                        {
-                            new MenuItem
                             {
-                                Text = "Delete",
-                                IsDestructive = true,
+                                (FunctionsList = listView = new ListView
+                                {
+                                    BackgroundColor = Color.Transparent,
+                                    ItemsSource = Functions,
+                                    ItemTemplate = new DataTemplate(() =>
+                                    {
+                                        EditCell cell = new EditCell();
+                                        cell.SetBinding<View, string>(EditCell.ViewProperty, "String", MakeExpression);
+                                        return cell;
+                                    }),
+                                    ContextActions =
+                                    {
+                                        new MenuItemTemplate(() => new MenuItem
+                                        {
+                                            Text = "Delete",
+                                            IsDestructive = true,
+                                        }),
+                                        new MenuItemTemplate(() => new MenuItem
+                                        {
+                                            Text = "Edit",
+                                        })
+                                    },
+                                    SelectionMode = ListViewSelectionMode.None,
+                                    IsPullToRefreshEnabled = false,
+                                    HasUnevenRows = true,
+                                    Header = Keyboard,
+                                }),
+                                new Rectangle(0, 0, 1, -1),
+                                AbsoluteLayoutFlags.WidthProportional
                             },
-                            new MenuItem
                             {
-                                Text = "Edit",
+                                (cover = new BoxView
+                                {
+                                    BackgroundColor = CrunchStyle.BACKGROUND_COLOR,
+                                    InputTransparent = true
+                                }),
+                                new Rectangle(0.5, 1, 1, -1),
+                                AbsoluteLayoutFlags.PositionProportional | AbsoluteLayoutFlags.WidthProportional
                             }
-                        },
-                        SelectionMode = ListViewSelectionMode.None,
-                        IsPullToRefreshEnabled = false,
-                        HasUnevenRows = true,
-                        Header = Keyboard,
-                    })
+                        }
+                    }
                 }
             };
-            //(listView.Header as View).SizeChanged += (sender, e) => Print.Log("header size changed", ((View)sender).Bounds.Size);
+            
+            FunctionsList.ListView.GetSwipeListener().Drawer = FunctionsList;
+
+            //Keyboard.Bind<double>(HeightProperty, value => SnapKeyboard());
+            SoftKeyboardManager.SizeChanged += (sender, e) =>
+            {
+                if (sender != SystemKeyboard.Instance)
+                {
+                    SnapKeyboard();
+                }
+            };
 
             AddFunctionLayout.ConfirmAdd.Clicked += (sender, e) =>
             {
@@ -305,9 +367,14 @@ namespace Calculator
             };
             Functions.CollectionChanged += (sender, e) =>
             {
-                FunctionsList.ListView.Footer = Functions.Count == 0 ? noFunctions : null;
+                //FunctionsList.ListView.Footer = Functions.Count == 0 ? noFunctions : null;
             };
-            FunctionsList.ListView.Footer = Functions.Count == 0 ? noFunctions : null;
+            //FunctionsList.ListView.Footer = Functions.Count == 0 ? noFunctions : null;
+            /*FunctionsList.ListView.Footer = new Label
+            {
+                Text = "test",
+                HorizontalTextAlignment = TextAlignment.Center
+            };*/
             //noFunctions.SetBinding<bool, int>(IsVisibleProperty, Functions, "Count", value => value == 0);
 
             Functions.CollectionChanged += (sender, e) =>
@@ -323,38 +390,6 @@ namespace Calculator
                 ChangeStatus();
             });
 
-            /*FunctionsList.Add.Clicked += (sender, e) =>
-            {
-                AddFunctionLayout.AddEquation();
-                ChangeStatus();
-
-                /*bool willHit = Bounds.Contains(new Rectangle(new Point(AddFunctionLayout.X, Y), new Size(AddFunctionLayout.Width, 0)));
-                double y1, y2;
-                y1 = y2 = -AddFunctionLayout.Height;
-                
-                AddFunctionLayout.AnimateAtSpeed("Open", value =>
-                {
-                    if (willHit)
-                    {
-                        if (y2 - y1 < 0 && y1 - value > 0)
-                        {
-                            //Print.Log("positive inflection point");
-                            //ChangeStatus();
-                            this.SnapTo(FunctionsList.ListView.Header as View, AddFunctionLayout.AnimationSpeed);
-                        }
-                        else if (y2 - y1 > 0 && y1 - value < 0)
-                        {
-                            AddFunctionLayout.AbortAnimation("Open");
-                            AddFunctionLayout.AnimateAtSpeed("Open", value1 => AddFunctionLayout.MoveTo(AddFunctionLayout.X, value1), AddFunctionLayout.Y, 0, 16, AddFunctionLayout.AnimationSpeed, Easing.BounceOut);
-                        }
-
-                        y2 = y1;
-                        y1 = value;
-                    }
-
-                    AddFunctionLayout.MoveTo(AddFunctionLayout.X, value);
-                }, y1, Math.Min(0, willHit ? Y - AddFunctionLayout.Height : 1), 16, AddFunctionLayout.AnimationSpeed, Easing.BounceOut);
-            };*/
             FunctionsList.ListView.ItemTapped += (sender, e) =>
             {
                 if (FunctionsList.Editing)
@@ -363,8 +398,6 @@ namespace Calculator
                 }
 
                 ChangeStatus();
-
-                MainPage mainPage = this.Parent<MainPage>();
                 DropFunction((FunctionViewModel)e.Item);
             };
             listView.ContextActionClicked += (sender, e) =>
@@ -374,22 +407,28 @@ namespace Calculator
                     EditFunctionAt(Functions.IndexOf((FunctionViewModel)sender));
                 }
             };
-            FunctionsList.AddSnapPoint(Keyboard);
+            //FunctionsList.AddSnapPoint(Keyboard);
 
-            FunctionsList.WhenPropertyChanged(HeightProperty, (sender, e) =>
+            FunctionsList.Bind<double>(HeightProperty, value =>
             {
-                double start = Keyboard.Height;
+                if (Parent == null)
+                {
+                    return;
+                }
+
+                double start = MinDrawerHeight;
                 double end = MaxDrawerHeight;
-                double percent = start == end ? 0 : (FunctionsList.Height - start) / Math.Abs(end - start);
+                double percent = start == end ? 0 : (value - start) / Math.Abs(end - start);
                 //Print.Log("height changed", Height, FunctionsList.Height, Keyboard.Height, percent);
                 percent = percent.Bound(0, 1);
 
+                cover.HeightRequest = value - Keyboard.Height;
                 Transition(percent);
             });
 
             //Content.SetBinding<Color, bool>(BackgroundColorProperty, AddFunctionLayout, "IsVisible", value => value ? Color.White : Color.Transparent);
 
-            FunctionsList.SnapTo(keyboard);
+            //FunctionsList.SnapTo(keyboard);
         }
 
         public void ChangeStatus()
@@ -397,14 +436,16 @@ namespace Calculator
             if (FunctionsList.HeightRequest >= MaxDrawerHeight)
             {
                 FunctionsList.ListView.ScrollToPosition(0, 0, true);
-                FunctionsList.SnapTo(Keyboard, TransitionSpeed);
+                SnapKeyboard();
             }
             else
             {
                 FunctionsList.SnapTo(MaxDrawerHeight, TransitionSpeed);
             }
         }
-            
+
+        private void SnapKeyboard() => FunctionsList.SnapTo(MinDrawerHeight, TransitionSpeed);
+
         private void EditFunctionAt(int index = -1)
         {
             IndexForFunction = index;
@@ -416,10 +457,10 @@ namespace Calculator
             int i = 0;
             foreach (AnySetter setter in ClosedState.AnySetters(this))
             {
-                double value1 = OpenValues[i++];
-                double value2 = (int)setter.Value;
+                double value1 = (int)setter.Value;
+                double value2 = OpenValues[i++];
 
-                setter.Action(Math.Min(value1, value2) + percent * Math.Abs(value1 - value2));
+                setter.Action(value1 + percent * (value2 - value1));
             }
 
             /*if (AddStackLayout.IsVisible)

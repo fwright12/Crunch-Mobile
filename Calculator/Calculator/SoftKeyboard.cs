@@ -2,33 +2,169 @@
 using System.Collections.Generic;
 using System.Text;
 
-using Xamarin.Forms;
-
-namespace Crunch.Mobile
+namespace Xamarin.Forms
 {
-    public interface ISoftKeyboard
+    public interface ISoftKeyboard : Calculator.IKeyboard
     {
-        Size MeasureOnscreenSize();// double widthConstraint, double heightConstraint);
+        event EventHandler OnscreenSizeChanged;
+
+        Size Size { get; }
+
+        void Enable();
+        void Disable();
     }
 
-    public static class SoftKeyboard
+    public class OnScreenKeyboard : ContentView, ISoftKeyboard
     {
-        public static EventHandler<EventArgs<Size>> SizeChanged;
+        public event Calculator.KeystrokeEventHandler Typed;
+        public event EventHandler OnscreenSizeChanged;
 
-        static SoftKeyboard()
+        //public View Content { get; private set; }
+        public Size Size { get; private set; }
+
+        public OnScreenKeyboard(View content)
         {
-            Calculator.KeyboardManager.KeyboardChanged += (sender) =>
+            Content = content;
+            Content.SizeChanged += (sender, e) =>
             {
-                SizeChanged?.Invoke(sender, new EventArgs<Size>((sender as ISoftKeyboard)?.MeasureOnscreenSize() ?? Size.Zero));
+                Size = Content.Bounds.Size;
+                OnscreenSizeChanged?.Invoke(this, new EventArgs());
             };
+
+            if (content is Calculator.IKeyboard keyboard)
+            {
+                keyboard.Typed += (keystrokes) => OnTyped(keystrokes);
+            }
+
+            /*this.Bind<View>(ContentProperty, value =>
+            {
+                if (value == null)
+                {
+                    return;
+                }
+            });
+
+            return;
+            Application.Current.MainPage.SizeChanged += (sender, e) => ScreenSizeChanged();
+            PropertyChanged += (sender, e) =>
+            {
+                if (e.PropertyName == ContentProperty.PropertyName || e.PropertyName == PaddingProperty.PropertyName)
+                {
+                    ScreenSizeChanged();
+                }
+            };
+            ScreenSizeChanged();*/
         }
 
-        public static void OnSizeChanged(object sender, EventArgs<Size> e)
+        public void Enable() => IsVisible = true;
+
+        public void Disable() => IsVisible = false;
+
+        protected void OnTyped(IEnumerable<char> keystrokes) => Typed?.Invoke(keystrokes);
+
+        private void ScreenSizeChanged()
         {
-            if (sender == Calculator.KeyboardManager.Current)
+            if (Content == null)
             {
-                SizeChanged?.Invoke(sender, e);
+                return;
             }
+
+            Size bounds = Application.Current.MainPage.Bounds.Size;
+            Size constraint = new Size(bounds.Width - Padding.HorizontalThickness, bounds.Height - Padding.VerticalThickness);
+            Size request = ((Calculator.CrunchKeyboard)Content).MeasureOnscreenSize(constraint.Width, constraint.Height);
+
+            Size = new Size(Math.Min(request.Width, constraint.Width), Math.Min(request.Height, constraint.Height));
+
+            if (!request.Equals(Size))
+            {
+                //InvalidateMeasure();
+                //InvalidateLayout();
+            }
+            //Print.Log("requested " + Size, constraint);
+
+            //LayoutChildIntoBoundingRegion();
+        }
+
+        //protected override SizeRequest OnMeasure(double widthConstraint, double heightConstraint) => new SizeRequest(Size);
+
+        protected override void LayoutChildren(double x, double y, double width, double height)
+        {
+            Size bounds = Application.Current.MainPage.Bounds.Size;
+            Size constraint = new Size(bounds.Width, bounds.Height);
+            SizeRequest sr = Content.Measure(constraint.Width, constraint.Height);
+
+            Size request = new Size(Math.Min(constraint.Width, sr.Request.Width), Math.Min(constraint.Height, sr.Request.Height));
+            //Print.Log("requested " + sr.Request, request, constraint);
+            //Print.Log("\t" + x, y, width, height, Width, Height);
+
+            LayoutChildIntoBoundingRegion(Content, new Rectangle(new Point((width - request.Width) / 2, (height - request.Height) / 2), request));
+        }
+    }
+
+    public static class SoftKeyboardManager
+    {
+        public static EventHandler SizeChanged;
+        public static event EventHandler KeyboardChanged;
+        public static ISoftKeyboard Current { get; private set; }
+        public static Size Size { get; private set; }
+
+        private static List<ISoftKeyboard> Keyboards = new List<ISoftKeyboard>();
+
+        public static void AddKeyboard(params ISoftKeyboard[] keyboards) => Keyboards.AddRange(keyboards);
+
+        public static void ClearKeyboards()
+        {
+            SwitchTo(null);
+            Keyboards = new List<ISoftKeyboard>();
+        }
+
+        public static void SwitchTo(int index) => SwitchTo(Keyboards[index]);
+
+        public static void SwitchTo(ISoftKeyboard keyboard)
+        {
+            if (keyboard == Current)
+            {
+                return;
+            }
+
+            if (Current != null)
+            {
+                Current.Disable();
+                Current.Typed -= Calculator.KeyboardManager.Type;
+                Current.OnscreenSizeChanged -= OnSizeChanged;
+            }
+
+            Current = keyboard;
+
+            if (Current != null)
+            {
+                Current.Typed += Calculator.KeyboardManager.Type;
+                Current.OnscreenSizeChanged += OnSizeChanged;
+                Current.Enable();
+            }
+
+            KeyboardChanged?.Invoke(Current, new EventArgs());
+            OnSizeChanged(Current, new EventArgs());
+        }
+
+        public static void NextKeyboard() => SwitchToRelative(1);
+        public static void PrevKeyboard() => SwitchToRelative(-1);
+
+        public static IEnumerable<ISoftKeyboard> Connected() => Keyboards;
+
+        private static void SwitchToRelative(int diff) => SwitchTo((Keyboards.IndexOf(Current) + diff) % Keyboards.Count);
+
+        private static void OnSizeChanged(object sender, EventArgs e)
+        {
+            //if (sender == Calculator.KeyboardManager.Current)// && !e.Value.Equals(Bounds.Size))
+            ISoftKeyboard softKeyboard = (ISoftKeyboard)sender;
+            if (softKeyboard.Size.Equals(Size))
+            {
+                return;
+            }
+
+            Size = softKeyboard.Size;
+            SizeChanged?.Invoke(sender, new EventArgs());
         }
     }
 }

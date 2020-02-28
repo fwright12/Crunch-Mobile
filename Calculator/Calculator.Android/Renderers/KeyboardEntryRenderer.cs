@@ -22,7 +22,10 @@ namespace Calculator.Droid
     {
         private bool ImplicitDismissal = false;
 
-        public KeyboardEntryRenderer(Context context) : base(context) { }
+        public KeyboardEntryRenderer(Context context) : base(context)
+        {
+            Xamarin.Forms.Application.Current.MainPage.SizeChanged += (sender, e) => (Element as SystemKeyboard.KeyboardEntry)?.OnOnscreenSizeChanged(new Size(Xamarin.Forms.Application.Current.MainPage.Width, 0));
+        }
 
         public override void ClearChildFocus(Android.Views.View child)
         {

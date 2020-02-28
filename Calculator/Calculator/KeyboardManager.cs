@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 
+using System.Extensions;
+
 namespace Calculator
 {
     public delegate void KeystrokeEventHandler(IEnumerable<char> keystrokes);
@@ -10,10 +12,7 @@ namespace Calculator
 
     public interface IKeyboard
     {
-        KeystrokeEventHandler Typed { get; set; }
-
-        void Enable();
-        void Disable();
+        event KeystrokeEventHandler Typed;
     }
 
     public static class KeyboardManager
@@ -27,18 +26,6 @@ namespace Calculator
 
         public static event OutputEventHandler Typed;
         public static event SpecialKeyEventHandler<CursorKey> CursorMoved;
-        public static event System.Extensions.StaticEventHandler<IKeyboard> KeyboardChanged;
-        public static IKeyboard Current { get; private set; }
-
-        private static List<IKeyboard> Keyboards = new List<IKeyboard>();
-
-
-        public static IEnumerable<IKeyboard> Connected() => Keyboards;
-        public static void ClearKeyboards()
-        {
-            SwitchTo(null);
-            Keyboards = new List<IKeyboard>();
-        }
 
         //public static void AddSource(KeystrokeEventHandler eventHandler) => eventHandler += (keystroke) => Type(keystroke);
 
@@ -53,38 +40,5 @@ namespace Calculator
         }
 
         public static void MoveCursor(CursorKey key) => CursorMoved?.Invoke(key);
-
-        public static void AddKeyboard(params IKeyboard[] keyboards) => Keyboards.AddRange(keyboards);
-
-        public static void SwitchTo(int index) => SwitchTo(Keyboards[index]);
-
-        public static void SwitchTo(IKeyboard keyboard)
-        {
-            if (keyboard == Current)
-            {
-                return;
-            }
-
-            if (Current != null)
-            {
-                Current.Disable();
-                Current.Typed -= Type;
-            }
-
-            Current = keyboard;
-
-            if (Current != null)
-            {
-                Current.Typed += Type;
-                Current.Enable();
-            }
-
-            KeyboardChanged?.Invoke(Current);
-        }
-
-        public static void NextKeyboard() => SelectRelative(1);
-        public static void PrevKeyboard() => SelectRelative(-1);
-
-        private static void SelectRelative(int diff) => SwitchTo((Keyboards.IndexOf(Current) + diff) % Keyboards.Count);
     }
 }
