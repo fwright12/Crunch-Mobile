@@ -179,7 +179,7 @@ namespace Calculator
                 NavigationPage.SetHasNavigationBar(Home, false);
                 TouchScreen.Instance = Home;
                 Home.Bind<bool>("Collapsed", value => CollapsedChanged(value));
-                
+
                 if (ShouldRunTutorial.Value)
                 {
                     RunTutorial();

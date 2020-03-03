@@ -72,7 +72,7 @@
             },
             "Xamarin.Google.iOS.MobileAds": {
               "target": "Package",
-              "version": "[7.38.0, )"
+              "version": "[7.47.0.1, )"
             }
           }
         }

@@ -34,6 +34,8 @@ namespace Calculator.iOS
             }*/
             //Control.InsetsContentViewsToSafeArea = false;
             e.NewElement.SetNativeImplementation(Scrollable.NativeScrollImplementationProperty, ScrollToRequest);
+            Control.InsetsContentViewsToSafeArea = false;
+            Control.InsetsLayoutMarginsFromSafeArea = false;
             //Scrollable.ScrollRequestProperty.ListenFor(ScrollToRequest, e.OldElement, e.NewElement);
 
             /*if (e.OldElement is FunctionsDrawer.ListView oldElement)
@@ -79,7 +81,7 @@ namespace Calculator.iOS
                 ShouldRecognizeSimultaneously = (a, b) =>
                 {
                     //Print.Log("should recognize", b.State);
-                    return true;// !Control.GestureRecognizers.Contains(b);
+                    return NativeScrollView.GestureRecognizers.Contains(b);
 
                     //return b != Control.PanGestureRecognizer;
                     //return !(a == touch && b == Control.PanGestureRecognizer);

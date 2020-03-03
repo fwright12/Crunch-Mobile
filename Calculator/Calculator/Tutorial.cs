@@ -300,7 +300,8 @@ namespace Calculator
                             back,
                             next,
                         },
-                        HorizontalOptions = LayoutOptions.Center
+                        HorizontalOptions = LayoutOptions.Center,
+                        Padding = new Thickness(0, 0, 0, Variables.ButtonSize)
                     }
                 }
             };

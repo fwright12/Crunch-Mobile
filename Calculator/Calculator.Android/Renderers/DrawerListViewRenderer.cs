@@ -47,7 +47,8 @@ namespace Calculator.Droid
 
         private void ScrollToRequest(ScrollToPositionRequestEventArgs e)
         {
-            Control.SmoothScrollToPosition(0);
+            //Control.SmoothScrollToPosition(0);
+            Control.SmoothScrollToPositionFromTop(0, 0);
         }
 
         public override bool DispatchTouchEvent(MotionEvent e)

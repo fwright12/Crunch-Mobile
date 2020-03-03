@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="2.4" package="com.GreenMountainLabs.Calculator" android:installLocation="preferExternal" android:versionCode="24">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="2.4.1" package="com.GreenMountainLabs.Calculator" android:installLocation="preferExternal" android:versionCode="25">
   <uses-sdk android:minSdkVersion="22" android:targetSdkVersion="29" />
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
   <uses-permission android:name="android.permission.INTERNET" />
@@ -15,6 +15,7 @@
         <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
     </activity>
+    <service android:name="crc64a98abb514ffad9f1.KeepAliveService" />
     <receiver android:enabled="true" android:exported="false" android:name="crc643f46942d9dd1fff9.PowerSaveModeBroadcastReceiver" />
     <provider android:name="mono.MonoRuntimeProvider" android:exported="false" android:initOrder="1999999999" android:authorities="com.GreenMountainLabs.Calculator.mono.MonoRuntimeProvider.__mono_init__" />
     <!--suppress ExportedReceiver-->

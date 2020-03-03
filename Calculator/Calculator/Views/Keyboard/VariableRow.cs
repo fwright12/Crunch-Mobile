@@ -15,7 +15,7 @@ namespace Calculator
     {
         public static readonly BindableProperty ButtonSizeProperty = BindableProperty.Create("ButtonSize", typeof(double), typeof(VariableRow));
 
-        public static readonly BindableProperty ExpandedProperty = BindableProperty.Create("Expanded", typeof(bool), typeof(VariableRow));
+        //public static readonly BindableProperty ExpandedProperty = BindableProperty.Create("Expanded", typeof(bool), typeof(VariableRow));
 
         public double ButtonSize
         {
@@ -33,7 +33,7 @@ namespace Calculator
 
         private readonly int RecentlyUsed = 10;
         private readonly uint NumRotations = 1;
-        private readonly double TransitionSpeed = 0.5;
+        private readonly uint TransitionLength = 750;
 
         private readonly StackLayout Variables;
         private readonly ScrollView Scroll;
@@ -82,6 +82,10 @@ namespace Calculator
                     })
                 }
             };
+            Variables.WhenPropertyChanged(HeightProperty, (sender, e) =>
+            {
+                Print.Log("\n\nheight changed");
+            });
 
             App.VariableRowExpanded.Bind<bool>(App.VariableRowExpanded.ValueProperty, value =>
             {
@@ -164,15 +168,15 @@ namespace Calculator
 
             // Get the rotation for the new Expanded value (which will be the opposite of what it is now)
             double rotation = GetExpandButtonRotation(!Expanded, Orientation);
-            ExpandButton.RotateTo(rotation, (uint)(Math.Abs(start - end) / TransitionSpeed), Easing.SinInOut);
+            ExpandButton.RotateTo(rotation, TransitionLength, Easing.SinInOut);
 
             if (end == 0)
             {
                 Expanded = false;
             }
-
+            
             BindableProperty dimensionRequest = horizontal ? WidthRequestProperty : HeightRequestProperty;
-            Bar.AnimateAtSpeed("Transition", dimensionRequest, start, end, 16, TransitionSpeed, Easing.SinInOut, (final, cancelled) =>
+            Bar.Animate("Transition", dimensionRequest, start, end, 16, TransitionLength, Easing.SinInOut, (final, cancelled) =>
             {
                 if (end > 0)
                 {

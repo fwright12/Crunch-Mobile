@@ -94,7 +94,8 @@ namespace Calculator
                     (delete = new Button
                     {
                         HorizontalOptions = LayoutOptions.EndAndExpand,
-                        Text = "Delete"
+                        Text = "Delete",
+                        FontSize = NamedSize.Body.On<Button>()
                     })
                 }
             });

@@ -219,6 +219,7 @@ namespace Calculator
             }
 
             Keypad.SetBinding<double, double>(WidthRequestProperty, Keypad, "Height", value => PaddedButtonsWidth(Keys[0].Length, ButtonWidth(value, Keys.Length)));
+            Keypad.WhenPropertyChanged(WidthProperty, (sender, e) => ResetScroll());
 
             Scroll.SizeChanged += (sender, e) =>
             {
@@ -242,17 +243,11 @@ namespace Calculator
             };
             SizeChanged += (sender, e) =>
             {
-                ResetScroll();
+                //ResetScroll();
                 //SoftKeyboardManager.SizeChangedHandler(this, new EventArgs<Size>(Bounds.Size));
             };
             App.Current.MainPage.SizeChanged += (sender, e) => ScreenSizeChanged();
-            //this.WhenPropertyChanged(PaddingProperty, (sender, e) => ScreenSizeChanged());
-            //ScreenSizeChanged();
-            App.Current.MainPage.Bind<Thickness>(Xamarin.Forms.PlatformConfiguration.iOSSpecific.Page.SafeAreaInsetsProperty, value =>
-            {
-                Print.Log("safe area is " + value.UsefulToString());
-                
-            });
+            App.ShowFullKeyboard.WhenPropertyChanged(App.ShowFullKeyboard.ValueProperty, (sender, e) => ScreenSizeChanged());
 
             this.Bind<StackOrientation>(OrientationProperty, value =>
             {
@@ -281,11 +276,7 @@ namespace Calculator
 
         public void SafeAreaChanged(Thickness value)
         {
-            SafeArea = new Thickness(
-                Math.Max(CrunchStyle.PAGE_PADDING, value.Left),
-                Math.Max(CrunchStyle.PAGE_PADDING, value.Top),
-                Math.Max(CrunchStyle.PAGE_PADDING, value.Right),
-                Math.Max(CrunchStyle.PAGE_PADDING, value.Bottom));
+            SafeArea = value;
             ScreenSizeChanged();
         }
 
@@ -299,14 +290,19 @@ namespace Calculator
             Size size = MeasureOnscreenSize(bounds.Width, bounds.Height);
 
             bool isCondensed = !FullSize.Equals(size);
-            base.Orientation = isCondensed ? CondensedOrientation : StackOrientation.Horizontal;
+            bool collapsed = size.Width == bounds.Width || size.Height == bounds.Height;
+            base.Orientation = collapsed ? CondensedOrientation : StackOrientation.Horizontal;
             IsCondensed = isCondensed;
 
             Print.Log("requesting " + size);
             this.SizeRequest(size);
-            Size = Orientation == StackOrientation.Horizontal ? new Size(size.Width + SafeArea.HorizontalThickness, size.Height + SafeArea.Bottom) : new Size(size.Width + SafeArea.Right, size.Height + SafeArea.VerticalThickness);
+            Size = !collapsed ? size : (Orientation == StackOrientation.Horizontal ? new Size(size.Width + SafeArea.HorizontalThickness, size.Height + SafeArea.Bottom) : new Size(size.Width + SafeArea.Right, size.Height + SafeArea.VerticalThickness));
+
             OnscreenSizeChanged?.Invoke(this, new EventArgs());
             //Print.Log("display size changed", App.Current.MainPage.Bounds.Size, size, Orientation);
+
+            DockButton.Text = collapsed ? "" : "\u25BD"; //white down-pointing triangle
+            DockButton.IsEnabled = !collapsed;
         }
 
         public Size MeasureOnscreenSize()
@@ -365,9 +361,9 @@ namespace Calculator
 
             if (propertyName.IsProperty(WidthProperty) || propertyName.IsProperty(HeightProperty))
             {
-                IsCondensed = !FullSize.Equals(Bounds.Size);
+                //IsCondensed = !FullSize.Equals(Bounds.Size);
                 //Orientation = Height >= Width ? StackOrientation.Horizontal : StackOrientation.Vertical;
-
+                
                 PermanentKeys.ColumnDefinitions = new ColumnDefinitionCollection();
                 PermanentKeys.RowDefinitions = new RowDefinitionCollection();
                 
@@ -382,9 +378,6 @@ namespace Calculator
                     buttonSize = Math.Max(0, ButtonWidth(Height - Padding.VerticalThickness, Keys.Length + 1));
                     PermanentKeys.RowDefinitions.Add(new RowDefinition { Height = buttonSize });
                 }
-
-                DockButton.Text = IsCondensed ? "" : "\u25BD"; //white down-pointing triangle
-                DockButton.IsEnabled = !IsCondensed;
             }
         }
 

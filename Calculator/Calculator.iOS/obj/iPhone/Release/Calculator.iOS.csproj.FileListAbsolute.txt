@@ -58,7 +58,6 @@ C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\o
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\obj\iPhone\Release\coremlc\_BundleResourceWithLogicalName.items
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\obj\iPhone\Release\optimized\
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\obj\iPhone\Release\Calculator.iOS.csprojAssemblyReference.cache
-C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\obj\iPhone\Release\XbdMerge\Google.MobileAds.dll.stamp
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\obj\iPhone\Release\App.xaml.g.cs
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\obj\iPhone\Release\XamlC.stamp
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\obj\iPhone\Release\Contents.json.ResolveUTIs.stamp
@@ -138,3 +137,7 @@ C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\b
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Release\Crunch.dll.mdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Release\Crunch.Machine.dll.mdb
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Release\Xamarin.Forms.MathDisplay.dll.mdb
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\obj\iPhone\Release\Calculator.iOS.csproj.CopyComplete
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\obj\iPhone\Release\Calculator.iOS.exe
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Release\Firebase.Core.dll
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\obj\iPhone\Release\CopyFilesToMac\Firebase.Core.dll.ReferenceCopyLocalPaths.stamp

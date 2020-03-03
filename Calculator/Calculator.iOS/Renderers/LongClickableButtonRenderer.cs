@@ -26,7 +26,7 @@ namespace Calculator.iOS
 
             UILongPressGestureRecognizer longPress = new UILongPressGestureRecognizer
             {
-                //CancelsTouchesInView = false,
+                
             };
             longPress.AddTarget(() =>
             {

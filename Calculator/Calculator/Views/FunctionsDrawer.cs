@@ -167,6 +167,7 @@ namespace Calculator
         public readonly EditListView FunctionsList;
         public readonly View Keyboard;
         private readonly AddFunction AddFunctionLayout;
+        private readonly View Drawer;
 
         private readonly AnyVisualState ClosedState;
         private readonly List<double> OpenValues;
@@ -176,12 +177,12 @@ namespace Calculator
         private string Filename => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), SAVED_FUNCTIONS_FILE_NAME);
         private int IndexForFunction;
 
-        public double MaxDrawerHeight
+        /*public double MaxDrawerHeight
         {
             get
             {
                 MainPage parent = this.Parent<MainPage>();
-                double availableHeight = parent.Height;
+                double availableHeight = parent.Height - Padding.VerticalThickness;// - Margin.VerticalThickness;
 
                 if (parent.DisplayMode == MainPage.Display.CondensedPortrait)
                 {
@@ -215,20 +216,20 @@ namespace Calculator
             }
         }
 
-        public double MinDrawerHeight => SoftKeyboardManager.Current == SystemKeyboard.Instance ? Keyboard.Height : (SoftKeyboardManager.Size.Height + (Keyboard is StackLayout stackLayout && stackLayout.Orientation == StackOrientation.Vertical ? 33 : 0));
-        private double BottomPadding;
-        public void SetBottomPadding(double value)
-        {
-            BottomPadding = value;
-            SnapKeyboard();
-        }
+        public double MinDrawerHeight => (SoftKeyboardManager.Current == SystemKeyboard.Instance ? 0 : SoftKeyboardManager.Size.Height) + (Keyboard is StackLayout stackLayout && stackLayout.Orientation == StackOrientation.Vertical ? 33 : 0);*/
 
         public FunctionsDrawer(View keyboard, AddFunction addFunctionLayout)
         {
+            Heights = new Dictionary<bool, double>
+            {
+                { true, Height },
+                { false, -1 }
+            };
+            Drawer = this;
             Keyboard = keyboard;
             AddFunctionLayout = addFunctionLayout;
 
-            ActionableListView listView = null;
+            ActionableListView listView;
             Label noFunctions;
             BoxView cover = null;
 
@@ -239,7 +240,7 @@ namespace Calculator
                     new AnySetter { Action = value => CornerRadius = (float)(dynamic)value, Value = 0 },
                     new AnySetter<double> { Action = value => BackgroundColor = new Color(255, 255, 255, value), Value = 0 },
                     new AnySetter<double> { Action = value => cover.Opacity = value, Value = 1 },
-                    new AnySetter<double> { Action = value => (listView.Header as View).Margin = new Thickness(0, value, 0, 0), Value = 0 },
+                    new AnySetter<double> { Action = value => Keyboard.Margin = new Thickness(0, value, 0, 0), Value = 0 },
                 }
             };
             OpenValues = new List<double> { 20, 1, 0, 20 };
@@ -279,71 +280,66 @@ namespace Calculator
                     Functions.Add(function);
                 }
             }
-            
-            Content = new StackLayout
+
+            Content = new AbsoluteLayout
             {
-                Orientation = StackOrientation.Vertical,
                 Children =
                 {
-                    new AbsoluteLayout
                     {
-                        Children =
+                        (FunctionsList = listView = new ListView
                         {
+                            BackgroundColor = Color.Transparent,
+                            ItemsSource = Functions,
+                            ItemTemplate = new DataTemplate(() =>
                             {
-                                (FunctionsList = listView = new ListView
+                                EditCell cell = new EditCell();
+                                cell.SetBinding<View, string>(EditCell.ViewProperty, "String", MakeExpression);
+                                return cell;
+                            }),
+                            ContextActions =
+                            {
+                                new MenuItemTemplate(() => new MenuItem
                                 {
-                                    BackgroundColor = Color.Transparent,
-                                    ItemsSource = Functions,
-                                    ItemTemplate = new DataTemplate(() =>
-                                    {
-                                        EditCell cell = new EditCell();
-                                        cell.SetBinding<View, string>(EditCell.ViewProperty, "String", MakeExpression);
-                                        return cell;
-                                    }),
-                                    ContextActions =
-                                    {
-                                        new MenuItemTemplate(() => new MenuItem
-                                        {
-                                            Text = "Delete",
-                                            IsDestructive = true,
-                                        }),
-                                        new MenuItemTemplate(() => new MenuItem
-                                        {
-                                            Text = "Edit",
-                                        })
-                                    },
-                                    SelectionMode = ListViewSelectionMode.None,
-                                    IsPullToRefreshEnabled = false,
-                                    HasUnevenRows = true,
-                                    Header = Keyboard,
+                                    Text = "Delete",
+                                    IsDestructive = true,
                                 }),
-                                new Rectangle(0, 0, 1, -1),
-                                AbsoluteLayoutFlags.WidthProportional
+                                new MenuItemTemplate(() => new MenuItem
+                                {
+                                    Text = "Edit",
+                                })
                             },
-                            {
-                                (cover = new BoxView
-                                {
-                                    BackgroundColor = CrunchStyle.BACKGROUND_COLOR,
-                                    InputTransparent = true
-                                }),
-                                new Rectangle(0.5, 1, 1, -1),
-                                AbsoluteLayoutFlags.PositionProportional | AbsoluteLayoutFlags.WidthProportional
-                            }
-                        }
+                            SelectionMode = ListViewSelectionMode.None,
+                            IsPullToRefreshEnabled = false,
+                            HasUnevenRows = true,
+                            Header = Keyboard,
+                        }),
+                        new Rectangle(0, 0, 1, 1),
+                        AbsoluteLayoutFlags.SizeProportional
+                    },
+                    {
+                        (cover = new BoxView
+                        {
+                            BackgroundColor = CrunchStyle.BACKGROUND_COLOR,
+                            InputTransparent = true
+                        }),
+                        new Rectangle(0.5, 1, 1, -1),
+                        AbsoluteLayoutFlags.PositionProportional | AbsoluteLayoutFlags.WidthProportional
                     }
                 }
             };
-            
-            FunctionsList.ListView.GetSwipeListener().Drawer = FunctionsList;
+            //Drawer = FunctionsList.Parent<View>();
+            //FunctionsList.WhenPropertyChanged(PaddingProperty, (sender, e) => Print.Log("\n\npadding changed"));
+            //FunctionsList.WhenPropertyChanged(MarginProperty, (sender, e) => Print.Log("\n\nmargin changed"));
+            FunctionsList.ListView.GetSwipeListener().Drawer = Drawer;
 
-            //Keyboard.Bind<double>(HeightProperty, value => SnapKeyboard());
+            /*void SetMinDrawerHeight() => SetDrawerHeight(true, SoftKeyboardManager.Size.Height + 33);// + FunctionsList.EditingToolbar.Padding.Bottom);
+            //FunctionsList.EditingToolbar.WhenPropertyChanged(PaddingProperty, (sender, e) => SetMinDrawerHeight());
+            //Keyboard.Bind<double>(HeightProperty, value => SetMinDrawerHeight());
+
             SoftKeyboardManager.SizeChanged += (sender, e) =>
             {
-                if (sender != SystemKeyboard.Instance)
-                {
-                    SnapKeyboard();
-                }
-            };
+                SetDrawerHeight(true, SoftKeyboardManager.Size.Height + (Keyboard is StackLayout stackLayout && stackLayout.Orientation == StackOrientation.Vertical ? 43 : 0));
+            };*/
 
             AddFunctionLayout.ConfirmAdd.Clicked += (sender, e) =>
             {
@@ -365,10 +361,10 @@ namespace Calculator
                 HorizontalTextAlignment = TextAlignment.Center,
                 FontSize = NamedSize.Large.On<Label>(),
             };
-            Functions.CollectionChanged += (sender, e) =>
+            /*Functions.CollectionChanged += (sender, e) =>
             {
-                //FunctionsList.ListView.Footer = Functions.Count == 0 ? noFunctions : null;
-            };
+                FunctionsList.ListView.Footer = Functions.Count == 0 ? noFunctions : null;
+            };*/
             //FunctionsList.ListView.Footer = Functions.Count == 0 ? noFunctions : null;
             /*FunctionsList.ListView.Footer = new Label
             {
@@ -376,6 +372,7 @@ namespace Calculator
                 HorizontalTextAlignment = TextAlignment.Center
             };*/
             //noFunctions.SetBinding<bool, int>(IsVisibleProperty, Functions, "Count", value => value == 0);
+            FunctionsList.ListView.SetBinding<View, int>(Xamarin.Forms.ListView.FooterProperty, Functions, "Count", value => value == 0 ? noFunctions : null);
 
             Functions.CollectionChanged += (sender, e) =>
             {
@@ -409,7 +406,7 @@ namespace Calculator
             };
             //FunctionsList.AddSnapPoint(Keyboard);
 
-            FunctionsList.Bind<double>(HeightProperty, value =>
+            Drawer.Bind<double>(HeightProperty, value =>
             {
                 if (Parent == null)
                 {
@@ -422,29 +419,103 @@ namespace Calculator
                 //Print.Log("height changed", Height, FunctionsList.Height, Keyboard.Height, percent);
                 percent = percent.Bound(0, 1);
 
-                cover.HeightRequest = value - Keyboard.Height;
                 Transition(percent);
+
+                if (value == start)
+                {
+                    SetStatus(Closed = true);
+                }
+                else if (value == end)
+                {
+                    SetStatus(Closed = false);
+                }
             });
 
+            //LayoutChanged += (sender, e) => cover.HeightRequest = Height - Padding.VerticalThickness - Keyboard.Height - Keyboard.Margin.VerticalThickness;
+            LayoutChanged += (sender, e) => cover.HeightRequest = Content.Height - Keyboard.Height - Keyboard.Margin.VerticalThickness;
+
+            /*double LastAddFunctionLayoutHeight = 0;
+            this.Bind<double>(HeightProperty, value =>
+            {
+                double height = AddFunctionLayout.Height * AddFunctionLayout.IsVisible.ToInt();
+                if (LastAddFunctionLayoutHeight != height)
+                {
+                    Print.Log("\n\n\nsetting to " + (MinDrawerHeight - LastAddFunctionLayoutHeight + height));
+                    SetDrawerHeight(true, MinDrawerHeight - LastAddFunctionLayoutHeight + height);
+                }
+
+                LastAddFunctionLayoutHeight = height;
+            });*/
+
+            /*void AccountForExtraHeight()
+            {
+                double value = Padding.VerticalThickness + (AddFunctionLayout.IsVisible && AddFunctionLayout.IsDescendantOf(this) ? AddFunctionLayout.Height : 0);
+
+                if (value != LastExtraHeight)
+                {
+                    //SetDrawerHeight(false, MaxDrawerHeight + LastExtraHeight - (LastExtraHeight = value));
+                }
+            }*/
+            //this.WhenPropertyChanged(HeightProperty, (sender, e) => AccountForExtraHeight());
+            //this.WhenPropertyChanged(PaddingProperty, (sender, e) => AccountForExtraHeight());
+            //AddFunctionLayout.WhenPropertyChanged(IsVisibleProperty, (sender, e) => AccountForExtraHeight());
+            //AddFunctionLayout.Bind<double>(HeightProperty, value => AccountForExtraHeight());
+
+            /*this.Bind<double>(HeightProperty, value =>
+            {
+                Print.Log("here", LastFunctionsListHeight, Height, FunctionsList.Height, AddFunctionLayout.IsVisible);
+
+                value -= FunctionsList.Height;
+
+                if (LastFunctionsListHeight != FunctionsList.Height)
+                {
+                    LastFunctionsListHeight = FunctionsList.Height;
+                }
+                else if (value != LastExtraHeight)
+                {
+                    //bool isSettingCurrentHeight = Height == Heights[false];
+                    Print.Log("extra height is " + MaxDrawerHeight, LastExtraHeight, value);
+                    SetDrawerHeight(false, MaxDrawerHeight - LastExtraHeight + value);
+                }
+
+                LastExtraHeight = value;
+            });*/
             //Content.SetBinding<Color, bool>(BackgroundColorProperty, AddFunctionLayout, "IsVisible", value => value ? Color.White : Color.Transparent);
 
             //FunctionsList.SnapTo(keyboard);
+            SetStatus(true);
         }
 
-        public void ChangeStatus()
+        private bool Closed = true;
+
+        public void ChangeStatus() => SetStatus(!Closed);
+
+        public void SetStatus(bool closed)
         {
-            if (FunctionsList.HeightRequest >= MaxDrawerHeight)
+            if (closed)
             {
                 FunctionsList.ListView.ScrollToPosition(0, 0, true);
-                SnapKeyboard();
             }
-            else
-            {
-                FunctionsList.SnapTo(MaxDrawerHeight, TransitionSpeed);
-            }
+
+            Drawer.SnapTo(Heights[closed], TransitionSpeed);
         }
 
-        private void SnapKeyboard() => FunctionsList.SnapTo(MinDrawerHeight, TransitionSpeed);
+        public double MinDrawerHeight => Heights[true];
+        public double MaxDrawerHeight => Heights[false];
+
+        private Dictionary<bool, double> Heights;
+
+        public void SetDrawerHeight(bool closed, double value)
+        {
+            //Print.Log("n\n\nsetting drawer height", Height, Heights[closed]);
+            //bool isSettingCurrentHeight = Height == Heights[closed];
+            Heights[closed] = value;
+
+            if (Closed == closed)
+            {
+                SetStatus(Closed);
+            }
+        }
 
         private void EditFunctionAt(int index = -1)
         {
@@ -512,8 +583,8 @@ namespace Calculator
                             }
                         };
 
-            #else
-                        LongClickGestureRecognizer lgr = new LongClickGestureRecognizer();
+#else
+            LongClickGestureRecognizer lgr = new LongClickGestureRecognizer();
                         lgr.LongClick += DragFunction;
                         expression.AddGestureRecognizer(lgr);
             #endif*/
@@ -569,12 +640,6 @@ namespace Calculator
             answer.NumberChoice = Crunch.Numbers.Exact;
             SoftKeyboard.Type(function);
             KeyboardManager.MoveCursor(KeyboardManager.CursorKey.Down);
-        }
-
-        protected override void OnParentSet()
-        {
-            base.OnParentSet();
-            FunctionsList.AddSnapPoint(MaxDrawerHeight);
         }
     }
 }

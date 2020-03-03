@@ -35,11 +35,18 @@ namespace Calculator.iOS
                     Control.EndEditing(true);
                 }
             });
-
-            UIKeyboard.Notifications.ObserveDidShow((sender, e) =>
+            UIKeyboard.Notifications.ObserveDidChangeFrame((sender, e) =>
             {
                 CoreGraphics.CGRect rect = UIKeyboard.FrameEndFromNotification(e.Notification);
+                //Print.Log("keyboard size changed", rect);
+                if (rect.Width != Xamarin.Forms.Application.Current.MainPage.Width)
+                {
+                    rect = new CoreGraphics.CGRect(0, 0, Xamarin.Forms.Application.Current.MainPage.Width, 0);
+                }
                 (Element as SystemKeyboard.KeyboardEntry)?.OnOnscreenSizeChanged(new Size(rect.Width, rect.Height));
+            });
+            UIKeyboard.Notifications.ObserveDidShow((sender, e) =>
+            {
                 //AdjustResize(UIKeyboard.FrameEndFromNotification(e.Notification).Height);
             });
         }

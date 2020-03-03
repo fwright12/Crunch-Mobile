@@ -144,7 +144,11 @@ namespace Xamarin.Forms
             }
 
             KeyboardChanged?.Invoke(Current, new EventArgs());
-            OnSizeChanged(Current, new EventArgs());
+
+            if (Current != null)
+            {
+                OnSizeChanged(Current, new EventArgs());
+            }
         }
 
         public static void NextKeyboard() => SwitchToRelative(1);

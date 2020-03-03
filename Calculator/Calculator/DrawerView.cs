@@ -92,15 +92,17 @@ namespace Calculator
 
                         if (distance > 0 || (distance == 0 && Math.Abs(Drawer.Height - parent.MaxDrawerHeight) < Math.Abs(Drawer.Height - parent.Keyboard.Height)))
                         {
-                            Drawer.SnapTo(parent.MaxDrawerHeight, speed);
+                            parent.SetStatus(false);
+                            //Drawer.SnapTo(parent.MaxDrawerHeight, speed);
                         }
                         else
                         {
-                            Drawer.SnapTo(parent.MinDrawerHeight, speed);
+                            parent.SetStatus(true);
+                            //Drawer.SnapTo(parent.MinDrawerHeight, speed);
                         }
                     }
                 }
-
+                
                 ShouldScroll = Drawer.Height == parent.MaxDrawerHeight && LastScrollY >= 0;
 
                 return !ShouldScroll;
