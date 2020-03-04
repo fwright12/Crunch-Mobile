@@ -142,12 +142,6 @@ namespace Calculator
 
     public class FunctionsDrawer : Frame
 	{
-        public enum State
-        {
-            Open,
-            Closed
-        };
-
         public class ListView : ActionableListView
         {
             public bool ContextActionsShowing = false;
@@ -162,7 +156,7 @@ namespace Calculator
         }
 
         public AbsoluteLayout DropArea { get; set; }
-        public double TransitionSpeed = 0.75;// 2 / 3.0;
+        public double TransitionSpeed = 0.75;
 
         public readonly EditListView FunctionsList;
         public readonly View Keyboard;
@@ -176,47 +170,6 @@ namespace Calculator
         private ObservableCollection<FunctionViewModel> Functions;
         private string Filename => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), SAVED_FUNCTIONS_FILE_NAME);
         private int IndexForFunction;
-
-        /*public double MaxDrawerHeight
-        {
-            get
-            {
-                MainPage parent = this.Parent<MainPage>();
-                double availableHeight = parent.Height - Padding.VerticalThickness;// - Margin.VerticalThickness;
-
-                if (parent.DisplayMode == MainPage.Display.CondensedPortrait)
-                {
-                    availableHeight -= 50 + CrunchStyle.PAGE_PADDING * 2;
-                }
-                else if (parent.DisplayMode == MainPage.Display.Expanded)
-                {
-                    availableHeight = Math.Min(availableHeight * 0.9, Keyboard.Height * 2);
-                }
-
-                if (AddFunctionLayout.IsVisible && parent.DisplayMode != MainPage.Display.CondensedLandscape)
-                {
-                    availableHeight -= Math.Max(0, AddFunctionLayout.Height);
-                }
-
-                return availableHeight;
-
-                if (availableHeight <= Keyboard.Height)
-                {
-                    return availableHeight;
-                }
-                else
-                {
-                    if (AddFunctionLayout.IsVisible)
-                    {
-                        availableHeight -= Math.Max(0, AddFunctionLayout.Height);
-                    }
-                    availableHeight *= 0.9;
-                    return App.Current.Home.Collapsed ? availableHeight : Math.Min(availableHeight, Keyboard.Height * 2);
-                }
-            }
-        }
-
-        public double MinDrawerHeight => (SoftKeyboardManager.Current == SystemKeyboard.Instance ? 0 : SoftKeyboardManager.Size.Height) + (Keyboard is StackLayout stackLayout && stackLayout.Orientation == StackOrientation.Vertical ? 33 : 0);*/
 
         public FunctionsDrawer(View keyboard, AddFunction addFunctionLayout)
         {
@@ -327,19 +280,8 @@ namespace Calculator
                     }
                 }
             };
-            //Drawer = FunctionsList.Parent<View>();
-            //FunctionsList.WhenPropertyChanged(PaddingProperty, (sender, e) => Print.Log("\n\npadding changed"));
-            //FunctionsList.WhenPropertyChanged(MarginProperty, (sender, e) => Print.Log("\n\nmargin changed"));
+
             FunctionsList.ListView.GetSwipeListener().Drawer = Drawer;
-
-            /*void SetMinDrawerHeight() => SetDrawerHeight(true, SoftKeyboardManager.Size.Height + 33);// + FunctionsList.EditingToolbar.Padding.Bottom);
-            //FunctionsList.EditingToolbar.WhenPropertyChanged(PaddingProperty, (sender, e) => SetMinDrawerHeight());
-            //Keyboard.Bind<double>(HeightProperty, value => SetMinDrawerHeight());
-
-            SoftKeyboardManager.SizeChanged += (sender, e) =>
-            {
-                SetDrawerHeight(true, SoftKeyboardManager.Size.Height + (Keyboard is StackLayout stackLayout && stackLayout.Orientation == StackOrientation.Vertical ? 43 : 0));
-            };*/
 
             AddFunctionLayout.ConfirmAdd.Clicked += (sender, e) =>
             {
@@ -361,17 +303,6 @@ namespace Calculator
                 HorizontalTextAlignment = TextAlignment.Center,
                 FontSize = NamedSize.Large.On<Label>(),
             };
-            /*Functions.CollectionChanged += (sender, e) =>
-            {
-                FunctionsList.ListView.Footer = Functions.Count == 0 ? noFunctions : null;
-            };*/
-            //FunctionsList.ListView.Footer = Functions.Count == 0 ? noFunctions : null;
-            /*FunctionsList.ListView.Footer = new Label
-            {
-                Text = "test",
-                HorizontalTextAlignment = TextAlignment.Center
-            };*/
-            //noFunctions.SetBinding<bool, int>(IsVisibleProperty, Functions, "Count", value => value == 0);
             FunctionsList.ListView.SetBinding<View, int>(Xamarin.Forms.ListView.FooterProperty, Functions, "Count", value => value == 0 ? noFunctions : null);
 
             Functions.CollectionChanged += (sender, e) =>
@@ -404,7 +335,6 @@ namespace Calculator
                     EditFunctionAt(Functions.IndexOf((FunctionViewModel)sender));
                 }
             };
-            //FunctionsList.AddSnapPoint(Keyboard);
 
             Drawer.Bind<double>(HeightProperty, value =>
             {
@@ -431,58 +361,8 @@ namespace Calculator
                 }
             });
 
-            //LayoutChanged += (sender, e) => cover.HeightRequest = Height - Padding.VerticalThickness - Keyboard.Height - Keyboard.Margin.VerticalThickness;
             LayoutChanged += (sender, e) => cover.HeightRequest = Content.Height - Keyboard.Height - Keyboard.Margin.VerticalThickness;
 
-            /*double LastAddFunctionLayoutHeight = 0;
-            this.Bind<double>(HeightProperty, value =>
-            {
-                double height = AddFunctionLayout.Height * AddFunctionLayout.IsVisible.ToInt();
-                if (LastAddFunctionLayoutHeight != height)
-                {
-                    Print.Log("\n\n\nsetting to " + (MinDrawerHeight - LastAddFunctionLayoutHeight + height));
-                    SetDrawerHeight(true, MinDrawerHeight - LastAddFunctionLayoutHeight + height);
-                }
-
-                LastAddFunctionLayoutHeight = height;
-            });*/
-
-            /*void AccountForExtraHeight()
-            {
-                double value = Padding.VerticalThickness + (AddFunctionLayout.IsVisible && AddFunctionLayout.IsDescendantOf(this) ? AddFunctionLayout.Height : 0);
-
-                if (value != LastExtraHeight)
-                {
-                    //SetDrawerHeight(false, MaxDrawerHeight + LastExtraHeight - (LastExtraHeight = value));
-                }
-            }*/
-            //this.WhenPropertyChanged(HeightProperty, (sender, e) => AccountForExtraHeight());
-            //this.WhenPropertyChanged(PaddingProperty, (sender, e) => AccountForExtraHeight());
-            //AddFunctionLayout.WhenPropertyChanged(IsVisibleProperty, (sender, e) => AccountForExtraHeight());
-            //AddFunctionLayout.Bind<double>(HeightProperty, value => AccountForExtraHeight());
-
-            /*this.Bind<double>(HeightProperty, value =>
-            {
-                Print.Log("here", LastFunctionsListHeight, Height, FunctionsList.Height, AddFunctionLayout.IsVisible);
-
-                value -= FunctionsList.Height;
-
-                if (LastFunctionsListHeight != FunctionsList.Height)
-                {
-                    LastFunctionsListHeight = FunctionsList.Height;
-                }
-                else if (value != LastExtraHeight)
-                {
-                    //bool isSettingCurrentHeight = Height == Heights[false];
-                    Print.Log("extra height is " + MaxDrawerHeight, LastExtraHeight, value);
-                    SetDrawerHeight(false, MaxDrawerHeight - LastExtraHeight + value);
-                }
-
-                LastExtraHeight = value;
-            });*/
-            //Content.SetBinding<Color, bool>(BackgroundColorProperty, AddFunctionLayout, "IsVisible", value => value ? Color.White : Color.Transparent);
-
-            //FunctionsList.SnapTo(keyboard);
             SetStatus(true);
         }
 
@@ -507,8 +387,6 @@ namespace Calculator
 
         public void SetDrawerHeight(bool closed, double value)
         {
-            //Print.Log("n\n\nsetting drawer height", Height, Heights[closed]);
-            //bool isSettingCurrentHeight = Height == Heights[closed];
             Heights[closed] = value;
 
             if (Closed == closed)
@@ -533,11 +411,6 @@ namespace Calculator
 
                 setter.Action(value1 + percent * (value2 - value1));
             }
-
-            /*if (AddStackLayout.IsVisible)
-            {
-                (FunctionsList.ListView.Header as View).Margin = new Thickness(0);
-            }*/
 
             if (percent != 1)
             {

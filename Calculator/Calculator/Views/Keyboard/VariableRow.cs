@@ -33,7 +33,7 @@ namespace Calculator
 
         private readonly int RecentlyUsed = 10;
         private readonly uint NumRotations = 1;
-        private readonly uint TransitionLength = 750;
+        private readonly uint TransitionLength = 1000;
 
         private readonly StackLayout Variables;
         private readonly ScrollView Scroll;
@@ -82,10 +82,6 @@ namespace Calculator
                     })
                 }
             };
-            Variables.WhenPropertyChanged(HeightProperty, (sender, e) =>
-            {
-                Print.Log("\n\nheight changed");
-            });
 
             App.VariableRowExpanded.Bind<bool>(App.VariableRowExpanded.ValueProperty, value =>
             {

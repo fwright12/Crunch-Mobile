@@ -19,23 +19,14 @@ namespace Calculator
     //Radical - right half is about 1/2 of horizontal, bottom left takes up about 1/2 of vertical, thickness is 0.1, horizontal bar is about 1/3 of horizontal
 
     /* TODO:
-     * v2.4.1
-     * Fix ios safe area issues
-     * Show full keyboard broken (binding needs to be re-done)
-     * Adjust keyboard mask
-     * Fix drag operations
-     * Put back footer for functions drawer
-     * Add new function view on tablet
-     * Variable row scrolling in wrong direction? (ios only)
-     * Tablet dock keyboard and tap link off
+     * v2.4.2
+     * Keyboard paging
+     * Crash on rotation from landscape to portrait from settings page
+     * Converted show tips dialog to xaml
      * 
      * Make calculations touch transparent
      * Android Button Touch renderer long press problems
      * Make TouchInterface use variant eventhandler
-     * 
-     * v2.4.2
-     * Keyboard paging
-     * Crash on rotation from landscape to portrait from settings page
      * 
      * v3.0
      * Makeover - color scheme, better icons
@@ -72,67 +63,6 @@ namespace Calculator
 
     public delegate void FocusChangedEventHandler(Calculation oldFocus, Calculation newFocus);
     public delegate void RenderedEventHandler();
-
-#if DEBUG
-    public class AbsoluteLayoutMeasureProblemsDemo : ContentPage
-    {
-        public AbsoluteLayoutMeasureProblemsDemo()
-        {
-            AbsoluteLayout a = new AbsoluteLayout
-            {
-                BackgroundColor = Color.LightBlue
-            };
-            Content = a;
-
-            Xamarin.Forms.Slider widthSlider;
-            Xamarin.Forms.Slider heightSlider;
-
-            a.Children.Add(new StackLayout
-            {
-                Orientation = StackOrientation.Vertical,
-                Children =
-                {
-                    (widthSlider = new Slider
-                    {
-                        Maximum = 1000,
-                        Minimum = 0,
-                        Value = 300,
-                    }),
-                    (heightSlider = new Slider
-                    {
-                        Maximum = 1000,
-                        Minimum = 0,
-                        Value = 300,
-                    })
-                },
-                BackgroundColor = Color.Red,
-                WidthRequest = 300,
-                HeightRequest = 50
-            }, new Rectangle(0.5, 0.5, -1, -1), AbsoluteLayoutFlags.PositionProportional);
-
-            StackLayout s = new StackLayout
-            {
-                Orientation = StackOrientation.Vertical,
-                Children =
-                {
-                    new Button { Text = "hi", VerticalOptions = LayoutOptions.Start, HorizontalOptions = LayoutOptions.Start },
-                    new Button { Text = "hi", VerticalOptions = LayoutOptions.Start, HorizontalOptions = LayoutOptions.Start }
-                },
-                BackgroundColor = Color.Purple
-            };
-            a.Children.Add(s);
-
-            widthSlider.ValueChanged += (sender, e) =>
-            {
-                AbsoluteLayout.SetLayoutBounds(s, new Rectangle(0, 0, -1, e.NewValue));
-            };
-            heightSlider.ValueChanged += (sender, e) =>
-            {
-                AbsoluteLayout.SetLayoutBounds(s, new Rectangle(0, 0, e.NewValue, -1));
-            };
-        }
-    }
-#endif
 
     public class MainPage : ContentPage
     {
@@ -249,7 +179,6 @@ namespace Calculator
             canvas.Children.Add(new Expression(Render.Math("log_-9(4)")), new Point(200, 200));
             canvas.Children.Add(new Expression(Render.Math("log_-9-4")), new Point(300, 300));*/
 
-            //AbsoluteLayout maskedKeys;
             CrunchKeyboard = new CrunchKeyboard();
 
             Variables = new VariableRow
@@ -266,23 +195,9 @@ namespace Calculator
                 {
                     Variables,
                     CrunchKeyboard
-                    /*new OnScreenKeyboard(CrunchKeyboard)
-                    {
-                        BackgroundColor = Color.Red
-                    }*/
                 }
             };
             KeyboardAndVariables.SetBinding(StackLayout.OrientationProperty, this, "Orientation");
-            
-            /*CrunchKeyboard.PropertyChanged += (sender, e) =>
-            {
-                if (CrunchKeyboard.Width <= 0 || CrunchKeyboard.Height <= 0)
-                    return;
-                if (e.PropertyName == WidthProperty.PropertyName || e.PropertyName == HeightProperty.PropertyName || e.PropertyName == PaddingProperty.PropertyName)
-                {
-                    CrunchKeyboard.Parent<View>().SizeRequest(CrunchKeyboard.Width - CrunchKeyboard.Padding.HorizontalThickness, CrunchKeyboard.Height - CrunchKeyboard.Padding.VerticalThickness);
-                }
-            };*/
 
             KeyboardMask = new AbsoluteLayout
             {
@@ -300,13 +215,6 @@ namespace Calculator
                 {
                     KeyboardMask.Remove();
                 }
-            });
-
-            App.ShowFullKeyboard.WhenPropertyChanged(App.ShowFullKeyboard.ValueProperty, (sender, e) =>
-            //Settings.KeyboardChanged += (e) =>
-            {
-                //CrunchKeyboard.Invalidate();
-                //ResizeKeyboard();
             });
             
             Screen.Children.Add(FullKeyboardView = FunctionsDrawerSetup());
@@ -345,8 +253,6 @@ namespace Calculator
                 CrunchKeyboard.SafeAreaChanged(SafeAreaInsets);
                 AdjustPadding();
                 SetCanvasSafeArea();
-
-                //FunctionsDrawer.SetDrawerHeight(false, Height - value.Top - (Height >= Width ? SettingsButtonSize + CrunchStyle.PAGE_PADDING : 0));
             });
             this.WhenPropertyChanged(DisplayModeProperty, (sender, e) =>
             {
@@ -376,11 +282,6 @@ namespace Calculator
             SoftKeyboardManager.SwitchTo(CrunchKeyboard);
             
             SettingsMenuSetUp();
-            
-            /*Variables.Bind<double>(WidthProperty, value =>
-            {
-                FunctionsMenuButton.Margin = new Thickness(0, 0, Orientation == StackOrientation.Vertical ? value : 0, 0);
-            });*/
 
             CanvasScroll.Scrolled += AdjustKeyboardPosition;
             //CanvasScroll.Scrolled += AdjustKeyboard;
@@ -443,11 +344,7 @@ namespace Calculator
             KeyboardAndVariables.SetBinding<Color, StackOrientation>(BackgroundColorProperty, CrunchKeyboard, "Orientation", value => value == StackOrientation.Horizontal ? Color.Transparent : CrunchStyle.BACKGROUND_COLOR);
 
             ContentView portraitAddFunctionLayout = new ContentView();
-            //portraitAddFunctionLayout.SetBinding(IsVisibleProperty, addFunctionLayout, "IsVisible");
             portraitAddFunctionLayout.SetBinding<View, Display>(ContentView.ContentProperty, this, "DisplayMode", value => value == Display.Expanded ? addFunctionLayout : null);
-            //portraitAddFunctionLayout.SetBinding<View, StackOrientation>(ContentView.ContentProperty, CrunchKeyboard, "Orientation", value => value == StackOrientation.Horizontal ? addFunctionLayout : null);
-            //(FunctionsDrawer.Content as StackLayout)?.Children.Insert(0, portraitAddFunctionLayout);
-            //CanvasArea.Children.Add(portraitAddFunctionLayout, new Rectangle(0.5, 1, 1, -1), AbsoluteLayoutFlags.PositionProportional | AbsoluteLayoutFlags.WidthProportional);
 
             ContentView landscapeAddFunctionLayout = new ContentView();
             void SetVisible()
@@ -455,14 +352,11 @@ namespace Calculator
                 portraitAddFunctionLayout.IsVisible = addFunctionLayout.IsVisible && DisplayMode == Display.Expanded;
                 landscapeAddFunctionLayout.IsVisible = addFunctionLayout.IsVisible && DisplayMode != Display.Expanded;
             }
-            //landscapeAddFunctionLayout.SetBinding(IsVisibleProperty, addFunctionLayout, "IsVisible");
-            //landscapeAddFunctionLayout.SetBinding<View, StackOrientation>(ContentView.ContentProperty, CrunchKeyboard, "Orientation", value => value == StackOrientation.Horizontal ? null : addFunctionLayout);
             CanvasArea.Children.Add(landscapeAddFunctionLayout, new Rectangle(0.5, 0.5, 1, -1), AbsoluteLayoutFlags.PositionProportional | AbsoluteLayoutFlags.WidthProportional);
             this.Bind<Display>(DisplayModeProperty, value =>
             {
                 landscapeAddFunctionLayout.Margin = value == Display.CondensedPortrait ? new Thickness(0, 0, 0, Variables.ButtonSize) : new Thickness(0);
                 landscapeAddFunctionLayout.Content = value == Display.Expanded ? null : addFunctionLayout;
-                //landscapeAddFunctionLayout.IsVisible = value != Display.Expanded;
                 SetVisible();
 
                 AbsoluteLayoutExtensions.SetLayoutLocation(landscapeAddFunctionLayout, new Point(0.5, value == Display.CondensedPortrait ? 1 : 0.5));
@@ -479,10 +373,9 @@ namespace Calculator
                     FunctionsDrawer
                 }
             };
-            //return FunctionsDrawer;
         }
 
-        private void OnscreenKeyboardSizeChanged()//object sender, EventArgs e)
+        private void OnscreenKeyboardSizeChanged()
         {
             double width = SoftKeyboardManager.Size.Width;
             double height = SoftKeyboardManager.Size.Height;
@@ -490,37 +383,6 @@ namespace Calculator
             Print.Log("\t" + Bounds.Size);
 
             Display displayMode;
-
-            /*if (sender == CrunchKeyboard && CrunchKeyboard.Orientation == StackOrientation.Vertical)
-            {
-                displayMode = Display.CondensedLandscape;
-                width += KeyboardAndVariables.Spacing + Variables.ButtonSize;
-            }
-            else if (sender == CrunchKeyboard && !CrunchKeyboard.IsCondensed)
-            {
-                displayMode = Display.Expanded;
-            }
-            else
-            {
-                displayMode = Display.CondensedPortrait;
-            }*/
-
-            /*if (CrunchKeyboard.IsCondensed)
-            {
-                if (sender == CrunchKeyboard && CrunchKeyboard.Orientation == StackOrientation.Vertical)
-                {
-                    displayMode = Display.CondensedLandscape;
-                    width += KeyboardAndVariables.Spacing + Variables.ButtonSize;
-                }
-                else
-                {
-                    displayMode = Display.CondensedPortrait;
-                }
-            }
-            else
-            {
-                displayMode = Display.Expanded;
-            }*/
 
             if (SoftKeyboardManager.Current == CrunchKeyboard && CrunchKeyboard.Orientation == StackOrientation.Vertical)
             {
@@ -543,113 +405,7 @@ namespace Calculator
             AbsoluteLayoutExtensions.SetLayoutSize(FullKeyboardView, new Size(width, displayMode == Display.CondensedLandscape ? height : -1));
             FunctionsDrawer.FunctionsList.Margin = new Thickness(0, 0, 0, SoftKeyboardManager.Current == SystemKeyboard.Instance ? height + KeyboardAndVariables.Spacing : 0);
 
-            //FunctionsDrawer.SetDrawerHeight(true, height + (displayMode == Display.CondensedPortrait ? Variables.ButtonSize : 0));
             DisplayMode = displayMode;
-        }
-
-        public void Tutorial()
-        {
-            Tutorial tutorial = new Tutorial(Collapsed);
-
-            ModalView popup = new ModalView
-            {
-                Content = tutorial,
-                Padding = new Thickness(20, 20, 20, 0),
-                BackgroundColor = Color.White
-            };
-
-            tutorial.Completed += () =>
-            {
-                popup.Remove();
-                App.TutorialRunning = false;
-            };
-
-            Screen.Children.Add(popup, new Rectangle(0.5, 0.5, -1, -1), AbsoluteLayoutFlags.PositionProportional);
-        }
-
-        public void ShowTip(string explanation, string url)
-        {
-            WebImage gif = new Image
-            {
-                Source = new UriImageSource { CachingEnabled = false, Uri = new Uri(url) },
-                IsAnimationPlaying = true,
-            };
-            gif.ErrorText.Text += "\n\n(all tips can also be viewed in settings)";
-
-            CheckBox showTips = new CheckBox
-            {
-                IsChecked = true,
-                Color = CrunchStyle.CRUNCH_PURPLE,
-                BindingContext = App.ShowTips
-            };
-            showTips.SetBinding(CheckBox.IsCheckedProperty, "Value", BindingMode.TwoWay);
-            
-            Label dismiss = new Label
-            {
-                HorizontalOptions = LayoutOptions.Center,
-                Text = "Dismiss",
-            };
-
-            ModalView popup = new ModalView { };
-            popup.WhenDescendantAdded<View>((view) =>
-            {
-                view.VerticalOptions = LayoutOptions.Center;
-            });
-            popup.Content = new StackLayout
-            {
-                Orientation = StackOrientation.Vertical,
-                Children =
-                {
-                    new StackLayout
-                    {
-                        Orientation = StackOrientation.Horizontal,
-                        Children =
-                        {
-                            new Label
-                            {
-                                HorizontalOptions = LayoutOptions.Start,
-                                Text = "Did you know?",
-                                FontSize = NamedSize.Large.On<Label>(),
-                            }
-                        }
-                    },
-                    new Label
-                    {
-                        HorizontalOptions = LayoutOptions.Center,
-                        HorizontalTextAlignment = TextAlignment.Center,
-                        Text = explanation,
-                        FontSize = NamedSize.Body.On<Label>(),
-                        Margin = new Thickness(0, 10, 0, 10)
-                    },
-                    gif,
-                    new StackLayout
-                    {
-                        Orientation = StackOrientation.Horizontal,
-                        HorizontalOptions = LayoutOptions.Center,
-                        Spacing = 0,
-                        Children =
-                        {
-                            new Label
-                            {
-                                HorizontalTextAlignment = TextAlignment.Center,
-                                Text = "Show new tips at startup",
-                                FontSize = NamedSize.Caption.On<Label>()
-                            },
-                            showTips,
-                        }
-                    },
-                    dismiss
-                }
-            };
-            
-            TapGestureRecognizer tgr = new TapGestureRecognizer();
-            tgr.Tapped += (sender, e) =>
-            {
-                popup.Remove();
-            };
-            dismiss.GestureRecognizers.Add(tgr);
-
-            Screen.Children.Add(popup, new Rectangle(0.5, 0.5, -1, -1), AbsoluteLayoutFlags.PositionProportional);
         }
 
 #if DEBUG
@@ -682,18 +438,6 @@ namespace Calculator
             }
             SettingsMenuButton.Button.Clicked += (sender, e) => App.Current.ShowSettings();
 
-            /*FunctionsDrawer = new FunctionsDrawer
-            {
-                DropArea = Canvas
-            };
-            PhantomCursorField.Children.Add(FunctionsDrawer);
-            AbsoluteLayout.SetLayoutBounds(FunctionsDrawer, new Rectangle(0, 0, App.Current.Collapsed ? 1 : 400, 0.9));
-            AbsoluteLayout.SetLayoutFlags(FunctionsDrawer, App.Current.Collapsed ? AbsoluteLayoutFlags.SizeProportional : AbsoluteLayoutFlags.HeightProportional);
-            App.Current.WhenPropertyChanged(App.CollapsedProperty, (sender, e) =>
-            {
-                
-            });*/
-
             FunctionsMenuButton = new Button
             {
                 Text = "f(x)",
@@ -704,34 +448,14 @@ namespace Calculator
                 FunctionsDrawer.ChangeStatus();
             };
 
-            //SettingsMenuButton.WidthRequest = FunctionsMenuButton.WidthRequest = SettingsButtonSize;
             CanvasArea.Children.Add(SettingsMenuButton, new Rectangle(0, 0, SettingsButtonSize, SettingsButtonSize), AbsoluteLayoutFlags.PositionProportional);
             CanvasArea.Children.Add(FunctionsMenuButton, new Rectangle(1, 0, SettingsButtonSize, SettingsButtonSize), AbsoluteLayoutFlags.PositionProportional);
-            /*TouchableStackLayout header = new TouchableStackLayout
-            {
-                Orientation = StackOrientation.Horizontal,
-                Children =
-                {
-                    SettingsMenuButton,
-                    (AdSpace = new ContentView
-                    {
-                        HorizontalOptions = LayoutOptions.FillAndExpand,
-                    }),
-                    FunctionsMenuButton
-                }
-            };*/
 
-            //CanvasArea.Children.Add(header, new Rectangle(0, 0, 1, SettingsButtonSize), AbsoluteLayoutFlags.WidthProportional);
-            CanvasArea.Children.Add(AdSpace = new ContentView
-            {
-                //HorizontalOptions = LayoutOptions.FillAndExpand,
-            }, new Point(0.5, 0));
+            CanvasArea.Children.Add(AdSpace = new ContentView(), new Point(0.5, 0));
             AbsoluteLayout.SetLayoutFlags(AdSpace, AbsoluteLayoutFlags.PositionProportional);
 #if DEBUG
             App.Current.SetBinding<bool, bool>(Screenshots.InSampleModeProperty, AdSpace, "IsVisible", convertBack: value => !value, mode: BindingMode.OneWayToSource);
 #endif
-            //Screen.Children.Add(SettingsMenuButton, new Rectangle(0, 0, SettingsButtonSize, SettingsButtonSize), AbsoluteLayoutFlags.PositionProportional);
-            //Screen.Children.Add(functionsMenuButton, new Rectangle(1, 0, SettingsButtonSize, SettingsButtonSize), AbsoluteLayoutFlags.PositionProportional);
         }
 
         private ContentView AdSpace;
@@ -869,51 +593,19 @@ namespace Calculator
 
         private void LoadAd()
         {
-            if (Width < 0)
-            {
-                //return;
-            }
-
-            //bool isCondensedLandscape = SoftKeyboardManager.Current == CrunchKeyboard && CrunchKeyboardOrientation == StackOrientation.Vertical && CrunchKeyboard.IsCondensed;
-            //int width = (int)Math.Min(320, AdSpace.Width);
             int width = (int)Math.Min(320, CanvasArea.Width - CrunchStyle.PAGE_PADDING * 2 - SettingsButtonSize * 2);
 
             if (width != MaxBannerWidth)
             {
                 MaxBannerWidth = width;
 
-                /*if (ad != null)
-                {
-                    ad.Remove();
-                }*/
-
                 AdSpace.Content = ad = new BannerAd();
                 AbsoluteLayout.SetLayoutBounds(AdSpace, new Rectangle(0.5, 0, width, -1));
-
-                /*if (isCondensedLandscape)
-                {
-                    Screen.Children.Add(ad, new Rectangle(SettingsButtonSize + Padding.Left, 0, width, -1), AbsoluteLayoutFlags.None);
-                }
-                else
-                {
-                    Screen.Children.Add(ad, new Rectangle(0.5, 0, width, -1), AbsoluteLayoutFlags.XProportional);
-                }*/
             }
         }
 
-        private bool Loaded = false;
-
         private void OnSizeChanged()
         {
-            //Print.Log("page size changed", CanvasArea.Width, CanvasArea.Height, Padding.Left, Padding.Top);
-
-            /*if (!Loaded)
-            {
-                CrunchKeyboard.SizeChanged += (sender, e) => LoadAd();
-                Loaded = true;
-            }
-            LoadAd();*/
-
             ExtraPadding = (int)Math.Max(Width, Height);
         }
 
@@ -973,7 +665,6 @@ namespace Calculator
             if (!Collapsed && IsKeyboardDocked && CalculationFocus != null)
             {
                 Point offset = CanvasScroll.PositionOn(FullKeyboardView.Parent<View>());
-                Print.Log("adjusting keyboard", offset);
                 FullKeyboardView.MoveTo(CalculationFocus.X - CanvasScroll.ScrollX + offset.X, CalculationFocus.Y + CalculationFocus.Height - CanvasScroll.ScrollY + offset.Y);
             }
         }

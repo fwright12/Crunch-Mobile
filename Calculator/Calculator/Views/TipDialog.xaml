@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Calculator:ModalView xmlns:Calculator="clr-namespace:Calculator"
+                      xmlns="http://xamarin.com/schemas/2014/forms"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                      xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                      xmlns:Extensions="clr-namespace:Xamarin.Forms;assembly=Xamarin.Forms.Extensions"
+                      mc:Ignorable="d"
+                      x:Name="Main"
+                      x:Class="Calculator.TipDialog">
+
+    <ContentView.Content>
+        <StackLayout Orientation="Vertical">
+            <StackLayout Orientation="Horizontal">
+                <Label Text="Did you know?"
+                       HorizontalOptions="Start"
+                       FontSize="Large" />
+            </StackLayout>
+
+            <Label x:Name="ExplanationLabel"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"
+                   FontSize="Body"
+                   Margin="20, 0" />
+
+            <Extensions:WebImage ErrorText="Failed to load image\n\nTap to try again\n\n(all tips can also be viewed in settings)">
+                <x:Arguments>
+                    <Image x:Name="GIF"
+                           IsAnimationPlaying="True" />
+                </x:Arguments>
+            </Extensions:WebImage>
+            
+            <StackLayout Orientation="Horizontal"
+                         HorizontalOptions="Center"
+                         Spacing="0">
+                <Label VerticalOptions="Center"
+                       HorizontalTextAlignment="Center"
+                       Text="Show new tips at startup"
+                       FontSize="Caption" />
+
+                <CheckBox VerticalOptions="Center"
+                          IsChecked="{Binding Source={x:Static Calculator:App.ShowTips}, Path=Value, Mode=TwoWay}"
+                          Color="{x:Static Calculator:CrunchStyle.CRUNCH_PURPLE}" />
+            </StackLayout>
+
+            <Label x:Name="Dismiss"
+                   HorizontalOptions="Center"
+                   Text="Dismiss">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer x:Name="TapDismiss" />
+                </Label.GestureRecognizers>
+            </Label>
+        </StackLayout>
+    </ContentView.Content>
+</Calculator:ModalView>

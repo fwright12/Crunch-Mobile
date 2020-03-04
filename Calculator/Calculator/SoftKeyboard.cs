@@ -160,7 +160,6 @@ namespace Xamarin.Forms
 
         private static void OnSizeChanged(object sender, EventArgs e)
         {
-            //if (sender == Calculator.KeyboardManager.Current)// && !e.Value.Equals(Bounds.Size))
             ISoftKeyboard softKeyboard = (ISoftKeyboard)sender;
             if (softKeyboard.Size.Equals(Size))
             {

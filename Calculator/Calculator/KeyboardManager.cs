@@ -27,8 +27,6 @@ namespace Calculator
         public static event OutputEventHandler Typed;
         public static event SpecialKeyEventHandler<CursorKey> CursorMoved;
 
-        //public static void AddSource(KeystrokeEventHandler eventHandler) => eventHandler += (keystroke) => Type(keystroke);
-
         public static void Type(params char[] keystrokes) => Type(keystrokes as IEnumerable<char>);
 
         public static void Type(IEnumerable<char> keystrokes)

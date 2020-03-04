@@ -70,12 +70,9 @@ namespace Calculator
 
     public class CrunchKeyboard : StackLayout, IEnumerable<Key>, ISoftKeyboard
     {
-        //public event SpecialKeyEventHandler<Key> LongKeyPress;
-
         public event KeystrokeEventHandler Typed;
         public event EventHandler OnscreenSizeChanged;
 
-        //public event EventHandler<ToggledEventArgs> CondensedChanged;
         public bool IsCondensed { get; private set; }
         
         new public StackOrientation Orientation
@@ -221,31 +218,6 @@ namespace Calculator
             Keypad.SetBinding<double, double>(WidthRequestProperty, Keypad, "Height", value => PaddedButtonsWidth(Keys[0].Length, ButtonWidth(value, Keys.Length)));
             Keypad.WhenPropertyChanged(WidthProperty, (sender, e) => ResetScroll());
 
-            Scroll.SizeChanged += (sender, e) =>
-            {
-                //Keypad.WidthRequest = Keys[0].Length / Keys.Length * Scroll.Height;
-                return;
-                //Keypad.WidthRequest = PaddedButtonsWidth(Keys[0].Length, )
-
-                bool isCondensed = !FullSize.Equals(Bounds.Size);
-
-                double buttonSize = 0;
-                if (Orientation == StackOrientation.Horizontal && Scroll.Width > 0)
-                {
-                    buttonSize = Math.Max(0, ButtonWidth(Scroll.Width, (isCondensed ? MIN_COLUMNS : Keys[0].Length) + PERMANENT_KEYS_INCREASE));
-                }
-                else if (Orientation == StackOrientation.Vertical && Scroll.Height > 0)
-                {
-                    buttonSize = Math.Max(0, ButtonWidth(Scroll.Height, Keys.Length + 1));
-                }
-
-                Keypad.WidthRequest = PaddedButtonsWidth(Keys[0].Length, buttonSize);
-            };
-            SizeChanged += (sender, e) =>
-            {
-                //ResetScroll();
-                //SoftKeyboardManager.SizeChangedHandler(this, new EventArgs<Size>(Bounds.Size));
-            };
             App.Current.MainPage.SizeChanged += (sender, e) => ScreenSizeChanged();
             App.ShowFullKeyboard.WhenPropertyChanged(App.ShowFullKeyboard.ValueProperty, (sender, e) => ScreenSizeChanged());
 
@@ -284,7 +256,7 @@ namespace Calculator
         {
             Size bounds = App.Current.MainPage.Bounds.Size;
             bounds = new Size(bounds.Width - SafeArea.HorizontalThickness, bounds.Height - SafeArea.VerticalThickness);
-            Print.Log("screen size changed", SafeArea.UsefulToString(), bounds);
+            //Print.Log("screen size changed", SafeArea.UsefulToString(), bounds);
             CondensedOrientation = bounds.Height >= bounds.Width ? StackOrientation.Horizontal : StackOrientation.Vertical;
 
             Size size = MeasureOnscreenSize(bounds.Width, bounds.Height);
@@ -294,7 +266,7 @@ namespace Calculator
             base.Orientation = collapsed ? CondensedOrientation : StackOrientation.Horizontal;
             IsCondensed = isCondensed;
 
-            Print.Log("requesting " + size);
+            //Print.Log("requesting " + size);
             this.SizeRequest(size);
             Size = !collapsed ? size : (Orientation == StackOrientation.Horizontal ? new Size(size.Width + SafeArea.HorizontalThickness, size.Height + SafeArea.Bottom) : new Size(size.Width + SafeArea.Right, size.Height + SafeArea.VerticalThickness));
 
@@ -303,13 +275,6 @@ namespace Calculator
 
             DockButton.Text = collapsed ? "" : "\u25BD"; //white down-pointing triangle
             DockButton.IsEnabled = !collapsed;
-        }
-
-        public Size MeasureOnscreenSize()
-        {
-            double width = App.Current.MainPage.Width;// - Margin.HorizontalThickness;
-            double height = App.Current.MainPage.Height;// - Margin.VerticalThickness;
-            return MeasureOnscreenSize(width, height);
         }
 
         public Size MeasureOnscreenSize(double width, double height)
@@ -381,8 +346,6 @@ namespace Calculator
             }
         }
 
-        //public SizeRequest ForceMeasure(double widthConstraint, double heightConstraint) => OnMeasure(widthConstraint, heightConstraint);
-
         public Size DesiredSize;
 
         private Size GetSize(double widthConstraint, double heightConstraint)
@@ -399,7 +362,7 @@ namespace Calculator
             Size fitHeight = new Size(Math.Min(widthConstraint, PaddedButtonsWidth(cols, ButtonWidth(heightConstraint, rows))), heightConstraint);
             Size condensed = fitWidth.Area() < fitHeight.Area() ? fitWidth : fitHeight;
 
-            Print.Log("measuring", widthConstraint, heightConstraint, condensed, App.ShowFullKeyboard.Value);
+            //Print.Log("measuring", widthConstraint, heightConstraint, condensed, App.ShowFullKeyboard.Value);
             Size fullSize = App.ShowFullKeyboard.Value ? FullSize : new Size(PaddedButtonsWidth(MIN_COLUMNS + PERMANENT_KEYS_INCREASE, MAX_BUTTON_SIZE), PaddedButtonsWidth(Keys.Length, MAX_BUTTON_SIZE));
             return FullSize.Width < widthConstraint && FullSize.Height < heightConstraint && FullSize.Area() < condensed.Area() ? fullSize : condensed;
 

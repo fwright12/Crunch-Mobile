@@ -15,7 +15,7 @@
         <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
     </activity>
-    <service android:name="crc64a98abb514ffad9f1.KeepAliveService" />
+    <service android:name="crc64396a3fe5f8138e3f.KeepAliveService" />
     <receiver android:enabled="true" android:exported="false" android:name="crc643f46942d9dd1fff9.PowerSaveModeBroadcastReceiver" />
     <provider android:name="mono.MonoRuntimeProvider" android:exported="false" android:initOrder="1999999999" android:authorities="com.GreenMountainLabs.Calculator.mono.MonoRuntimeProvider.__mono_init__" />
     <!--suppress ExportedReceiver-->

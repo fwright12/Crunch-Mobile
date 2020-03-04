@@ -19,6 +19,8 @@ namespace Calculator.Droid
 
             base.OnCreate(bundle);
 
+            FFImageLoading.Forms.Platform.CachedImageRenderer.Init(true);
+
             global::Xamarin.Forms.Forms.Init(this, bundle);
             LoadApplication(new App());
 
@@ -29,12 +31,12 @@ namespace Calculator.Droid
 
         public static event EventHandler<EventArgs<Android.Support.V7.View.ActionMode>> ContextMenuAppeared;
 
-        public override Android.Support.V7.View.ActionMode StartSupportActionMode(global::Android.Support.V7.View.ActionMode.ICallback callback)
+        /*public override Android.Support.V7.View.ActionMode StartSupportActionMode(global::Android.Support.V7.View.ActionMode.ICallback callback)
         {
             var LastActionMode = base.StartSupportActionMode(callback);
             ContextMenuAppeared?.Invoke(this, new EventArgs<Android.Support.V7.View.ActionMode>(LastActionMode));
             return LastActionMode;
-        }
+        }*/
     }
 }
 

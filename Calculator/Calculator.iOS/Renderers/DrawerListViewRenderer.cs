@@ -58,11 +58,6 @@ namespace Calculator.iOS
         {
             base.SafeAreaInsetsDidChange();
             Control.ContentInset = SafeAreaInsets;
-            //Control.InsetsContentViewsToSafeArea = true;
-            //Print.Log("safe insets changed", Control.ContentInset);
-            //Print.Log("safe insets changed", SafeAreaInsets, SafeAreaInsets.Bottom);
-            //Print.Log("\t" + Control.InsetsContentViewsToSafeArea, Control.AdjustedContentInset);
-            //Control.ContentInset = SafeAreaInsets;
         }
 
         private void ScrollToRequest(ScrollToPositionRequestEventArgs e) => Control.SetContentOffset(new CoreGraphics.CGPoint(e.X, e.Y), e.Animated);

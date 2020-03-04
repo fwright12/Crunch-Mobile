@@ -133,8 +133,28 @@ namespace Calculator
             }
             else
             {
-                Home.Tutorial();
+                Tutorial();
             }
+        }
+
+        public void Tutorial()
+        {
+            Tutorial tutorial = new Tutorial(Home.Collapsed);
+
+            ModalView popup = new ModalView
+            {
+                Content = tutorial,
+                Padding = new Thickness(20, 20, 20, 0),
+                BackgroundColor = Color.White
+            };
+
+            tutorial.Completed += () =>
+            {
+                popup.Remove();
+                App.TutorialRunning = false;
+            };
+
+            (Home.Content as AbsoluteLayout)?.Children.Add(popup, new Rectangle(0.5, 0.5, -1, -1), AbsoluteLayoutFlags.PositionProportional);
         }
 
         private System.Threading.Tasks.Task ReplaceCurrentPage(Page replacement)
@@ -179,12 +199,12 @@ namespace Calculator
                 NavigationPage.SetHasNavigationBar(Home, false);
                 TouchScreen.Instance = Home;
                 Home.Bind<bool>("Collapsed", value => CollapsedChanged(value));
-
+                
                 if (ShouldRunTutorial.Value)
                 {
                     RunTutorial();
                 }
-#if __IOS__
+#if IOS
                 else if (ShowTips.Value)
                 {
                     var list = new System.Collections.Generic.List<int>();
@@ -202,7 +222,12 @@ namespace Calculator
                     {
                         int index = list[new Random().Next(list.Count)];
                         var tip = Tips[index];
-                        Home.ShowTip(tip.Item2, tip.Item3);
+                        (Home.Content as AbsoluteLayout)?.Children.Add(new TipDialog
+                        {
+                            Explanation = tip.Item2,
+                            URL = tip.Item3
+                        }, new Rectangle(0.5, 0.5, -1, -1), AbsoluteLayoutFlags.PositionProportional);
+                        //Home.ShowTip(tip.Item2, tip.Item3);
                         tip.Item1.Value = true;
                     }
                 }
