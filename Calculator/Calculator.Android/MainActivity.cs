@@ -19,10 +19,11 @@ namespace Calculator.Droid
 
             base.OnCreate(bundle);
 
-            FFImageLoading.Forms.Platform.CachedImageRenderer.Init(true);
-
             global::Xamarin.Forms.Forms.Init(this, bundle);
             LoadApplication(new App());
+
+            FFImageLoading.Forms.Platform.CachedImageRenderer.Init(true);
+            FFImageLoading.Forms.Platform.CachedImageRenderer.InitImageViewHandler();
 
             Window.SetSoftInputMode(SoftInput.AdjustResize);
 

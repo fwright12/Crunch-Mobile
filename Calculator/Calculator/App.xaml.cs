@@ -139,7 +139,7 @@ namespace Calculator
 
         public void Tutorial()
         {
-            Tutorial tutorial = new Tutorial(Home.Collapsed);
+            TutorialDialog tutorial = new TutorialDialog(Home.Collapsed);
 
             ModalView popup = new ModalView
             {
@@ -151,7 +151,7 @@ namespace Calculator
             tutorial.Completed += () =>
             {
                 popup.Remove();
-                App.TutorialRunning = false;
+                TutorialRunning = false;
             };
 
             (Home.Content as AbsoluteLayout)?.Children.Add(popup, new Rectangle(0.5, 0.5, -1, -1), AbsoluteLayoutFlags.PositionProportional);
@@ -199,7 +199,7 @@ namespace Calculator
                 NavigationPage.SetHasNavigationBar(Home, false);
                 TouchScreen.Instance = Home;
                 Home.Bind<bool>("Collapsed", value => CollapsedChanged(value));
-                
+                Tutorial();
                 if (ShouldRunTutorial.Value)
                 {
                     RunTutorial();

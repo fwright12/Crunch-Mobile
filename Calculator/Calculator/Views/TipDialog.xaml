@@ -6,7 +6,6 @@
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                       xmlns:Extensions="clr-namespace:Xamarin.Forms;assembly=Xamarin.Forms.Extensions"
                       mc:Ignorable="d"
-                      x:Name="Main"
                       x:Class="Calculator.TipDialog">
 
     <ContentView.Content>
@@ -29,7 +28,7 @@
                            IsAnimationPlaying="True" />
                 </x:Arguments>
             </Extensions:WebImage>
-            
+
             <StackLayout Orientation="Horizontal"
                          HorizontalOptions="Center"
                          Spacing="0">
@@ -39,6 +38,7 @@
                        FontSize="Caption" />
 
                 <CheckBox VerticalOptions="Center"
+                          BackgroundColor="{Binding }"
                           IsChecked="{Binding Source={x:Static Calculator:App.ShowTips}, Path=Value, Mode=TwoWay}"
                           Color="{x:Static Calculator:CrunchStyle.CRUNCH_PURPLE}" />
             </StackLayout>
