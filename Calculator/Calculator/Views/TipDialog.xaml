@@ -5,6 +5,7 @@
                       xmlns:d="http://xamarin.com/schemas/2014/forms/design"
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                       xmlns:Extensions="clr-namespace:Xamarin.Forms;assembly=Xamarin.Forms.Extensions"
+                      xmlns:FFImageLoading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
                       mc:Ignorable="d"
                       x:Class="Calculator.TipDialog">
 
@@ -22,10 +23,10 @@
                    FontSize="Body"
                    Margin="20, 0" />
 
-            <Extensions:WebImage ErrorText="Failed to load image\n\nTap to try again\n\n(all tips can also be viewed in settings)">
+            <Extensions:WebImage x:Name="GIF"
+                                 VerticalOptions="FillAndExpand">
                 <x:Arguments>
-                    <Image x:Name="GIF"
-                           IsAnimationPlaying="True" />
+                    <Image IsAnimationPlaying="True" />
                 </x:Arguments>
             </Extensions:WebImage>
 
@@ -38,7 +39,6 @@
                        FontSize="Caption" />
 
                 <CheckBox VerticalOptions="Center"
-                          BackgroundColor="{Binding }"
                           IsChecked="{Binding Source={x:Static Calculator:App.ShowTips}, Path=Value, Mode=TwoWay}"
                           Color="{x:Static Calculator:CrunchStyle.CRUNCH_PURPLE}" />
             </StackLayout>

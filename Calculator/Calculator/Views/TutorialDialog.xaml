@@ -6,14 +6,15 @@
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                       mc:Ignorable="d"
                       x:Class="Calculator.TutorialDialog"
-                      Padding="20, 20, 20, 0"
+                      Padding="20, 20, 20, 10"
                       BackgroundColor="White">
     <StackLayout Orientation="Vertical">
         <Label x:Name="Description"
                FontSize="Large"
                HorizontalTextAlignment="Center" />
 
-        <ContentView x:Name="Showing">
+        <ContentView x:Name="Showing"
+                     VerticalOptions="CenterAndExpand">
             <Label Padding="0, 20"
                    HorizontalTextAlignment="Center">
                 <Label.FormattedText>

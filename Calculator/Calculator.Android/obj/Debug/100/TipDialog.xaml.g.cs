@@ -21,7 +21,7 @@ namespace Calculator {
         private global::Xamarin.Forms.Label ExplanationLabel;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
-        private global::Xamarin.Forms.Image GIF;
+        private global::Xamarin.Forms.WebImage GIF;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
         private global::Xamarin.Forms.Label Dismiss;
@@ -33,7 +33,7 @@ namespace Calculator {
         private void InitializeComponent() {
             global::Xamarin.Forms.Xaml.Extensions.LoadFromXaml(this, typeof(TipDialog));
             ExplanationLabel = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Label>(this, "ExplanationLabel");
-            GIF = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Image>(this, "GIF");
+            GIF = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.WebImage>(this, "GIF");
             Dismiss = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Label>(this, "Dismiss");
             TapDismiss = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.TapGestureRecognizer>(this, "TapDismiss");
         }

@@ -104,7 +104,11 @@ namespace Calculator
             }
             TutorialRunning = true;
 
-            TutorialDialog tutorial = new TutorialDialog(Home.Collapsed);
+            TutorialDialog tutorial = new TutorialDialog(Home.Collapsed)
+            {
+                HorizontalOptions = LayoutOptions.Center,
+                VerticalOptions = LayoutOptions.Center,
+            };
 
             tutorial.Completed += () =>
             {
@@ -112,7 +116,7 @@ namespace Calculator
                 TutorialRunning = false;
             };
 
-            (Home.Content as AbsoluteLayout)?.Children.Add(tutorial, new Rectangle(0.5, 0.5, -1, -1), AbsoluteLayoutFlags.PositionProportional);
+            (Home.Content as AbsoluteLayout)?.Children.Add(tutorial, new Rectangle(0.5, 0.5, 0.75, 0.75), AbsoluteLayoutFlags.All);
         }
 
         public App()
@@ -156,7 +160,6 @@ namespace Calculator
                 {
                     RunTutorial();
                 }
-#if IOS
                 else if (ShowTips.Value)
                 {
                     var list = new System.Collections.Generic.List<int>();
@@ -174,16 +177,17 @@ namespace Calculator
                     {
                         int index = list[new Random().Next(list.Count)];
                         var tip = Tips[index];
+                        
                         (Home.Content as AbsoluteLayout)?.Children.Add(new TipDialog
                         {
                             Explanation = tip.Item2,
-                            URL = tip.Item3
-                        }, new Rectangle(0.5, 0.5, -1, -1), AbsoluteLayoutFlags.PositionProportional);
-                        //Home.ShowTip(tip.Item2, tip.Item3);
-                        tip.Item1.Value = true;
+                            URL = tip.Item3,
+                            HorizontalOptions = LayoutOptions.Center,
+                            VerticalOptions = LayoutOptions.Center,
+                        }, new Rectangle(0.5, 0.5, 0.75, 0.75), AbsoluteLayoutFlags.All);
+                        //tip.Item1.Value = true;
                     }
                 }
-#endif
             };
 
             //Collapsed = Device.Idiom != TargetIdiom.Tablet;

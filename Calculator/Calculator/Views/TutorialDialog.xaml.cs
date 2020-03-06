@@ -186,25 +186,6 @@ namespace Calculator
 
         private bool ImagesPreloaded = false;
 
-        /*private class Image : FFImageLoading.Forms.CachedImage, IImage
-        {
-            public event EventHandler<EventArgs<bool>> Loaded;
-
-            public View View => this;
-
-            public Image()
-            {
-                void InvokeLoadedOnSizeChange(object sender, EventArgs e)
-                {
-                    Loaded?.Invoke(this, new EventArgs<bool>(true));
-                    SizeChanged -= InvokeLoadedOnSizeChange;
-                }
-
-                Success += (sender, e) => SizeChanged += InvokeLoadedOnSizeChange;
-                Error += (sender, e) => Loaded?.Invoke(this, new EventArgs<bool>(false));
-            }
-        }*/
-
         private void Set(int step)
         {
             if (step < 0 || step >= info.Count + 1)

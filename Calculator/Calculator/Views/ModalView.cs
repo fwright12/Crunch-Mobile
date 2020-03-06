@@ -19,6 +19,7 @@ namespace Calculator
             //BorderColor = Background;
             //BackgroundColor = Background;
             CornerRadius = 10;
+            this.SizeRequest(MAX_TUTORIAL_SIZE_ABSOLUTE);
             //VerticalOptions = LayoutOptions.FillAndExpand;
 
             /*PopUp.WhenPropertyChanged(Frame.IsVisibleProperty, (sender, e) =>
@@ -81,7 +82,7 @@ namespace Calculator
 
         protected override SizeRequest OnMeasure(double widthConstraint, double heightConstraint)
         {
-            //return base.OnMeasure(widthConstraint, heightConstraint);
+            return base.OnMeasure(widthConstraint, heightConstraint);
 
             //widthConstraint = (Parent as View)?.Width ?? widthConstraint;
             //heightConstraint = (Parent as View)?.Height ?? heightConstraint;
