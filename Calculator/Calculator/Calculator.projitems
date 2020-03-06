@@ -43,7 +43,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)SystemKeyboard.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Tutorial.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\Keyboard\VariableRow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\TipDialog.xaml.cs">
       <DependentUpon>TipDialog.xaml</DependentUpon>

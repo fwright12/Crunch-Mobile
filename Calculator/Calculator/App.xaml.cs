@@ -94,9 +94,9 @@ namespace Calculator
             }
         }
 
-        public static bool TutorialRunning = false;
+        private static bool TutorialRunning = false;
 
-        public async void RunTutorial()
+        public void RunTutorial()
         {
             if (TutorialRunning)
             {
@@ -104,63 +104,15 @@ namespace Calculator
             }
             TutorialRunning = true;
 
-            if (Device.RuntimePlatform == Device.Android)
-            {
-                var keyboards = new System.Collections.Generic.List<ISoftKeyboard>(SoftKeyboardManager.Connected()).ToArray();
-                ISoftKeyboard current = SoftKeyboardManager.Current;
-                SoftKeyboardManager.ClearKeyboards();
-                
-                MainPageTutorial tutorial = new MainPageTutorial();
-                await ReplaceCurrentPage(tutorial);
-                NavigationPage.SetHasNavigationBar(tutorial, false);
-
-                /*await System.Threading.Tasks.Task.Delay(3000);
-
-                KeyboardManager.ClearKeyboards();
-                KeyboardManager.AddKeyboard(keyboards);
-                KeyboardManager.SwitchTo(current);
-                ReplaceCurrentPage(Home);*/
-
-                tutorial.Completed += async () =>
-                {
-                    SoftKeyboardManager.ClearKeyboards();
-                    SoftKeyboardManager.AddKeyboard(keyboards);
-                    SoftKeyboardManager.SwitchTo(current);
-
-                    await ReplaceCurrentPage(Home);
-                    TutorialRunning = false;
-                };
-            }
-            else
-            {
-                Tutorial();
-            }
-        }
-
-        public void Tutorial()
-        {
             TutorialDialog tutorial = new TutorialDialog(Home.Collapsed);
-
-            ModalView popup = new ModalView
-            {
-                Content = tutorial,
-                Padding = new Thickness(20, 20, 20, 0),
-                BackgroundColor = Color.White
-            };
 
             tutorial.Completed += () =>
             {
-                popup.Remove();
+                tutorial.Remove();
                 TutorialRunning = false;
             };
 
-            (Home.Content as AbsoluteLayout)?.Children.Add(popup, new Rectangle(0.5, 0.5, -1, -1), AbsoluteLayoutFlags.PositionProportional);
-        }
-
-        private System.Threading.Tasks.Task ReplaceCurrentPage(Page replacement)
-        {
-            FullNavigation.Navigation.InsertPageBefore(replacement, FullNavigation.CurrentPage);
-            return FullNavigation.PopToRootAsync();
+            (Home.Content as AbsoluteLayout)?.Children.Add(tutorial, new Rectangle(0.5, 0.5, -1, -1), AbsoluteLayoutFlags.PositionProportional);
         }
 
         public App()
@@ -199,7 +151,7 @@ namespace Calculator
                 NavigationPage.SetHasNavigationBar(Home, false);
                 TouchScreen.Instance = Home;
                 Home.Bind<bool>("Collapsed", value => CollapsedChanged(value));
-                Tutorial();
+                
                 if (ShouldRunTutorial.Value)
                 {
                     RunTutorial();

@@ -2,15 +2,111 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace Calculator
 {
+    public static class ImageLoading
+    {
+        private static LoadView LoadSpace = new LoadView { IsVisible = false };
+
+        public static void Preload(this Layout<View> context, params ImageSource[] sources) => LoadSpace.ForceDraw(context, sources);
+
+        private class LoadView : Layout<View>
+        {
+            public void ForceDraw(Layout<View> context, params ImageSource[] sources)
+            {
+                context?.Children.Add(this);
+
+                foreach (ImageSource source in sources)
+                {
+                    Image image = new Image { Source = source };
+                    Children.Add(image);
+                    LayoutChildIntoBoundingRegion(image, new Rectangle(0, 0, double.PositiveInfinity, double.PositiveInfinity));
+                }
+
+                this.Remove();
+            }
+
+            protected override void InvalidateLayout() { }
+
+            protected override void InvalidateMeasure() { }
+
+            protected override void OnChildMeasureInvalidated() { }
+
+            protected override bool ShouldInvalidateOnChildAdded(View child) => false;
+
+            protected override SizeRequest OnMeasure(double widthConstraint, double heightConstraint) => new SizeRequest(Size.Zero);
+
+            protected override void LayoutChildren(double x, double y, double width, double height) { }
+        }
+    }
+
+#if DEBUG
+    public static class ImageExtensions
+    {
+        private class FakeLayout : Layout
+        {
+            public FakeLayout(View content)
+            {
+                Content = content;
+                Parent = App.Current.MainPage;
+                OnParentSet();
+                
+                InvalidateMeasure();
+                InvalidateLayout();
+
+                OnMeasure(double.PositiveInfinity, double.PositiveInfinity);
+                OnSizeAllocated(1000, 1000);
+                ForceLayout();
+                Layout(new Rectangle(0, 0, 1000, 1000));
+                LayoutChildren(0, 0, 1000, 1000);
+                LayoutChildIntoBoundingRegion(content, new Rectangle(Point.Zero, content.Measure(double.PositiveInfinity, double.PositiveInfinity).Request));
+
+                ForceLayout();
+            }
+
+            private View Content;
+
+            protected override void LayoutChildren(double x, double y, double width, double height)
+            {
+                LayoutChildIntoBoundingRegion(Content, new Rectangle(Point.Zero, Content.Measure(double.PositiveInfinity, double.PositiveInfinity).Request));
+            }
+        }
+
+        private class FakeImage : Image
+        {
+            public FakeImage(ImageSource source)
+            {
+                Source = source;
+                Parent = App.Current.MainPage;
+                SetIsLoading(true);
+                InvalidateMeasure();
+                OnMeasure(double.PositiveInfinity, double.PositiveInfinity);
+                OnSizeAllocated(1000, 1000);
+                Layout(new Rectangle(0, 0, 1000, 1000));
+            }
+        }
+
+        public static Image Preload(this Image image)
+        {
+            new FakeLayout(new Image { Source = image.Source });
+            //(App.Current.Home.Content as AbsoluteLayout).Children.Add(new FakeLayout(new Image { Source = image.Source }), new Rectangle(-1000, -1000, 100, 10));
+            return image;
+        }
+
+        public static ImageSource Preload(this ImageSource source)
+        {
+            new FakeImage(source);
+            return source;
+        }
+    }
+#endif
+
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class TutorialDialog : StackLayout
+    public partial class TutorialDialog : ModalView
     {
         public event SimpleEventHandler Completed;
 
@@ -51,20 +147,46 @@ namespace Calculator
             }
 
             Screens = new View[info.Count + 1];
-            Screens[0] = Welcome;
+            Screens[0] = Showing.Content;
             for (int i = 0; i < info.Count; i++)
             {
-                Screens[i + 1] = new WebImage(new Xamarin.Forms.Image
+                //FFImageLoading.TaskParameterExtensions.Preload(FFImageLoading.ImageService.Instance.LoadFileFromApplicationBundle(info[i][0])).RunAsync();
+                Screens[i + 1] = (WebImage)new Image
                 {
                     Source = info[i][0],
                     IsAnimationPlaying = true,
-                });
+                };
             }
 
             Set(0);
+
+#if ANDROID
+            async void PreloadImages(object sender, EventArgs e)
+            {
+                SizeChanged -= PreloadImages;
+
+                await System.Threading.Tasks.Task.Delay(1000);
+
+                ImageSource[] sources = new ImageSource[info.Count];
+                for (int i = 0; i < info.Count; i++)
+                {
+                    sources[i] = info[i][0];
+                }
+                (Content as Layout<View>)?.Preload(sources);
+
+                ImagesPreloaded = true;
+            }
+
+            if (!ImagesPreloaded)
+            {
+                SizeChanged += PreloadImages;
+            }
+#endif
         }
 
-        private class Image : FFImageLoading.Forms.CachedImage, IImage
+        private bool ImagesPreloaded = false;
+
+        /*private class Image : FFImageLoading.Forms.CachedImage, IImage
         {
             public event EventHandler<EventArgs<bool>> Loaded;
 
@@ -81,7 +203,7 @@ namespace Calculator
                 Success += (sender, e) => SizeChanged += InvokeLoadedOnSizeChange;
                 Error += (sender, e) => Loaded?.Invoke(this, new EventArgs<bool>(false));
             }
-        }
+        }*/
 
         private void Set(int step)
         {
