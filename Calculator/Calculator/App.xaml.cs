@@ -185,7 +185,7 @@ namespace Calculator
                             HorizontalOptions = LayoutOptions.Center,
                             VerticalOptions = LayoutOptions.Center,
                         }, new Rectangle(0.5, 0.5, 0.75, 0.75), AbsoluteLayoutFlags.All);
-                        //tip.Item1.Value = true;
+                        tip.Item1.Value = true;
                     }
                 }
             };

@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if false
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,10 +9,10 @@ using System.Extensions;
 using Xamarin.Forms;
 using Xamarin.Forms.Extensions;
 
-namespace Calculator
+namespace Calculator.Defunct
 {
-	public class SettingsPage : ContentPage
-	{
+    public class SettingsPage : ContentPage
+    {
         private Stepper DecimalPlaces;
         private Selector LogBase;
         private Selector Numbers;
@@ -154,9 +155,7 @@ namespace Calculator
                 support,
                 tips
             };
-#if __IOS__
             help.Add(showTips);
-#endif
 
             //Info
             TextCell about = new TextCell
@@ -181,7 +180,7 @@ namespace Calculator
             {
                 foreach (TableSection section in new TableSection[] { help, info })
                 {
-                    foreach (TextCell cell in section)
+                    foreach (TextCell cell in section.OfType<TextCell>())
                     {
                         cell.TextColor = CrunchStyle.TEXT_COLOR;
                     }
@@ -192,7 +191,7 @@ namespace Calculator
 
             TableRoot root = new TableRoot
             {
-                math, 
+                math,
                 answerDefaults,
                 other,
                 help,
@@ -265,105 +264,80 @@ namespace Calculator
 
         private void ResetToDefault()
         {
-            foreach(BindableValue setting in new BindableValue[] { App.ClearCanvasWarning, App.DecimalPlaces, App.LogarithmBase, App.Numbers, App.ShowFullKeyboard, App.ShowTips, App.Trigonometry })
+            foreach (BindableValue setting in new BindableValue[] { App.ClearCanvasWarning, App.DecimalPlaces, App.LogarithmBase, App.Numbers, App.ShowFullKeyboard, App.ShowTips, App.Trigonometry })
             {
                 setting.ClearValue(setting.ValueProperty);
             }
         }
-    }
 
-    public class LabelCell : ViewCell
-    {
-        public Label Label
+        private class LabelCell : ViewCell
         {
-            get => label;
-            set
+            public Label Label
             {
-                label?.Remove();
-                Layout.Children.Add(label = value);
+                get => label;
+                set
+                {
+                    label?.Remove();
+                    Layout.Children.Add(label = value);
+                }
+            }
+
+            private StackLayout Layout;
+            private Label label;
+
+            public LabelCell()
+            {
+                Layout = new StackLayout
+                {
+                    Orientation = StackOrientation.Horizontal,
+                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    VerticalOptions = LayoutOptions.FillAndExpand,
+                    Padding = new Thickness(15),
+                };
+
+                View = Layout;
             }
         }
 
-        private StackLayout Layout;
-        private Label label;
-
-        public LabelCell()
+        private class ExternalLinkCell : ViewCell
         {
-            Layout = new StackLayout
+            public static BindableProperty TextProperty = TextCell.TextProperty;
+
+            public string Text
             {
-                Orientation = StackOrientation.Horizontal,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-                VerticalOptions = LayoutOptions.FillAndExpand,
-                Padding = new Thickness(15),
-            };
+                get => (string)GetValue(TextProperty);
+                set => SetValue(TextProperty, value);
+            }
 
-            View = Layout;
-        }
-    }
-
-    public class ExternalLinkCell : ViewCell
-    {
-        public static BindableProperty TextProperty = TextCell.TextProperty;
-
-        public string Text
-        {
-            get => (string)GetValue(TextProperty);
-            set => SetValue(TextProperty, value);
-        }
-
-        public ExternalLinkCell()
-        {
-            StackLayout layout = new StackLayout
+            public ExternalLinkCell()
             {
-                Orientation = StackOrientation.Vertical,
-            };
-
-            Label symbol = new Label
-            {
-                Text = "\u2197"
-            };
-
-            Label text = new Label
-            {
-                BindingContext = this,
-            };
-            text.PropertyChanged += (sender, e) =>
-            {
-                if (e.PropertyName == Label.FontSizeProperty.PropertyName)
+                StackLayout layout = new StackLayout
                 {
-                    symbol.FontSize = 1.2 * text.FontSize;
-                }
-            };
+                    Orientation = StackOrientation.Vertical,
+                };
 
-            layout.Children.Add(text);
-            layout.Children.Add(symbol);
+                Label symbol = new Label
+                {
+                    Text = "\u2197"
+                };
 
-            View = layout;
-        }
-    }
+                Label text = new Label
+                {
+                    BindingContext = this,
+                };
+                text.PropertyChanged += (sender, e) =>
+                {
+                    if (e.PropertyName == Label.FontSizeProperty.PropertyName)
+                    {
+                        symbol.FontSize = 1.2 * text.FontSize;
+                    }
+                };
 
-    public class LabeledCell : ViewCell
-    {
-        public LabeledCell(string labelText, View control)
-        {
-            control.VerticalOptions = LayoutOptions.Center;
-            //control.HorizontalOptions = LayoutOptions.EndAndExpand;
+                layout.Children.Add(text);
+                layout.Children.Add(symbol);
 
-            StackLayout layout = new StackLayout
-            {
-                Padding = new Thickness(15, 5, 10, 5),
-                Orientation = StackOrientation.Horizontal,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-                VerticalOptions = LayoutOptions.FillAndExpand
-            };
-            layout.Children.Add(new Label()
-            {
-                Text = labelText,
-                VerticalOptions = LayoutOptions.Center
-            });
-            layout.Children.Add(control);
-
-            View = layout;
+                View = layout;
+            }
         }
     }
 
@@ -392,3 +366,4 @@ namespace Calculator
         }
     }
 }
+#endif

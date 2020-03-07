@@ -57,8 +57,12 @@ namespace Calculator
                 Children =
                 {
                     (HeaderView = new ContentView()),
-                    new ToolbarView
+                    new FlexLayout
                     {
+                        Direction = FlexDirection.Row,
+                        Wrap = FlexWrap.NoWrap,
+                        JustifyContent = FlexJustify.SpaceBetween,
+                        AlignItems = FlexAlignItems.Center,
                         Padding = new Thickness(10),
                         Children =
                         {

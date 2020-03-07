@@ -1,0 +1,119 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:Calculator="clr-namespace:Calculator"
+             xmlns:Extensions="clr-namespace:Xamarin.Forms.Extensions;assembly=Xamarin.Forms.Extensions"
+             xmlns:iOS="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
+             mc:Ignorable="d"
+             x:Class="Calculator.SettingsPage"
+             Title="Settings"
+             iOS:Page.UseSafeArea="True">
+    <ContentPage.BackgroundColor>
+        <OnPlatform x:TypeArguments="Color">
+            <On Platform="iOS"
+                Value="LightGray" />
+        </OnPlatform>
+    </ContentPage.BackgroundColor>
+
+    <TableView VerticalOptions="FillAndExpand"
+               Intent="Settings"
+               HasUnevenRows="True">
+        <TableView.BackgroundColor>
+            <OnPlatform x:TypeArguments="Color">
+                <On Platform="iOS"
+                    Value="LightGray" />
+            </OnPlatform>
+        </TableView.BackgroundColor>
+
+        <TableRoot>
+            <TableSection Title="Math">
+                <Calculator:LabeledCell>
+                    <x:Arguments>
+                        <x:String>Decimal Precision:</x:String>
+                        <StackLayout Orientation="Horizontal"
+                                     HorizontalOptions="FillAndExpand">
+                            <Label HorizontalOptions="StartAndExpand"
+                                   VerticalOptions="Center"
+                                   Text="{Binding Source={x:Reference DecimalStepper}, Path=Value}" />
+
+                            <Stepper x:Name="DecimalStepper"
+                                     VerticalOptions="Center"
+                                     Minimum="1"
+                                     Maximum="15"
+                                     Increment="1"
+                                     Value="{Binding Source={x:Static Calculator:App.DecimalPlaces}, Path=Value, Mode=TwoWay}" />
+                        </StackLayout>
+                    </x:Arguments>
+                </Calculator:LabeledCell>
+
+                <Calculator:LabeledCell>
+                    <x:Arguments>
+                        <x:String>Logarithm Base:</x:String>
+                        <Extensions:Selector x:Name="LogBase">
+                            <x:Arguments>
+                                <x:Array Type="{x:Type x:String}">
+                                    <x:String>2</x:String>
+                                    <x:String>10</x:String>
+                                </x:Array>
+                            </x:Arguments>
+                        </Extensions:Selector>
+                    </x:Arguments>
+                </Calculator:LabeledCell>
+            </TableSection>
+
+            <!--<TableSection Title="Answer Defaults">
+                <Calculator:LabeledCell>
+                    <x:Arguments>
+                        <x:string>Numerical Values:</x:string>
+                        <Extensions:Selector>
+                            
+                        </Extensions:Selector>
+                    </x:Arguments>
+                </Calculator:LabeledCell>
+            </TableSection>-->
+
+            <TableSection Title="Other">
+                <SwitchCell Text="Clear canvas warning"
+                            On="{Binding Source={x:Static Calculator:App.ClearCanvasWarning}, Path=Value, Mode=TwoWay}" />
+
+                <SwitchCell x:Name="ShowFullKeyboard"
+                            Text="Show full keyboard" />
+            </TableSection>
+
+            <TableSection Title="Help">
+                <TextCell x:Name="TutorialTextCell"
+                          Text="Tutorial" />
+
+                <TextCell x:Name="SupportTextCell"
+                          Text="Support &#8599;" />
+
+                <TextCell x:Name="TipsTextCell"
+                          Text="Tips &#38; Tricks &#8599;" />
+
+                <SwitchCell Text="Show new tips at startup"
+                            On="{Binding Source={x:Static Calculator:App.ShowTips}, Path=Value, Mode=TwoWay}" />
+            </TableSection>
+
+            <TableSection Title="Info">
+                <TextCell x:Name="AboutTextCell"
+                          Text="About" />
+
+                <TextCell x:Name="PrivacyTextCell"
+                          Text="Privacy Policy &#8599;" />
+            </TableSection>
+
+            <TableSection Title=" ">
+                <ViewCell x:Name="ResetViewCell">
+                    <Label HorizontalOptions="FillAndExpand"
+                           VerticalOptions="FillAndExpand"
+                           Padding="15"
+                           Text="Reset"
+                           TextColor="Red"
+                           HorizontalTextAlignment="Center" />
+                </ViewCell>
+            </TableSection>
+        </TableRoot>
+    </TableView>
+</ContentPage>
