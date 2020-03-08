@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:Calculator="clr-namespace:Calculator"
+             xmlns:Extensions="clr-namespace:Xamarin.Forms.Extensions;assembly=Xamarin.Forms.Extensions"
+             xmlns:Math="clr-namespace:Xamarin.Forms.MathDisplay;assembly=Xamarin.Forms.MathDisplay"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="Calculator.MainPage"
+             x:Name="self">
+    <AbsoluteLayout x:Name="Screen">
+        <AbsoluteLayout x:Name="CanvasArea"
+                        AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
+                        AbsoluteLayout.LayoutFlags="SizeProportional">
+            <ScrollView x:Name="CanvasScroll"
+                        Orientation="Both"
+                        AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
+                        AbsoluteLayout.LayoutFlags="SizeProportional">
+                <Calculator:Canvas x:Name="Canvas" />
+            </ScrollView>
+
+            <Calculator:AnythingButton x:Name="SettingsMenuButton"
+                                       AbsoluteLayout.LayoutBounds="0, 0, 50, 50"
+                                       AbsoluteLayout.LayoutFlags="PositionProportional">
+                <Button BorderWidth="0" />
+            </Calculator:AnythingButton>
+
+            <ContentView x:Name="AdSpace"
+                         AbsoluteLayout.LayoutBounds="0.5, 0, -1, -1"
+                         AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+            <Button x:Name="FunctionsMenuButton"
+                    Text="f(x)"
+                    FontSize="Large"
+                    AbsoluteLayout.LayoutBounds="1, 0, 50, 50"
+                    AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+            <Math:CursorView x:Name="PhantomCursor"
+                             HeightRequest="{Binding Source={x:Static Math:SoftKeyboard.Cursor}, Path=Height}"
+                             Color="Red"
+                             IsVisible="False" />
+        </AbsoluteLayout>
+
+        <StackLayout x:Name="FullKeyboardView"
+                     Orientation="Vertical">
+            <Calculator:FunctionsDrawer x:Name="FunctionsDrawer"
+                                        DropArea="{x:Reference Canvas}">
+                <x:Arguments>
+                    <Extensions:TouchableStackLayout x:Name="KeyboardAndVariables"
+                                                     Orientation="{Binding Source={x:Reference self}, Path=Orientation}">
+                        <Calculator:VariableRow x:Name="Variables"
+                                                Spacing="{Binding Source={x:Reference CrunchKeyboard}, Path=Spacing}"
+                                                ButtonSize="33" />
+
+                        <Calculator:CrunchKeyboard x:Name="CrunchKeyboard" />
+                    </Extensions:TouchableStackLayout>
+
+                    <Calculator:AddFunction x:Name="AddFunctionLayout"
+                                            IsVisible="False"
+                                            CornerRadius="20"
+                                            BackgroundColor="White"
+                                            HasShadow="False"
+                                            Padding="0, 0, 0, 5" />
+                </x:Arguments>
+            </Calculator:FunctionsDrawer>
+        </StackLayout>
+    </AbsoluteLayout>
+</ContentPage>

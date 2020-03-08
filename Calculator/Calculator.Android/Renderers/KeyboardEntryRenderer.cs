@@ -14,7 +14,7 @@ using Android.Views.InputMethods;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.Android;
 
-[assembly: ExportRenderer(typeof(Calculator.SystemKeyboard.KeyboardEntry), typeof(Calculator.Droid.KeyboardEntryRenderer))]
+[assembly: ExportRenderer(typeof(SystemKeyboard.KeyboardEntry), typeof(Calculator.Droid.KeyboardEntryRenderer))]
 
 namespace Calculator.Droid
 {

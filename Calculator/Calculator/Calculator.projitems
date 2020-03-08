@@ -20,12 +20,15 @@
       <DependentUpon>AboutPage.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Pages\MainPage.xaml.cs">
+      <DependentUpon>MainPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Pages\SettingsPage.xaml.cs">
       <DependentUpon>SettingsPage.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Views\EditListView.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)SoftKeyboard.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\Keyboard\Key.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\ModalView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
@@ -38,16 +41,13 @@
     <Compile Include="$(MSBuildThisFileDirectory)Views\FunctionsDrawer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graph.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\Keyboard\CrunchKeyboard.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)KeyboardManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\Math\Link.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Pages\MainPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Screenshots.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Settings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CrunchStyle.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Pages\SettingsPage.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)SystemKeyboard.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\Keyboard\VariableRow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\TipDialog.xaml.cs">
       <DependentUpon>TipDialog.xaml</DependentUpon>
@@ -82,6 +82,11 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Pages\SettingsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Pages\MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
   </ItemGroup>

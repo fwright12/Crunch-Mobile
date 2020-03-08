@@ -171,6 +171,8 @@ namespace Calculator
         private string Filename => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), SAVED_FUNCTIONS_FILE_NAME);
         private int IndexForFunction;
 
+        public FunctionsDrawer() { }
+
         public FunctionsDrawer(View keyboard, AddFunction addFunctionLayout)
         {
             Heights = new Dictionary<bool, double>
