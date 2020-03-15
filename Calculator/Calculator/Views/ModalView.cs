@@ -19,7 +19,7 @@ namespace Calculator
             //BorderColor = Background;
             //BackgroundColor = Background;
             CornerRadius = 10;
-            this.SizeRequest(MAX_TUTORIAL_SIZE_ABSOLUTE);
+            //this.SizeRequest(MAX_TUTORIAL_SIZE_ABSOLUTE);
             //VerticalOptions = LayoutOptions.FillAndExpand;
 
             /*PopUp.WhenPropertyChanged(Frame.IsVisibleProperty, (sender, e) =>

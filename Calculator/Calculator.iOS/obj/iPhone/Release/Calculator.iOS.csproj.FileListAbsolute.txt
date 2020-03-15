@@ -141,3 +141,8 @@ C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\o
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\obj\iPhone\Release\Calculator.iOS.exe
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\bin\iPhone\Release\Firebase.Core.dll
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\obj\iPhone\Release\CopyFilesToMac\Firebase.Core.dll.ReferenceCopyLocalPaths.stamp
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\obj\iPhone\Release\Views\TipDialog.xaml.g.cs
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\obj\iPhone\Release\Views\TutorialDialog.xaml.g.cs
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\obj\iPhone\Release\Pages\AboutPage.xaml.g.cs
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\obj\iPhone\Release\Pages\SettingsPage.xaml.g.cs
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\obj\iPhone\Release\Pages\MainPage.xaml.g.cs

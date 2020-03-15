@@ -10,7 +10,7 @@ using Xamarin.Forms;
 using Xamarin.Forms.Platform.iOS;
 using Xamarin.Forms.Extensions;
 
-[assembly: ExportRenderer(typeof(Calculator.SystemKeyboard.KeyboardEntry), typeof(Calculator.iOS.KeyboardEntryRenderer))]
+[assembly: ExportRenderer(typeof(SystemKeyboard.KeyboardEntry), typeof(Calculator.iOS.KeyboardEntryRenderer))]
 
 namespace Calculator.iOS
 {

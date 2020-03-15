@@ -145,6 +145,10 @@ namespace Calculator
         public class ListView : ActionableListView
         {
             public bool ContextActionsShowing = false;
+
+            public ListView() : base() { }
+
+            public ListView(ListViewCachingStrategy strategy) : base(strategy) { }
         }
 
         public class FunctionViewModel
@@ -275,7 +279,7 @@ namespace Calculator
                         (cover = new BoxView
                         {
                             BackgroundColor = CrunchStyle.BACKGROUND_COLOR,
-                            InputTransparent = true
+                            InputTransparent = true,
                         }),
                         new Rectangle(0.5, 1, 1, -1),
                         AbsoluteLayoutFlags.PositionProportional | AbsoluteLayoutFlags.WidthProportional
@@ -363,7 +367,9 @@ namespace Calculator
                 }
             });
 
-            LayoutChanged += (sender, e) => cover.HeightRequest = Content.Height - Keyboard.Height - Keyboard.Margin.VerticalThickness;
+            void SetCoverHeight() => cover.HeightRequest = Content.Height - Keyboard.Height - Keyboard.Margin.VerticalThickness;
+            LayoutChanged += (sender, e) => SetCoverHeight();
+            Keyboard.SizeChanged += (sender, e) => SetCoverHeight();
 
             SetStatus(true);
         }
@@ -413,7 +419,7 @@ namespace Calculator
 
                 setter.Action(value1 + percent * (value2 - value1));
             }
-
+            
             if (percent != 1)
             {
                 FunctionsList.Editing = false;

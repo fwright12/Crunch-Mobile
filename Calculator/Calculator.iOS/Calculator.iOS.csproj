@@ -54,7 +54,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\iPhone\Debug</OutputPath>
-    <DefineConstants>DEBUG;IOS;__IOS__;__MOBILE__;__UNIFIED__;SAMPLE</DefineConstants>
+    <DefineConstants>DEBUG;IOS;__IOS__;__MOBILE__;__UNIFIED__;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
@@ -71,6 +71,8 @@
     <MtouchExtraArgs>
     </MtouchExtraArgs>
     <MtouchLink>SdkOnly</MtouchLink>
+    <MtouchInterpreter>
+    </MtouchInterpreter>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>none</DebugType>
@@ -92,6 +94,7 @@
     <CodesignExtraArgs />
     <CodesignResourceRules />
     <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
+    <DefineConstants>IOS;__IOS__;__MOBILE__;__UNIFIED__;</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Ad-Hoc|iPhone' ">
     <DebugType>none</DebugType>
@@ -110,6 +113,7 @@
     <CodesignResourceRules />
     <OptimizePNGs>true</OptimizePNGs>
     <MtouchDebug>false</MtouchDebug>
+    <DefineConstants>IOS;__IOS__;__MOBILE__;__UNIFIED__;</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'AppStore|iPhone' ">
     <DebugType>none</DebugType>
@@ -122,6 +126,7 @@
     <CodesignProvision>Automatic:AppStore</CodesignProvision>
     <CodesignKey>iPhone Distribution</CodesignKey>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <DefineConstants>IOS;__IOS__;__MOBILE__;__UNIFIED__;</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'Default' ">
     <AppExtensionDebugBundleId />
@@ -142,6 +147,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Screenshots|iPhone'">
     <OutputPath>bin\iPhone\Screenshots\</OutputPath>
+    <DefineConstants>IOS;__IOS__;__MOBILE__;__UNIFIED__;</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Sample|iPhoneSimulator'">
     <DebugSymbols>true</DebugSymbols>
@@ -157,7 +163,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Sample|iPhone'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\iPhone\Sample\</OutputPath>
-    <DefineConstants>DEBUG;__IOS__;__MOBILE__;__UNIFIED__;SAMPLE</DefineConstants>
+    <DefineConstants>DEBUG;IOS;__IOS__;__MOBILE__;__UNIFIED__;</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
@@ -180,6 +186,7 @@
     <Compile Include="Renderers\LongClickableButtonRenderer.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
+    <Compile Include="Renderers\ScrollViewRenderer.cs" />
     <Compile Include="ShowTouchesWindow.cs" />
     <Compile Include="Renderers\TouchableStackLayoutRenderer.cs" />
     <Compile Include="Renderers\TouchScreenRenderer.cs" />
@@ -209,7 +216,7 @@
       <Version>2.4.11.982</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Forms">
-      <Version>4.5.0.356</Version>
+      <Version>4.4.0.991757</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Google.iOS.MobileAds">
       <Version>7.47.0.1</Version>

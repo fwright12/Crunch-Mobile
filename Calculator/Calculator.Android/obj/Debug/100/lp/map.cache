@@ -83,9 +83,9 @@ androidx.cardview.cardview
 androidx.appcompat.appcompat-resources
 androidx.appcompat.appcompat
 com.google.android.material.material
+androidx.palette.palette
 androidx.media.media
+androidx.mediarouter.mediarouter
 androidx.lifecycle.lifecycle-livedata
 androidx.legacy.legacy-support-v4
 androidx.browser.browser
-androidx.palette.palette
-androidx.mediarouter.mediarouter

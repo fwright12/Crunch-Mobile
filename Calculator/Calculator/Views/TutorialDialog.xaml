@@ -9,23 +9,33 @@
                       Padding="20, 20, 20, 10"
                       BackgroundColor="White">
     <StackLayout Orientation="Vertical">
-        <Label x:Name="Description"
+        <Label x:Name="DescriptionLabel"
+               VerticalOptions="CenterAndExpand"
                FontSize="Large"
                HorizontalTextAlignment="Center" />
 
         <ContentView x:Name="Showing"
                      VerticalOptions="CenterAndExpand">
-            <Label Padding="0, 20"
+            <StackLayout Spacing="50">
+                <Label Text="Welcome to Crunch!"
+                       HorizontalTextAlignment="Center"
+                       FontSize="33" />
+                <Label Text="A calculator for the digital age"
+                       HorizontalTextAlignment="Center"
+                       FontSize="20" />
+            </StackLayout>
+            <!--<Label Padding="20, 20"
+                   BackgroundColor="Red"
                    HorizontalTextAlignment="Center">
                 <Label.FormattedText>
                     <FormattedString>
                         <Span Text="Welcome to Crunch!"
                               FontSize="33" />
-                        <Span Text="&#10;&#10;A new kind of calculator"
+                        <Span Text="&#10;&#10;A calculator for the digital age"
                               FontSize="20" />
                     </FormattedString>
                 </Label.FormattedText>
-            </Label>
+            </Label>-->
         </ContentView>
 
         <StackLayout Orientation="Horizontal">

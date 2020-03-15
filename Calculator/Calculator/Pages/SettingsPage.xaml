@@ -79,7 +79,8 @@
                             On="{Binding Source={x:Static Calculator:App.ClearCanvasWarning}, Path=Value, Mode=TwoWay}" />
 
                 <SwitchCell x:Name="ShowFullKeyboard"
-                            Text="Show full keyboard" />
+                            Text="Show full keyboard"
+                            On="{Binding Source={x:Static Calculator:App.ShowFullKeyboard}, Path=Value, Mode=TwoWay}" />
             </TableSection>
 
             <TableSection Title="Help">

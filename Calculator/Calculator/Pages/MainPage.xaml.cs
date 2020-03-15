@@ -23,11 +23,18 @@ namespace Calculator
     /* TODO:
      * v2.4.2
      * Keyboard paging
+     * Pinch keyboard to toggle full/condensed mode
      * Crash on rotation from landscape to portrait from settings page
      * Check show tips, tutorial, settings (resources)
      * Check phantom cursor dragging
      * 
+     * v2.5
+     * Flick to delete
      * Make calculations touch transparent
+     * Long press to drag (everything?) w/ haptics
+     * Double tap to highlight
+     * Global variables
+     * 
      * Android Button Touch renderer long press problems
      * Make TouchInterface use variant eventhandler
      * 
@@ -38,7 +45,6 @@ namespace Calculator
      * Basic calculator mode
      * 
      * v.?
-     * Flick to delete
      * Refactor Answer class / form switching system
      * Make it easier to see stuff on phone
      *      Scroll so cursor is always visible
@@ -102,7 +108,7 @@ namespace Calculator
             private set => SetValue(DisplayModeProperty, value);
         }
 
-        public bool Collapsed => GetValue(DisplayModeProperty) is Display displayMode && (displayMode == Display.CondensedPortrait || displayMode == Display.CondensedLandscape);
+        public bool Collapsed { get; private set; }// => GetValue(DisplayModeProperty) is Display displayMode && (displayMode == Display.CondensedPortrait || displayMode == Display.CondensedLandscape);
 
         public StackOrientation Orientation => DisplayMode == Display.CondensedLandscape ? StackOrientation.Horizontal : StackOrientation.Vertical;
 
@@ -128,14 +134,14 @@ namespace Calculator
             Text.CreateRadical = () => new Image() { Source = "radical.png", HeightRequest = 0, WidthRequest = App.TextWidth * 2, Aspect = Aspect.Fill };
 
             InitializeComponent();
-
+            
             for (double i = 0.25; i < 1; i += 0.25)
             {
                 SettingsMenuButton.Children.Add(new BoxView() { Color = Color.Black }, new Rectangle(0.5, i, 0.6, 0.075), AbsoluteLayoutFlags.All);
             }
             SettingsMenuButton.Button.Clicked += (sender, e) => App.Current.ShowSettings();
             FunctionsMenuButton.Clicked += (sender, e) => FunctionsDrawer.ChangeStatus();
-
+            
 #if DEBUG
             App.Current.SetBinding<bool, bool>(Screenshots.InSampleModeProperty, AdSpace, "IsVisible", convertBack: value => !value, mode: BindingMode.OneWayToSource);
 #endif
@@ -146,7 +152,7 @@ namespace Calculator
             /*canvas.Children.Add(new Expression(Render.Math("log_(4)-9")), new Point(100, 100));
             canvas.Children.Add(new Expression(Render.Math("log_-9(4)")), new Point(200, 200));
             canvas.Children.Add(new Expression(Render.Math("log_-9-4")), new Point(300, 300));*/
-
+            
             Variables.SetBinding<StackOrientation, StackOrientation>(StackLayout.OrientationProperty, this, "Orientation", StackLayoutExtensions.Invert);
 
             AbsoluteLayout KeyboardMask = new AbsoluteLayout
@@ -166,6 +172,17 @@ namespace Calculator
                     KeyboardMask.Remove();
                 }
             });
+
+            CrunchKeyboard.PropertyChanged += (sender, e) =>
+            {
+                if (e.PropertyName != "Collapsed")
+                {
+                    return;
+                }
+
+                Collapsed = CrunchKeyboard.Collapsed;
+                OnPropertyChanged("Collapsed");
+            };
 
             FunctionsDrawerSetup();
 
@@ -373,7 +390,7 @@ namespace Calculator
                         }
 
                         Point start;
-                        if (!Collapsed && !IsKeyboardDocked)
+                        if (DisplayMode == Display.Expanded && !IsKeyboardDocked)
                         {
                             start = new Point(TouchScreen.FirstTouch.X, FullKeyboardView.PositionOn(Screen).Y - SoftKeyboard.Cursor.Height);
                         }
@@ -394,7 +411,7 @@ namespace Calculator
             };
             CrunchKeyboard.DockButton.Touch += (sender, e) =>
             {
-                if (!Collapsed && e.State == TouchState.Moving)
+                if (DisplayMode == Display.Expanded && e.State == TouchState.Moving)
                 {
                     DockKeyboard(false);
 
@@ -514,7 +531,7 @@ namespace Calculator
             Point delta = new Point(LastScroll.X - e.ScrollX, LastScroll.Y - e.ScrollY);
             LastScroll = new Point(e.ScrollX, e.ScrollY);
 
-            if (!Collapsed && IsKeyboardDocked)
+            if (DisplayMode == Display.Expanded && IsKeyboardDocked)
             {
                 FullKeyboardView.MoveTo(FullKeyboardView.X + delta.X, FullKeyboardView.Y + delta.Y);
             }
@@ -524,7 +541,7 @@ namespace Calculator
 
         private void AdjustKeyboardPosition()
         {
-            if (!Collapsed && IsKeyboardDocked && CalculationFocus != null)
+            if (DisplayMode == Display.Expanded && IsKeyboardDocked && CalculationFocus != null)
             {
                 Point offset = CanvasScroll.PositionOn(FullKeyboardView.Parent<View>());
                 FullKeyboardView.MoveTo(CalculationFocus.X - CanvasScroll.ScrollX + offset.X, CalculationFocus.Y + CalculationFocus.Height - CanvasScroll.ScrollY + offset.Y);
@@ -636,7 +653,7 @@ namespace Calculator
             {
                 Link link = new Link(answer);
                 link.MathContent.Touch += DragLink;
-                TouchScreen.BeginDrag(link, Screen, answer);
+                TouchScreen.BeginDrag(link, CanvasArea, answer);
                 StartDraggingLink(link);
             }
         }
@@ -649,7 +666,7 @@ namespace Calculator
                 {
                     StartDraggingLink(link);
                 }
-                TouchScreen.BeginDrag(link, Screen);
+                TouchScreen.BeginDrag(link, CanvasArea);
             }
         }
 
@@ -659,6 +676,11 @@ namespace Calculator
 
             TouchScreen.Dragging += (sender, e) =>
             {
+                if (link.Parent == null)
+                {
+                    return;
+                }
+
                 Tuple<Expression, int> target = ExampleDrop(link);
 
                 if (e.Value == DragState.Moving && target != null)
@@ -769,7 +791,7 @@ namespace Calculator
 
             //Get the coordinates of the cursor relative to the entire screen
             Point loc;
-            Point temp = new Point(CanvasScroll.ScrollX + dragging.X + dragging.Width / 2, CanvasScroll.ScrollY + dragging.Y + dragging.Height / 2).Subtract(CanvasScroll.PositionOn(Screen));
+            Point temp = dragging.PositionOn(Screen).Add(new Point(dragging.Width / 2, dragging.Height / 2)).Subtract(Canvas.PositionOn(Screen));// new Point(CanvasScroll.ScrollX + dragging.X + dragging.Width / 2, CanvasScroll.ScrollY + dragging.Y + dragging.Height / 2).Subtract(CanvasScroll.PositionOn(Screen));
             View view = GetViewAt(Canvas, temp, out loc);
             // Try this instead?
             //Canvas.GetChildElements(temp);
@@ -869,7 +891,7 @@ namespace Calculator
             }
             if (oldDisplayMode == Display.Expanded || newDisplayMode == Display.Expanded)
             {
-                MethodCall("Collapsed");
+                //MethodCall("Collapsed");
             }
         }
     }

@@ -6,6 +6,8 @@ using Foundation;
 using UIKit;
 using Google.MobileAds;
 
+using Xamarin.Forms;
+
 namespace Calculator.iOS
 {
     // The UIApplicationDelegate for the application. This class is responsible for launching the 
@@ -31,10 +33,10 @@ namespace Calculator.iOS
             LoadApplication(new App());
 
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init();
-            FFImageLoading.Forms.Platform.CachedImageRenderer.InitImageSourceHandler();
+            //FFImageLoading.Forms.Platform.CachedImageRenderer.InitImageSourceHandler();
 
 #if DEBUG
-            Xamarin.Forms.Extensions.BindableObjectExtensions.WhenPropertyChanged(App.Current, Screenshots.InSampleModeProperty, (sender, e) => UIApplication.SharedApplication.StatusBarHidden = App.Current.GetInSampleMode());
+            Xamarin.Forms.Application.Current.WhenPropertyChanged(Screenshots.InSampleModeProperty, (sender, e) => UIApplication.SharedApplication.StatusBarHidden = App.Current.GetInSampleMode());
 #endif
             
             return base.FinishedLaunching(app, options);

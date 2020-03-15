@@ -12,9 +12,20 @@ using Xamarin.Forms.Extensions;
 using CoreGraphics;
 
 [assembly: ExportRenderer(typeof(TouchableStackLayout), typeof(Calculator.iOS.TouchableStackLayoutRenderer))]
+//[assembly: ExportRenderer(typeof(View), typeof(Calculator.iOS.TouchEnabledViewRenderer))]
 
 namespace Calculator.iOS
 {
+    public class TouchEnabledViewRenderer : ViewRenderer<View, UIView>
+    {
+        protected Touch Touch;
+
+        public TouchEnabledViewRenderer()
+        {
+            Touch = new Touch(this);
+        }
+    }
+
     public class TouchEnabledVisualElementRenderer<TElement> : VisualElementRenderer<TElement>
         where TElement : VisualElement
     {
@@ -27,7 +38,7 @@ namespace Calculator.iOS
 
         public static Touch Create(IVisualElementRenderer renderer) => new Touch(renderer);
 
-        public override void TouchesBegan(NSSet touches, UIEvent evt) => Touch.TouchesBegan(touches, evt);
+        /*public override void TouchesBegan(NSSet touches, UIEvent evt) => Touch.TouchesBegan(touches, evt);
 
         public override void TouchesMoved(NSSet touches, UIEvent evt) => Touch.TouchesMoved(touches, evt);
 
@@ -35,7 +46,7 @@ namespace Calculator.iOS
 
         public override void TouchesCancelled(NSSet touches, UIEvent evt) => Touch.TouchesCancelled(touches, evt);
 
-        public override UIView HitTest(CGPoint point, UIEvent uievent) => Touch.HitTest(point, uievent);
+        public override UIView HitTest(CGPoint point, UIEvent uievent) => Touch.HitTest(point, uievent);*/
     }
 
     public class TouchableStackLayoutRenderer : VisualElementRenderer<StackLayout>

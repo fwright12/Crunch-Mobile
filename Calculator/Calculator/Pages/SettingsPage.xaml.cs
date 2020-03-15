@@ -27,9 +27,6 @@ namespace Calculator
                 new LabeledCell("Trigonometry:", Trig = new Selector(Enum.GetNames(typeof(Crunch.Trigonometry))))
             });
 
-            Numbers.Selected += (selected) => App.Numbers.Value = (Crunch.Numbers)selected;
-            Trig.Selected += (selected) => App.Trigonometry.Value = (Crunch.Trigonometry)selected;
-
 #if DEBUG
             SwitchCell sampleMode;
 
@@ -57,15 +54,29 @@ namespace Calculator
 
             LogBase.Selected += (selected) => App.LogarithmBase.Value = selected == 0 ? 2 : 10;
 
-            ShowFullKeyboard.OnChanged += (sender, e) =>
+            Numbers.Selected += (selected) => App.Numbers.Value = (Crunch.Numbers)selected;
+            Trig.Selected += (selected) => App.Trigonometry.Value = (Crunch.Trigonometry)selected;
+
+            /*DecimalStepper.RemoveBinding(Stepper.ValueProperty);
+            DecimalStepper.Bind<double>(Stepper.ValueProperty, value => App.DecimalPlaces.Value = (int)value);*/
+#if ANDROID
+            ShowFullKeyboard.RemoveBinding(SwitchCell.OnProperty);
+            ShowFullKeyboard.Bind<bool>(SwitchCell.OnProperty, value => App.ShowFullKeyboard.Value = value);
+            App.ShowFullKeyboard.Bind<bool>(App.ShowFullKeyboard.ValueProperty, value => ShowFullKeyboard.On = value);
+#endif
+            //clearc.RemoveBinding(SwitchCell.OnProperty);
+            //ShowFullKeyboard.Bind<bool>(SwitchCell.OnProperty, value => App.ShowFullKeyboard.Value = value);
+
+            /*ShowFullKeyboard.OnChanged += (sender, e) =>
             {
+                App.ShowFullKeyboard.Value = e.Value;
                 if (ShowFullKeyboard.IsEnabled)
                 {
-                    App.ShowFullKeyboard.Value = e.Value;
+                    
                 }
-            };
-            ShowFullKeyboard.BindingContext = App.Current.Home;
-            ShowFullKeyboard.SetBinding(Cell.IsEnabledProperty, "Collapsed", converter: new ValueConverter<bool>((b) => !b));
+            };*/
+            //ShowFullKeyboard.BindingContext = App.Current.Home;
+            //ShowFullKeyboard.SetBinding(Cell.IsEnabledProperty, "Collapsed", converter: new ValueConverter<bool>((b) => !b));
             //App.Current.WhenPropertyChanged(DrawerPage.CollapsedProperty, (sender, e) => RefreshShowFullKeyboard());
 
             TutorialTextCell.Tapped += async (sender, e) =>
@@ -91,7 +102,7 @@ namespace Calculator
 
             ResetViewCell.Tapped += async (sender, e) =>
             {
-                if (await Application.Current.MainPage.DisplayAlert("Wait!", "This will reset all settings to their default values. This cannot be undone. Are you sure you want to continue?", "Yes", "No"))
+                if (await Application.Current.MainPage.DisplayAlert("Wait!", "This will reset all settings to their default values. Are you sure you want to continue?", "Yes", "No"))
                 {
                     ResetToDefault();
                     Refresh();
@@ -108,7 +119,7 @@ namespace Calculator
             Numbers.Select((int)App.Numbers.Value);
             Trig.Select((int)App.Trigonometry.Value);
 
-            ShowFullKeyboard.On = App.Current.Home.Collapsed ? false : App.ShowFullKeyboard.Value;
+            //ShowFullKeyboard.On = App.Current.Home.Collapsed ? false : App.ShowFullKeyboard.Value;
         }
 
         private void ResetToDefault()

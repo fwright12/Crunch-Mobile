@@ -11,7 +11,6 @@ public class MainActivity
 	static {
 		__md_methods = 
 			"n_onCreate:(Landroid/os/Bundle;)V:GetOnCreate_Landroid_os_Bundle_Handler\n" +
-			"n_startSupportActionMode:(Landroid/support/v7/view/ActionMode$Callback;)Landroid/support/v7/view/ActionMode;:GetStartSupportActionMode_Landroid_support_v7_view_ActionMode_Callback_Handler\n" +
 			"";
 		mono.android.Runtime.register ("Calculator.Droid.MainActivity, Calculator.Android", MainActivity.class, __md_methods);
 	}
@@ -25,20 +24,20 @@ public class MainActivity
 	}
 
 
+	public MainActivity (int p0)
+	{
+		super (p0);
+		if (getClass () == MainActivity.class)
+			mono.android.TypeManager.Activate ("Calculator.Droid.MainActivity, Calculator.Android", "System.Int32, mscorlib", this, new java.lang.Object[] { p0 });
+	}
+
+
 	public void onCreate (android.os.Bundle p0)
 	{
 		n_onCreate (p0);
 	}
 
 	private native void n_onCreate (android.os.Bundle p0);
-
-
-	public android.support.v7.view.ActionMode startSupportActionMode (android.support.v7.view.ActionMode.Callback p0)
-	{
-		return n_startSupportActionMode (p0);
-	}
-
-	private native android.support.v7.view.ActionMode n_startSupportActionMode (android.support.v7.view.ActionMode.Callback p0);
 
 	private java.util.ArrayList refList;
 	public void monodroidAddReference (java.lang.Object obj)

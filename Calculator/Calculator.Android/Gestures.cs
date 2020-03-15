@@ -45,14 +45,14 @@ namespace Calculator.Droid
             TouchInterface = view.GetTouchInterface();
         }
 
-        public virtual bool DispatchTouchEvent(MotionEvent e) => (NativeView as ViewGroup)?.DispatchTouchEvent(e) ?? false;
+        public virtual bool DispatchTouchEvent(MotionEvent e) => false;
 
-        public virtual bool OnInterceptTouchEvent(MotionEvent ev) => (NativeView as ViewGroup)?.OnInterceptTouchEvent(ev) ?? false;
+        public virtual bool OnInterceptTouchEvent(MotionEvent ev) => false;
 
         public virtual bool OnTouchEvent(MotionEvent e)
         {
             TouchInterface?.OnTouch(SharedView, new TouchEventArgs(GetTouchLocation(e), e.Action.Convert()));
-            return GestureDetector.OnTouchEvent(e) | NativeView.OnTouchEvent(e);
+            return GestureDetector.OnTouchEvent(e);// | (NativeView as Android.Views.View).OnTouchEvent(e);
         }
 
         public virtual bool OnDown(MotionEvent e) => false;

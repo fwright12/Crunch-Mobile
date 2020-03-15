@@ -18,6 +18,9 @@ namespace Calculator {
     public partial class MainPage : global::Xamarin.Forms.ContentPage {
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
+        private global::Xamarin.Forms.ContentPage self;
+        
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
         private global::Xamarin.Forms.AbsoluteLayout Screen;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
@@ -27,11 +30,56 @@ namespace Calculator {
         private global::Xamarin.Forms.ScrollView CanvasScroll;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
+        private global::Calculator.Canvas Canvas;
+        
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
+        private global::Calculator.AnythingButton SettingsMenuButton;
+        
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
+        private global::Xamarin.Forms.ContentView AdSpace;
+        
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
+        private global::Xamarin.Forms.Button FunctionsMenuButton;
+        
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
+        private global::Xamarin.Forms.MathDisplay.CursorView PhantomCursor;
+        
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
+        private global::Xamarin.Forms.StackLayout FullKeyboardView;
+        
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
+        private global::Calculator.FunctionsDrawer FunctionsDrawer;
+        
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
+        private global::Xamarin.Forms.Extensions.TouchableStackLayout KeyboardAndVariables;
+        
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
+        private global::Calculator.VariableRow Variables;
+        
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
+        private global::Calculator.CrunchKeyboard CrunchKeyboard;
+        
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
+        private global::Calculator.AddFunction AddFunctionLayout;
+        
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
         private void InitializeComponent() {
             global::Xamarin.Forms.Xaml.Extensions.LoadFromXaml(this, typeof(MainPage));
+            self = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.ContentPage>(this, "self");
             Screen = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.AbsoluteLayout>(this, "Screen");
             CanvasArea = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.AbsoluteLayout>(this, "CanvasArea");
             CanvasScroll = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.ScrollView>(this, "CanvasScroll");
+            Canvas = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Calculator.Canvas>(this, "Canvas");
+            SettingsMenuButton = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Calculator.AnythingButton>(this, "SettingsMenuButton");
+            AdSpace = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.ContentView>(this, "AdSpace");
+            FunctionsMenuButton = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Button>(this, "FunctionsMenuButton");
+            PhantomCursor = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.MathDisplay.CursorView>(this, "PhantomCursor");
+            FullKeyboardView = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.StackLayout>(this, "FullKeyboardView");
+            FunctionsDrawer = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Calculator.FunctionsDrawer>(this, "FunctionsDrawer");
+            KeyboardAndVariables = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Extensions.TouchableStackLayout>(this, "KeyboardAndVariables");
+            Variables = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Calculator.VariableRow>(this, "Variables");
+            CrunchKeyboard = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Calculator.CrunchKeyboard>(this, "CrunchKeyboard");
+            AddFunctionLayout = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Calculator.AddFunction>(this, "AddFunctionLayout");
         }
     }
 }

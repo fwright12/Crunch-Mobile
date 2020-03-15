@@ -68,7 +68,7 @@ namespace Calculator.iOS
 
             renderer.ElementChanged += ElementChanged;
             ElementChanged(NativeView, new VisualElementChangedEventArgs(null, SharedView as VisualElement));
-
+            
             /*UILongPressGestureRecognizer longPress = new UILongPressGestureRecognizer { };
             longPress.AddTarget(() =>
             {
@@ -98,15 +98,15 @@ namespace Calculator.iOS
                 new Pair(GestureExtensions.LongClickEventProperty, LongPress)));*/
         }
 
-        public virtual UIView HitTest(CGPoint point, UIEvent uievent) => Renderer.NativeView.HitTest(point, uievent);
+        //public virtual UIView HitTest(CGPoint point, UIEvent uievent) => Renderer.NativeView.HitTest(point, uievent);
 
-        public virtual void TouchesBegan(NSSet touches, UIEvent evt) => Renderer.NativeView.TouchesBegan(touches, evt);
+        public virtual void TouchesBegan(NSSet touches, UIEvent evt) { }
 
-        public virtual void TouchesCancelled(NSSet touches, UIEvent evt) => Renderer.NativeView.TouchesCancelled(touches, evt);
+        public virtual void TouchesCancelled(NSSet touches, UIEvent evt) { }
 
-        public virtual void TouchesEnded(NSSet touches, UIEvent evt) => Renderer.NativeView.TouchesEnded(touches, evt);
+        public virtual void TouchesEnded(NSSet touches, UIEvent evt) { }
 
-        public virtual void TouchesMoved(NSSet touches, UIEvent evt) => Renderer.NativeView.TouchesMoved(touches, evt);
+        public virtual void TouchesMoved(NSSet touches, UIEvent evt) { }
 
         protected virtual void ElementChanged(object sender, VisualElementChangedEventArgs e)
         {

@@ -27,6 +27,7 @@ public class MonoPackageManager_Resources {
 		"Xamarin.Android.Support.Core.UI.dll",
 		"Xamarin.Android.Support.Core.Utils.dll",
 		"Xamarin.Android.Support.CursorAdapter.dll",
+		"Xamarin.Android.Support.CustomTabs.dll",
 		"Xamarin.Android.Support.CustomView.dll",
 		"Xamarin.Android.Support.Design.dll",
 		"Xamarin.Android.Support.DocumentFile.dll",

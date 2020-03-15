@@ -42,14 +42,8 @@ namespace Calculator
 
         public FFImageLoadingImage()
         {
-            void InvokeLoadedOnSizeChange(object sender, EventArgs e)
-            {
-                Loaded?.Invoke(this, new EventArgs<bool>(true));
-                SizeChanged -= InvokeLoadedOnSizeChange;
-            }
-
-            Success += (sender, e) => SizeChanged += InvokeLoadedOnSizeChange;
-            Error += (sender, e) => Loaded?.Invoke(this, new EventArgs<bool>(false));
+            Success += (sender, e) => Device.BeginInvokeOnMainThread(() => Loaded?.Invoke(this, new EventArgs<bool>(true)));
+            Error += (sender, e) => Device.BeginInvokeOnMainThread(() => Loaded?.Invoke(this, new EventArgs<bool>(false)));
         }
     }
 }

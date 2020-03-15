@@ -68,7 +68,7 @@ namespace Calculator
         }
     }
 
-    public class CrunchKeyboard : StackLayout, IEnumerable<Key>, ISoftKeyboard
+    public class CrunchKeyboard : TouchableStackLayout, IEnumerable<Key>, ISoftKeyboard
     {
         public event KeystrokeEventHandler Typed;
         public event EventHandler OnscreenSizeChanged;
@@ -102,11 +102,11 @@ namespace Calculator
 
         private readonly int MAX_BUTTON_SIZE = 75;
         private readonly double PERMANENT_KEYS_INCREASE = 1.25;
-        private readonly int MIN_COLUMNS = 4;
+        private int MIN_COLUMNS = 4;
 
         //public int Rows => Keys.Length + this.Orient(0, 1);
         //public double MaxColumns => Keys[0].Length + this.Orient(PERMANENT_KEYS_INCREASE, 0);
-        public double Columns => this.Orient((IsCondensed ? MIN_COLUMNS : Keys[0].Length) + PERMANENT_KEYS_INCREASE, MIN_COLUMNS);
+        //public double Columns => this.Orient((IsCondensed ? MIN_COLUMNS : Keys[0].Length) + PERMANENT_KEYS_INCREASE, MIN_COLUMNS);
         //public bool ShowingFullKeyboard => !App.IsCondensed && Settings.ShouldShowFullKeyboard;
 
         private readonly ScrollView Scroll;
@@ -215,8 +215,22 @@ namespace Calculator
                 }
             }
 
+            this.AddContinuousTouchListener<TouchEventArgs>(Gesture.Pinch, (sender, e) =>
+            {
+                if (e.State == TouchState.Up)
+                {
+                    App.ShowFullKeyboard.Value = !App.ShowFullKeyboard.Value;
+                }
+            });
+
+            Scroll.SetBounces(false);
+
             Keypad.SetBinding<double, double>(WidthRequestProperty, Keypad, "Height", value => PaddedButtonsWidth(Keys[0].Length, ButtonWidth(value, Keys.Length)));
-            Keypad.WhenPropertyChanged(WidthProperty, (sender, e) => ResetScroll());
+            Keypad.WhenPropertyChanged(WidthProperty, (sender, e) =>
+            {
+                ResetScroll();
+            });
+            Keypad.Children[0].Bind<double>(WidthProperty, value => Scroll.SetPagingInterval(value + Keypad.ColumnSpacing));
 
             App.Current.MainPage.SizeChanged += (sender, e) => ScreenSizeChanged();
             App.ShowFullKeyboard.WhenPropertyChanged(App.ShowFullKeyboard.ValueProperty, (sender, e) => ScreenSizeChanged());
@@ -252,6 +266,8 @@ namespace Calculator
             ScreenSizeChanged();
         }
 
+        public bool Collapsed { get; private set; }
+
         private void ScreenSizeChanged()
         {
             Size bounds = App.Current.MainPage.Bounds.Size;
@@ -275,6 +291,12 @@ namespace Calculator
 
             DockButton.Text = collapsed ? "" : "\u25BD"; //white down-pointing triangle
             DockButton.IsEnabled = !collapsed;
+
+            if (Collapsed != collapsed)
+            {
+                Collapsed = collapsed;
+                OnPropertyChanged("Collapsed");
+            }
         }
 
         public Size MeasureOnscreenSize(double width, double height)
@@ -355,6 +377,7 @@ namespace Calculator
 
             bool idealOrientation = CondensedOrientation == StackOrientation.Horizontal;
             double rows = Keys.Length + (!idealOrientation).ToInt();
+            MIN_COLUMNS = App.ShowFullKeyboard.Value && idealOrientation ? Keys[0].Length : 4;
             double cols = MIN_COLUMNS + idealOrientation.ToInt() * PERMANENT_KEYS_INCREASE;
 
             // Determine if the condensed size is smaller if we make it as wide as possible or a tall as possible. Could probably be more efficient by comparing ratio of width / height to cols / rows

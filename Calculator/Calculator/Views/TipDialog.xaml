@@ -5,10 +5,8 @@
                       xmlns:d="http://xamarin.com/schemas/2014/forms/design"
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                       xmlns:Extensions="clr-namespace:Xamarin.Forms;assembly=Xamarin.Forms.Extensions"
-                      xmlns:FFImageLoading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
                       mc:Ignorable="d"
                       x:Class="Calculator.TipDialog">
-
     <ContentView.Content>
         <StackLayout Orientation="Vertical">
             <StackLayout Orientation="Horizontal">
@@ -26,7 +24,7 @@
             <Extensions:WebImage x:Name="GIF"
                                  VerticalOptions="FillAndExpand">
                 <x:Arguments>
-                    <Image IsAnimationPlaying="True" />
+                    <Calculator:FFImageLoadingImage />
                 </x:Arguments>
             </Extensions:WebImage>
 

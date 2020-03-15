@@ -28,11 +28,11 @@ namespace Calculator.Droid
             TouchImplementation = new Touch(context, this);
         }
 
-        public override bool DispatchTouchEvent(MotionEvent e) => TouchImplementation.DispatchTouchEvent(e);
+        public override bool DispatchTouchEvent(MotionEvent e) => TouchImplementation.DispatchTouchEvent(e) | base.DispatchTouchEvent(e);
 
-        public override bool OnInterceptTouchEvent(MotionEvent ev) => TouchImplementation.OnInterceptTouchEvent(ev);
+        public override bool OnInterceptTouchEvent(MotionEvent ev) => TouchImplementation.OnInterceptTouchEvent(ev) | base.OnInterceptTouchEvent(ev);
 
-        public override bool OnTouchEvent(MotionEvent e) => TouchImplementation.OnTouchEvent(e);
+        public override bool OnTouchEvent(MotionEvent e) => TouchImplementation.OnTouchEvent(e) | base.OnTouchEvent(e);
     }
 
     public class TouchableStackLayoutRenderer : VisualElementRenderer<StackLayout>

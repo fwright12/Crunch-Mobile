@@ -44,7 +44,7 @@ namespace Calculator
         private void CollapsedChanged(bool collapsed)
         {
             Print.Log("app layout changed", Home.Collapsed, Root.IsPresented);
-
+            
             if (collapsed && Root.IsPresented)
             {
                 Root.IsPresented = false;
@@ -108,6 +108,8 @@ namespace Calculator
             {
                 HorizontalOptions = LayoutOptions.Center,
                 VerticalOptions = LayoutOptions.Center,
+                WidthRequest = 400,
+                HeightRequest = 400
             };
 
             tutorial.Completed += () =>
@@ -155,7 +157,7 @@ namespace Calculator
                 NavigationPage.SetHasNavigationBar(Home, false);
                 TouchScreen.Instance = Home;
                 Home.Bind<bool>("Collapsed", value => CollapsedChanged(value));
-                
+
                 if (ShouldRunTutorial.Value)
                 {
                     RunTutorial();
@@ -177,13 +179,15 @@ namespace Calculator
                     {
                         int index = list[new Random().Next(list.Count)];
                         var tip = Tips[index];
-                        
+
                         (Home.Content as AbsoluteLayout)?.Children.Add(new TipDialog
                         {
                             Explanation = tip.Item2,
                             URL = tip.Item3,
                             HorizontalOptions = LayoutOptions.Center,
                             VerticalOptions = LayoutOptions.Center,
+                            WidthRequest = 400,
+                            HeightRequest = 400
                         }, new Rectangle(0.5, 0.5, 0.75, 0.75), AbsoluteLayoutFlags.All);
                         tip.Item1.Value = true;
                     }

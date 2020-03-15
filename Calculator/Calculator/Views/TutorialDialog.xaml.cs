@@ -28,6 +28,8 @@ namespace Calculator
         {
             InitializeComponent();
 
+            DescriptionLabel.SetBinding<bool, int>(IsVisibleProperty, DescriptionLabel, "Text.Length", value => value > 0);
+
             Next.Clicked += (sender, e) =>
             {
                 if (Step + 1 == info.Count + 1)
@@ -87,7 +89,7 @@ namespace Calculator
 #endif
         }
 
-        private bool ImagesPreloaded = false;
+        private static bool ImagesPreloaded = false;
 
         private void Set(int step)
         {
@@ -98,11 +100,9 @@ namespace Calculator
 
             Back.IsEnabled = step > 0;
             Next.Text = step + 1 == info.Count + 1 ? "Done" : "Next";
-            Description.Text = step > 0 ? info[step - 1][1] : "";
+            DescriptionLabel.Text = step > 0 ? info[step - 1][1] : "";
 
-            Step = step;
-
-            Showing.Content = Screens[step];
+            Showing.Content = Screens[Step = step];
         }
     }
 }
