@@ -30,7 +30,14 @@ namespace Calculator
 
             GIF.ErrorLabel.Text = "Hmm...having trouble loading this image\n\nTap to try again,\nor head over to settings to view this tip and many others!";
             //GIF.ErrorLabel.Text += "\n\n(all tips can also be viewed in settings)";
-            TapDismiss.Tapped += (sender, e) => this.Remove();
+            TapDismiss.Tapped += (sender, e) =>
+            {
+                //ContentPage page = this.Root<ContentPage>();
+                //View content = page.Content;
+                this.Remove();
+                //page.Content = null;
+                //page.Content = content;
+            };
         }
     }
 

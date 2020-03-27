@@ -79,6 +79,7 @@ public class MonoPackageManager_Resources {
 		"Xamarin.AndroidX.VersionedParcelable.dll",
 		"Xamarin.AndroidX.ViewPager.dll",
 		"Xamarin.Google.Android.Material.dll",
+		"Calculator.Android.dll",
 		"Crunch.dll",
 		"Crunch.Machine.dll",
 		"FFImageLoading.dll",
@@ -100,7 +101,6 @@ public class MonoPackageManager_Resources {
 		"Xamarin.GooglePlayServices.Basement.dll",
 		"Xamarin.GooglePlayServices.Measurement.Base.dll",
 		"Xamarin.GooglePlayServices.Measurement.Sdk.Api.dll",
-		"Calculator.Android.dll",
 	};
 	public static String[] Dependencies = new String[]{
 	};

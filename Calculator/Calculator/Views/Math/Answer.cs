@@ -53,6 +53,7 @@ namespace Calculator
         private Polynomials actualPolynomialForm;
         private Numbers actualNumbersForm;
 
+        public Operand RawAnswer { get; private set; }
         public Operand answer { get; private set; }
         private Expression[,,] allFormats = new Expression[2, 2, 2];
         private List<Operand> formats = new List<Operand>();
@@ -138,6 +139,7 @@ namespace Calculator
 
             allFormats = new Expression[2, 2, 2];
 
+            RawAnswer = answer;
             Operand old = this.answer;
             if (answer != null)
             {

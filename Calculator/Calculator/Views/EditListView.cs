@@ -191,10 +191,7 @@ namespace Calculator
                     Padding = new Thickness(25, 0, 25, 0),
                     Children =
                     {
-                        (Selected = new CheckBox
-                        {
-                            Color = CrunchStyle.CRUNCH_PURPLE,
-                        }),
+                        (Selected = new CheckBox { }),
                         ViewHolder,
                     },
                 };

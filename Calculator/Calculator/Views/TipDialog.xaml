@@ -38,7 +38,7 @@
 
                 <CheckBox VerticalOptions="Center"
                           IsChecked="{Binding Source={x:Static Calculator:App.ShowTips}, Path=Value, Mode=TwoWay}"
-                          Color="{x:Static Calculator:CrunchStyle.CRUNCH_PURPLE}" />
+                          Color="{x:Static Calculator:App.CRUNCH_PURPLE}" />
             </StackLayout>
 
             <Label x:Name="Dismiss"

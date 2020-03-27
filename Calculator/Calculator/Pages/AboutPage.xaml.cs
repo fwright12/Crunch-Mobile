@@ -16,7 +16,7 @@ namespace Calculator
         {
             InitializeComponent();
 
-            Padding = new Thickness(CrunchStyle.PAGE_PADDING).MakeSafe(this);
+            Padding = new Thickness(App.PAGE_PADDING).MakeSafe(this);
         }
     }
 }

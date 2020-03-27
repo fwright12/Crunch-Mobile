@@ -47,7 +47,7 @@ namespace Calculator
             {
                 foreach(TextCell textCell in section.OfType<TextCell>())
                 {
-                    textCell.TextColor = CrunchStyle.TEXT_COLOR;
+                    textCell.TextColor = App.TEXT_COLOR;
                 }
             }
 #endif

@@ -1685,7 +1685,7 @@
           "lib/MonoAndroid10/FFImageLoading.Forms.dll": {}
         }
       },
-      "Xamarin.Forms/4.4.0.991757": {
+      "Xamarin.Forms/4.4.0.991864": {
         "type": "package",
         "dependencies": {
           "Xamarin.Android.Support.CustomTabs": "28.0.0.3",
@@ -3665,10 +3665,10 @@
         "xamarin.ffimageloading.forms.nuspec"
       ]
     },
-    "Xamarin.Forms/4.4.0.991757": {
-      "sha512": "2bxS/5K9yQqxhee3WEpTFmve8PAk5d+iHJhMuquLGxzcrIot+W/vaVsTfGfVcfpMwqVfUWl7+NKt/vJhIEtMEg==",
+    "Xamarin.Forms/4.4.0.991864": {
+      "sha512": "pzalzoKzCqBxd+litzUK/yqko1+e6ziuWLcmBztD7p1y0kFm+ADSqUsg3WmK5zrrXIfUTSDz7IT4gTntfeIubQ==",
       "type": "package",
-      "path": "xamarin.forms/4.4.0.991757",
+      "path": "xamarin.forms/4.4.0.991864",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -3911,7 +3911,7 @@
         "lib/uap10.0/Xamarin.Forms.Xaml.dll",
         "lib/uap10.0/Xamarin.Forms.Xaml.pdb",
         "lib/uap10.0/Xamarin.Forms.Xaml.xml",
-        "xamarin.forms.4.4.0.991757.nupkg.sha512",
+        "xamarin.forms.4.4.0.991864.nupkg.sha512",
         "xamarin.forms.nuspec"
       ]
     },
@@ -4049,7 +4049,7 @@
       "Xamarin.AndroidX.MediaRouter >= 1.1.0",
       "Xamarin.FFImageLoading >= 2.4.11.982",
       "Xamarin.FFImageLoading.Forms >= 2.4.11.982",
-      "Xamarin.Forms >= 4.4.0.991757",
+      "Xamarin.Forms >= 4.4.0.991864",
       "Xamarin.Forms.Extensions >= 1.0.0",
       "Xamarin.Forms.MathDisplay >= 1.0.0",
       "Xamarin.Google.Android.Material >= 1.0.0",
@@ -4172,7 +4172,7 @@
           },
           "Xamarin.Forms": {
             "target": "Package",
-            "version": "[4.4.0.991757, )"
+            "version": "[4.4.0.991864, )"
           },
           "Xamarin.Google.Android.Material": {
             "target": "Package",

@@ -33,7 +33,12 @@ namespace Calculator.iOS
                 });
             }*/
             //Control.InsetsContentViewsToSafeArea = false;
-            e.NewElement.SetNativeImplementation(Scrollable.NativeScrollImplementationProperty, ScrollToRequest);
+            e.NewElement?.SetNativeImplementation(Scrollable.NativeScrollImplementationProperty, ScrollToRequest);
+
+            if (Control == null)
+            {
+                return;
+            }
             Control.InsetsContentViewsToSafeArea = false;
             Control.InsetsLayoutMarginsFromSafeArea = false;
             //Scrollable.ScrollRequestProperty.ListenFor(ScrollToRequest, e.OldElement, e.NewElement);

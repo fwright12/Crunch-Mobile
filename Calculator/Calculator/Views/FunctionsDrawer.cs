@@ -167,8 +167,8 @@ namespace Calculator
         private readonly AddFunction AddFunctionLayout;
         private readonly View Drawer;
 
-        private readonly AnyVisualState ClosedState;
-        private readonly List<double> OpenValues;
+        //private readonly AnyVisualState ClosedState;
+        //private readonly List<double> OpenValues;
         private readonly string SAVED_FUNCTIONS_FILE_NAME = "functions.txt";
 
         private ObservableCollection<FunctionViewModel> Functions;
@@ -187,12 +187,13 @@ namespace Calculator
             Drawer = this;
             Keyboard = keyboard;
             AddFunctionLayout = addFunctionLayout;
+            CornerRadius = 0;
 
             ActionableListView listView;
             Label noFunctions;
             BoxView cover = null;
 
-            ClosedState = new AnyVisualState
+            /*ClosedState = new AnyVisualState
             {
                 Setters =
                 {
@@ -202,8 +203,8 @@ namespace Calculator
                     new AnySetter<double> { Action = value => Keyboard.Margin = new Thickness(0, value, 0, 0), Value = 0 },
                 }
             };
-            OpenValues = new List<double> { 20, 1, 0, 20 };
-            
+            OpenValues = new List<double> { 20, 1, 0, 20 };*/
+
             BackgroundColor = Color.Transparent;
             Padding = new Thickness(0);
             HasShadow = false;
@@ -278,7 +279,7 @@ namespace Calculator
                     {
                         (cover = new BoxView
                         {
-                            BackgroundColor = CrunchStyle.BACKGROUND_COLOR,
+                            BackgroundColor = App.BACKGROUND_COLOR,
                             InputTransparent = true,
                         }),
                         new Rectangle(0.5, 1, 1, -1),
@@ -286,6 +287,59 @@ namespace Calculator
                     }
                 }
             };
+
+            VisualStateManager.GetVisualStateGroups(this).Add(new VisualStates("Open", "Closed")
+            {
+                new Setters { Property = CornerRadiusProperty, Values = { 20, 0 } },
+                new Setters { Property = BackgroundColorProperty, Values = { new Color(255, 255, 255, 1), new Color(255, 255, 255, 0) } },
+                new TargetedSetters
+                {
+                    Target = Keyboard,
+                    Setters =
+                    {
+                        new Setters { Property = MarginProperty, Values = { new Thickness(0, 20, 0, 0), new Thickness(0) } }
+                    }
+                },
+                new TargetedSetters
+                {
+                    Target = cover,
+                    Setters =
+                    {
+                        new Setters { Property = OpacityProperty, Values = { 0, 1 } }
+                    }
+                }
+            });
+            
+            /*VisualStateManager.GetVisualStateGroups(this).Add(new VisualStateGroup
+            {
+                States =
+                {
+                    new VisualState
+                    {
+                        Name = "Open",
+                        Setters =
+                        {
+                            new Setter { Property = CornerRadiusProperty, Value = 20 },
+                            new Setter { Property = BackgroundColorProperty, Value = new Color(255, 255, 255, 1) },
+                            //new Setter { Property = HeightRequestProperty, Value = 600 },
+                            new Setter<Thickness> { Target = Keyboard, Property = MarginProperty, Value = new Thickness(0, 20, 0, 0) },
+                            new Setter<double> { Target = cover, Property = OpacityProperty, Value = 0 }
+                        }
+                    },
+                    new VisualState
+                    {
+                        Name = "Closed",
+                        Setters =
+                        {
+                            new Setter { Property = CornerRadiusProperty, Value = 0 },
+                            new Setter { Property = BackgroundColorProperty, Value = new Color(255, 255, 255, 0) },
+                            //new Setter { Property = HeightRequestProperty, Value = 300 },
+                            new Setter<Thickness> { Target = Keyboard, Property = MarginProperty, Value = new Thickness(0, 0, 0, 0) },
+                            new Setter<double> { Target = cover, Property = OpacityProperty, Value = 1 }
+                        }
+                    }
+                }
+            });*/
 
             FunctionsList.ListView.GetSwipeListener().Drawer = Drawer;
 
@@ -321,7 +375,7 @@ namespace Calculator
             FunctionsList.Add.Clicked += (sender, e) => EditFunctionAt();
             AddFunctionLayout.WhenPropertyChanged(IsVisibleProperty, (sender, e) =>
             {
-                ChangeStatus();
+                ChangeStatus(true);
             });
 
             FunctionsList.ListView.ItemTapped += (sender, e) =>
@@ -331,7 +385,7 @@ namespace Calculator
                     return;
                 }
 
-                ChangeStatus();
+                ChangeStatus(true);
                 DropFunction((FunctionViewModel)e.Item);
             };
             listView.ContextActionClicked += (sender, e) =>
@@ -342,13 +396,14 @@ namespace Calculator
                 }
             };
 
+            Action<double> Transition = this.AnimationToState("Closed", "Open").GetCallback();
             Drawer.Bind<double>(HeightProperty, value =>
             {
                 if (Parent == null)
                 {
                     return;
                 }
-
+                
                 double start = MinDrawerHeight;
                 double end = MaxDrawerHeight;
                 double percent = start == end ? 0 : (value - start) / Math.Abs(end - start);
@@ -356,6 +411,11 @@ namespace Calculator
                 percent = percent.Bound(0, 1);
 
                 Transition(percent);
+
+                if (percent != 1)
+                {
+                    FunctionsList.Editing = false;
+                }
 
                 if (value == start)
                 {
@@ -376,16 +436,18 @@ namespace Calculator
 
         private bool Closed = true;
 
-        public void ChangeStatus() => SetStatus(!Closed);
+        public void ChangeStatus(bool animated) => SetStatus(!Closed, animated);
 
-        public void SetStatus(bool closed)
+        public void SetStatus(bool closed, bool animated = false)
         {
             if (closed)
             {
                 FunctionsList.ListView.ScrollToPosition(0, 0, true);
             }
 
-            Drawer.SnapTo(Heights[closed], TransitionSpeed);
+            //Drawer.HeightRequest = Heights[closed];
+            //Drawer.AnimateVisualState("test", closed ? "Closed" : "Open", 16, 1000);
+            Drawer.SnapTo(Heights[closed], animated ? (double?)TransitionSpeed: null);
         }
 
         public double MinDrawerHeight => Heights[true];
@@ -407,23 +469,6 @@ namespace Calculator
         {
             IndexForFunction = index;
             AddFunctionLayout.AddEquation(index == -1 ? null : Functions[index]);
-        }
-
-        private void Transition(double percent)
-        {
-            int i = 0;
-            foreach (AnySetter setter in ClosedState.AnySetters(this))
-            {
-                double value1 = (int)setter.Value;
-                double value2 = OpenValues[i++];
-
-                setter.Action(value1 + percent * (value2 - value1));
-            }
-            
-            if (percent != 1)
-            {
-                FunctionsList.Editing = false;
-            }
         }
 
         private View MakeExpression(string text)
@@ -499,7 +544,7 @@ namespace Calculator
             Expression copy = new Expression(Reader.Render(expression.ToString()));
             Print.Log("dragging", expression, sender.GetHashCode());
             TouchScreen.BeginDrag(copy, this.Root<AbsoluteLayout>(), TouchScreen.LastTouch.Subtract(new Point (TouchScreen.Instance.Padding.Left + expression.Width / 2, TouchScreen.Instance.Padding.Top + expression.Height / 2)));//.Subtract(new Point(expression.Width / 2 + TouchScreen.Instance.Padding.Left, expression.Height / 2 + TouchScreen.Instance.Padding.Top)));
-            ChangeStatus();
+            ChangeStatus(true);
 
             TouchScreen.Dragging += (sender1, e1) =>
             {

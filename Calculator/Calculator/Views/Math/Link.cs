@@ -55,7 +55,7 @@ namespace Calculator
             BackgroundColor = Color.Transparent;
             Padding = new Thickness(5);
             Margin = new Thickness(1);
-            BorderColor = CrunchStyle.CRUNCH_PURPLE;
+            BorderColor = App.CRUNCH_PURPLE;
             CornerRadius = 5;
             HasShadow = false;
 
@@ -84,7 +84,7 @@ namespace Calculator
                 //await scroll.MakeVisible(Value.Parent<Equation>() ?? (View)Value);
             }
 
-            Color temp = CrunchStyle.CRUNCH_PURPLE;
+            Color temp = App.CRUNCH_PURPLE;
             uint length = 1000;
             Animation animation = new Animation(v => Value.BackgroundColor = new Color(temp.R, temp.G, temp.B, 1 - v), 0, 1);
             animation.Commit(this, "FadeBackground", length / 255, length, Easing.Linear, (v, c) => Value.BackgroundColor = Color.Transparent, () => false);

@@ -92,11 +92,11 @@ namespace Calculator
 
                         if (distance > 0 || (distance == 0 && Math.Abs(Drawer.Height - parent.MaxDrawerHeight) < Math.Abs(Drawer.Height - parent.Keyboard.Height)))
                         {
-                            parent.SetStatus(false);
+                            parent.SetStatus(false, true);
                         }
                         else
                         {
-                            parent.SetStatus(true);
+                            parent.SetStatus(true, true);
                         }
                     }
                 }

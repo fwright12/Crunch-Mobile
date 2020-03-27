@@ -40,6 +40,14 @@
                              HeightRequest="{Binding Source={x:Static Math:SoftKeyboard.Cursor}, Path=Height}"
                              Color="Red"
                              IsVisible="False" />
+
+            <Calculator:BasicModeAnswerLabel x:Name="BasicAnswer"
+                                             Text="0"
+                                             BackgroundColor="{x:Static Calculator:App.BACKGROUND_COLOR}"
+                                             FontSize="100"
+                                             HorizontalTextAlignment="End"
+                                             VerticalTextAlignment="End"
+                                             Padding="20" />
         </AbsoluteLayout>
 
         <StackLayout x:Name="FullKeyboardView"

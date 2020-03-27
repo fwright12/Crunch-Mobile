@@ -28,7 +28,12 @@
       <DependentUpon>SettingsPage.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Views\BasicModeAnswer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\EditListView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\Keyboard\CrunchKeyboard.xaml.cs">
+      <DependentUpon>CrunchKeyboard.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Views\Keyboard\Key.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\ModalView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
@@ -40,7 +45,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Views\CustomViews.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\FunctionsDrawer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graph.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Views\Keyboard\CrunchKeyboard.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\Math\Link.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Screenshots.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Settings.cs" />
@@ -87,6 +91,11 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Pages\MainPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Views\Keyboard\CrunchKeyboard.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
   </ItemGroup>

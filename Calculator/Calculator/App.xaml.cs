@@ -19,6 +19,20 @@ namespace Calculator
         public static double TextHeight { get; private set; }
         public static double TextWidth { get; private set; }
 
+        public static readonly Color CRUNCH_PURPLE = Color.FromHex("#560297");
+        public static readonly int PAGE_PADDING = 10;
+
+        public static readonly Color TEXT_COLOR = Color.Gray;
+        public static readonly Color BACKGROUND_COLOR = Color.FromHex("#ebeae8");
+
+        public static readonly Color BUTTON_TEXT_COLOR = Color.Black;
+        public static readonly Color BUTTON_BACKGROUND_COLOR = Color.LightGray;
+        public static readonly int CORNER_RADIUS = 5;
+
+        public static readonly string SYMBOLA_FONT = Device.RuntimePlatform == Device.Android ? "Symbola.ttf#Symbola" : "Symbola";
+
+        public static readonly Thickness BUTTON_PADDING = Device.RuntimePlatform == Device.iOS ? new Thickness(10, 0, 10, 0) : new Thickness(0);
+
         private readonly MasterDetailPage Root;
         private NavigationPage SideNavigation;
         private NavigationPage FullNavigation;
@@ -144,7 +158,7 @@ namespace Calculator
                 Text = "(",
                 FontSize = Text.MaxFontSize,
             };
-            l.SizeChanged += (sender, e) =>
+            l.SizeChanged += async (sender, e) =>
             {
                 TextHeight = l.Height;
                 TextWidth = l.Width;
@@ -157,6 +171,8 @@ namespace Calculator
                 NavigationPage.SetHasNavigationBar(Home, false);
                 TouchScreen.Instance = Home;
                 Home.Bind<bool>("Collapsed", value => CollapsedChanged(value));
+
+                //await System.Threading.Tasks.Task.Delay(2000);
 
                 if (ShouldRunTutorial.Value)
                 {
@@ -180,7 +196,8 @@ namespace Calculator
                         int index = list[new Random().Next(list.Count)];
                         var tip = Tips[index];
 
-                        (Home.Content as AbsoluteLayout)?.Children.Add(new TipDialog
+                        TipDialog tips = null;
+                        (Home.Content as AbsoluteLayout)?.Children.Add(tips = new TipDialog
                         {
                             Explanation = tip.Item2,
                             URL = tip.Item3,
