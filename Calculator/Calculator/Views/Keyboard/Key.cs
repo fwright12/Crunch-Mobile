@@ -44,7 +44,7 @@ namespace Calculator
         }
         private int LongClickListenerCount = 0;
 
-        public string Basic;
+        public string Basic { get; set; }
 
         public Key()
         {
@@ -75,7 +75,7 @@ namespace Calculator
         public static readonly string UP = "up";
         public static readonly string DOWN = "down";*/
 
-        public KeyboardManager.CursorKey Key;
+        public KeyboardManager.CursorKey Key { get; set; }
 
         public CursorKey() : base() { }
     }

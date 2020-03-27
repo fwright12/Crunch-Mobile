@@ -11,37 +11,41 @@ namespace Calculator
     {
         public Label Label { get; private set; }
 
-        protected LabelButton(Button button) : base(button) { }
-
-        public static implicit operator LabelButton(Button button)
+        public LabelButton() : base(new Button()) { }
+        public LabelButton(Button button) : base(button)
         {
-            Label label = new Label
+            Label = new Label
             {
                 BindingContext = button,
                 HorizontalTextAlignment = TextAlignment.Center,
                 VerticalTextAlignment = TextAlignment.Center,
-                Text = button.Text,
+                //Text = button.Text,
             };
-            BindButtonTextProperties(label);
+            BindButtonTextProperties(Label);
 
-            button.Text = "";
-            LabelButton labelButton = new LabelButton(button)
+            button.SetBinding(Button.TextColorProperty, button, "BackgroundColor");
+            /*button.Bind<string>(Button.TextProperty, value =>
             {
-                Label = label
-            };
-
-            labelButton.Children.Add(label, new Rectangle(0.5, 0.5, -1, -1), AbsoluteLayoutFlags.PositionProportional);
-
-            return labelButton;
+                button.Text = "";
+                if (value != null && value.Length > 0)
+                {
+                    Label.Text = value;
+                }
+            });*/
+            //button.Text = "";
+            Children.Add(Label, new Rectangle(0.5, 0.5, -1, -1), AbsoluteLayoutFlags.PositionProportional);
         }
+
+        public static implicit operator LabelButton(Button button) => new LabelButton(button);
 
         private static void BindButtonTextProperties(Label label)
         {
+            label.SetBinding(Label.TextProperty, "Text");
             label.SetBinding(Label.FontAttributesProperty, "FontAttributes");
             label.SetBinding(Label.FontFamilyProperty, "FontFamily");
             label.SetBinding(Label.FontProperty, "Font");
             label.SetBinding(Label.FontSizeProperty, "FontSize");
-            label.SetBinding(Label.TextColorProperty, "TextColor");
+            //label.SetBinding(Label.TextColorProperty, "TextColor");
         }
     }
 

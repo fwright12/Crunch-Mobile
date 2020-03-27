@@ -3,7 +3,73 @@
                                  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                                  xmlns:d="http://xamarin.com/schemas/2014/forms/design"
                                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                                 xmlns:Extensions="clr-namespace:Xamarin.Forms.Extensions;assembly=Xamarin.Forms.Extensions"
+                                 xmlns:Extensions="clr-namespace:Xamarin.Forms;assembly=Xamarin.Forms.Extensions"
+                                 xmlns:Calculator="clr-namespace:Calculator"
                                  mc:Ignorable="d"
                                  x:Class="Calculator.CrunchKeyboard">
+    <StackLayout.Resources>
+        <ResourceDictionary>
+            <Style x:Key="symbolaButtonStyle"
+                   TargetType="Button">
+                <Setter Property="FontFamily"
+                        Value="{x:Static Calculator:App.SYMBOLA_FONT}" />
+            </Style>
+        </ResourceDictionary>
+    </StackLayout.Resources>
+    
+    <ScrollView x:Name="Scroll"
+                    HorizontalOptions="FillAndExpand"
+                    VerticalOptions="FillAndExpand"
+                    Orientation="Horizontal">
+            <Grid x:Name="Keypad" />
+        </ScrollView>
+
+    <Grid x:Name="PermanentKeys">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <Calculator:Key Text="DEL" />
+
+        <Grid x:Name="ArrowKeys">
+            <Grid.Resources>
+                <ResourceDictionary>
+                    <Style TargetType="Calculator:CursorKey"
+                           BasedOn="{StaticResource symbolaButtonStyle}" />
+                </ResourceDictionary>
+            </Grid.Resources>
+
+            <Calculator:LabelButton>
+                <x:Arguments>
+                    <Calculator:CursorKey Text="〈"
+                                          Key="Up" />
+                </x:Arguments>
+            </Calculator:LabelButton>
+
+            <Calculator:CursorKey Text="〈"
+                                  Key="Left" />
+
+            <Calculator:CursorKey Text="〉"
+                                  Key="Right" />
+
+            <Calculator:LabelButton>
+                <x:Arguments>
+                    <Calculator:CursorKey Text="〉"
+                                          Key="Down" />
+                </x:Arguments>
+            </Calculator:LabelButton>
+        </Grid>
+
+        <AbsoluteLayout>
+            <Extensions:LongClickableButton x:Name="DockButton"
+                                            x:FieldModifier="public"
+                                            BackgroundColor="Blue"
+                                            Style="{StaticResource symbolaButtonStyle}"
+                                            AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
+                                            AbsoluteLayout.LayoutFlags="SizeProportional" />
+        </AbsoluteLayout>
+    </Grid>
 </Extensions:TouchableStackLayout>

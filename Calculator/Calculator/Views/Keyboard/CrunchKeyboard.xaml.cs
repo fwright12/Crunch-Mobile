@@ -4,10 +4,8 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-using System.Extensions;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using Xamarin.Forms.Extensions;
 
 namespace Calculator
 {
@@ -111,12 +109,6 @@ namespace Calculator
         //public double Columns => this.Orient((IsCondensed ? MIN_COLUMNS : Keys[0].Length) + PERMANENT_KEYS_INCREASE, MIN_COLUMNS);
         //public bool ShowingFullKeyboard => !App.IsCondensed && Settings.ShouldShowFullKeyboard;
 
-        private readonly ScrollView Scroll;
-        private readonly Grid Keypad;
-        private readonly Grid PermanentKeys;
-        private readonly ArrowKeysGrid ArrowKeys;
-        public readonly LongClickableButton DockButton;
-
         public Size FullSize => new Size(
             PaddedButtonsWidth(Keys[0].Length + PERMANENT_KEYS_INCREASE, MAX_BUTTON_SIZE),
             PaddedButtonsWidth(Keys.Length, MAX_BUTTON_SIZE)
@@ -126,8 +118,6 @@ namespace Calculator
 
         public CrunchKeyboard()
         {
-            InitializeComponent();
-
             Resources = new ResourceDictionary();
             // Make spacing consistent between all buttons
             this.WhenDescendantAdded<Grid>((grid) =>
@@ -160,8 +150,13 @@ namespace Calculator
                 cursorKey.Clicked += (sender1, e1) => KeyboardManager.MoveCursor(cursorKey.Key);
             });
 
+            InitializeComponent();
+
             View parentheses = null;
-            Key equals = "=";
+            Key equals = new Key
+            {
+                Text = "="
+            };
             //equals.SetBinding<bool, double>(IsVisibleProperty, equals, "Opacity", value => value > 0);
             Keys = new Key[][]
             {
@@ -172,42 +167,24 @@ namespace Calculator
                 new Key[] { PI,     "e",    "x",    "0",    ".",    "()",   "+" }
             };
 
-            Children.Add(Scroll = new ScrollView()
+            // Rotate the arrow text for the up and down keys
+            foreach (View view in new View[] { ArrowKeys.Children[0], ArrowKeys.Children[3] })
             {
-                Content = Keypad = new Grid { },
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-                VerticalOptions = LayoutOptions.FillAndExpand,
-                Orientation = ScrollOrientation.Horizontal,
-            });
-            Children.Add(PermanentKeys = new Grid
-            {
-                Children =
+                if (!(view is LabelButton labelButton))
                 {
-                    new Key
-                    {
-                        Text = "DEL",
-                        Basic = KeyboardManager.BACKSPACE.ToString()
-                    },
-                    (ArrowKeys = new ArrowKeysGrid { }),
-                    new AbsoluteLayout
-                    {
-                        Children =
-                        {
-                            {
-                                (DockButton = new LongClickableButton//("", Key.DOCK)
-                                {
-                                    BackgroundColor = Color.Blue,
-                                    FontFamily = App.SYMBOLA_FONT
-                                }),
-                                new Rectangle(0, 0, 1, 1),
-                                AbsoluteLayoutFlags.SizeProportional
-                            }
-                        }
-                    }
-                },
-                ColumnDefinitions = new ColumnDefinitionCollection { new ColumnDefinition() },
-                RowDefinitions = new RowDefinitionCollection { new RowDefinition() }
-            });
+                    continue;
+                }
+
+                labelButton.Label.Rotation = 90;
+                AbsoluteLayout.SetLayoutBounds(labelButton.Label, new Rectangle(0.5, 0.5, 100, 100));
+            }
+
+            Grid.SetColumnSpan(ArrowKeys.Children[0], 2);
+            Grid.SetRowSpan(ArrowKeys.Children[1], 2);
+            Grid.SetRowSpan(ArrowKeys.Children[2], 2);
+            Grid.SetColumnSpan(ArrowKeys.Children[3], 2);
+
+            (PermanentKeys.Children[0] as Key).Basic = KeyboardManager.BACKSPACE.ToString();
 
             bool regular = true;
             DockButton.Clicked += (sender, e) => HandleModeChanged(regular = !regular);
@@ -331,7 +308,7 @@ namespace Calculator
                 int span = (value == StackOrientation.Horizontal).ToInt();
                 Grid.SetRowSpan(PermanentKeys.Children[1], 1 + span);
                 Grid.SetColumnSpan(PermanentKeys.Children[1], 2 - span);
-                ArrowKeys.ChangeOrientation(value);
+                ChangeOrientation(value);
             });
         }
 
@@ -534,76 +511,28 @@ namespace Calculator
 
         public double ButtonWidth(double spaceConstraint, double numButtons) => (spaceConstraint - Spacing * ((int)numButtons - 1)) / numButtons;
 
+        private void ChangeOrientation(StackOrientation orientation)
+        {
+            if (orientation == StackOrientation.Horizontal)
+            {
+                SetPos(ArrowKeys.Children[0], 0, 0); // Up
+                SetPos(ArrowKeys.Children[1], 1, 0); // Left
+                SetPos(ArrowKeys.Children[2], 1, 1); // Right
+                SetPos(ArrowKeys.Children[3], 3, 0); // Down
+            }
+            else if (orientation == StackOrientation.Vertical)
+            {
+                SetPos(ArrowKeys.Children[0], 0, 1);
+                SetPos(ArrowKeys.Children[1], 0, 0);
+                SetPos(ArrowKeys.Children[2], 0, 3);
+                SetPos(ArrowKeys.Children[3], 1, 1);
+            }
+        }
+
         private static void SetPos(BindableObject bindable, int row, int column)
         {
             Grid.SetRow(bindable, row);
             Grid.SetColumn(bindable, column);
-        }
-
-        private class ArrowKeysGrid : Grid
-        {
-            public ArrowKeysGrid()
-            {
-                Children.Add((LabelButton)new CursorKey
-                {
-                    Text = "〈",
-                    Key = KeyboardManager.CursorKey.Up,
-                    FontFamily = App.SYMBOLA_FONT,
-                });
-                Children.Add(new CursorKey
-                {
-                    Text = "〈",
-                    Key = KeyboardManager.CursorKey.Left,
-                    FontFamily = App.SYMBOLA_FONT,
-                });
-                Children.Add(new CursorKey
-                {
-                    Text = "〉",
-                    Key = KeyboardManager.CursorKey.Right,
-                    FontFamily = App.SYMBOLA_FONT,
-                });
-                Children.Add((LabelButton)new CursorKey
-                {
-                    Text = "〉",
-                    Key = KeyboardManager.CursorKey.Down,
-                    FontFamily = App.SYMBOLA_FONT,
-                });
-
-                // Rotate the arrow text for the up and down keys
-                foreach (View view in new View[] { Children[0], Children[3] })
-                {
-                    if (!(view is LabelButton labelButton))
-                    {
-                        continue;
-                    }
-
-                    labelButton.Label.Rotation = 90;
-                    AbsoluteLayout.SetLayoutBounds(labelButton.Label, new Rectangle(0.5, 0.5, 100, 100));
-                }
-
-                Grid.SetColumnSpan(Children[0], 2);
-                Grid.SetRowSpan(Children[1], 2);
-                Grid.SetRowSpan(Children[2], 2);
-                Grid.SetColumnSpan(Children[3], 2);
-            }
-
-            public void ChangeOrientation(StackOrientation orientation)
-            {
-                if (orientation == StackOrientation.Horizontal)
-                {
-                    SetPos(Children[0], 0, 0); // Up
-                    SetPos(Children[1], 1, 0); // Left
-                    SetPos(Children[2], 1, 1); // Right
-                    SetPos(Children[3], 3, 0); // Down
-                }
-                else if (orientation == StackOrientation.Vertical)
-                {
-                    SetPos(Children[0], 0, 1);
-                    SetPos(Children[1], 0, 0);
-                    SetPos(Children[2], 0, 3);
-                    SetPos(Children[3], 1, 1);
-                }
-            }
         }
     }
 }

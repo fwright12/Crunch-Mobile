@@ -118,6 +118,9 @@ namespace Calculator
         public event FocusChangedEventHandler FocusChanged;
         private Calculation CalculationFocus;
 
+        //private CrunchKeyboard CrunchKeyboard => KeyboardAndVariables;
+        //private VariableRow Variables => KeyboardAndVariables.Variables;
+
         public MainPage()
         {
             Text.MaxTextHeight = App.TextHeight;
