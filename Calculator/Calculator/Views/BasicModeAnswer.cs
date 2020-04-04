@@ -19,9 +19,18 @@ namespace Calculator
                 Text = "";
             }
             
-            if (answer == null)
+            //if (answer == null)
+            if (keystroke == '+' || keystroke == '-' || keystroke == '*' || keystroke == '/')
             {
-                Text = LastAnswer ?? "Error";
+                Text = LastAnswer;// ?? "Error";
+            }
+            else if (keystroke == '=')
+            {
+                Text = answer ?? "Error";
+            }
+            else if (keystroke == KeyboardManager.BACKSPACE)
+            {
+                Text = Text.Length <= 1 ? "0" : Text.Substring(0, Text.Length - 1);
             }
             else
             {
@@ -29,6 +38,12 @@ namespace Calculator
             }
 
             LastAnswer = answer;
+        }
+
+        public void Clear()
+        {
+            Text = "0";
+            LastAnswer = null;
         }
     }
 }

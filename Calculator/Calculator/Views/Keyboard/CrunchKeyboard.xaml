@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<Extensions:TouchableStackLayout xmlns="http://xamarin.com/schemas/2014/forms"
-                                 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                                 xmlns:d="http://xamarin.com/schemas/2014/forms/design"
-                                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                                 xmlns:Extensions="clr-namespace:Xamarin.Forms;assembly=Xamarin.Forms.Extensions"
-                                 xmlns:Calculator="clr-namespace:Calculator"
-                                 mc:Ignorable="d"
-                                 x:Class="Calculator.CrunchKeyboard">
-    <StackLayout.Resources>
+<Grid xmlns="http://xamarin.com/schemas/2014/forms"
+      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+      xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:Extensions="clr-namespace:Xamarin.Forms;assembly=Xamarin.Forms.Extensions"
+      xmlns:Calculator="clr-namespace:Calculator"
+      mc:Ignorable="d"
+      x:Class="Calculator.CrunchKeyboard">
+    <Grid.Resources>
         <ResourceDictionary>
             <Style x:Key="symbolaButtonStyle"
                    TargetType="Button">
@@ -15,61 +15,195 @@
                         Value="{x:Static Calculator:App.SYMBOLA_FONT}" />
             </Style>
         </ResourceDictionary>
-    </StackLayout.Resources>
-    
-    <ScrollView x:Name="Scroll"
-                    HorizontalOptions="FillAndExpand"
-                    VerticalOptions="FillAndExpand"
-                    Orientation="Horizontal">
-            <Grid x:Name="Keypad" />
-        </ScrollView>
+    </Grid.Resources>
 
-    <Grid x:Name="PermanentKeys">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-        </Grid.ColumnDefinitions>
+    <!--<VisualStateManager.VisualStateGroups>
+        <Extensions:VisualStates>
+            <x:Arguments>
+                <x:String>Test</x:String>
+                <x:String>Test1</x:String>
+                <x:Array Type="{x:Type x:String}" />
+            </x:Arguments>
+            <Extensions:TargetedSetters>
+                <Extensions:TargetedSetters.Setters>
+                    <Extensions:Setters Property="{x:Static View.BackgroundColorProperty}">
+                        <Color>
+                            <x:Arguments>
+                                <x:Double>1</x:Double>
+                                <x:Double>1</x:Double>
+                                <x:Double>1</x:Double>
+                                <x:Double>1</x:Double>
+                            </x:Arguments>
+                        </Color>
+                    </Extensions:Setters>
+                </Extensions:TargetedSetters.Setters>
+            </Extensions:TargetedSetters>
+        </Extensions:VisualStates>
+    </VisualStateManager.VisualStateGroups>-->
+
+    <!--<Calculator:VariableRow x:Name="Variables"
+                            x:FieldModifier="public"
+                            Spacing="{Binding Source={x:Reference Main}, Path=Spacing}"
+                            ButtonSize="33" />-->
+
+    <Grid.RowDefinitions>
+        <RowDefinition />
+        <RowDefinition />
+        <RowDefinition />
+        <RowDefinition />
+        <RowDefinition />
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition />
+        <ColumnDefinition />
+        <ColumnDefinition />
+        <ColumnDefinition />
+        <ColumnDefinition />
+    </Grid.ColumnDefinitions>
+
+    <Grid x:Name="Variables"
+          x:FieldModifier="public"
+          Grid.Row="0"
+          Grid.Column="0"
+          Grid.ColumnSpan="5">
         <Grid.RowDefinitions>
             <RowDefinition />
         </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
 
-        <Calculator:Key Text="DEL" />
+        <Calculator:LabelButton>
+            <x:Arguments>
+                <Button x:Name="NextKeyboardButton"
+                        Text="🌐"
+                        FontSize="15"
+                        Style="{StaticResource symbolaButtonStyle}" />
+            </x:Arguments>
+        </Calculator:LabelButton>
 
-        <Grid x:Name="ArrowKeys">
-            <Grid.Resources>
+        <Calculator:CursorKey x:Name="NewCalculationKey"
+                              Text="NEW"
+                              Key="Down"
+                              Grid.Row="0"
+                              Grid.Column="0">
+        </Calculator:CursorKey>
+
+        <ScrollView Orientation="Horizontal"
+                    Grid.Row="0"
+                    Grid.Column="1">
+            <ScrollView.Resources>
                 <ResourceDictionary>
-                    <Style TargetType="Calculator:CursorKey"
-                           BasedOn="{StaticResource symbolaButtonStyle}" />
+                    <Style TargetType="Button">
+                        <Setter Property="FontSize"
+                                Value="12" />
+                    </Style>
                 </ResourceDictionary>
-            </Grid.Resources>
+            </ScrollView.Resources>
 
-            <Calculator:LabelButton>
-                <x:Arguments>
-                    <Calculator:CursorKey Text="〈"
-                                          Key="Up" />
-                </x:Arguments>
-            </Calculator:LabelButton>
+            <StackLayout x:Name="VariableLayout"
+                         Orientation="Horizontal" />
+        </ScrollView>
 
-            <Calculator:CursorKey Text="〈"
-                                  Key="Left" />
-
-            <Calculator:CursorKey Text="〉"
-                                  Key="Right" />
-
-            <Calculator:LabelButton>
-                <x:Arguments>
-                    <Calculator:CursorKey Text="〉"
-                                          Key="Down" />
-                </x:Arguments>
-            </Calculator:LabelButton>
-        </Grid>
-
-        <AbsoluteLayout>
-            <Extensions:LongClickableButton x:Name="DockButton"
-                                            x:FieldModifier="public"
-                                            BackgroundColor="Blue"
-                                            Style="{StaticResource symbolaButtonStyle}"
-                                            AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
-                                            AbsoluteLayout.LayoutFlags="SizeProportional" />
-        </AbsoluteLayout>
+        <Button x:Name="ExpandButton"
+                Text="v"
+                FontSize="15"
+                Style="{StaticResource symbolaButtonStyle}"
+                Grid.Row="0"
+                Grid.Column="2" />
     </Grid>
-</Extensions:TouchableStackLayout>
+
+    <Button x:Name="ClearButton"
+            x:FieldModifier="public"
+            Text="AC"
+            Grid.Row="0"
+            Grid.Column="1" />
+
+    <Button Text="+/-"
+            x:Name="PlusMinus"
+            Grid.Row="0"
+            Grid.Column="2" />
+
+    <ScrollView x:Name="Scroll"
+                Orientation="Horizontal"
+                Grid.Row="1"
+                Grid.Column="0"
+                Grid.RowSpan="4"
+                Grid.ColumnSpan="4">
+        <Grid x:Name="Keypad" />
+    </ScrollView>
+
+    <Calculator:Key x:Name="EqualsKey"
+                    x:FieldModifier="public"
+                    Text="="
+                    Grid.Row="4"
+                    Grid.Column="2" />
+
+    <Calculator:Key x:Name="BackspaceButton"
+                    Text="DEL"
+                    Grid.Row="1"
+                    Grid.Column="4" />
+
+    <Grid x:Name="ArrowKeys"
+          Grid.Row="2"
+          Grid.RowSpan="2"
+          Grid.Column="4">
+        <Grid.Resources>
+            <ResourceDictionary>
+                <Style TargetType="Calculator:CursorKey"
+                       BasedOn="{StaticResource symbolaButtonStyle}" />
+            </ResourceDictionary>
+        </Grid.Resources>
+
+        <Calculator:LabelButton Grid.ColumnSpan="2">
+            <x:Arguments>
+                <Calculator:CursorKey Text="〈"
+                                      Key="Up" />
+            </x:Arguments>
+        </Calculator:LabelButton>
+
+        <Calculator:CursorKey Text="〈"
+                              Key="Left"
+                              Grid.RowSpan="2" />
+
+        <Calculator:CursorKey Text="〉"
+                              Key="Right"
+                              Grid.RowSpan="2" />
+
+        <Calculator:LabelButton Grid.ColumnSpan="2">
+            <x:Arguments>
+                <Calculator:CursorKey Text="〉"
+                                      Key="Down" />
+            </x:Arguments>
+        </Calculator:LabelButton>
+    </Grid>
+
+    <Extensions:LongClickableButton x:Name="DockButton"
+                                    x:FieldModifier="public"
+                                    Style="{StaticResource symbolaButtonStyle}"
+                                    Grid.Row="4"
+                                    Grid.Column="4" />
+
+    <Grid x:Name="Right"
+          Grid.Row="0"
+          Grid.RowSpan="5"
+          Grid.Column="3">
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+    </Grid>
+</Grid>

@@ -12,6 +12,7 @@ namespace Calculator
         public Label Label { get; private set; }
 
         public LabelButton() : base(new Button()) { }
+
         public LabelButton(Button button) : base(button)
         {
             Label = new Label
@@ -23,15 +24,23 @@ namespace Calculator
             };
             BindButtonTextProperties(Label);
 
-            button.SetBinding(Button.TextColorProperty, button, "BackgroundColor");
-            /*button.Bind<string>(Button.TextProperty, value =>
+            //button.SetBinding(Button.TextColorProperty, button, "BackgroundColor");
+            bool resetingText = false;
+            button.Bind<string>(Button.TextProperty, value =>
             {
-                button.Text = "";
-                if (value != null && value.Length > 0)
+                if (resetingText)
+                {
+                    return;
+                }
+
+                resetingText = true;
+                button.Text = null;
+                if (value != null)
                 {
                     Label.Text = value;
                 }
-            });*/
+                resetingText = false;
+            });
             //button.Text = "";
             Children.Add(Label, new Rectangle(0.5, 0.5, -1, -1), AbsoluteLayoutFlags.PositionProportional);
         }
@@ -40,12 +49,12 @@ namespace Calculator
 
         private static void BindButtonTextProperties(Label label)
         {
-            label.SetBinding(Label.TextProperty, "Text");
+            //label.SetBinding(Label.TextProperty, "Text");
             label.SetBinding(Label.FontAttributesProperty, "FontAttributes");
             label.SetBinding(Label.FontFamilyProperty, "FontFamily");
             label.SetBinding(Label.FontProperty, "Font");
             label.SetBinding(Label.FontSizeProperty, "FontSize");
-            //label.SetBinding(Label.TextColorProperty, "TextColor");
+            label.SetBinding(Label.TextColorProperty, "TextColor");
         }
     }
 

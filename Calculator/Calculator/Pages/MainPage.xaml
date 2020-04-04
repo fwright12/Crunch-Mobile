@@ -47,7 +47,7 @@
                                              FontSize="100"
                                              HorizontalTextAlignment="End"
                                              VerticalTextAlignment="End"
-                                             Padding="20" />
+                                             Padding="20, 0" />
         </AbsoluteLayout>
 
         <StackLayout x:Name="FullKeyboardView"
@@ -57,11 +57,8 @@
                 <x:Arguments>
                     <Extensions:TouchableStackLayout x:Name="KeyboardAndVariables"
                                                      Orientation="{Binding Source={x:Reference self}, Path=Orientation}">
-                        <Calculator:VariableRow x:Name="Variables"
-                                                Spacing="{Binding Source={x:Reference CrunchKeyboard}, Path=Spacing}"
-                                                ButtonSize="33" />
-
-                        <Calculator:CrunchKeyboard x:Name="CrunchKeyboard" />
+                        <Calculator:CrunchKeyboard x:Name="CrunchKeyboard"
+                                                   ButtonSize="33" />
                     </Extensions:TouchableStackLayout>
 
                     <Calculator:AddFunction x:Name="AddFunctionLayout"

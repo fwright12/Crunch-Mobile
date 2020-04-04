@@ -57,9 +57,6 @@ namespace Calculator {
         private global::Xamarin.Forms.TouchableStackLayout KeyboardAndVariables;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
-        private global::Calculator.VariableRow Variables;
-        
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
         private global::Calculator.CrunchKeyboard CrunchKeyboard;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
@@ -81,7 +78,6 @@ namespace Calculator {
             FullKeyboardView = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.StackLayout>(this, "FullKeyboardView");
             FunctionsDrawer = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Calculator.FunctionsDrawer>(this, "FunctionsDrawer");
             KeyboardAndVariables = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.TouchableStackLayout>(this, "KeyboardAndVariables");
-            Variables = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Calculator.VariableRow>(this, "Variables");
             CrunchKeyboard = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Calculator.CrunchKeyboard>(this, "CrunchKeyboard");
             AddFunctionLayout = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Calculator.AddFunction>(this, "AddFunctionLayout");
         }

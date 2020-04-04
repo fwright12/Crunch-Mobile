@@ -146,9 +146,40 @@ namespace Calculator
         {
             public bool ContextActionsShowing = false;
 
-            public ListView() : base() { }
+            public ListView() : base()
+            {
+                this.Bind<object>(HeaderProperty, value =>
+                {
+                    if (value is View view)
+                    {
+                        view.MeasureInvalidated += (sender, e) => base.InvalidateMeasure();
+                    }
+                });
+            }
 
             public ListView(ListViewCachingStrategy strategy) : base(strategy) { }
+
+            protected override void InvalidateMeasure()
+            {
+                if (!(Header is View))
+                {
+                    base.InvalidateMeasure();
+                }
+            }
+
+            protected override SizeRequest OnMeasure(double widthConstraint, double heightConstraint)
+            {
+                SizeRequest sr = base.OnMeasure(widthConstraint, heightConstraint);
+                
+                if (Header is View header)
+                {
+                    Size request = sr.Request;
+                    request.Width = header.Measure(widthConstraint, heightConstraint).Request.Width;
+                    sr.Request = request;
+                }
+                
+                return sr;
+            }
         }
 
         public class FunctionViewModel
@@ -294,7 +325,7 @@ namespace Calculator
                 new Setters { Property = BackgroundColorProperty, Values = { new Color(255, 255, 255, 1), new Color(255, 255, 255, 0) } },
                 new TargetedSetters
                 {
-                    Target = Keyboard,
+                    Targets = Keyboard,
                     Setters =
                     {
                         new Setters { Property = MarginProperty, Values = { new Thickness(0, 20, 0, 0), new Thickness(0) } }
@@ -302,7 +333,7 @@ namespace Calculator
                 },
                 new TargetedSetters
                 {
-                    Target = cover,
+                    Targets = cover,
                     Setters =
                     {
                         new Setters { Property = OpacityProperty, Values = { 0, 1 } }
@@ -447,7 +478,7 @@ namespace Calculator
 
             //Drawer.HeightRequest = Heights[closed];
             //Drawer.AnimateVisualState("test", closed ? "Closed" : "Open", 16, 1000);
-            Drawer.SnapTo(Heights[closed], animated ? (double?)TransitionSpeed: null);
+            Drawer.SnapTo(Heights[closed], animated ? (double?)TransitionSpeed : null);
         }
 
         public double MinDrawerHeight => Heights[true];
