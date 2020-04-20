@@ -146,3 +146,5 @@ C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\o
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\obj\iPhone\Release\Pages\AboutPage.xaml.g.cs
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\obj\iPhone\Release\Pages\SettingsPage.xaml.g.cs
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\obj\iPhone\Release\Pages\MainPage.xaml.g.cs
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\obj\iPhone\Release\Views\Keyboard\CrunchKeyboard.xaml.g.cs
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.iOS\obj\iPhone\Release\Calculator.iOS.csproj.CoreCompileInputs.cache

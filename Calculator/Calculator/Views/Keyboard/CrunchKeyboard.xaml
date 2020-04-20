@@ -123,6 +123,7 @@
 
     <Button Text="+/-"
             x:Name="PlusMinus"
+            x:FieldModifier="public"
             Grid.Row="0"
             Grid.Column="2" />
 
@@ -140,6 +141,27 @@
                     Text="="
                     Grid.Row="4"
                     Grid.Column="2" />
+
+    <Grid x:Name="Right"
+          Grid.Row="0"
+          Grid.RowSpan="5"
+          Grid.Column="3">
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+    </Grid>
 
     <Calculator:Key x:Name="BackspaceButton"
                     Text="DEL"
@@ -182,28 +204,15 @@
 
     <Extensions:LongClickableButton x:Name="DockButton"
                                     x:FieldModifier="public"
+                                    Text="▽"
                                     Style="{StaticResource symbolaButtonStyle}"
                                     Grid.Row="4"
                                     Grid.Column="4" />
-
-    <Grid x:Name="Right"
-          Grid.Row="0"
-          Grid.RowSpan="5"
-          Grid.Column="3">
-        <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-        </Grid.ColumnDefinitions>
-    </Grid>
+    
+    <Extensions:LongClickableButton x:Name="ChangeModeButton"
+                                    x:FieldModifier="public"
+                                    Text="↔"
+                                    Style="{StaticResource symbolaButtonStyle}"
+                                    Grid.Row="4"
+                                    Grid.Column="4" />
 </Grid>

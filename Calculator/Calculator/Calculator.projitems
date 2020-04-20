@@ -34,6 +34,7 @@
       <DependentUpon>CrunchKeyboard.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Views\Keyboard\CrunchSystemKeyboard.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\Keyboard\Key.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\ModalView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">

@@ -75,6 +75,14 @@ namespace Calculator
                     new Setter { Property = VisualElement.BackgroundColorProperty, Value = App.TEXT_COLOR }
                 }
             });
+
+            Add(new Style(typeof(CheckBox))
+            {
+                Setters =
+                {
+                    new Setter { Property = CheckBox.ColorProperty, Value = App.CRUNCH_PURPLE }
+                }
+            });
         }
 
         private void SetPadding(Page page)

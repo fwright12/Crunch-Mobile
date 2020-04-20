@@ -23,7 +23,7 @@ namespace Calculator
         public static readonly int PAGE_PADDING = 10;
 
         public static readonly Color TEXT_COLOR = Color.Gray;
-        public static readonly Color BACKGROUND_COLOR = Color.FromHex("#ebeae8");
+        public static readonly Color BACKGROUND_COLOR = Color.FromHex("#ebeae8"); //rgb(244, 236, 215)
 
         public static readonly Color BUTTON_TEXT_COLOR = Color.Black;
         public static readonly Color BUTTON_BACKGROUND_COLOR = Color.LightGray;

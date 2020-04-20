@@ -29,6 +29,7 @@ namespace Calculator
         {
             public View Drawer { get; set; }
             public object State { get; private set; }
+            public bool Active { get; set; } = true;
 
             private readonly ListView Scrollable;
             private Dictionary<object, double> States = new Dictionary<object, double>();
@@ -73,6 +74,12 @@ namespace Calculator
 
             public bool OnSwipeEvent(Point point, TouchState state)
             {
+                if (!Active)
+                {
+                    //(Drawer as ListView)?.ScrollToPosition(0, 0, false);
+                    return true;
+                }
+
                 FunctionsDrawer parent = Scrollable.Parent<FunctionsDrawer>();
 
                 double distance = state == TouchState.Down ? 0 : LastTouch - point.Y;
@@ -90,7 +97,7 @@ namespace Calculator
                     {
                         double speed = parent.TransitionSpeed;
 
-                        if (distance > 0 || (distance == 0 && Math.Abs(Drawer.Height - parent.MaxDrawerHeight) < Math.Abs(Drawer.Height - parent.Keyboard.Height)))
+                        if (distance > 0 || (distance == 0 && Math.Abs(Drawer.Height - parent.MaxDrawerHeight) < Math.Abs(Drawer.Height - parent.MinDrawerHeight)))
                         {
                             parent.SetStatus(false, true);
                         }

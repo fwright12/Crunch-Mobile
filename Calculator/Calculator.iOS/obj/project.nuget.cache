@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "dgSpecHash": "Tito6QlVmzzbe/ogb/TSnCYfnYZnVnzXBUimKOCWsyyvxDpN/eGzAKWeRFeBt9ced2Ohygfxwyh2zmhhw2/inQ==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Flint\\Documents\\Calculator Stuff\\Calculator\\Calculator\\Calculator.iOS\\Calculator.iOS.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Flint\\.nuget\\packages\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512",
+    "C:\\Users\\Flint\\.nuget\\packages\\webp.touch\\1.0.8\\webp.touch.1.0.8.nupkg.sha512",
+    "C:\\Users\\Flint\\.nuget\\packages\\xamarin.build.download\\0.4.11\\xamarin.build.download.0.4.11.nupkg.sha512",
+    "C:\\Users\\Flint\\.nuget\\packages\\xamarin.ffimageloading\\2.4.11.982\\xamarin.ffimageloading.2.4.11.982.nupkg.sha512",
+    "C:\\Users\\Flint\\.nuget\\packages\\xamarin.ffimageloading.forms\\2.4.11.982\\xamarin.ffimageloading.forms.2.4.11.982.nupkg.sha512",
+    "C:\\Users\\Flint\\.nuget\\packages\\xamarin.firebase.ios.core\\6.1.0.1\\xamarin.firebase.ios.core.6.1.0.1.nupkg.sha512",
+    "C:\\Users\\Flint\\.nuget\\packages\\xamarin.forms\\4.4.0.991864\\xamarin.forms.4.4.0.991864.nupkg.sha512",
+    "C:\\Users\\Flint\\.nuget\\packages\\xamarin.google.ios.mobileads\\7.47.0.1\\xamarin.google.ios.mobileads.7.47.0.1.nupkg.sha512"
+  ],
+  "logs": []
+}

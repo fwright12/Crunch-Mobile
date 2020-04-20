@@ -3,47 +3,171 @@ using System.Collections.Generic;
 using System.Text;
 
 using Xamarin.Forms;
+using Xamarin.Forms.MathDisplay;
+using Crunch;
 
 namespace Calculator
 {
     public class BasicModeAnswerLabel : Label
     {
-        private string LastAnswer;
+        //public Func<string, string, string, string> Operate;
 
-        public void Update(string answer, char keystroke)
+        private readonly char NEGATIVE = '-';
+
+        private string Answer;
+        private char Operation;
+        private string Operand;
+        private string LastOperation = "";
+
+        public BasicModeAnswerLabel()
         {
-            Print.Log("typed " + keystroke.ToString(), "answer is " + answer);
+            Reset();
+        }
 
-            if (LastAnswer == null)
+        public void Reset()
+        {
+            Answer = string.Empty;
+            Operation = default;
+            Operand = "";
+            LastOperation = default;
+
+            Input('0');
+        }
+
+        public void End(Equation equation) => SoftKeyboard.MoveCursor(equation.LHS, equation.LHS.Children.Count);
+
+        private string Operate(string answer, string operation, string operand)
+        {
+            Operand result;
+
+            if (this.Parent<MainPage>().Mode != MainPage.CalculatorMode.Basic)
             {
-                Text = "";
-            }
-            
-            //if (answer == null)
-            if (keystroke == '+' || keystroke == '-' || keystroke == '*' || keystroke == '/')
-            {
-                Text = LastAnswer;// ?? "Error";
-            }
-            else if (keystroke == '=')
-            {
-                Text = answer ?? "Error";
-            }
-            else if (keystroke == KeyboardManager.BACKSPACE)
-            {
-                Text = Text.Length <= 1 ? "0" : Text.Substring(0, Text.Length - 1);
+                try
+                {
+                    result = Crunch.Math.Evaluate(answer + operation + operand);
+                }
+                catch
+                {
+                    result = null;
+                }
             }
             else
             {
-                Text += keystroke;
+                Equation parentEquation = SoftKeyboard.Cursor.Parent<Equation>();
+                Answer rhs = parentEquation?.RHS as Answer;
+
+                bool negatedAnswer = rhs?.RawAnswer == null || answer == null ? false : Crunch.Math.Evaluate(answer).IsNegative ^ rhs.RawAnswer.IsNegative;
+                if (negatedAnswer || ((LastOperation == "+" || LastOperation == "-") && (operation == "*" || operation == "/")))
+                {
+                    Expression current = SoftKeyboard.Cursor.Parent<Equation>().LHS;
+                    SoftKeyboard.MoveCursor(current);
+                    if (negatedAnswer)
+                    {
+                        SoftKeyboard.Type("-");
+                    }
+                    SoftKeyboard.Type("(");
+                    SoftKeyboard.MoveCursor(current, current.Children.Count - 1);
+                    SoftKeyboard.Type(")");
+                }
+
+                if (LastOperation == default)
+                {
+                    SoftKeyboard.Type(answer ?? "");
+                }
+                SoftKeyboard.Type(operation);
+                SoftKeyboard.Type(operand);
+                End(parentEquation);
+
+                result = rhs == null ? Crunch.Math.Evaluate("0") : rhs.RawAnswer;
             }
 
-            LastAnswer = answer;
+            LastOperation = operation;
+
+            return result?.Format(Crunch.Polynomials.Expanded, Crunch.Numbers.Decimal, Crunch.Trigonometry.Degrees)?.ToString();
         }
 
-        public void Clear()
+        public void Input(string keystrokes) => Input(keystrokes.ToCharArray());
+
+        public void Input(params char[] keystrokes)
         {
-            Text = "0";
-            LastAnswer = null;
+            foreach (char c in keystrokes)
+            {
+                Input(c);
+            }
+        }
+
+        public void Input(char keystroke)
+        {
+            if (keystroke == KeyboardManager.BACKSPACE)
+            {
+                Operand = OperandEquals("", Operand.Length - 1) ? "0" : Operand.Substring(0, System.Math.Max(0, Operand.Length - 1));
+            }
+            else if (Crunch.Machine.StringClassification.IsNumber(keystroke.ToString()))
+            {
+                if (keystroke == '.')
+                {
+                    if (Operand.Length == 0)
+                    {
+                        Operand = "0";
+                    }
+                    else if (Operand.Contains('.'))
+                    {
+                        return;
+                    }
+                }
+                else if (OperandEquals("0"))
+                {
+                    Operand = Operand.Replace("0", "");
+                }
+
+                Operand += keystroke;
+            }
+            else
+            {
+                if (Operand.Length > 0)
+                {
+                    if (Operation == '=')
+                    {
+                        string operand = Operand;
+                        KeyboardManager.MoveCursor(KeyboardManager.CursorKey.Down);
+                        Input(operand);
+                    }
+
+                    Answer = Operation == default ? Operand : Operate(Answer, Operation.ToString(), Operand);
+                    Operand = "";
+                }
+
+                Operation = keystroke;
+            }
+
+            Text = Operand.Length > 0 ? Operand : (Answer ?? "Error");
+        }
+
+        private bool OperandEquals(string strB, int? length = null)
+        {
+            int start = (Operand.Length > 0 && Operand[0] == NEGATIVE).ToInt();
+            return (length ?? Operand.Length) - start == strB.Length && string.Compare(Operand, start, strB, 0, strB.Length) == 0;
+        }
+
+        public void Negate()
+        {
+            if (Text.Length > 0 && Text[0] == NEGATIVE)
+            {
+                Text = Text.Substring(1, Text.Length - 1);
+            }
+            else
+            {
+                Text = NEGATIVE + Text;
+            }
+
+            if (Operand.Length > 0)
+            {
+                Operand = Text;
+            }
+            else
+            {
+                Answer = Text;
+            }
         }
     }
 }

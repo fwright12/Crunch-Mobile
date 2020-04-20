@@ -67,7 +67,7 @@ namespace Calculator
         private readonly Key TEN = new Key { Text = "10\u207F", Basic = "10^" };
         private readonly Key PI = new Key { Text = "\u03C0" };
 
-        private readonly Key[][] Keys;
+        private readonly View[][] Keys;
 
         private RowDefinition VariablesRow = new RowDefinition { Height = new GridLength(0.5, GridUnitType.Star) };
         private ColumnDefinition PermanentKeysColumn = new ColumnDefinition { Width = new GridLength(1.25, GridUnitType.Star) };
@@ -97,8 +97,8 @@ namespace Calculator
             this.WhenDescendantAdded<Grid>((grid) =>
             {
                 grid.BindingContext = this;
-                grid.SetBinding(Grid.RowSpacingProperty, "Spacing");
-                grid.SetBinding(Grid.ColumnSpacingProperty, "Spacing");
+                grid.SetBinding(Grid.RowSpacingProperty, "RowSpacing");
+                grid.SetBinding(Grid.ColumnSpacingProperty, "ColumnSpacing");
             });
 
             void InitialButtonSetup(object sender, ElementEventArgs e)
@@ -134,16 +134,28 @@ namespace Calculator
 
             InitializeComponent();
 
-            View parentheses = null;
+            Grid parentheses = new Grid
+            {
+                Children =
+                {
+                    { new Key { Text = "(" }, 0, 0 },
+                    { new Key { Text = ")" }, 1, 0 }
+                }
+            };
+
+            double InverseOpacity(double value) => 1 - value;
+            parentheses.SetBinding<double, double>(OpacityProperty, EqualsKey, "Opacity", InverseOpacity, InverseOpacity, BindingMode.TwoWay);
+
             //equals.SetBinding<bool, double>(IsVisibleProperty, equals, "Opacity", value => value > 0);
-            Keys = new Key[][]
+            Keys = new View[][]
             {
                 //new Key[] { null,  null,    null,   null,   null,   null,   null },
                 new Key[] { "sin",  TEN,    EXP,    "7",    "8",    "9",    DIV },
                 new Key[] { "cos",  LOG,    SQRD,   "4",    "5",    "6",    MULT },
                 new Key[] { "tan",  "ln",   SQRT,    "1",    "2",    "3",    "-" },
-                new Key[] { PI,     "e",    "x",    "0",    ".",    "()",   "+" }
+                new List<View>(new Key[] { PI,     "e",    "x",    "0",    ".",    "()",   "+" }).ToArray()
             };
+            Keys[3][5] = parentheses;
 
             // Rotate the arrow text for the up and down keys
             foreach (View view in new View[] { ArrowKeys.Children[0], ArrowKeys.Children[3] })
@@ -159,9 +171,6 @@ namespace Calculator
             }
 
             BackspaceButton.Basic = KeyboardManager.BACKSPACE.ToString();
-
-            bool regular = true;
-            DockButton.Clicked += (sender, e) => HandleModeChanged(regular = !regular);
 
             NextKeyboardButton.Clicked += (sender, e) => SoftKeyboardManager.NextKeyboard();
 
@@ -192,10 +201,12 @@ namespace Calculator
                 button.SetBinding(WidthRequestProperty, ExpandButton, "Width");
                 button.SetBinding(HeightRequestProperty, ExpandButton, "Height");
 
-                //VariableLayout.Children.Add(button);
+#if !(ANDROID && DEBUG)
+                VariableLayout.Children.Add(button);
+#endif
             }
             VariableLayout.SetBinding(StackLayout.OrientationProperty, this, "Orientation");
-
+            
             for (int i = 0; i < Keys.Length; i++)
             {
                 Keypad.RowDefinitions.Add(new RowDefinition());
@@ -216,16 +227,9 @@ namespace Calculator
                         continue;
                     }
 
-                    if (Keys[i][j].Text == "()")
+                    /*if (Keys[i][j].Text == "()")
                     {
-                        Grid grid = new Grid { };
-
-                        grid.Children.Add(new Key { Text = "(" }, 0, 0);
-                        grid.Children.Add(new Key { Text = ")" }, 1, 0);
-
-                        view = parentheses = grid;
-                        double InverseOpacity(double value) => 1 - value;
-                        view.SetBinding<double, double>(OpacityProperty, EqualsKey, "Opacity", InverseOpacity, InverseOpacity, BindingMode.TwoWay);
+                        
                     }
                     else
                     {
@@ -233,15 +237,23 @@ namespace Calculator
                         {
                             //Keys[i][j].Clicked += (sender, e) => Scroll.ScrollToAsync(Keypad, ScrollToPosition.End, false);
                         }
-                    }
+                    }*/
 
                     Keypad.Children.Add(view, j, i);
                 }
             }
-            Keypad.Children.Add(EqualsKey, Grid.GetColumn(parentheses), Grid.GetRow(parentheses));
             
             VisualStateManager.GetVisualStateGroups(this).Add(new VisualStates("Regular", "Basic")
             {
+                new Setters
+                {
+                    Property = HeightRequestProperty,
+                    Values =
+                    {
+                        new Thunk<double>(() => MeasureRegularMode().Height - Padding.VerticalThickness),
+                        new Thunk<double>(() => MeasureBasicMode().Height - Padding.VerticalThickness)
+                    }
+                },
                 new TargetedSetters
                 {
                     Targets = BackspaceButton,
@@ -252,20 +264,19 @@ namespace Calculator
                             Property = MarginProperty,
                             Values =
                             {
-                                new Thunk<Thickness>(() => new Thickness((1 - 1.25) * ButtonWidth(Width, 5.25), Spacing, 0, -ButtonWidth(Width, 5.25) - Spacing)),
-                                /*new Thunk<Thickness>(() =>
-                                {
-                                    double size = ButtonWidth(Width, 4 + PermanentKeysColumn.Width.Value);
-                                    return new Thickness((1 - PermanentKeysColumn.Width.Value) * size, Spacing, 0, -size - Spacing);
-                                }),*/
                                 new Thickness(0),
+                                new Thunk<Thickness>(() =>
+                                {
+                                    double final = ButtonWidth(Width - Padding.HorizontalThickness, 4);
+                                    return new Thickness(-final, -final - RowSpacing, 0, final + RowSpacing + (final + RowSpacing) / 2);
+                                })
                             }
                         }
                     }
                 },
                 new TargetedSetters
                 {
-                    Targets = ArrowKeys,
+                    Targets = ChangeModeButton,
                     Setters =
                     {
                         new Setters
@@ -276,25 +287,9 @@ namespace Calculator
                                 new Thickness(0),
                                 new Thunk<Thickness>(() =>
                                 {
-                                    double finalSize = ButtonWidth(Width, 8);
-                                    return new Thickness(0, -3 * finalSize - 3 * Spacing, 0, -finalSize - Spacing);
-                                }),
-                            }
-                        }
-                    }
-                },
-                new TargetedSetters
-                {
-                    Targets = DockButton,
-                    Setters =
-                    {
-                        new Setters
-                        {
-                            Property = MarginProperty,
-                            Values =
-                            {
-                                new Thunk<Thickness>(() => new Thickness((1 - 1.25) * ButtonWidth(Width, 5.25), -ButtonWidth(Width, 5.25) - Spacing, 0, Spacing)),
-                                new Thickness(0),
+                                    double final = ButtonWidth(Width - Padding.HorizontalThickness, 4);
+                                    return new Thickness(-final, (final + RowSpacing) / 2, 0, 0);
+                                })
                             }
                         }
                     }
@@ -333,14 +328,10 @@ namespace Calculator
                 },
                 new TargetedSetters
                 {
-                    Targets =
-                    {
-                        Right.RowDefinitions[0],
-                        Right.RowDefinitions[9],
-                    },
+                    Targets = Scroll,
                     Setters =
                     {
-                        new Setters { Property = RowDefinition.HeightProperty, Values = { new GridLength(0, GridUnitType.Star), new GridLength(1, GridUnitType.Star) } }
+                        new Setters { Property = IsVisibleProperty, Values = { true, (BooleanValue<bool>)false } }
                     }
                 },
                 new TargetedSetters
@@ -348,15 +339,24 @@ namespace Calculator
                     Targets = Right,
                     Setters =
                     {
+                        //new Setters { Property = IsVisibleProperty, Values = { false, (BooleanValue<bool>)true } },
                         new Setters
                         {
                             Property = MarginProperty,
                             Values =
                             {
-                                new Thunk<Thickness>(() => new Thickness(0, (1 - 0.5) * ButtonWidth(Width, 4 + 1.25) + (RowDefinitions.Count - ColumnDefinitions.Count) * Spacing, 0, -Spacing)),
+                                new Thunk<Thickness>(() => new Thickness(0, (Measure(5, 5, 5.25 / 4.5, true).Height - Padding.VerticalThickness - 4 * RowSpacing) * 0.5 / 4.5, 0, -RowSpacing)),
                                 new Thickness(0)
                             }
                         }
+                    }
+                },
+                new TargetedSetters
+                {
+                    Targets = { Right.RowDefinitions[0], Right.RowDefinitions[9] },
+                    Setters =
+                    {
+                        new Setters { Property = RowDefinition.HeightProperty, Values = { new GridLength(0, GridUnitType.Star), new GridLength(1, GridUnitType.Star) } }
                     }
                 },
             });
@@ -369,28 +369,64 @@ namespace Calculator
                 }
             });
 
+            DockButton.Remove();
             Scroll.SetBounces(false);
 
-            Keypad.SetBinding<double, double>(WidthRequestProperty, Keypad, "Height", value => PaddedButtonsWidth(Keys[0].Length, ButtonWidth(value, Keys.Length)));
-            Keypad.WhenPropertyChanged(WidthProperty, (sender, e) =>
+            //Keypad.SetBinding<double, double>(WidthRequestProperty, Keypad, "Height", value => PaddedButtonsWidth(Keys[0].Length, ButtonWidth(value, Keys.Length)));
+            void UpdateKeypadWidth() => Keypad.WidthRequest = (Scroll.Width - (GetColumnSpan(Scroll) - 1) * Keypad.ColumnSpacing) / GetColumnSpan(Scroll) * Keys[0].Length + (Keys[0].Length - 1) * Keypad.ColumnSpacing;
+            Scroll.Bind<double>(WidthProperty, value => UpdateKeypadWidth());
+            /*Keypad.WhenPropertyChanged(WidthProperty, (sender, e) =>
             {
                 ResetScroll();
-            });
+            });*/
             Keypad.Children[0].Bind<double>(WidthProperty, value => Scroll.SetPagingInterval(value + Keypad.ColumnSpacing));
 
-            LayoutChanged += (sender, e) => ScreenSizeChanged();
-            //App.Current.MainPage.SizeChanged += (sender, e) => ScreenSizeChanged();
-            //App.ShowFullKeyboard.WhenPropertyChanged(App.ShowFullKeyboard.ValueProperty, (sender, e) => ScreenSizeChanged());
+            LayoutChanged += HandleLayoutChanged;
 
-            this.WhenPropertyChanged(OrientationProperty, (sender, e) =>
+            //App.Current.MainPage.SizeChanged += (sender, e) => ScreenSizeChanged();
+            App.ShowFullKeyboard.WhenPropertyChanged(App.ShowFullKeyboard.ValueProperty, (sender, e) =>
+            {
+                int target = (App.ShowFullKeyboard.Value ? Keys[0].Length : 4) + 1;
+                int diff = target - ColumnDefinitions.Count;
+                int axis = 4;
+                while (ColumnDefinitions.Count < target)
+                {
+                    ColumnDefinitions.Insert(axis, new ColumnDefinition());
+                }
+                while (ColumnDefinitions.Count > target)
+                {
+                    ColumnDefinitions.RemoveAt(axis);
+                }
+
+                foreach (View view in Children)
+                {
+                    if (view == Scroll)
+                    {
+                        SetColumnSpan(view, GetColumnSpan(view) + diff);
+                    }
+                    else if (view != Variables)
+                    {
+                        SetColumn(view, GetColumn(view) + diff);
+                    }
+                }
+
+                UpdateKeypadWidth();
+            });
+
+            /*this.WhenPropertyChanged(OrientationProperty, (sender, e) =>
             {
                 this.Transpose();
                 Variables.Transpose();
-            });
-
+            });*/
+            
             this.Bind<StackOrientation>(OrientationProperty, value =>
             {
-                //value = value.Invert();
+                bool transposed = value == StackOrientation.Vertical;
+                GridExtensions.SetIsTransposed(this, transposed);
+                if (Variables.Parent == this)
+                {
+                    GridExtensions.SetIsTransposed(Variables, transposed);
+                }
 
                 if (value == StackOrientation.Horizontal)
                 {
@@ -412,19 +448,6 @@ namespace Calculator
                     }
                 }*/
 
-                for (int i = 0; i < 3; i += 2)
-                {
-                    if (value == StackOrientation.Horizontal)
-                    {
-                        Variables.ColumnDefinitions[i].SetBinding<double, double>(ColumnDefinition.WidthProperty, Variables, "Height", width => Math.Max(0, width));
-                    }
-                    else if (value == StackOrientation.Vertical)
-                    {
-                        Variables.RowDefinitions[i].SetBinding<double, double>(RowDefinition.HeightProperty, Variables, "Width", width => Math.Max(0, width));
-                    }
-                    //Right.RowDefinitions[i].SetBinding<double, double>(RowDefinition.HeightProperty, DIV, "Height", value => Math.Max(0, (value - Spacing) / 2));
-                }
-
                 if (value == StackOrientation.Horizontal)
                 {
                     GridExtensions.SetPos(ArrowKeys.Children[0], 0, 0); // Up
@@ -440,86 +463,153 @@ namespace Calculator
                     GridExtensions.SetPos(ArrowKeys.Children[3], 1, 1);
                 }
             });
+            
+            Variables.Bind<bool>(GridExtensions.IsTransposedProperty, value =>
+            {
+                for (int i = 0; i < 3; i += 2)
+                {
+                    if (value)
+                    {
+                        Variables.RowDefinitions[i].SetBinding<double, double>(RowDefinition.HeightProperty, Variables, "Width", width => Math.Max(0, width));
+                    }
+                    else
+                    {
+                        Variables.ColumnDefinitions[i].SetBinding<double, double>(ColumnDefinition.WidthProperty, Variables, "Height", width => Math.Max(0, width));
+                    }
+                    //Right.RowDefinitions[i].SetBinding<double, double>(RowDefinition.HeightProperty, DIV, "Height", value => Math.Max(0, (value - Spacing) / 2));
+                }
+            });
 
             DescendantAdded -= InitialButtonSetup;
-            HandleModeChanged(true, false);
+            ChangeMode(true, false);
         }
 
-        private void HandleModeChanged(bool regular = true, bool animated = true)
+        private void HandleLayoutChanged(object sender, EventArgs e)
         {
-            Scroll.ScrollToAsync(Keypad, ScrollToPosition.End, false);
-            foreach (View view in Keypad.Children)
+            SetColumnSpan(Variables, ColumnDefinitions.Count);
+
+            Size size = Measure(RowDefinitions.Count, ColumnDefinitions.Count, ColumnDefinitions.Sum(column => column.Width.Value) / RowDefinitions.Sum(row => row.Height.Value), PermanentKeysColumn.Width.Value == 1.25);
+
+            WidthRequest = size.Width - Padding.HorizontalThickness;
+            if (!this.AnimationIsRunning("changeMode"))
             {
-                if (Grid.GetColumn(view) < Keys[0].Length - MIN_COLUMNS)
-                {
-                    //view.Remove();
-                    //view.IsVisible = false;
-                }
+                HeightRequest = size.Height - Padding.VerticalThickness;
             }
+            //this.SizeRequest(new Size(size.Width - Padding.HorizontalThickness, size.Height - Padding.VerticalThickness));
 
-            //ClearValue(MarginProperty);
+            ResetScroll();
 
-            if (ColumnDefinitions.Count < 5)
+            Size = new Size(WidthRequest + Padding.HorizontalThickness, HeightRequest + Padding.VerticalThickness);
+            OnscreenSizeChanged?.Invoke(this, new EventArgs());
+
+            bool collapsed = size.Width == App.Current.MainPage.Width || size.Height == App.Current.MainPage.Height;
+            if (Collapsed != collapsed)
+            {
+                Collapsed = collapsed;
+                OnPropertyChanged("Collapsed");
+            }
+        }
+
+        public void ChangeMode(bool regular, bool animated = true)
+        {
+            if (!ColumnDefinitions.Contains(PermanentKeysColumn))
             {
                 ColumnDefinitions.Add(PermanentKeysColumn);
-                SetColumnSpan(Variables, 5);
-                Children.Add(ArrowKeys, 4, 5, 2, 4);
+                //SetColumnSpan(Variables, ColumnDefinitions.Count);
+                Children.Add(ArrowKeys, ColumnDefinitions.Count - 1, 2);
+                SetRowSpan(ArrowKeys, 2);
             }
 
-            if (!regular)
+            if (regular)
             {
-                for (int i = 0; i < 4; i++)
-                {
-                    Right.Children.Add(Keys[i][Keys[0].Length - 1], 0, 1, i * 2 + 1, i * 2 + 3);
-                }
-                Right.Children.Add(BackspaceButton, 0, 0);
-                Right.Children.Add(DockButton, 0, 9);
+                VisualState basic = this.GetVisualStateByName("Basic");
+
+                Children.Add(BackspaceButton, ColumnDefinitions.Count - 1, 1);
+                BackspaceButton.SetValueFromState(MarginProperty, basic);
+
+                Children.Add(ChangeModeButton, ColumnDefinitions.Count - 1, 4);
+                ChangeModeButton.SetValueFromState(MarginProperty, basic);
+            }
+            else
+            {
                 Right.IsVisible = true;
+
+                for (int i = 0; i < Keys.Length; i++)
+                {
+                    int j = Keys[i].Length - 4;
+                    for (; j < Keys[i].Length - 1; j++)
+                    {
+                        Children.Add(Keys[i][j], j - (Keys[i].Length - 4), i + 1);
+                    }
+
+                    Right.Children.Add(Keys[i][j], 0, 1, i * 2 + 1, i * 2 + 3);
+                }
             }
 
-            string[] modes = new string[] { "Regular", "Basic" };
+            /*string[] modes = new string[] { "Regular", "Basic" };
             if (regular)
             {
                 Misc.Swap(ref modes[0], ref modes[1]);
-            }
+            }*/
             
             void Finished()
             {
                 if (regular)
                 {
-                    for (int i = 0; i < 4; i++)
+                    for (int i = 0; i < Keys.Length; i++)
                     {
-                        Keypad.Children.Add(Keys[i][Keys[0].Length - 1], Keys[0].Length - 1, i);
-                    }
-                    Children.Add(BackspaceButton, 4, 1);
-                    Children.Add(DockButton, 4, 4);
-                    Right.IsVisible = false;
+                        int j = Keys[i].Length - 4;
+                        for (; j < Keys[i].Length - 1; j++)
+                        {
+                            Keypad.Children.Add(Keys[i][j], j, i);
+                        }
 
-                    BackspaceButton.ClearValue(MarginProperty);
-                    DockButton.ClearValue(MarginProperty);
+                        Keypad.Children.Add(Keys[i][j], j, i);
+                    }
+
+                    Right.IsVisible = false;
                 }
                 else
                 {
-                    Grid.SetColumnSpan(Variables, 4);
+                    Right.Children.Add(ChangeModeButton, 0, 9);
+                    ChangeModeButton.ClearValue(MarginProperty);
+
+                    Right.Children.Add(BackspaceButton, 0, 0);
+                    BackspaceButton.ClearValue(MarginProperty);
+
                     ColumnDefinitions.Remove(PermanentKeysColumn);
+                    //SetColumnSpan(Variables, ColumnDefinitions.Count);
                     ArrowKeys.Remove();
 
                     //ScreenSizeChanged();
                 }
-            }
 
-            Animation animation = this.AnimationToState(modes[0], modes[1], callback: value =>
+                if (Parent != null)
+                {
+                    AbsoluteLayoutExtensions.SetLayout(Parent, new Size(-1, -1));
+                }
+            }
+            
+            Animation animation = this.AnimationToState(end: regular ? "Regular" : "Basic", callback: value =>
             {
                 //PERMANENT_KEYS_INCREASE = (regular ? value : (1 - value)) * 1.25;
                 //ScreenSizeChanged();
 
-                BackspaceButton.TranslationX = value == 1 ? 0 : ArrowKeys.Width + Spacing;
-                DockButton.TranslationX = value == 1 ? 0 : ArrowKeys.Width + Spacing;
+                //BackspaceButton.TranslationX = value == 1 ? 0 : ArrowKeys.Width + Spacing;
+                //DockButton.TranslationX = value == 1 ? 0 : ArrowKeys.Width + Spacing;
+
+                ArrowKeys.Margin = new Thickness(0, -BackspaceButton.Margin.Bottom, 0, -ChangeModeButton.Margin.Top);
+
+                if (Parent != null)
+                {
+                    AbsoluteLayoutExtensions.SetLayout(Parent, Size);
+                    //AbsoluteLayout.SetLayoutBounds(Parent, new Rectangle(Point.Zero, value == 1 ? new Size(-1, -1) : Size));
+                }
             });
 
             if (animated)
             {
-                animation.Commit(this, "changeMode", length: 5000, easing: Easing.Linear, finished: (final, cancelled) => Finished());
+                animation.Commit(this, "changeMode", length: MainPage.ModeTransitionLength, easing: Easing.Linear, finished: (final, cancelled) => Finished());
             }
             else
             {
@@ -528,15 +618,59 @@ namespace Calculator
             }
         }
 
-        private Thickness SafeArea;
+        /*private Thickness SafeArea;
 
         public void SafeAreaChanged(Thickness value)
         {
             SafeArea = value;
             ScreenSizeChanged();
-        }
+        }*/
 
         public bool Collapsed { get; private set; }
+
+        public Size MeasureRegularMode() => Measure(5, 5, 5.25 / 4.5, true);
+
+        public Size MeasureBasicMode() => Measure(5, 4, 4 / 5.0, false);
+
+        private Size Measure(int rows, int columns, double ratio, bool regularMode)
+        {
+            double widthConstraint = App.Current.MainPage.Width - 0;
+            double heightConstraint = App.Current.MainPage.Height - 0;
+
+            SetValue(OrientationProperty, widthConstraint > heightConstraint ? StackOrientation.Vertical : StackOrientation.Horizontal);
+
+            Size extra = new Size(Padding.HorizontalThickness + (columns - 1) * Spacing, Padding.VerticalThickness + (rows - 1) * Spacing);
+            Size size = new Size(widthConstraint - extra.Width, heightConstraint - extra.Height);
+
+            if (size.Width / size.Height > ratio)
+            {
+                size.Width = size.Height * ratio;
+            }
+            else
+            {
+                size.Height = size.Width / ratio;
+            }
+
+            size = new Size(size.Width + extra.Width, size.Height + extra.Height);
+
+            if (regularMode)
+            {
+                if (FullSize.Area() < size.Area())
+                {
+                    size = FullSize;
+                }
+                else if (Orientation == StackOrientation.Horizontal)
+                {
+                    size.Height = Math.Min(size.Height, App.Current.MainPage.Bounds.Height / 2);
+                }
+                else if (Orientation == StackOrientation.Vertical)
+                {
+                    size.Width = Math.Min(size.Width, App.Current.MainPage.Bounds.Width / 2);
+                }
+            }
+
+            return size;
+        }
 
         private void ScreenSizeChanged()
         {
@@ -554,25 +688,7 @@ namespace Calculator
             //base.Orientation = Main.Orientation.Invert();
             //IsCondensed = isCondensed;
 
-            SetValue(OrientationProperty, App.Current.MainPage.Width > App.Current.MainPage.Height ? StackOrientation.Vertical : StackOrientation.Horizontal);
-            
-            Size extra = new Size(Margin.HorizontalThickness + Padding.HorizontalThickness + (ColumnDefinitions.Count - 1) * Spacing, Margin.VerticalThickness + Padding.VerticalThickness + (RowDefinitions.Count - 1) * Spacing);
-            Size size = new Size(App.Current.MainPage.Width - extra.Width, App.Current.MainPage.Height - extra.Height);
-            double ratio = ColumnDefinitions.Sum(column => column.Width.Value) / RowDefinitions.Sum(row => row.Height.Value);
-            
-            if (size.Width / size.Height > ratio)
-            {
-                size.Width = size.Height * ratio;
-            }
-            else
-            {
-                size.Height = size.Width / ratio;
-            }
-            
-            Size = new Size(size.Width + extra.Width, size.Height + extra.Height);
-            this.SizeRequest(new Size(Size.Width - Padding.HorizontalThickness, Size.Height - Padding.VerticalThickness));
-
-            OnscreenSizeChanged?.Invoke(this, new EventArgs());
+            //AbsoluteLayout root = this.Root<AbsoluteLayout>();
 
             //Size = !collapsed ? size : (Orientation == StackOrientation.Horizontal ? new Size(size.Width + SafeArea.HorizontalThickness, size.Height + SafeArea.Bottom) : new Size(size.Width + SafeArea.Right, size.Height + SafeArea.VerticalThickness));
 
@@ -605,7 +721,7 @@ namespace Calculator
             }*/
         }
 
-        public Size MeasureOnscreenSize(double width, double height)
+        /*public Size MeasureOnscreenSize(double width, double height)
         {
             //Orientation = height >= width ? StackOrientation.Horizontal : StackOrientation.Vertical;
 
@@ -627,10 +743,10 @@ namespace Calculator
             /*else
             {
                 Orientation = StackOrientation.Horizontal;
-            }*/
+            }
 
             return size;
-        }
+        }*/
 
         private void ResetScroll() => Scroll.ScrollToAsync(Keypad, ScrollToPosition.End, false);
 
@@ -684,7 +800,7 @@ namespace Calculator
             }
         }*/
 
-        public Size DesiredSize;
+        /*public Size DesiredSize;
 
         private Size GetSize(double widthConstraint, double heightConstraint)
         {
@@ -706,7 +822,7 @@ namespace Calculator
             return FullSize.Width < widthConstraint && FullSize.Height < heightConstraint && FullSize.Area() < condensed.Area() ? fullSize : condensed;
 
             //return sr;
-        }
+        }*/
 
         public double PaddedButtonsWidth(double numButtons, double buttonSize) => buttonSize * numButtons + Spacing * ((int)numButtons - 1);
 

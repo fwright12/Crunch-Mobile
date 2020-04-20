@@ -148,18 +148,18 @@ namespace Calculator
 
             public ListView() : base()
             {
-                this.Bind<object>(HeaderProperty, value =>
+                /*this.Bind<object>(HeaderProperty, value =>
                 {
                     if (value is View view)
                     {
                         view.MeasureInvalidated += (sender, e) => base.InvalidateMeasure();
                     }
-                });
+                });*/
             }
 
             public ListView(ListViewCachingStrategy strategy) : base(strategy) { }
 
-            protected override void InvalidateMeasure()
+            /*protected override void InvalidateMeasure()
             {
                 if (!(Header is View))
                 {
@@ -179,7 +179,7 @@ namespace Calculator
                 }
                 
                 return sr;
-            }
+            }*/
         }
 
         public class FunctionViewModel
@@ -194,7 +194,7 @@ namespace Calculator
         public double TransitionSpeed = 0.75;
 
         public readonly EditListView FunctionsList;
-        public readonly View Keyboard;
+        private readonly View Keyboard;
         private readonly AddFunction AddFunctionLayout;
         private readonly View Drawer;
 
@@ -302,7 +302,17 @@ namespace Calculator
                             SelectionMode = ListViewSelectionMode.None,
                             IsPullToRefreshEnabled = false,
                             HasUnevenRows = true,
-                            Header = Keyboard,
+                            Header = new AbsoluteLayout
+                            {
+                                Children =
+                                {
+                                    {
+                                        Keyboard,
+                                        new Rectangle(0.5, 0, -1, -1),
+                                        AbsoluteLayoutFlags.PositionProportional
+                                    }
+                                }
+                            },
                         }),
                         new Rectangle(0, 0, 1, 1),
                         AbsoluteLayoutFlags.SizeProportional
@@ -310,6 +320,7 @@ namespace Calculator
                     {
                         (cover = new BoxView
                         {
+                            IsVisible = true,
                             BackgroundColor = App.BACKGROUND_COLOR,
                             InputTransparent = true,
                         }),
@@ -318,14 +329,14 @@ namespace Calculator
                     }
                 }
             };
-
+            
             VisualStateManager.GetVisualStateGroups(this).Add(new VisualStates("Open", "Closed")
             {
                 new Setters { Property = CornerRadiusProperty, Values = { 20, 0 } },
-                new Setters { Property = BackgroundColorProperty, Values = { new Color(255, 255, 255, 1), new Color(255, 255, 255, 0) } },
+                new Setters { Property = BackgroundColorProperty, Values = { Color.White, new Color(255, 255, 255, 0) } },
                 new TargetedSetters
                 {
-                    Targets = Keyboard,
+                    Targets = (VisualElement)Keyboard.Parent,
                     Setters =
                     {
                         new Setters { Property = MarginProperty, Values = { new Thickness(0, 20, 0, 0), new Thickness(0) } }

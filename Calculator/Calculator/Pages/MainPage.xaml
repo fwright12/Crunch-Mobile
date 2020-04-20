@@ -20,6 +20,12 @@
                 <Calculator:Canvas x:Name="Canvas" />
             </ScrollView>
 
+            <Calculator:BasicModeAnswerLabel x:Name="BasicAnswer"
+                                             FontSize="33"
+                                             TextColor="{x:Static Calculator:App.TEXT_COLOR}"
+                                             HorizontalTextAlignment="End"
+                                             VerticalTextAlignment="End" />
+
             <Calculator:AnythingButton x:Name="SettingsMenuButton"
                                        AbsoluteLayout.LayoutBounds="0, 0, 50, 50"
                                        AbsoluteLayout.LayoutFlags="PositionProportional">
@@ -40,14 +46,6 @@
                              HeightRequest="{Binding Source={x:Static Math:SoftKeyboard.Cursor}, Path=Height}"
                              Color="Red"
                              IsVisible="False" />
-
-            <Calculator:BasicModeAnswerLabel x:Name="BasicAnswer"
-                                             Text="0"
-                                             BackgroundColor="{x:Static Calculator:App.BACKGROUND_COLOR}"
-                                             FontSize="100"
-                                             HorizontalTextAlignment="End"
-                                             VerticalTextAlignment="End"
-                                             Padding="20, 0" />
         </AbsoluteLayout>
 
         <StackLayout x:Name="FullKeyboardView"
@@ -55,11 +53,10 @@
             <Calculator:FunctionsDrawer x:Name="FunctionsDrawer"
                                         DropArea="{x:Reference Canvas}">
                 <x:Arguments>
-                    <Extensions:TouchableStackLayout x:Name="KeyboardAndVariables"
-                                                     Orientation="{Binding Source={x:Reference self}, Path=Orientation}">
+                    <ContentView x:Name="KeyboardView">
                         <Calculator:CrunchKeyboard x:Name="CrunchKeyboard"
                                                    ButtonSize="33" />
-                    </Extensions:TouchableStackLayout>
+                    </ContentView>
 
                     <Calculator:AddFunction x:Name="AddFunctionLayout"
                                             IsVisible="False"
