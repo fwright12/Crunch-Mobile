@@ -677,3 +677,5 @@ C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Andro
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\100\androidx\proguard\c4b35a29-4b4c-4481-aede-ec651d3ef580.txt
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\100\androidx\proguard\f1b63be4-f007-4964-a4d1-61eec0f6387f.txt
 C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\100\android\AndroidManifest.xml
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\100\Themes\LightTheme.xaml.g.cs
+C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\100\Themes\DarkTheme.xaml.g.cs

@@ -7,6 +7,7 @@ using System.IO;
 using System.Threading;
 using Xamarin.Forms;
 using Xamarin.Forms.Extensions;
+using Xamarin.Forms.Internals;
 using Xamarin.Forms.MathDisplay;
 
 namespace Calculator
@@ -30,8 +31,8 @@ namespace Calculator
                 {
                     new StyleSetter<Button>
                     {
-                        new Setter { Property = Button.TextColorProperty, Value = Color.Default },
-                        new Setter { Property = BackgroundColorProperty, Value = Color.Transparent },
+                        //new Setter { Property = Button.TextColorProperty, Value = Color.Default },
+                        //new Setter { Property = BackgroundColorProperty, Value = Color.Transparent },
                         new Setter { Property = Button.FontSizeProperty, Value = NamedSize.Body.On<Button>() },
                         //new Setter { Property = PaddingProperty, Value = new Thickness(0, 10, 0, 0) }
                     }
@@ -321,7 +322,7 @@ namespace Calculator
                         (cover = new BoxView
                         {
                             IsVisible = true,
-                            BackgroundColor = App.BACKGROUND_COLOR,
+                            //BackgroundColor = App.BACKGROUND_COLOR,
                             InputTransparent = true,
                         }),
                         new Rectangle(0.5, 1, 1, -1),
@@ -333,7 +334,15 @@ namespace Calculator
             VisualStateManager.GetVisualStateGroups(this).Add(new VisualStates("Open", "Closed")
             {
                 new Setters { Property = CornerRadiusProperty, Values = { 20, 0 } },
-                new Setters { Property = BackgroundColorProperty, Values = { Color.White, new Color(255, 255, 255, 0) } },
+                new Setters
+                {
+                    Property = BackgroundColorProperty,
+                    Values =
+                    {
+                        new Thunk<Color>(() => (Color)App.Current.Resources["SecondaryBackgroundColor"]),
+                        new Thunk<Color>(() => ((Color)App.Current.Resources["SecondaryBackgroundColor"]).WithAlpha(0)),
+                    }
+                },
                 new TargetedSetters
                 {
                     Targets = (VisualElement)Keyboard.Parent,
@@ -384,6 +393,7 @@ namespace Calculator
             });*/
 
             FunctionsList.ListView.GetSwipeListener().Drawer = Drawer;
+            FunctionsList.EditingToolbar.SetDynamicResource(BackgroundColorProperty, "PrimaryBackgroundColor");
 
             AddFunctionLayout.ConfirmAdd.Clicked += (sender, e) =>
             {

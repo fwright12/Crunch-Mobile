@@ -41,13 +41,16 @@
                           Color="{x:Static Calculator:App.CRUNCH_PURPLE}" />
             </StackLayout>
 
-            <Label x:Name="Dismiss"
+            <Button x:Name="DismissButton"
+                    HorizontalOptions="Center"
+                    Text="Dismiss" />
+            <!--<Label x:Name="Dismiss"
                    HorizontalOptions="Center"
                    Text="Dismiss">
                 <Label.GestureRecognizers>
                     <TapGestureRecognizer x:Name="TapDismiss" />
                 </Label.GestureRecognizers>
-            </Label>
+            </Label>-->
         </StackLayout>
     </ContentView.Content>
 </Calculator:ModalView>

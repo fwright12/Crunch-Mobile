@@ -60,7 +60,7 @@ namespace Calculator
             {
                 Text = "🌐",
                 FontSize = 15,
-                FontFamily = App.SYMBOLA_FONT,
+                //FontFamily = App.SYMBOLA_FONT,
             };
             keyboard.Button.Clicked += (sender, e) =>
             {
@@ -97,7 +97,7 @@ namespace Calculator
             ExpandButton = new Button
             {
                 Text = "◁",
-                FontFamily = App.SYMBOLA_FONT,
+                //FontFamily = App.SYMBOLA_FONT,
                 FontSize = 15,
             };
             ExpandButton.Button.Clicked += (sender, e) => Change();

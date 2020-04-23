@@ -8,6 +8,7 @@ using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 using Xamarin.Forms.Extensions;
+using System.Runtime.Remoting.Messaging;
 
 namespace Calculator
 {
@@ -16,7 +17,7 @@ namespace Calculator
     {
         private readonly Selector Numbers;
         private readonly Selector Trig;
-
+        
         public SettingsPage()
         {
             InitializeComponent();
@@ -26,7 +27,7 @@ namespace Calculator
                 new LabeledCell("Numerical values:", Numbers = new Selector(Enum.GetNames(typeof(Crunch.Numbers)))),
                 new LabeledCell("Trigonometry:", Trig = new Selector(Enum.GetNames(typeof(Crunch.Trigonometry))))
             });
-
+            
 #if DEBUG
             SwitchCell sampleMode;
 
@@ -43,15 +44,15 @@ namespace Calculator
 #endif
 
 #if ANDROID
-            foreach (TableSection section in (Content as TableView).Root)
+            /*foreach (TableSection section in (Content as TableView).Root)
             {
                 foreach(TextCell textCell in section.OfType<TextCell>())
                 {
                     textCell.TextColor = App.TEXT_COLOR;
                 }
-            }
+            }*/
 #endif
-
+            
             LogBase.Selected += (selected) => App.LogarithmBase.Value = selected == 0 ? 2 : 10;
 
             Numbers.Selected += (selected) => App.Numbers.Value = (Crunch.Numbers)selected;
@@ -108,8 +109,25 @@ namespace Calculator
                     Refresh();
                 }
             };
-
+            
             Refresh();
+
+            foreach (TableSection section in ((TableView)Content).Root)
+            {
+                section.TextColor = (Color)App.Current.Resources["SecondaryColor"];
+
+                foreach (Cell cell in section)
+                {
+                    if (cell is TextCell textCell)
+                    {
+                        cell.SetDynamicResource(TextCell.TextColorProperty, "DetailColor");
+                    }
+                    if (cell is SwitchCell switchCell)
+                    {
+                        switchCell.OnColor = (Color)App.Current.Resources["ControlColor"];
+                    }
+                }
+            }
         }
 
         public void Refresh()
@@ -128,6 +146,42 @@ namespace Calculator
             {
                 setting.ClearValue(setting.ValueProperty);
             }
+        }
+    }
+
+    public class SwitchCella : ViewCell
+    {
+        public Color OnColor
+        {
+            get => Switch.OnColor;
+            set => Switch.OnColor = value;
+        }
+        public Color ThumbColor
+        {
+            get => Switch.ThumbColor;
+            set => Switch.ThumbColor = value;
+        }
+        public bool On
+        {
+            get => Switch.IsToggled;
+            set => Switch.IsToggled = value;
+        }
+        public string Text
+        {
+            get => Label.Text;
+            set => Label.Text = value;
+        }
+
+        private Label Label = new Label { HorizontalOptions = LayoutOptions.StartAndExpand, VerticalOptions = LayoutOptions.Center };
+        private Switch Switch = new Switch { VerticalOptions = LayoutOptions.Center };
+
+        public SwitchCella()
+        {
+            View = new StackLayout
+            {
+                Orientation = StackOrientation.Horizontal,
+                Children = { Label, Switch }
+            };
         }
     }
 

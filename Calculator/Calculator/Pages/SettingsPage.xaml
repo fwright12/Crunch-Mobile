@@ -10,23 +10,21 @@
              x:Class="Calculator.SettingsPage"
              Title="Settings"
              iOS:Page.UseSafeArea="True">
-    <ContentPage.BackgroundColor>
-        <OnPlatform x:TypeArguments="Color">
-            <On Platform="iOS"
-                Value="LightGray" />
-        </OnPlatform>
-    </ContentPage.BackgroundColor>
-
     <TableView VerticalOptions="FillAndExpand"
                Intent="Settings"
                HasUnevenRows="True">
-        <TableView.BackgroundColor>
-            <OnPlatform x:TypeArguments="Color">
-                <On Platform="iOS"
-                    Value="LightGray" />
-            </OnPlatform>
-        </TableView.BackgroundColor>
-
+        <!--<TableView.Resources>
+            <Style TargetType="TableSection">
+                <Setter Property="TextColor"
+                        Value="{StaticResource PrimaryColor}" />
+            </Style>
+            
+            <Style TargetType="TextCell">
+                <Setter Property="TextColor"
+                        Value="{DynamicResource DetailColor}" />
+            </Style>
+        </TableView.Resources>-->
+            
         <TableRoot>
             <TableSection Title="Math">
                 <Calculator:LabeledCell>

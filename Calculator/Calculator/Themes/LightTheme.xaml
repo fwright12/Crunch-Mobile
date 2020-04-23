@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ResourceDictionary xmlns="http://xamarin.com/schemas/2014/forms"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                    x:Class="Calculator.LightTheme">
+    <Color x:Key="PrimaryBackgroundColor">WhiteSmoke</Color>
+    <Color x:Key="SecondaryBackgroundColor">White</Color>
+
+    <!--Spanish Violet-->
+    <Color x:Key="ControlColor"
+           x:FactoryMethod="FromHex">
+        <x:Arguments>
+            <x:String>4C2882</x:String>
+        </x:Arguments>
+    </Color>
+
+    <!--Lavender Gray-->
+    <Color x:Key="SecondaryColor"
+           x:FactoryMethod="FromHex">
+        <x:Arguments>
+            <x:String>C4C3D0</x:String>
+        </x:Arguments>
+    </Color>
+    
+    <!--Gunmetal-->
+    <Color x:Key="DetailColor"
+           x:FactoryMethod="FromHex">
+        <x:Arguments>
+            <x:String>2a3439</x:String>
+        </x:Arguments>
+    </Color>
+</ResourceDictionary>

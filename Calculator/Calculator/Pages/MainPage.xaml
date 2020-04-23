@@ -17,7 +17,7 @@
                         Orientation="Both"
                         AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
                         AbsoluteLayout.LayoutFlags="SizeProportional">
-                <Calculator:Canvas x:Name="Canvas" />
+                <Calculator:Canvas x:Name="Canvas"/>
             </ScrollView>
 
             <Calculator:BasicModeAnswerLabel x:Name="BasicAnswer"
@@ -61,7 +61,7 @@
                     <Calculator:AddFunction x:Name="AddFunctionLayout"
                                             IsVisible="False"
                                             CornerRadius="20"
-                                            BackgroundColor="White"
+                                            BackgroundColor="{DynamicResource SecondaryBackgroundColor}"
                                             HasShadow="False"
                                             Padding="0, 0, 0, 5" />
                 </x:Arguments>

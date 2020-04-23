@@ -23,13 +23,13 @@ namespace Calculator
         public static readonly int PAGE_PADDING = 10;
 
         public static readonly Color TEXT_COLOR = Color.Gray;
-        public static readonly Color BACKGROUND_COLOR = Color.FromHex("#ebeae8"); //rgb(244, 236, 215)
+        //public static readonly Color BACKGROUND_COLOR = Color.FromHex("#ebeae8"); //rgb(244, 236, 215)
 
-        public static readonly Color BUTTON_TEXT_COLOR = Color.Black;
-        public static readonly Color BUTTON_BACKGROUND_COLOR = Color.LightGray;
-        public static readonly int CORNER_RADIUS = 5;
+        //public static readonly Color BUTTON_TEXT_COLOR = Color.Black;
+        //public static readonly Color BUTTON_BACKGROUND_COLOR = Color.LightGray;
+        //public static readonly int CORNER_RADIUS = 5;
 
-        public static readonly string SYMBOLA_FONT = Device.RuntimePlatform == Device.Android ? "Symbola.ttf#Symbola" : "Symbola";
+        //public static readonly string SYMBOLA_FONT = Device.RuntimePlatform == Device.Android ? "Symbola.ttf#Symbola" : "Symbola";
 
         public static readonly Thickness BUTTON_PADDING = Device.RuntimePlatform == Device.iOS ? new Thickness(10, 0, 10, 0) : new Thickness(0);
 
@@ -51,7 +51,7 @@ namespace Calculator
                     return true;
                 }
             }
-
+            
             return false;
         }
 
@@ -138,8 +138,9 @@ namespace Calculator
         public App()
         {
             InitializeComponent();
-            
-            Resources = new CrunchStyle();
+
+            //Resources.Add(new CrunchStyle());
+            //Resources.MergedDictionaries.Add(new LightTheme());
 
             bool success = Settings.Load();
 #if DEBUG

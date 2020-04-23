@@ -6,8 +6,7 @@
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                       mc:Ignorable="d"
                       x:Class="Calculator.TutorialDialog"
-                      Padding="20, 20, 20, 10"
-                      BackgroundColor="White">
+                      Padding="20, 20, 20, 10">
     <StackLayout Orientation="Vertical">
         <Label x:Name="DescriptionLabel"
                VerticalOptions="CenterAndExpand"
@@ -40,12 +39,10 @@
 
         <StackLayout Orientation="Horizontal">
             <Button x:Name="Back"
-                    Text="Back"
-                    BackgroundColor="Transparent" />
+                    Text="Back" />
 
             <Button x:Name="Next"
-                    HorizontalOptions="EndAndExpand"
-                    BackgroundColor="Transparent" />
+                    HorizontalOptions="EndAndExpand" />
         </StackLayout>
     </StackLayout>
 </Calculator:ModalView>

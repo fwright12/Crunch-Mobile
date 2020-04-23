@@ -68,16 +68,12 @@ namespace Calculator
                         {
                             (Edit = new Button
                             {
-                                BackgroundColor = Color.Transparent,
-                                TextColor = Color.Default,
                                 FontSize = NamedSize.Body.On<Button>()
                             }),
                             (Add = new Button
                             {
                                 HorizontalOptions = LayoutOptions.EndAndExpand,
-                                BackgroundColor = Color.Transparent,
                                 Text = "+",
-                                TextColor = Color.Default,
                                 FontSize = NamedSize.Title.On<Button>(),
                             })
                         }

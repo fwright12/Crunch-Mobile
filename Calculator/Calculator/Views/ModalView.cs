@@ -12,8 +12,6 @@ namespace Calculator
         private readonly int MAX_TUTORIAL_SIZE_ABSOLUTE = 400;
         private readonly double MAX_TUTORIAL_SIZE_PERCENT = 0.75;
 
-        private Color Background = Color.White;
-
         public ModalView()
         {
             //BorderColor = Background;

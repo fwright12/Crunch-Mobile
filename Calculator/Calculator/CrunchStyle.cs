@@ -13,7 +13,7 @@ namespace Calculator
         public CrunchStyle()
         {
             //Buttons
-            Add(new Style(typeof(Button))
+            /*Add(new Style(typeof(Button))
             {
                 ApplyToDerivedTypes = true,
                 Setters =
@@ -23,20 +23,20 @@ namespace Calculator
                     new Setter { Property = Button.CornerRadiusProperty, Value = App.CORNER_RADIUS },
                     new Setter { Property = Button.PaddingProperty, Value = App.BUTTON_PADDING }
                 }
-            });
-
+            });*/
+            
             //Text
-            Add(new Style(typeof(Text))
+            /*Add(new Style(typeof(Text))
             {
                 ApplyToDerivedTypes = true,
                 Setters =
                 {
                     new Setter { Property = Label.TextColorProperty, Value = App.TEXT_COLOR }
                 }
-            });
+            });*/
             
             //Pages
-            Add(new Style(typeof(ContentPage))
+            /*Add(new Style(typeof(ContentPage))
             {
                 ApplyToDerivedTypes = true,
                 Behaviors =
@@ -54,35 +54,35 @@ namespace Calculator
                 {
                     new Setter { Property = VisualElement.BackgroundColorProperty, Value = App.BACKGROUND_COLOR }
                 }
-            });
+            });*/
 
             //Canvas
-            Add(new Style(typeof(Canvas))
+            /*Add(new Style(typeof(Canvas))
             {
                 ApplyToDerivedTypes = true,
                 Setters =
                 {
                     new Setter { Property = VisualElement.BackgroundColorProperty, Value = App.BACKGROUND_COLOR }
                 }
-            });
+            });*/
 
             //Cursor
-            Add(new Style(typeof(CursorView))
+            /*Add(new Style(typeof(CursorView))
             {
                 ApplyToDerivedTypes = true,
                 Setters =
                 {
                     new Setter { Property = VisualElement.BackgroundColorProperty, Value = App.TEXT_COLOR }
                 }
-            });
+            });*/
 
-            Add(new Style(typeof(CheckBox))
+            /*Add(new Style(typeof(CheckBox))
             {
                 Setters =
                 {
                     new Setter { Property = CheckBox.ColorProperty, Value = App.CRUNCH_PURPLE }
                 }
-            });
+            });*/
         }
 
         private void SetPadding(Page page)

@@ -129,9 +129,9 @@ namespace Calculator
             Text.MaxTextHeight = App.TextHeight;
             ParenthesesWidth = App.TextWidth;
 
-            Text.CreateLeftParenthesis = () => new TextImage(new Image() { Source = "leftParenthesis.png", HeightRequest = 0, WidthRequest = App.TextWidth, Aspect = Aspect.Fill }, "(");
-            Text.CreateRightParenthesis = () => new TextImage(new Image() { Source = "rightParenthesis.png", HeightRequest = 0, WidthRequest = App.TextWidth, Aspect = Aspect.Fill }, ")");
-            Text.CreateRadical = () => new Image() { Source = "radical.png", HeightRequest = 0, WidthRequest = App.TextWidth * 2, Aspect = Aspect.Fill };
+            Text.CreateLeftParenthesis = () => new ImageText { Text = "(", HeightRequest = 0, WidthRequest = App.TextWidth, Aspect = Aspect.Fill };
+            Text.CreateRightParenthesis = () => new ImageText { Text = ")", HeightRequest = 0, WidthRequest = App.TextWidth, Aspect = Aspect.Fill };
+            Text.CreateRadical = () => new Image() { Source = new FontImageSource { Glyph = "⎷", FontFamily = (OnPlatform<string>)App.Current.Resources["SymbolaFont"] }, HeightRequest = 0, WidthRequest = App.TextWidth * 2, Aspect = Aspect.Fill };
 
             InitializeComponent();
             
@@ -161,6 +161,32 @@ namespace Calculator
                 Opacity = 0.875,
             };
 
+            /*Color shade = (Color)App.Current.Resources["BackgroundColor"];
+            double percent = 0.25;
+            Color[] colors = new Color[]
+            {
+                Color.GhostWhite,
+                Color.FromHex("#e7f0ff"),
+                Color.FromHex("#fcfafa"),
+                Color.FromHex("#ccccff"),
+                new Color(1 - (1 - shade.R) * percent, 1 - (1 - shade.G) * percent, 1 - (1 - shade.B) * percent)
+            };
+            for (int i = 0; i < colors.Length; i++)
+            {
+                CanvasArea.Children.Add(new BoxView
+                {
+                    Color = colors[i]
+                }, new Rectangle(1.0 / (colors.Length - 1) * i, 1, 1.0 / colors.Length, 1), AbsoluteLayoutFlags.All);
+            }
+            Color primary = (Color)App.Current.Resources["PrimaryColor"];
+            //App.Current.Resources["PrimaryColor"] = new Color(primary.R, primary.G, primary.B, 0.5);
+            BackgroundColor = Color.White;
+            FunctionsDrawer.FunctionsList.BackgroundColor = Color.FromHex("#e4d9ff");// new Color(shade.R, shade.G, shade.B, 0.1);// new Color((BackgroundColor.R + shade.R) / 2, (BackgroundColor.G + shade.G) / 2, (BackgroundColor.B + shade.B) / 2);*/
+            //App.Current.Resources["test"] = Color.Purple;
+            //Color primary = (Color)App.Current.Resources["BackgroundColor"];
+            //FunctionsDrawer.FunctionsList.BackgroundColor = primary.Shade(0.95);
+
+            SoftKeyboard.Cursor.SetDynamicResource(BackgroundColorProperty, "DetailColor");
             PhantomCursor.Bind<bool>(IsVisibleProperty, value =>
             {
                 if (value && SoftKeyboardManager.Current == CrunchKeyboard)
@@ -259,15 +285,6 @@ namespace Calculator
                 }
                 
                 BasicAnswer.Input(keystroke);
-
-                /*if (!lastKeystroke.IsNumber() && keystroke.IsNumber())
-                {
-                    History += BasicCalculator.Text + lastKeystroke;
-                }
-
-                BasicCalculator.Input(keystroke);
-
-                lastKeystroke = keystroke;*/
             };
 
             KeyboardManager.CursorMoved += (key) =>
@@ -546,9 +563,9 @@ namespace Calculator
 
         private void FunctionsDrawerSetup()
         {
-            FunctionsDrawer.Content.SetBinding<Color, StackOrientation>(BackgroundColorProperty, CrunchKeyboard, "Orientation", value => value == StackOrientation.Horizontal ? Color.Transparent : Color.White);
-            KeyboardView.SetBinding<Color, StackOrientation>(BackgroundColorProperty, CrunchKeyboard, "Orientation", value => value == StackOrientation.Horizontal ? Color.Transparent : App.BACKGROUND_COLOR);
-
+            //FunctionsDrawer.Content.SetBinding<Color, StackOrientation>(BackgroundColorProperty, CrunchKeyboard, "Orientation", value => value == StackOrientation.Horizontal ? Color.Transparent : Color.White);
+            //KeyboardView.SetBinding<Color, StackOrientation>(BackgroundColorProperty, CrunchKeyboard, "Orientation", value => value == StackOrientation.Horizontal ? Color.Transparent : App.BACKGROUND_COLOR);
+            
             ContentView portraitAddFunctionLayout = new ContentView();
             portraitAddFunctionLayout.SetBinding<View, Display>(ContentView.ContentProperty, this, "DisplayMode", value => value == Display.Expanded ? AddFunctionLayout : null);
 
