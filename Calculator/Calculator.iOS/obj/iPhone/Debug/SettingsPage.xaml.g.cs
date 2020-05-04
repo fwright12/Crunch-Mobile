@@ -24,7 +24,7 @@ namespace Calculator {
         private global::Xamarin.Forms.Extensions.Selector LogBase;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
-        private global::Xamarin.Forms.SwitchCell ShowFullKeyboard;
+        private global::Calculator.SwitchCell ShowFullKeyboard;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
         private global::Xamarin.Forms.TextCell TutorialTextCell;
@@ -49,7 +49,7 @@ namespace Calculator {
             global::Xamarin.Forms.Xaml.Extensions.LoadFromXaml(this, typeof(SettingsPage));
             DecimalStepper = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Stepper>(this, "DecimalStepper");
             LogBase = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Extensions.Selector>(this, "LogBase");
-            ShowFullKeyboard = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.SwitchCell>(this, "ShowFullKeyboard");
+            ShowFullKeyboard = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Calculator.SwitchCell>(this, "ShowFullKeyboard");
             TutorialTextCell = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.TextCell>(this, "TutorialTextCell");
             SupportTextCell = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.TextCell>(this, "SupportTextCell");
             TipsTextCell = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.TextCell>(this, "TipsTextCell");

@@ -21,6 +21,7 @@ namespace Calculator
         public static readonly BindableValue<Numbers> Numbers = Settings.Register("number form", Crunch.Numbers.Decimal, serializer: value => (int)value);
         public static readonly BindableValue<Trigonometry> Trigonometry = Settings.Register("trig form", Crunch.Trigonometry.Degrees, serializer: value => (int)value);
 
+        public static readonly BindableValue<ThemeOptions> ThemeSetting = Settings.Register("theme", ThemeOptions.System, deserializer: value => (ThemeOptions)(int)value, serializer: value => (int)value);
         public static readonly BindableValue<bool> ClearCanvasWarning = Settings.Register("clear canvas warning", true);
         // Needs the deserializer because v2.3.2 set the value for key "tutorial1" to null (so cast to bool fails). Just means the tutorial was already shown, so value should be false. Can probably be removed in a couple versions.
         public static readonly BindableValue<bool> ShouldRunTutorial = Settings.Register("tutorial1", true, deserializer: value => false);

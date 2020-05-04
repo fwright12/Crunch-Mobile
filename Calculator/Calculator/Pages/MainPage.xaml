@@ -17,20 +17,21 @@
                         Orientation="Both"
                         AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
                         AbsoluteLayout.LayoutFlags="SizeProportional">
-                <Calculator:Canvas x:Name="Canvas"/>
+                <Calculator:Canvas x:Name="Canvas" />
             </ScrollView>
 
             <Calculator:BasicModeAnswerLabel x:Name="BasicAnswer"
                                              FontSize="33"
-                                             TextColor="{x:Static Calculator:App.TEXT_COLOR}"
                                              HorizontalTextAlignment="End"
                                              VerticalTextAlignment="End" />
 
-            <Calculator:AnythingButton x:Name="SettingsMenuButton"
-                                       AbsoluteLayout.LayoutBounds="0, 0, 50, 50"
-                                       AbsoluteLayout.LayoutFlags="PositionProportional">
-                <Button BorderWidth="0" />
-            </Calculator:AnythingButton>
+            <Button x:Name="SettingsMenuButton"
+                    Text="⛭"
+                    FontSize="33"
+                    FontFamily="{StaticResource SymbolaFont}"
+                    AbsoluteLayout.LayoutBounds="0, 0, 50, 50"
+                    AbsoluteLayout.LayoutFlags="PositionProportional">
+            </Button>
 
             <ContentView x:Name="AdSpace"
                          AbsoluteLayout.LayoutBounds="0.5, 0, -1, -1"
@@ -51,9 +52,33 @@
         <StackLayout x:Name="FullKeyboardView"
                      Orientation="Vertical">
             <Calculator:FunctionsDrawer x:Name="FunctionsDrawer"
-                                        DropArea="{x:Reference Canvas}">
+                                        DropArea="{x:Reference Canvas}"
+                                        BackgroundColor="{DynamicResource SecondaryColor}">
                 <x:Arguments>
                     <ContentView x:Name="KeyboardView">
+                        <ContentView.Resources>
+                            <ResourceDictionary>
+                                <Style TargetType="Grid">
+                                    <Setter Property="RowSpacing"
+                                            Value="{Binding Source={x:Reference CrunchKeyboard}, Path=RowSpacing}" />
+                                    <Setter Property="ColumnSpacing"
+                                            Value="{Binding Source={x:Reference CrunchKeyboard}, Path=ColumnSpacing}" />
+                                </Style>
+
+                                <Style TargetType="Button"
+                                       ApplyToDerivedTypes="True">
+                                    <Setter Property="BackgroundColor"
+                                            Value="{DynamicResource PrimaryBackgroundColor}" />
+                                    <Setter Property="BorderColor"
+                                            Value="{DynamicResource SecondaryColor}" />
+                                    <Setter Property="TextColor"
+                                            Value="{DynamicResource DetailColor}" />
+                                    <Setter Property="CornerRadius"
+                                            Value="0" />
+                                </Style>
+                            </ResourceDictionary>
+                        </ContentView.Resources>
+
                         <Calculator:CrunchKeyboard x:Name="CrunchKeyboard"
                                                    ButtonSize="33" />
                     </ContentView>

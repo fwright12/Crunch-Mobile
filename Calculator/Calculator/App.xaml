@@ -2,73 +2,83 @@
 <Application xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:Calculator="clr-namespace:Calculator"
+             xmlns:Extensions="clr-namespace:Xamarin.Forms;assembly=Xamarin.Forms.Extensions"
              xmlns:MathDisplay="clr-namespace:Xamarin.Forms.MathDisplay;assembly=Xamarin.Forms.MathDisplay"
              x:Class="Calculator.App">
     <Application.Resources>
-        <ResourceDictionary Source="Themes/DarkTheme.xaml">
-            <OnPlatform x:Key="SymbolaFont"
-                        x:TypeArguments="x:String">
-                <On Platform="Android"
-                    Value="Symbola.ttf#Symbola" />
-                <On Platform="iOS"
-                    Value="Symbola" />
-            </OnPlatform>
+        <ResourceDictionary Source="Themes/LightTheme.xaml" />
 
-            <x:Int32 x:Key="Curvature">5</x:Int32>
+        <OnPlatform x:Key="SymbolaFont"
+                    x:TypeArguments="x:String">
+            <On Platform="Android"
+                Value="Symbola.ttf#Symbola" />
+            <On Platform="iOS"
+                Value="Symbola" />
+        </OnPlatform>
 
-            <Style TargetType="ContentPage"
-                   ApplyToDerivedTypes="True">
-                <Setter Property="BackgroundColor"
-                        Value="{DynamicResource PrimaryBackgroundColor}" />
-            </Style>
+        <x:Int32 x:Key="Curvature">5</x:Int32>
 
-            <Style TargetType="Calculator:ModalView"
-                   ApplyToDerivedTypes="True">
-                <Setter Property="BackgroundColor"
-                        Value="{DynamicResource SecondaryBackgroundColor}" />
-            </Style>
+        <Style TargetType="ContentPage"
+               ApplyToDerivedTypes="True">
+            <Setter Property="BackgroundColor"
+                    Value="{DynamicResource PrimaryBackgroundColor}" />
+        </Style>
 
-            <Style TargetType="Button"
-                   ApplyToDerivedTypes="True">
-                <Setter Property="TextColor"
-                        Value="{StaticResource ControlColor}" />
-                <Setter Property="BackgroundColor"
-                        Value="Transparent" />
-                <Setter Property="CornerRadius"
-                        Value="{StaticResource Curvature}" />
-                <Setter Property="Padding">
-                    <Setter.Value>
-                        <OnPlatform x:TypeArguments="Thickness">
-                            <On Platform="iOS"
-                                Value="10, 0, 10, 0" />
-                            <On Platform="Android"
-                                Value="0" />
-                        </OnPlatform>
-                    </Setter.Value>
-                </Setter>
-            </Style>
+        <Style TargetType="Calculator:ModalView"
+               ApplyToDerivedTypes="True">
+            <Setter Property="BackgroundColor"
+                    Value="{DynamicResource SecondaryBackgroundColor}" />
+        </Style>
 
-            <Style TargetType="Label"
-                   ApplyToDerivedTypes="True">
-                <Setter Property="TextColor"
-                        Value="{DynamicResource DetailColor}" />
-            </Style>
+        <Style TargetType="Button"
+               ApplyToDerivedTypes="True">
+            <Setter Property="TextColor"
+                    Value="{DynamicResource ControlColor}" />
+            <Setter Property="BackgroundColor"
+                    Value="Transparent" />
+            <Setter Property="CornerRadius"
+                    Value="{StaticResource Curvature}" />
+            <Setter Property="Padding">
+                <Setter.Value>
+                    <OnPlatform x:TypeArguments="Thickness">
+                        <On Platform="iOS"
+                            Value="10, 0, 10, 0" />
+                        <On Platform="Android"
+                            Value="0" />
+                    </OnPlatform>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
-            <Style TargetType="MathDisplay:MathLayout"
-                   ApplyToDerivedTypes="True">
-                <Setter Property="TextColor"
-                        Value="{DynamicResource DetailColor}" />
-            </Style>
+        <Style TargetType="Label"
+               ApplyToDerivedTypes="True">
+            <Setter Property="TextColor"
+                    Value="{DynamicResource DetailColor}" />
+        </Style>
 
-            <Style TargetType="CheckBox">
-                <Setter Property="Color"
-                        Value="{StaticResource ControlColor}" />
-            </Style>
+        <Style TargetType="MathDisplay:MathLayout"
+               ApplyToDerivedTypes="True">
+            <Setter Property="TextColor"
+                    Value="{DynamicResource DetailColor}" />
+        </Style>
 
-            <Style TargetType="Switch">
-                <Setter Property="OnColor"
-                        Value="{StaticResource ControlColor}" />
-            </Style>
-        </ResourceDictionary>
+        <Style TargetType="CheckBox">
+            <Setter Property="Color"
+                    Value="{DynamicResource ControlColor}" />
+        </Style>
+
+        <Style TargetType="Switch">
+            <Setter Property="OnColor"
+                    Value="{DynamicResource ControlColor}" />
+            <Setter Property="ThumbColor"
+                    Value="White" />
+        </Style>
+
+        <Style TargetType="Extensions:Selector">
+            <Setter Property="SelectedColor"
+                    Value="{DynamicResource ControlColor}" />
+            <Setter Property="BackgroundColor"
+                    Value="{DynamicResource PrimaryBackgroundColor}" />
+        </Style>
     </Application.Resources>
 </Application>

@@ -7,23 +7,6 @@
       xmlns:Calculator="clr-namespace:Calculator"
       mc:Ignorable="d"
       x:Class="Calculator.CrunchKeyboard">
-    <Grid.Resources>
-        <ResourceDictionary>
-            <Style x:Name="buttonStyle"
-                   TargetType="Button"
-                   ApplyToDerivedTypes="True">
-                <Setter Property="BackgroundColor"
-                        Value="{DynamicResource PrimaryBackgroundColor}" />
-                <Setter Property="BorderColor"
-                        Value="{StaticResource SecondaryColor}" />
-                <Setter Property="BorderWidth"
-                        Value="2" />
-                <Setter Property="TextColor"
-                        Value="{DynamicResource DetailColor}" />
-            </Style>
-        </ResourceDictionary>
-    </Grid.Resources>
-
     <!--<VisualStateManager.VisualStateGroups>
         <Extensions:VisualStates>
             <x:Arguments>
@@ -179,50 +162,44 @@
           Grid.Row="2"
           Grid.RowSpan="2"
           Grid.Column="4">
-        <Grid.Resources>
-            <ResourceDictionary>
-                <Style TargetType="Calculator:CursorKey"
-                       BasedOn="{x:Reference buttonStyle}">
-                    <Setter Property="FontFamily"
-                            Value="{StaticResource SymbolaFont}" />
-                </Style>
-            </ResourceDictionary>
-        </Grid.Resources>
-
         <Calculator:LabelButton Grid.ColumnSpan="2">
             <x:Arguments>
                 <Calculator:CursorKey Text="〈"
-                                      Key="Up" />
+                                      Key="Up"
+                                      FontFamily="{StaticResource SymbolaFont}" />
             </x:Arguments>
         </Calculator:LabelButton>
 
         <Calculator:CursorKey Text="〈"
                               Key="Left"
-                              Grid.RowSpan="2" />
+                              Grid.RowSpan="2"
+                              FontFamily="{StaticResource SymbolaFont}" />
 
         <Calculator:CursorKey Text="〉"
                               Key="Right"
-                              Grid.RowSpan="2" />
+                              Grid.RowSpan="2"
+                              FontFamily="{StaticResource SymbolaFont}" />
 
         <Calculator:LabelButton Grid.ColumnSpan="2">
             <x:Arguments>
                 <Calculator:CursorKey Text="〉"
-                                      Key="Down" />
+                                      Key="Down"
+                                      FontFamily="{StaticResource SymbolaFont}" />
             </x:Arguments>
         </Calculator:LabelButton>
     </Grid>
 
+    <ContentView x:Name="BottomRight"
+                 Grid.Row="4"
+                 Grid.Column="4" />
+
     <Extensions:LongClickableButton x:Name="DockButton"
                                     x:FieldModifier="public"
                                     Text="▽"
-                                    FontFamily="{StaticResource SymbolaFont}"
-                                    Grid.Row="4"
-                                    Grid.Column="4" />
-    
+                                    FontFamily="{StaticResource SymbolaFont}" />
+
     <Extensions:LongClickableButton x:Name="ChangeModeButton"
                                     x:FieldModifier="public"
                                     Text="↔"
-                                    FontFamily="{StaticResource SymbolaFont}"
-                                    Grid.Row="4"
-                                    Grid.Column="4" />
+                                    FontFamily="{StaticResource SymbolaFont}" />
 </Grid>

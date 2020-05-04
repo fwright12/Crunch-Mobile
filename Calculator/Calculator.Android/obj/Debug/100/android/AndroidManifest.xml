@@ -9,7 +9,7 @@
     <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="ca-app-pub-1795523054003202~5967496762" />
     <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
     <activity android:name="com.google.android.gms.ads.AdActivity" android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize" android:theme="@android:style/Theme.Translucent" />
-    <activity android:configChanges="orientation|screenSize" android:icon="@drawable/icon" android:label="Crunch" android:theme="@style/MainTheme" android:name="crc649bf02d5081ca6e8d.MainActivity">
+    <activity android:configChanges="orientation|screenSize|uiMode" android:icon="@drawable/icon" android:label="Crunch" android:theme="@style/MainTheme" android:name="crc649bf02d5081ca6e8d.MainActivity">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />

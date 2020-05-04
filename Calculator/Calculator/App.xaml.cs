@@ -11,18 +11,56 @@ using Xamarin.Forms.MathDisplay;
 
 namespace Calculator
 {
+    /*public class ThemeOptions
+    {
+        public static readonly ResourceDictionary Light = new LightTheme();
+        public static readonly ResourceDictionary Dark = new DarkTheme();
+        public static readonly ResourceDictionary System = new SystemTheme(Light, Dark);
+    }
+
+    public class SystemTheme : ResourceDictionary
+    {
+        private bool? IsDarkModeEnabled = null;
+
+        private ResourceDictionary Light;
+        private ResourceDictionary Dark;
+
+        public SystemTheme(ResourceDictionary light, ResourceDictionary dark)
+        {
+            Light = light;
+            Dark = dark;
+        }
+
+        public void SystemThemeChanged(bool darkMode)
+        {
+            if (darkMode == IsDarkModeEnabled)
+            {
+                return;
+            }
+
+            Clear();
+            this.AddRange((IsDarkModeEnabled = darkMode).Value ? Dark : Light);
+        }
+
+        public static bool operator ==(SystemTheme self, ResourceDictionary other) => (self.IsDarkModeEnabled == true ? self.Dark : self.Light) == other;
+
+        public static bool operator !=(SystemTheme self, ResourceDictionary other) => !(self == other);
+    }*/
+
     public partial class App : Application
     {
+        public enum ThemeOptions { System, Light, Dark };
+
         new public static App Current => Application.Current as App;
 
         public MainPage Home;
         public static double TextHeight { get; private set; }
         public static double TextWidth { get; private set; }
 
-        public static readonly Color CRUNCH_PURPLE = Color.FromHex("#560297");
+        //public static readonly Color CRUNCH_PURPLE = Color.FromHex("#560297");
         public static readonly int PAGE_PADDING = 10;
 
-        public static readonly Color TEXT_COLOR = Color.Gray;
+        //public static readonly Color TEXT_COLOR = Color.Gray;
         //public static readonly Color BACKGROUND_COLOR = Color.FromHex("#ebeae8"); //rgb(244, 236, 215)
 
         //public static readonly Color BUTTON_TEXT_COLOR = Color.Black;
@@ -135,20 +173,61 @@ namespace Calculator
             (Home.Content as AbsoluteLayout)?.Children.Add(tutorial, new Rectangle(0.5, 0.5, 0.75, 0.75), AbsoluteLayoutFlags.All);
         }
 
+        public static BindableProperty SystemDarkModeEnabledProperty = BindableProperty.Create(nameof(SystemDarkModeEnabled), typeof(bool), typeof(App), false);
+
+        public bool SystemDarkModeEnabled
+        {
+            get => (bool)GetValue(SystemDarkModeEnabledProperty);
+            set => SetValue(SystemDarkModeEnabledProperty, value);
+        }
+
+        public ResourceDictionary Theme { get; private set; }
+
+        private void SetTheme(ThemeOptions newTheme)
+        {
+            if (newTheme == ThemeOptions.System)
+            {
+                newTheme = SystemDarkModeEnabled ? ThemeOptions.Dark : ThemeOptions.Light;
+            }
+
+            ThemeOptions currentTheme = Theme is DarkTheme ? ThemeOptions.Dark : ThemeOptions.Light;
+            if (newTheme == currentTheme)
+            {
+                return;
+            }
+
+            Resources.MergedDictionaries.Clear();
+            Resources.MergedDictionaries.Add(Theme = (newTheme == ThemeOptions.Dark ? (ResourceDictionary)new DarkTheme() : new LightTheme()));
+
+            OnPropertyChanged(nameof(Theme));
+        }
+
         public App()
         {
             InitializeComponent();
 
-            //Resources.Add(new CrunchStyle());
-            //Resources.MergedDictionaries.Add(new LightTheme());
+            ThemeSetting.Bind<ThemeOptions>(ThemeSetting.ValueProperty, value => SetTheme(value));
+            this.WhenPropertyChanged(SystemDarkModeEnabledProperty, (sender, e) =>
+            {
+                if (ThemeSetting.Value != ThemeOptions.System)
+                {
+                    return;
+                }
 
+                SetTheme(ThemeOptions.System);
+            });
+
+            //Resources.Add(new CrunchStyle());
+            //Resources.MergedDictionaries.Clear();
+            //Resources.MergedDictionaries.Add(new DarkTheme());
+            
             bool success = Settings.Load();
 #if DEBUG
             if (!success)
             {
                 //Print.Log("Failed to set Setting value from storage (possible type mismatch?). Setting looking for type " + setting.ValueProperty.ReturnType + " and storage value is type " + value.GetType());
 
-                throw new Exception();
+                //throw new Exception();
             }
 #endif
 
@@ -161,11 +240,12 @@ namespace Calculator
             };
             l.SizeChanged += async (sender, e) =>
             {
+                //Size size = l.Measure();
                 TextHeight = l.Height;
                 TextWidth = l.Width;
 
                 Root.Detail = FullNavigation = new NavigationPage(Home = new MainPage());
-                Root.Master = SideNavigation = new NavigationPage(new SettingsPage())
+                Root.Master = SideNavigation = new NavigationPage(new ContentPage())
                 {
                     Title = "Settings"
                 };
@@ -219,7 +299,7 @@ namespace Calculator
                 Detail = new ContentPage { Content = new StackLayout { Children = { l } } },
                 Master = new ContentPage { Title = "Settings" },
                 MasterBehavior = MasterBehavior.Popover,
-#if __IOS__
+#if IOS
                 IsGestureEnabled = false
 #endif
             };

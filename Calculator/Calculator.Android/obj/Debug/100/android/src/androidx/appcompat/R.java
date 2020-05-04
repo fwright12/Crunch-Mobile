@@ -618,20 +618,20 @@ public final class R {
 		public static final int btn_radio_off_to_on_mtrl_animation = 0x7f070064;
 		public static final int btn_radio_on_mtrl = 0x7f070065;
 		public static final int btn_radio_on_to_off_mtrl_animation = 0x7f070066;
-		public static final int notification_action_background = 0x7f07014a;
-		public static final int notification_bg = 0x7f07014b;
-		public static final int notification_bg_low = 0x7f07014c;
-		public static final int notification_bg_low_normal = 0x7f07014d;
-		public static final int notification_bg_low_pressed = 0x7f07014e;
-		public static final int notification_bg_normal = 0x7f07014f;
-		public static final int notification_bg_normal_pressed = 0x7f070150;
-		public static final int notification_icon_background = 0x7f070151;
-		public static final int notification_template_icon_bg = 0x7f070152;
-		public static final int notification_template_icon_low_bg = 0x7f070153;
-		public static final int notification_tile_bg = 0x7f070154;
-		public static final int notify_panel_notification_icon_bg = 0x7f070155;
-		public static final int tooltip_frame_dark = 0x7f070159;
-		public static final int tooltip_frame_light = 0x7f07015a;
+		public static final int notification_action_background = 0x7f070149;
+		public static final int notification_bg = 0x7f07014a;
+		public static final int notification_bg_low = 0x7f07014b;
+		public static final int notification_bg_low_normal = 0x7f07014c;
+		public static final int notification_bg_low_pressed = 0x7f07014d;
+		public static final int notification_bg_normal = 0x7f07014e;
+		public static final int notification_bg_normal_pressed = 0x7f07014f;
+		public static final int notification_icon_background = 0x7f070150;
+		public static final int notification_template_icon_bg = 0x7f070151;
+		public static final int notification_template_icon_low_bg = 0x7f070152;
+		public static final int notification_tile_bg = 0x7f070153;
+		public static final int notify_panel_notification_icon_bg = 0x7f070154;
+		public static final int tooltip_frame_dark = 0x7f070156;
+		public static final int tooltip_frame_light = 0x7f070157;
 	}
 	public static final class id {
 		public static final int accessibility_action_clickable_span = 0x7f080006;

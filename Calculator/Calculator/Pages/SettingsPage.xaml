@@ -4,7 +4,7 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:Calculator="clr-namespace:Calculator"
-             xmlns:Extensions="clr-namespace:Xamarin.Forms.Extensions;assembly=Xamarin.Forms.Extensions"
+             xmlns:Extensions="clr-namespace:Xamarin.Forms;assembly=Xamarin.Forms.Extensions"
              xmlns:iOS="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
              mc:Ignorable="d"
              x:Class="Calculator.SettingsPage"
@@ -49,7 +49,8 @@
                 <Calculator:LabeledCell>
                     <x:Arguments>
                         <x:String>Logarithm Base:</x:String>
-                        <Extensions:Selector x:Name="LogBase">
+                        <Extensions:Selector x:Name="LogBase"
+                                             HorizontalOptions="EndAndExpand">
                             <x:Arguments>
                                 <x:Array Type="{x:Type x:String}">
                                     <x:String>2</x:String>
@@ -72,13 +73,41 @@
                 </Calculator:LabeledCell>
             </TableSection>-->
 
-            <TableSection Title="Other">
-                <SwitchCell Text="Clear canvas warning"
-                            On="{Binding Source={x:Static Calculator:App.ClearCanvasWarning}, Path=Value, Mode=TwoWay}" />
+            <TableSection Title="Theme"
+                          x:Name="ThemeTableSection">
+                <Calculator:SwitchCell>
+                    <x:Arguments>
+                        <x:String>Use system theme</x:String>
+                        <Switch x:Name="SystemThemeSwitch" />
+                    </x:Arguments>
+                </Calculator:SwitchCell>
+                <ViewCell x:Name="ThemeSelectorCell">
+                    <Extensions:Selector x:Name="ThemeSelector"
+                                         HorizontalOptions="EndAndExpand">
+                        <x:Arguments>
+                            <x:Array Type="{x:Type x:String}">
+                                <x:String>Light</x:String>
+                                <x:String>Dark</x:String>
+                            </x:Array>
+                        </x:Arguments>
+                    </Extensions:Selector>
+                </ViewCell>
+            </TableSection>
 
-                <SwitchCell x:Name="ShowFullKeyboard"
-                            Text="Show full keyboard"
-                            On="{Binding Source={x:Static Calculator:App.ShowFullKeyboard}, Path=Value, Mode=TwoWay}" />
+            <TableSection Title="Other">
+                <Calculator:SwitchCell>
+                    <x:Arguments>
+                        <x:String>Clear canvas warning</x:String>
+                        <Switch IsToggled="{Binding Source={x:Static Calculator:App.ClearCanvasWarning}, Path=Value, Mode=TwoWay}" />
+                    </x:Arguments>
+                </Calculator:SwitchCell>
+
+                <Calculator:SwitchCell x:Name="ShowFullKeyboard">
+                    <x:Arguments>
+                        <x:String>Show full keyboard</x:String>
+                        <Switch IsToggled="{Binding Source={x:Static Calculator:App.ShowFullKeyboard}, Path=Value, Mode=TwoWay}" />
+                    </x:Arguments>
+                </Calculator:SwitchCell>
             </TableSection>
 
             <TableSection Title="Help">
@@ -91,8 +120,12 @@
                 <TextCell x:Name="TipsTextCell"
                           Text="Tips &#38; Tricks &#8599;" />
 
-                <SwitchCell Text="Show new tips at startup"
-                            On="{Binding Source={x:Static Calculator:App.ShowTips}, Path=Value, Mode=TwoWay}" />
+                <Calculator:SwitchCell>
+                    <x:Arguments>
+                        <x:String>Show new tips at startup</x:String>
+                        <Switch IsToggled="{Binding Source={x:Static Calculator:App.ShowTips}, Path=Value, Mode=TwoWay}" />
+                    </x:Arguments>
+                </Calculator:SwitchCell>
             </TableSection>
 
             <TableSection Title="Info">

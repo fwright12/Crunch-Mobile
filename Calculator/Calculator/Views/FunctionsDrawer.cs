@@ -9,6 +9,7 @@ using Xamarin.Forms;
 using Xamarin.Forms.Extensions;
 using Xamarin.Forms.Internals;
 using Xamarin.Forms.MathDisplay;
+using Xamarin.Forms.Xaml;
 
 namespace Calculator
 {
@@ -330,19 +331,22 @@ namespace Calculator
                     }
                 }
             };
-            
+
+            //Color backgroundColor = Color.White;// (Color)App.Current.Resources["SecondaryColor"];
+            //BackgroundColor = backgroundColor.WithAlpha(0.5);
             VisualStateManager.GetVisualStateGroups(this).Add(new VisualStates("Open", "Closed")
             {
-                new Setters { Property = CornerRadiusProperty, Values = { 20, 0 } },
-                new Setters
+                new Setters { Property = CornerRadiusProperty, Values = { 20, 5 } },
+                //{ BackgroundColorProperty, ("Open", new DynamicResource("SecondaryColor")) },
+                /*new Setters
                 {
                     Property = BackgroundColorProperty,
                     Values =
                     {
-                        new Thunk<Color>(() => (Color)App.Current.Resources["SecondaryBackgroundColor"]),
-                        new Thunk<Color>(() => ((Color)App.Current.Resources["SecondaryBackgroundColor"]).WithAlpha(0)),
+                        new Thunk<Color>(() => backgroundColor),
+                        new Thunk<Color>(() => backgroundColor.WithAlpha(1)),
                     }
-                },
+                },*/
                 new TargetedSetters
                 {
                     Targets = (VisualElement)Keyboard.Parent,

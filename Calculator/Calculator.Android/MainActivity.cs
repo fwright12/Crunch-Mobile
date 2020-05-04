@@ -6,10 +6,11 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.OS;
+using Android.Content.Res;
 
 namespace Calculator.Droid
 {
-    [Activity(Label = "Crunch", Icon = "@drawable/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
+    [Activity(Label = "Crunch", Icon = "@drawable/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
         protected override void OnCreate(Bundle bundle)
@@ -21,6 +22,7 @@ namespace Calculator.Droid
 
             global::Xamarin.Forms.Forms.Init(this, bundle);
             LoadApplication(new App());
+            SetTheme(Resources.Configuration);
 
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init(true);
             FFImageLoading.Forms.Platform.CachedImageRenderer.InitImageViewHandler();
@@ -30,7 +32,15 @@ namespace Calculator.Droid
             Android.Gms.Ads.MobileAds.Initialize(ApplicationContext, "ca-app-pub-1795523054003202~5967496762");
         }
 
-        public static event EventHandler<EventArgs<Android.Support.V7.View.ActionMode>> ContextMenuAppeared;
+        public override void OnConfigurationChanged(Configuration newConfig)
+        {
+            base.OnConfigurationChanged(newConfig);
+            SetTheme(newConfig);
+        }
+
+        private void SetTheme(Configuration config) => App.Current.SystemDarkModeEnabled = config.UiMode.HasFlag(UiMode.NightYes);
+
+        //public static event EventHandler<EventArgs<Android.Support.V7.View.ActionMode>> ContextMenuAppeared;
 
         /*public override Android.Support.V7.View.ActionMode StartSupportActionMode(global::Android.Support.V7.View.ActionMode.ICallback callback)
         {
