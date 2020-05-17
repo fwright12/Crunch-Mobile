@@ -1,10 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ResourceDictionary xmlns="http://xamarin.com/schemas/2014/forms"
                     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                    xmlns:Extensions="clr-namespace:Xamarin.Forms;assembly=Xamarin.Forms.Extensions"
                     x:Class="Calculator.LightTheme">
     <Color x:Key="PrimaryBackgroundColor">WhiteSmoke</Color>
-    <Color x:Key="SecondaryBackgroundColor">White</Color>
+    <!--Alabaster-->
+    <Color x:Key="CanvasBackgroundColor"
+           x:FactoryMethod="FromRgb">
+        <x:Arguments>
+            <x:Int32>237</x:Int32>
+            <x:Int32>234</x:Int32>
+            <x:Int32>224</x:Int32>
+        </x:Arguments>
+    </Color>
 
+    
     <!--Spanish Violet-->
     <Color x:Key="ControlColor"
            x:FactoryMethod="FromHex">
@@ -12,20 +22,15 @@
             <x:String>4C2882</x:String>
         </x:Arguments>
     </Color>
+    
+    <Color x:Key="DetailColor">Black</Color>
 
+    <Color x:Key="PrimaryKeyboardKeyColor">Gray</Color>
     <!--Lavender Gray-->
-    <Color x:Key="SecondaryColor"
+    <Color x:Key="SecondaryKeyboardKeyColor"
            x:FactoryMethod="FromHex">
         <x:Arguments>
             <x:String>C4C3D0</x:String>
-        </x:Arguments>
-    </Color>
-    
-    <!--Gunmetal-->
-    <Color x:Key="DetailColor"
-           x:FactoryMethod="FromHex">
-        <x:Arguments>
-            <x:String>2a3439</x:String>
         </x:Arguments>
     </Color>
 </ResourceDictionary>

@@ -40,8 +40,6 @@
 		<string>Icon-Small@2x</string>
 		<string>Icon-Small@3x</string>
 	</array>
-	<key>UILaunchStoryboardName</key>
-	<string>LaunchScreen</string>
 	<key>CFBundleShortVersionString</key>
 	<string>3.0</string>
 	<key>CFBundleIdentifier</key>
@@ -55,12 +53,15 @@
 	<key>UIAppFonts</key>
 	<array>
 		<string>Symbola.ttf</string>
+		<string>ionicons.ttf</string>
 	</array>
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/AppIcons.appiconset</string>
 	<key>CFBundleVersion</key>
-	<string>13.0</string>
+	<string>13.1</string>
 	<key>GADApplicationIdentifier</key>
 	<string>ca-app-pub-1795523054003202~2467617560</string>
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
 </dict>
 </plist>

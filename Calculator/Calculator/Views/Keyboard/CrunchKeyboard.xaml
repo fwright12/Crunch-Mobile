@@ -6,7 +6,8 @@
       xmlns:Extensions="clr-namespace:Xamarin.Forms;assembly=Xamarin.Forms.Extensions"
       xmlns:Calculator="clr-namespace:Calculator"
       mc:Ignorable="d"
-      x:Class="Calculator.CrunchKeyboard">
+      x:Class="Calculator.CrunchKeyboard"
+      x:Name="self">
     <!--<VisualStateManager.VisualStateGroups>
         <Extensions:VisualStates>
             <x:Arguments>
@@ -84,22 +85,14 @@
         <ScrollView Orientation="Horizontal"
                     Grid.Row="0"
                     Grid.Column="1">
-            <ScrollView.Resources>
-                <ResourceDictionary>
-                    <Style TargetType="Button">
-                        <Setter Property="FontSize"
-                                Value="12" />
-                    </Style>
-                </ResourceDictionary>
-            </ScrollView.Resources>
-
             <StackLayout x:Name="VariableLayout"
-                         Orientation="Horizontal" />
+                         Orientation="Horizontal"
+                         Spacing="{Binding Source={x:Reference self}, Path=ColumnSpacing}"/>
         </ScrollView>
 
         <Button x:Name="ExpandButton"
-                Text="v"
-                FontFamily="{StaticResource SymbolaFont}"
+                Text="&#xf104;"
+                FontFamily="{StaticResource IoniconsFont}"
                 FontSize="15"
                 Grid.Row="0"
                 Grid.Column="2" />
@@ -129,6 +122,7 @@
     <Calculator:Key x:Name="EqualsKey"
                     x:FieldModifier="public"
                     Text="="
+                    BorderColor="DarkOrange"
                     Grid.Row="4"
                     Grid.Column="2" />
 
@@ -200,6 +194,6 @@
 
     <Extensions:LongClickableButton x:Name="ChangeModeButton"
                                     x:FieldModifier="public"
-                                    Text="↔"
-                                    FontFamily="{StaticResource SymbolaFont}" />
+                                    Text="&#xf3f2;"
+                                    FontFamily="{StaticResource IoniconsFont}" />
 </Grid>

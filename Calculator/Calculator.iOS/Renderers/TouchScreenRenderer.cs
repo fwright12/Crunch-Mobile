@@ -26,6 +26,22 @@ namespace Calculator.iOS
         //public static UIPanGestureRecognizer Pan { get; private set; } = new UIPanGestureRecognizer();
         //private static TouchScreenRenderer Instance;
 
+        public TouchScreenRenderer()
+        {
+            SetTheme();
+        }
+
+        public override void TraitCollectionDidChange(UITraitCollection previousTraitCollection)
+        {
+            base.TraitCollectionDidChange(previousTraitCollection);
+            if (TraitCollection.UserInterfaceStyle != previousTraitCollection.UserInterfaceStyle)
+            {
+                SetTheme();
+            }
+        }
+
+        private void SetTheme() => App.Current.SystemDarkModeEnabled = TraitCollection.UserInterfaceStyle == UIUserInterfaceStyle.Dark;
+
         protected override void OnElementChanged(VisualElementChangedEventArgs e)
         {
             base.OnElementChanged(e);

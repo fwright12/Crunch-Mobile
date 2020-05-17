@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Xamarin.Forms;
-using Xamarin.Forms.Internals;
+using Xamarin.Forms.Extensions;
 using Xamarin.Forms.Xaml;
 
 namespace Calculator
@@ -27,14 +27,14 @@ namespace Calculator
             });
             
 #if DEBUG
-            SwitchCell sampleMode;
+            Xamarin.Forms.SwitchCell sampleMode;
 
             (Content as TableView).Root.Insert((Content as TableView).Root.Count - 1, new TableSection("Developer Options")
             {
-                (sampleMode = new SwitchCell("Sampling", new Switch { IsToggled = App.Current.GetInSampleMode() }))
+                (sampleMode = new Xamarin.Forms.SwitchCell { Text = "Sampling", On = App.Current.GetInSampleMode() })
             });
 
-            sampleMode.SwitchView.Toggled += (sender, e) => App.Current.SetInSampleMode(e.Value);
+            sampleMode.OnChanged += (sender, e) => App.Current.SetInSampleMode(e.Value);
 #endif
             
             LogBase.Selected += (selected) => App.LogarithmBase.Value = selected == 0 ? 2 : 10;
@@ -42,7 +42,7 @@ namespace Calculator
             Numbers.Selected += (selected) => App.Numbers.Value = (Crunch.Numbers)selected;
             Trig.Selected += (selected) => App.Trigonometry.Value = (Crunch.Trigonometry)selected;
 
-            App.ThemeOptions SelectedTheme() => ThemeSelector.SelectedIndex == 0 ? App.ThemeOptions.Light : App.ThemeOptions.Dark;
+            App.ThemeOptions SelectedTheme() => ThemeSelector.SelectedIndex == 1 ? App.ThemeOptions.Dark : App.ThemeOptions.Light;
             SystemThemeSwitch.SetBinding<bool, App.ThemeOptions>(Switch.IsToggledProperty, App.ThemeSetting, "Value", value => value == App.ThemeOptions.System, value => value ? App.ThemeOptions.System : SelectedTheme(), BindingMode.TwoWay);
             ThemeSelector.Selected += (selected) =>
             {
@@ -67,10 +67,11 @@ namespace Calculator
                 }
             });
 
-#if ANDROID
-            //SystemThemeSwitch.IsToggled = false;
-            //ThemeTableSection.RemoveAt(0);
-#endif
+            if (!App.DarkModeSupported)
+            {
+                SystemThemeSwitch.IsToggled = false;
+                ThemeTableSection.RemoveAt(0);
+            }
 
             App.Current.Bind<ResourceDictionary>(nameof(App.Theme), theme =>
             {
@@ -81,7 +82,7 @@ namespace Calculator
                     //section.SetValue(TableSectionBase.TextColorProperty, "SecondaryColor");
 
                     object value;
-                    if (Application.Current.Resources.TryGetValue("SecondaryColor", out value) && value is Color color)
+                    if (Application.Current.Resources.TryGetValue("PrimaryKeyboardKeyColor", out value) && value is Color color)
                     {
                         section.TextColor = color;
                     }
@@ -112,16 +113,8 @@ namespace Calculator
 
             TutorialTextCell.Tapped += async (sender, e) =>
             {
-                if (App.Current.MainPage is MasterDetailPage masterDetail && masterDetail.IsPresented)
-                {
-                    masterDetail.IsPresented = false;
-                }
-                else
-                {
-                    await Navigation.PopAsync();
-                }
-
-                (App.Current as App).RunTutorial();
+                await Navigation.PopAsync();
+                App.Current.RunTutorial();
             };
 
             //ExternalLinkCell support = new ExternalLinkCell { Text = "Support" };
@@ -245,7 +238,7 @@ namespace Calculator
 
     public class LabeledCell : ViewCell
     {
-        public static Thickness ViewCellMargin = Device.RuntimePlatform == Device.Android ? new Thickness(16.5, 10, 12.5, 10) : new Thickness(15, 5, 10, 5);
+        public static Thickness ViewCellMargin = Device.RuntimePlatform == Device.Android ? new Thickness(16.5, 10, 12.5, 10) : new Thickness(20, 5, 20, 5);
 
         public readonly Label LabelView;
         public readonly View Control;
@@ -255,7 +248,7 @@ namespace Calculator
         public LabeledCell(string labelText, View control)
         {
             Control = control;
-            Control.HorizontalOptions = new LayoutOptions(control.HorizontalOptions.Alignment, true);
+            Control.HorizontalOptions = new LayoutOptions(Control.IsSet(View.HorizontalOptionsProperty) ? control.HorizontalOptions.Alignment : LayoutAlignment.End, true);
             Control.VerticalOptions = LayoutOptions.Center;
             
             View = new StackLayout
@@ -268,6 +261,7 @@ namespace Calculator
                     (LabelView = new Label()
                     {
                         Text = labelText,
+                        FontSize = NamedSize.Body.On<Label>(),
                         VerticalOptions = LayoutOptions.Center
                     }),
                     Control

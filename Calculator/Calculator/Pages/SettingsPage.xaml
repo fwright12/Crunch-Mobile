@@ -9,9 +9,11 @@
              mc:Ignorable="d"
              x:Class="Calculator.SettingsPage"
              Title="Settings"
-             iOS:Page.UseSafeArea="True">
+             iOS:NavigationPage.PrefersLargeTitles="True"
+             iOS:Page.ModalPresentationStyle="FormSheet">
     <TableView VerticalOptions="FillAndExpand"
                Intent="Settings"
+               BackgroundColor="Transparent"
                HasUnevenRows="True">
         <!--<TableView.Resources>
             <Style TargetType="TableSection">

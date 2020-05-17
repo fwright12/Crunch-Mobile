@@ -21,10 +21,22 @@ namespace Calculator {
         private global::Xamarin.Forms.Stepper DecimalStepper;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
-        private global::Xamarin.Forms.Extensions.Selector LogBase;
+        private global::Xamarin.Forms.Selector LogBase;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
-        private global::Xamarin.Forms.SwitchCell ShowFullKeyboard;
+        private global::Xamarin.Forms.TableSection ThemeTableSection;
+        
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
+        private global::Xamarin.Forms.Switch SystemThemeSwitch;
+        
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
+        private global::Xamarin.Forms.ViewCell ThemeSelectorCell;
+        
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
+        private global::Xamarin.Forms.Selector ThemeSelector;
+        
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
+        private global::Calculator.SwitchCell ShowFullKeyboard;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
         private global::Xamarin.Forms.TextCell TutorialTextCell;
@@ -48,8 +60,12 @@ namespace Calculator {
         private void InitializeComponent() {
             global::Xamarin.Forms.Xaml.Extensions.LoadFromXaml(this, typeof(SettingsPage));
             DecimalStepper = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Stepper>(this, "DecimalStepper");
-            LogBase = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Extensions.Selector>(this, "LogBase");
-            ShowFullKeyboard = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.SwitchCell>(this, "ShowFullKeyboard");
+            LogBase = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Selector>(this, "LogBase");
+            ThemeTableSection = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.TableSection>(this, "ThemeTableSection");
+            SystemThemeSwitch = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Switch>(this, "SystemThemeSwitch");
+            ThemeSelectorCell = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.ViewCell>(this, "ThemeSelectorCell");
+            ThemeSelector = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Selector>(this, "ThemeSelector");
+            ShowFullKeyboard = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Calculator.SwitchCell>(this, "ShowFullKeyboard");
             TutorialTextCell = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.TextCell>(this, "TutorialTextCell");
             SupportTextCell = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.TextCell>(this, "SupportTextCell");
             TipsTextCell = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.TextCell>(this, "TipsTextCell");

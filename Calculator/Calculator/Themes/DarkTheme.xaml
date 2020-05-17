@@ -2,30 +2,31 @@
 <ResourceDictionary xmlns="http://xamarin.com/schemas/2014/forms"
                     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                     x:Class="Calculator.DarkTheme">
-    <!--Gunmetal-->
+    <!--Eerie Black-->
     <Color x:Key="PrimaryBackgroundColor"
            x:FactoryMethod="FromHex">
         <x:Arguments>
-            <x:String>2a3439</x:String>
+            <x:String>1B1B1B</x:String>
         </x:Arguments>
     </Color>
-    <Color x:Key="SecondaryBackgroundColor">Black</Color>
+    <Color x:Key="CanvasBackgroundColor">Black</Color>
 
-    <!--Spanish Violet-->
-    <Color x:Key="ControlColor">MediumPurple</Color>
-           <!--:FactoryMethod="FromHex">
+    <!--Vivid Violet-->
+    <Color x:Key="ControlColor"
+           x:FactoryMethod="FromHex">
         <x:Arguments>
-            <x:String>4C2882</x:String>
+            <x:String>9F00FF</x:String>
         </x:Arguments>
-    </Color>-->
+    </Color>
+
+    <Color x:Key="DetailColor">White</Color>
 
     <!--Lavender Gray-->
-    <Color x:Key="SecondaryColor"
+    <Color x:Key="PrimaryKeyboardKeyColor"
            x:FactoryMethod="FromHex">
         <x:Arguments>
             <x:String>C4C3D0</x:String>
         </x:Arguments>
     </Color>
-    
-    <Color x:Key="DetailColor">WhiteSmoke</Color>
+    <Color x:Key="SecondaryKeyboardKeyColor">Gray</Color>
 </ResourceDictionary>

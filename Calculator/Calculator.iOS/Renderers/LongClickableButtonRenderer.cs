@@ -10,15 +10,62 @@ using Xamarin.Forms;
 using Xamarin.Forms.Platform.iOS;
 using Xamarin.Forms.Extensions;
 
+[assembly: ExportRenderer(typeof(Button), typeof(Calculator.iOS.ButtonRenderer))]
 [assembly: ExportRenderer(typeof(LongClickableButton), typeof(Calculator.iOS.LongClickableButtonRenderer))]
 
 namespace Calculator.iOS
 {
+    public class MyButton : UIButton
+    {
+        private IVisualElementRenderer Renderer;
+
+        public MyButton(IVisualElementRenderer renderer) => Renderer = renderer;
+
+        public override bool Highlighted
+        {
+            get => base.Highlighted;
+            set
+            {
+                if (Renderer.Element is Button button)
+                {
+                    if (value)
+                    {
+                        BackgroundColor = button.BorderColor.ToUIColor();
+                    }
+                    else
+                    {
+                        BackgroundColor = button.BackgroundColor.ToUIColor();
+                    }
+                }
+
+                base.Highlighted = value;
+            }
+        }
+    }
+
+    public class ButtonRenderer : Xamarin.Forms.Platform.iOS.ButtonRenderer
+    {
+        public ButtonRenderer() : base()
+        {
+            //new Touch(this);
+        }
+
+        protected override void OnElementChanged(ElementChangedEventArgs<Button> e)
+        {
+            /*if (Control == null)
+            {
+                SetNativeControl(new MyButton(this));
+            }*/
+
+            base.OnElementChanged(e);
+        }
+    }
+
     public class LongClickableButtonRenderer : ButtonRenderer
     {
         //UIPanGestureRecognizer pan = new UIPanGestureRecognizer();
 
-        public LongClickableButtonRenderer()
+        public LongClickableButtonRenderer() : base()
         {
             UIPanGestureRecognizer pgr = TouchScreenRenderer.AddDrag(this);
             pgr.CancelsTouchesInView = false;

@@ -82,6 +82,7 @@ namespace Calculator
 
                 FunctionsDrawer parent = Scrollable.Parent<FunctionsDrawer>();
 
+                double padding = (Drawer as Layout)?.Padding.VerticalThickness ?? 0;
                 double distance = state == TouchState.Down ? 0 : LastTouch - point.Y;
                 //Print.Log("touch", LastScrollY, ShouldScroll, state, LastTouch, point.Y);
                 //Print.Log("touch", state, distance / time, distance, time);
@@ -91,7 +92,7 @@ namespace Calculator
                 {
                     //SortedSet<double> snapPoints = this.GetSnapPoints();
                     //HeightRequest = (HeightRequest + delta).Bound(snapPoints.Min, snapPoints.Max);
-                    Drawer.HeightRequest = Math.Min(parent.MaxDrawerHeight, Drawer.HeightRequest + distance);
+                    Drawer.HeightRequest = Math.Min(parent.MaxDrawerHeight - padding, Drawer.HeightRequest + distance);
 
                     if (state == TouchState.Up)
                     {

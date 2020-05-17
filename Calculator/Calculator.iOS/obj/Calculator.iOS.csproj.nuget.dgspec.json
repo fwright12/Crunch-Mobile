@@ -58,6 +58,10 @@
               "target": "Package",
               "version": "[4.7.0, )"
             },
+            "Xamarin.Essentials": {
+              "target": "Package",
+              "version": "[1.5.3.1, )"
+            },
             "Xamarin.FFImageLoading": {
               "target": "Package",
               "version": "[2.4.11.982, )"

@@ -28,16 +28,6 @@ namespace Calculator
         {
             Content = new StackLayout
             {
-                Resources = new ResourceDictionary
-                {
-                    new StyleSetter<Button>
-                    {
-                        //new Setter { Property = Button.TextColorProperty, Value = Color.Default },
-                        //new Setter { Property = BackgroundColorProperty, Value = Color.Transparent },
-                        new Setter { Property = Button.FontSizeProperty, Value = NamedSize.Body.On<Button>() },
-                        //new Setter { Property = PaddingProperty, Value = new Thickness(0, 10, 0, 0) }
-                    }
-                },
                 Orientation = StackOrientation.Vertical,
                 Children =
                 {
@@ -51,6 +41,7 @@ namespace Calculator
                             {
                                 VerticalOptions = LayoutOptions.Start,
                                 Text = "Cancel",
+                                FontSize = NamedSize.Body.On<Button>(),
                             }),
                             (ErrorMessageLabel = new Label
                             {
@@ -63,6 +54,7 @@ namespace Calculator
                             {
                                 VerticalOptions = LayoutOptions.Start,
                                 Text = "Add",
+                                FontSize = NamedSize.Body.On<Button>(),
                                 IsEnabled = false,
                             })
                         }
@@ -73,6 +65,13 @@ namespace Calculator
                     })
                 }
             };
+            /*Content.Resources.Add(new StyleSetter<Button>
+            {
+                //new Setter { Property = Button.TextColorProperty, Value = Color.Default },
+                //new Setter { Property = BackgroundColorProperty, Value = Color.Transparent },
+                new Setter { Property = Button.FontSizeProperty, Value = NamedSize.Body.On<Button>() },
+                //new Setter { Property = PaddingProperty, Value = new Thickness(0, 10, 0, 0) }
+            });*/
 
             foreach (View child in FunctionToAdd.Children)
             {
@@ -221,7 +220,7 @@ namespace Calculator
             Keyboard = keyboard;
             AddFunctionLayout = addFunctionLayout;
             CornerRadius = 0;
-
+            
             ActionableListView listView;
             Label noFunctions;
             BoxView cover = null;
@@ -239,7 +238,7 @@ namespace Calculator
             OpenValues = new List<double> { 20, 1, 0, 20 };*/
 
             BackgroundColor = Color.Transparent;
-            Padding = new Thickness(0);
+            //Padding = new Thickness(0);
             HasShadow = false;
             IsClippedToBounds = true;
 
@@ -281,6 +280,7 @@ namespace Calculator
                     {
                         (FunctionsList = listView = new ListView
                         {
+                            HeightRequest = 0,
                             BackgroundColor = Color.Transparent,
                             ItemsSource = Functions,
                             ItemTemplate = new DataTemplate(() =>
@@ -310,7 +310,7 @@ namespace Calculator
                                 {
                                     {
                                         Keyboard,
-                                        new Rectangle(0.5, 0, -1, -1),
+                                        new Rectangle(0.5, 0.5, -1, -1),
                                         AbsoluteLayoutFlags.PositionProportional
                                     }
                                 }
@@ -322,7 +322,7 @@ namespace Calculator
                     {
                         (cover = new BoxView
                         {
-                            IsVisible = true,
+                            IsVisible = false,
                             //BackgroundColor = App.BACKGROUND_COLOR,
                             InputTransparent = true,
                         }),
@@ -331,70 +331,64 @@ namespace Calculator
                     }
                 }
             };
+            //BackgroundColor = Color.Black;
+            //Content.BackgroundColor = new Color(245, 245, 245, 0.95);
+            //Content.SetDynamicResource(BackgroundColorProperty, "KeyboardBackgroundColor");
 
             //Color backgroundColor = Color.White;// (Color)App.Current.Resources["SecondaryColor"];
             //BackgroundColor = backgroundColor.WithAlpha(0.5);
+            BoxView test = new BoxView();
+
             VisualStateManager.GetVisualStateGroups(this).Add(new VisualStates("Open", "Closed")
             {
-                new Setters { Property = CornerRadiusProperty, Values = { 20, 5 } },
+                new Setters { Property = CornerRadiusProperty, Values = { 20, 10 } },
                 //{ BackgroundColorProperty, ("Open", new DynamicResource("SecondaryColor")) },
                 /*new Setters
                 {
                     Property = BackgroundColorProperty,
                     Values =
                     {
-                        new Thunk<Color>(() => backgroundColor),
-                        new Thunk<Color>(() => backgroundColor.WithAlpha(1)),
+                        Color.White,
+                        Color.White.WithAlpha(0),
                     }
                 },*/
+                new TargetedSetters
+                {
+                    Targets = test,
+                    Setters =
+                    {
+                        new Setters
+                        {
+                            Property = BackgroundColorProperty,
+                            Values = { Color.Black.WithAlpha(0.25), Color.Black.WithAlpha(0) }
+                        }
+                    }
+                },
                 new TargetedSetters
                 {
                     Targets = (VisualElement)Keyboard.Parent,
                     Setters =
                     {
-                        new Setters { Property = MarginProperty, Values = { new Thickness(0, 20, 0, 0), new Thickness(0) } }
+                        new Setters 
+                        {
+                            Property = MarginProperty,
+                            Values =
+                            {
+                                new Thunk<Thickness>(() => new Thickness(0, 20 - ((Keyboard as Layout)?.Margin.Top ?? 0), 0, 0)),
+                                new Thickness(0),
+                            }
+                        }
                     }
                 },
-                new TargetedSetters
+                /*new TargetedSetters
                 {
                     Targets = cover,
                     Setters =
                     {
                         new Setters { Property = OpacityProperty, Values = { 0, 1 } }
                     }
-                }
+                }*/
             });
-            
-            /*VisualStateManager.GetVisualStateGroups(this).Add(new VisualStateGroup
-            {
-                States =
-                {
-                    new VisualState
-                    {
-                        Name = "Open",
-                        Setters =
-                        {
-                            new Setter { Property = CornerRadiusProperty, Value = 20 },
-                            new Setter { Property = BackgroundColorProperty, Value = new Color(255, 255, 255, 1) },
-                            //new Setter { Property = HeightRequestProperty, Value = 600 },
-                            new Setter<Thickness> { Target = Keyboard, Property = MarginProperty, Value = new Thickness(0, 20, 0, 0) },
-                            new Setter<double> { Target = cover, Property = OpacityProperty, Value = 0 }
-                        }
-                    },
-                    new VisualState
-                    {
-                        Name = "Closed",
-                        Setters =
-                        {
-                            new Setter { Property = CornerRadiusProperty, Value = 0 },
-                            new Setter { Property = BackgroundColorProperty, Value = new Color(255, 255, 255, 0) },
-                            //new Setter { Property = HeightRequestProperty, Value = 300 },
-                            new Setter<Thickness> { Target = Keyboard, Property = MarginProperty, Value = new Thickness(0, 0, 0, 0) },
-                            new Setter<double> { Target = cover, Property = OpacityProperty, Value = 1 }
-                        }
-                    }
-                }
-            });*/
 
             FunctionsList.ListView.GetSwipeListener().Drawer = Drawer;
             FunctionsList.EditingToolbar.SetDynamicResource(BackgroundColorProperty, "PrimaryBackgroundColor");
@@ -467,6 +461,7 @@ namespace Calculator
                 percent = percent.Bound(0, 1);
 
                 Transition(percent);
+                this.Parent<MainPage>()?.DrawerShadow?.SetValue(BackgroundColorProperty, test.BackgroundColor);
 
                 if (percent != 1)
                 {

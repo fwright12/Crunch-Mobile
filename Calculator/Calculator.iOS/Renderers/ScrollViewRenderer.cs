@@ -37,11 +37,13 @@ namespace Calculator.iOS
             {
                 e.NewElement.PropertyChanged -= HandlePropertyChanged;
                 e.OldElement.RemoveBinding(ScrollViewExtensions.BouncesProperty);
+                e.OldElement.RemoveBinding(ScrollViewExtensions.IsScrollEnabledProperty);
             }
             if (e.NewElement != null)
             {
                 e.NewElement.PropertyChanged += HandlePropertyChanged;
                 e.NewElement.SetBinding(ScrollViewExtensions.BouncesProperty, this, "Bounces", mode: BindingMode.OneWayToSource);
+                e.NewElement.SetBinding(ScrollViewExtensions.IsScrollEnabledProperty, this, "ScrollEnabled", mode: BindingMode.OneWayToSource);
             }
         }
 

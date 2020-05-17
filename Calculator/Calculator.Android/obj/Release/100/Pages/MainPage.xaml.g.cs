@@ -36,7 +36,7 @@ namespace Calculator {
         private global::Calculator.BasicModeAnswerLabel BasicAnswer;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
-        private global::Calculator.AnythingButton SettingsMenuButton;
+        private global::Xamarin.Forms.Button SettingsMenuButton;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
         private global::Xamarin.Forms.ContentView AdSpace;
@@ -46,6 +46,9 @@ namespace Calculator {
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
         private global::Xamarin.Forms.MathDisplay.CursorView PhantomCursor;
+        
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
+        public global::Xamarin.Forms.BoxView DrawerShadow;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
         private global::Xamarin.Forms.StackLayout FullKeyboardView;
@@ -71,10 +74,11 @@ namespace Calculator {
             CanvasScroll = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.ScrollView>(this, "CanvasScroll");
             Canvas = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Calculator.Canvas>(this, "Canvas");
             BasicAnswer = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Calculator.BasicModeAnswerLabel>(this, "BasicAnswer");
-            SettingsMenuButton = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Calculator.AnythingButton>(this, "SettingsMenuButton");
+            SettingsMenuButton = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Button>(this, "SettingsMenuButton");
             AdSpace = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.ContentView>(this, "AdSpace");
             FunctionsMenuButton = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Button>(this, "FunctionsMenuButton");
             PhantomCursor = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.MathDisplay.CursorView>(this, "PhantomCursor");
+            DrawerShadow = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.BoxView>(this, "DrawerShadow");
             FullKeyboardView = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.StackLayout>(this, "FullKeyboardView");
             FunctionsDrawer = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Calculator.FunctionsDrawer>(this, "FunctionsDrawer");
             KeyboardView = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.ContentView>(this, "KeyboardView");

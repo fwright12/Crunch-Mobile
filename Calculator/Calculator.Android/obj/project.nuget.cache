@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "ol8ORw88hcFy83TJ1MHj44WNC3S1jvDHSSASqjNw+FVgVdrKvYs95lKAj6epflXQDHoWnKsRqKcGYPDaXK6kjA==",
+  "dgSpecHash": "0YIgZVtSloRXXmGa3ulo+0iOoxci0hM9g1gRwkMdtzMEo9hbI1LATE7dTzYVetqKutddYFR4nq6dmXs8ogd7NA==",
   "success": true,
   "projectFilePath": "C:\\Users\\Flint\\Documents\\Calculator Stuff\\Calculator\\Calculator\\Calculator.Android\\Calculator.Android.csproj",
   "expectedPackageFiles": [
@@ -88,6 +88,7 @@
     "C:\\Users\\Flint\\.nuget\\packages\\xamarin.androidx.versionedparcelable\\1.1.0\\xamarin.androidx.versionedparcelable.1.1.0.nupkg.sha512",
     "C:\\Users\\Flint\\.nuget\\packages\\xamarin.androidx.viewpager\\1.0.0\\xamarin.androidx.viewpager.1.0.0.nupkg.sha512",
     "C:\\Users\\Flint\\.nuget\\packages\\xamarin.build.download\\0.4.11\\xamarin.build.download.0.4.11.nupkg.sha512",
+    "C:\\Users\\Flint\\.nuget\\packages\\xamarin.essentials\\1.5.3.1\\xamarin.essentials.1.5.3.1.nupkg.sha512",
     "C:\\Users\\Flint\\.nuget\\packages\\xamarin.ffimageloading\\2.4.11.982\\xamarin.ffimageloading.2.4.11.982.nupkg.sha512",
     "C:\\Users\\Flint\\.nuget\\packages\\xamarin.ffimageloading.forms\\2.4.11.982\\xamarin.ffimageloading.forms.2.4.11.982.nupkg.sha512",
     "C:\\Users\\Flint\\.nuget\\packages\\xamarin.forms\\4.4.0.991864\\xamarin.forms.4.4.0.991864.nupkg.sha512",

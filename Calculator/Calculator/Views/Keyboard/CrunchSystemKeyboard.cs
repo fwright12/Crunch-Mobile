@@ -25,7 +25,7 @@ namespace Calculator
                 {
                     value.Bind<double>(VisualElement.HeightProperty, variablesHeight =>
                     {
-                        VariablesHeight = variablesHeight + App.PAGE_PADDING;
+                        VariablesHeight = variablesHeight + App.PAGE_PADDING * 2;
                         OnOnscreenSizeChanged();
                     });
                 }
@@ -34,6 +34,13 @@ namespace Calculator
         public Size Size { get; private set; }
 
         private double VariablesHeight;
+        private Thickness SafeArea;
+
+        public void SetSafeArea(Thickness safeArea)
+        {
+            SafeArea = safeArea;
+            OnOnscreenSizeChanged();
+        }
 
         public CrunchSystemKeyboard()
         {
@@ -46,9 +53,9 @@ namespace Calculator
             SystemKeyboard.Instance.OnscreenSizeChanged += (sender, e) => OnOnscreenSizeChanged();
         }
 
-        public void Disable() => SystemKeyboard.Instance.Disable();
+        public void Disable(bool animated = false) => SystemKeyboard.Instance.Disable(animated);
 
-        public void Enable() => SystemKeyboard.Instance.Enable();
+        public void Enable(bool animated = false) => SystemKeyboard.Instance.Enable(animated);
 
         protected void OnOnscreenSizeChanged(Size onscreenSize)
         {

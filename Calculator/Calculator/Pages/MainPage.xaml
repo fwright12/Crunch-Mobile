@@ -8,7 +8,8 @@
              xmlns:Calculator="clr-namespace:Calculator"
              mc:Ignorable="d"
              x:Class="Calculator.MainPage"
-             x:Name="self">
+             x:Name="self"
+             BackgroundColor="{DynamicResource CanvasBackgroundColor}">
     <AbsoluteLayout x:Name="Screen">
         <AbsoluteLayout x:Name="CanvasArea"
                         AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
@@ -21,17 +22,17 @@
             </ScrollView>
 
             <Calculator:BasicModeAnswerLabel x:Name="BasicAnswer"
-                                             FontSize="33"
+                                             VerticalOptions="End"
+                                             Extensions:LabelExtensions.AutoSizeFont="True"
                                              HorizontalTextAlignment="End"
                                              VerticalTextAlignment="End" />
 
             <Button x:Name="SettingsMenuButton"
-                    Text="⛭"
+                    Text="{OnPlatform Android=&#xf2f7;, iOS=&#xf43c;}"
                     FontSize="33"
-                    FontFamily="{StaticResource SymbolaFont}"
+                    FontFamily="{StaticResource IoniconsFont}"
                     AbsoluteLayout.LayoutBounds="0, 0, 50, 50"
-                    AbsoluteLayout.LayoutFlags="PositionProportional">
-            </Button>
+                    AbsoluteLayout.LayoutFlags="PositionProportional" />
 
             <ContentView x:Name="AdSpace"
                          AbsoluteLayout.LayoutBounds="0.5, 0, -1, -1"
@@ -49,34 +50,45 @@
                              IsVisible="False" />
         </AbsoluteLayout>
 
+        <BoxView x:Name="DrawerShadow"
+                 x:FieldModifier="public"
+                 InputTransparent="True"
+                 AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
+                 AbsoluteLayout.LayoutFlags="SizeProportional" />
+
         <StackLayout x:Name="FullKeyboardView"
                      Orientation="Vertical">
             <Calculator:FunctionsDrawer x:Name="FunctionsDrawer"
-                                        DropArea="{x:Reference Canvas}"
-                                        BackgroundColor="{DynamicResource SecondaryColor}">
+                                        DropArea="{x:Reference Canvas}">
                 <x:Arguments>
                     <ContentView x:Name="KeyboardView">
                         <ContentView.Resources>
-                            <ResourceDictionary>
-                                <Style TargetType="Grid">
-                                    <Setter Property="RowSpacing"
-                                            Value="{Binding Source={x:Reference CrunchKeyboard}, Path=RowSpacing}" />
-                                    <Setter Property="ColumnSpacing"
-                                            Value="{Binding Source={x:Reference CrunchKeyboard}, Path=ColumnSpacing}" />
-                                </Style>
+                            <Style TargetType="Grid">
+                                <Setter Property="RowSpacing"
+                                        Value="{Binding Source={x:Reference CrunchKeyboard}, Path=RowSpacing}" />
+                                <Setter Property="ColumnSpacing"
+                                        Value="{Binding Source={x:Reference CrunchKeyboard}, Path=ColumnSpacing}" />
+                            </Style>
 
-                                <Style TargetType="Button"
-                                       ApplyToDerivedTypes="True">
+                            <Style TargetType="Button"
+                                   ApplyToDerivedTypes="True">
+                                <Style.Setters>
                                     <Setter Property="BackgroundColor"
-                                            Value="{DynamicResource PrimaryBackgroundColor}" />
+                                            Value="Transparent" />
                                     <Setter Property="BorderColor"
-                                            Value="{DynamicResource SecondaryColor}" />
+                                            Value="{DynamicResource SecondaryKeyboardKeyColor}" />
+                                    <Setter Property="BorderWidth"
+                                            Value="0" />
                                     <Setter Property="TextColor"
                                             Value="{DynamicResource DetailColor}" />
                                     <Setter Property="CornerRadius"
-                                            Value="0" />
-                                </Style>
-                            </ResourceDictionary>
+                                            Value="10" />
+                                </Style.Setters>
+
+                                <Style.Behaviors>
+                                    <Calculator:ButtonFeedbackBehavior />
+                                </Style.Behaviors>
+                            </Style>
                         </ContentView.Resources>
 
                         <Calculator:CrunchKeyboard x:Name="CrunchKeyboard"
@@ -86,7 +98,7 @@
                     <Calculator:AddFunction x:Name="AddFunctionLayout"
                                             IsVisible="False"
                                             CornerRadius="20"
-                                            BackgroundColor="{DynamicResource SecondaryBackgroundColor}"
+                                            BackgroundColor="{DynamicResource PrimaryBackgroundColor}"
                                             HasShadow="False"
                                             Padding="0, 0, 0, 5" />
                 </x:Arguments>

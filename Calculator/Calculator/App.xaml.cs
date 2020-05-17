@@ -11,42 +11,6 @@ using Xamarin.Forms.MathDisplay;
 
 namespace Calculator
 {
-    /*public class ThemeOptions
-    {
-        public static readonly ResourceDictionary Light = new LightTheme();
-        public static readonly ResourceDictionary Dark = new DarkTheme();
-        public static readonly ResourceDictionary System = new SystemTheme(Light, Dark);
-    }
-
-    public class SystemTheme : ResourceDictionary
-    {
-        private bool? IsDarkModeEnabled = null;
-
-        private ResourceDictionary Light;
-        private ResourceDictionary Dark;
-
-        public SystemTheme(ResourceDictionary light, ResourceDictionary dark)
-        {
-            Light = light;
-            Dark = dark;
-        }
-
-        public void SystemThemeChanged(bool darkMode)
-        {
-            if (darkMode == IsDarkModeEnabled)
-            {
-                return;
-            }
-
-            Clear();
-            this.AddRange((IsDarkModeEnabled = darkMode).Value ? Dark : Light);
-        }
-
-        public static bool operator ==(SystemTheme self, ResourceDictionary other) => (self.IsDarkModeEnabled == true ? self.Dark : self.Light) == other;
-
-        public static bool operator !=(SystemTheme self, ResourceDictionary other) => !(self == other);
-    }*/
-
     public partial class App : Application
     {
         public enum ThemeOptions { System, Light, Dark };
@@ -71,81 +35,6 @@ namespace Calculator
 
         public static readonly Thickness BUTTON_PADDING = Device.RuntimePlatform == Device.iOS ? new Thickness(10, 0, 10, 0) : new Thickness(0);
 
-        private readonly MasterDetailPage Root;
-        private NavigationPage SideNavigation;
-        private NavigationPage FullNavigation;
-
-        //public static bool IsCondensed => Home.CrunchKeyboard.IsCondensed;
-
-        //public event EventHandler<ToggledEventArgs> UILayoutChanged;
-        //public bool IsLayoutCondensed { get; private set; }
-
-        private bool SettingsInStack()
-        {
-            foreach(Page page in FullNavigation.Navigation.NavigationStack)
-            {
-                if (page is SettingsPage)
-                {
-                    return true;
-                }
-            }
-            
-            return false;
-        }
-
-        private void CollapsedChanged(bool collapsed)
-        {
-            Print.Log("app layout changed", Home.Collapsed, Root.IsPresented);
-            
-            if (collapsed && Root.IsPresented)
-            {
-                Root.IsPresented = false;
-                //FullNavigation.PushAsync(new SettingsPage());
-            }
-            else if (!collapsed && SettingsInStack())
-            {
-                FullNavigation.PopToRootAsync(false);
-            }
-            else
-            {
-                //Root.IsPresented = true;
-                return;
-            }
-
-            ShowSettings(false);
-
-            //Print.Log("set collapsed to " + collapsed, Collapsed);
-            //IsLayoutCondensed = condensed;
-            //UILayoutChanged?.Invoke(this, new ToggledEventArgs(condensed));
-        }
-
-        public void ShowSettings(bool animated = true)
-        {
-            //FullNavigation.PushAsync(new SettingsPage());
-            //return;
-            Print.Log("showing settings");
-            if (Home.Collapsed)
-            {
-                FullNavigation.PushAsync(new SettingsPage(), animated);
-            }
-            else
-            {
-                Root.IsPresented = true;
-            }
-        }
-
-        public async void HideSettings()
-        {
-            if (Root.IsPresented)
-            {
-                Root.IsPresented = false;
-            }
-            else
-            {
-                await FullNavigation.PopAsync();
-            }
-        }
-
         private static bool TutorialRunning = false;
 
         public void RunTutorial()
@@ -156,7 +45,7 @@ namespace Calculator
             }
             TutorialRunning = true;
 
-            TutorialDialog tutorial = new TutorialDialog(Home.Collapsed)
+            TutorialDialog tutorial = new TutorialDialog(Device.Idiom == TargetIdiom.Phone)
             {
                 HorizontalOptions = LayoutOptions.Center,
                 VerticalOptions = LayoutOptions.Center,
@@ -172,6 +61,8 @@ namespace Calculator
 
             (Home.Content as AbsoluteLayout)?.Children.Add(tutorial, new Rectangle(0.5, 0.5, 0.75, 0.75), AbsoluteLayoutFlags.All);
         }
+
+        public static bool DarkModeSupported = (Device.RuntimePlatform == Device.Android && Xamarin.Essentials.DeviceInfo.Version.Major >= 10) || (Device.RuntimePlatform == Device.iOS && Xamarin.Essentials.DeviceInfo.Version.Major >= 13);
 
         public static BindableProperty SystemDarkModeEnabledProperty = BindableProperty.Create(nameof(SystemDarkModeEnabled), typeof(bool), typeof(App), false);
 
@@ -227,7 +118,7 @@ namespace Calculator
             {
                 //Print.Log("Failed to set Setting value from storage (possible type mismatch?). Setting looking for type " + setting.ValueProperty.ReturnType + " and storage value is type " + value.GetType());
 
-                //throw new Exception();
+                throw new Exception();
             }
 #endif
 
@@ -238,22 +129,15 @@ namespace Calculator
                 Text = "(",
                 FontSize = Text.MaxFontSize,
             };
-            l.SizeChanged += async (sender, e) =>
+            l.SizeChanged += (sender, e) =>
             {
                 //Size size = l.Measure();
                 TextHeight = l.Height;
                 TextWidth = l.Width;
 
-                Root.Detail = FullNavigation = new NavigationPage(Home = new MainPage());
-                Root.Master = SideNavigation = new NavigationPage(new ContentPage())
-                {
-                    Title = "Settings"
-                };
+                MainPage = new NavigationPage(Home = new MainPage());
                 NavigationPage.SetHasNavigationBar(Home, false);
                 TouchScreen.Instance = Home;
-                Home.Bind<bool>("Collapsed", value => CollapsedChanged(value));
-
-                //await System.Threading.Tasks.Task.Delay(2000);
 
                 if (ShouldRunTutorial.Value)
                 {
@@ -292,34 +176,8 @@ namespace Calculator
                 }
             };
 
-            //Collapsed = Device.Idiom != TargetIdiom.Tablet;
-            MainPage = Root = new MasterDetailPage
-            {
-                Title = "Home",
-                Detail = new ContentPage { Content = new StackLayout { Children = { l } } },
-                Master = new ContentPage { Title = "Settings" },
-                MasterBehavior = MasterBehavior.Popover,
-#if IOS
-                IsGestureEnabled = false
-#endif
-            };
+            MainPage = new NavigationPage(new ContentPage { Content = new StackLayout { Children = { l } } });
         }
-
-#if __IOS__
-        // Fix for iOS problems with split view on iPad
-        public class MasterDetailPage : Xamarin.Forms.MasterDetailPage
-        {
-            new public bool IsPresented
-            {
-                get => base.IsPresented;
-                set
-                {
-                    base.IsPresented = !value;
-                    base.IsPresented = value;
-                }
-            }
-        }
-#endif
 
         protected override void OnStart()
         {

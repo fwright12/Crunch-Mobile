@@ -63,7 +63,7 @@ namespace Calculator
                         Wrap = FlexWrap.NoWrap,
                         JustifyContent = FlexJustify.SpaceBetween,
                         AlignItems = FlexAlignItems.Center,
-                        Padding = new Thickness(10),
+                        Padding = new Thickness(0, 10),
                         Children =
                         {
                             (Edit = new Button
@@ -184,7 +184,7 @@ namespace Calculator
                 {
                     Orientation = StackOrientation.Horizontal,
                     HorizontalOptions = LayoutOptions.FillAndExpand,
-                    Padding = new Thickness(25, 0, 25, 0),
+                    Padding = new Thickness(10, 0, 10, 0),
                     Children =
                     {
                         (Selected = new CheckBox { }),

@@ -36,7 +36,7 @@ namespace Calculator.iOS
             //FFImageLoading.Forms.Platform.CachedImageRenderer.InitImageSourceHandler();
 
 #if DEBUG
-            Xamarin.Forms.Application.Current.WhenPropertyChanged(Screenshots.InSampleModeProperty, (sender, e) => UIApplication.SharedApplication.StatusBarHidden = App.Current.GetInSampleMode());
+            Xamarin.Forms.Application.Current.Bind<bool>(Screenshots.InSampleModeProperty, value => UIApplication.SharedApplication.StatusBarHidden = value);
 #endif
             
             return base.FinishedLaunching(app, options);

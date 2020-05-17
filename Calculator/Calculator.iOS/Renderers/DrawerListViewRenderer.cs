@@ -35,12 +35,16 @@ namespace Calculator.iOS
             //Control.InsetsContentViewsToSafeArea = false;
             e.NewElement?.SetNativeImplementation(Scrollable.NativeScrollImplementationProperty, ScrollToRequest);
 
+            e.OldElement?.RemoveBinding(ScrollViewExtensions.IsScrollEnabledProperty);
+            e.NewElement?.SetBinding(ScrollViewExtensions.IsScrollEnabledProperty, Control, "ScrollEnabled", mode: BindingMode.OneWayToSource);
+
             if (Control == null)
             {
                 return;
             }
             Control.InsetsContentViewsToSafeArea = false;
             Control.InsetsLayoutMarginsFromSafeArea = false;
+
             //Scrollable.ScrollRequestProperty.ListenFor(ScrollToRequest, e.OldElement, e.NewElement);
 
             /*if (e.OldElement is FunctionsDrawer.ListView oldElement)
