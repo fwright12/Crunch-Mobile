@@ -210,7 +210,7 @@ namespace Calculator
                         VariableLayout.Children.RemoveAt(index);
                         VariableLayout.Children.Insert(0, v);
 
-                        (VariableLayout.Parent as ScrollView)?.MakeVisible(v);
+                        (VariableLayout.Parent as ScrollView)?.ScrollToAsync(VariableLayout, ScrollToPosition.Start, true);
                     }
 
                     KeyboardManager.Type(c.ToString());
@@ -304,8 +304,9 @@ namespace Calculator
                                 new Thickness(0),
                                 new Thunk<Thickness>(() =>
                                 {
-                                    double final = ButtonWidth(Width - Padding.HorizontalThickness, 4);
-                                    return new Thickness(-final, -final - RowSpacing, 0, final + RowSpacing + (final + RowSpacing) / 2);
+                                    double final = (Width - Padding.HorizontalThickness - ColumnSpacing * 4) / 4;
+
+                                    return new Thickness(-final - RowSpacing, -final - RowSpacing, 0, final + RowSpacing + (final + RowSpacing) / 2);
                                 })
                             }
                         }
@@ -324,8 +325,9 @@ namespace Calculator
                                 new Thickness(0),
                                 new Thunk<Thickness>(() =>
                                 {
-                                    double final = ButtonWidth(Width - Padding.HorizontalThickness, 4);
-                                    return new Thickness(-final, (final + RowSpacing) / 2, 0, 0);
+                                    double final = (Width - Padding.HorizontalThickness - ColumnSpacing * 4) / 4;
+                                    return new Thickness(-final - RowSpacing
+                                        , (final + RowSpacing) / 2, 0, 0);
                                 })
                             }
                         }
@@ -368,7 +370,7 @@ namespace Calculator
                     Targets = Scroll,
                     Setters =
                     {
-                        new Setters { Property = IsVisibleProperty, Values = { true, (BooleanValue<bool>)false } }
+                        new Setters { Property = ScrollViewExtensions.IsScrollEnabledProperty, Values = { true, (BooleanValue<bool>)false } },
                     }
                 },
                 new TargetedSetters
@@ -537,10 +539,10 @@ namespace Calculator
             SetColumnSpan(Variables, transposed ? 1 : ColumnDefinitions.Count);
             SetRowSpan(Variables, transposed ? RowDefinitions.Count : 1);
 
-            SetColumnSpan(Scroll, ColumnDefinitions.Count - 1);
+            SetColumnSpan(Scroll, ColumnDefinitions.Count - (ColumnDefinitions == BasicGridDefinition.ColumnDefinitions ? 0 : 1));
             SetRowSpan(Scroll, RowDefinitions.Count - 1);
 
-            if (IsRegular)
+            if (ColumnDefinitions != BasicGridDefinition.ColumnDefinitions)
             {
                 SetColumn(BackspaceButton, transposed ? 1 : (ColumnDefinitions.Count - 1));
                 SetRow(BackspaceButton, transposed ? (RowDefinitions.Count - 1) : 1);
@@ -636,16 +638,16 @@ namespace Calculator
 
                 for (int i = 0; i < Keys.Length; i++)
                 {
-                    int j = Keys[i].Length - 4;
+                    /*int j = Keys[i].Length - 4;
                     for (; j < Keys[i].Length - 1; j++)
                     {
-                        Children.Add(Keys[i][j], j - (Keys[i].Length - 4), i + 1);
-                    }
+                        //Children.Add(Keys[i][j], j - (Keys[i].Length - 4), i + 1);
+                    }*/
 
-                    Right.Children.Add(Keys[i][j], 0, 1, i * 2 + 1, i * 2 + 3);
+                    Right.Children.Add(Keys[i].Last(), 0, 1, i * 2 + 1, i * 2 + 3);
                 }
             }
-
+            
             /*string[] modes = new string[] { "Regular", "Basic" };
             if (regular)
             {
@@ -660,16 +662,18 @@ namespace Calculator
 
                     for (int i = 0; i < Keys.Length; i++)
                     {
-                        int j = Keys[i].Length - 4;
+                        /*int j = Keys[i].Length - 4;
                         for (; j < Keys[i].Length - 1; j++)
                         {
                             Keypad.Children.Add(Keys[i][j], j, i);
-                        }
+                        }*/
 
-                        Keypad.Children.Add(Keys[i][j], j, i);
+                        Keypad.Children.Add(Keys[i].Last(), Keys[i].Length - 1, i);
                     }
 
                     Right.IsVisible = false;
+
+                    HandleLayoutChanged(null, null);
                 }
                 else
                 {
@@ -732,7 +736,7 @@ namespace Calculator
                 animation.Add(0, 1, variableSize);
 
                 animation.Add(0, 1, changeHeight);
-                animation.Commit(this, "changeMode", length: MainPage.ModeTransitionLength, easing: Easing.Linear, finished: (final, cancelled) => Finished());
+                animation.Commit(this, "changeMode", length: MainPage.ModeTransitionLength, easing: MainPage.ModeEasing, finished: (final, cancelled) => Finished());
             }
             else
             {
@@ -963,8 +967,8 @@ namespace Calculator
             //return sr;
         }*/
 
-        public double PaddedButtonsWidth(double numButtons, double buttonSize) => buttonSize * numButtons + Spacing * ((int)numButtons - 1);
+        //public double PaddedButtonsWidth(double numButtons, double buttonSize) => buttonSize * numButtons + Spacing * ((int)numButtons - 1);
 
-        public double ButtonWidth(double spaceConstraint, double numButtons) => (spaceConstraint - Spacing * ((int)numButtons - 1)) / numButtons;
+        //public double ButtonWidth(double spaceConstraint, double numButtons) => (spaceConstraint - Spacing * ((int)numButtons - 1)) / numButtons;
     }
 }

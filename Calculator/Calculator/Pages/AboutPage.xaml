@@ -11,6 +11,8 @@
             <Style TargetType="Label">
                 <Setter Property="HorizontalOptions"
                         Value="CenterAndExpand" />
+                <Setter Property="HorizontalTextAlignment"
+                        Value="Center" />
                 <Setter Property="FontSize"
                         Value="Large" />
             </Style>
@@ -20,10 +22,9 @@
     <ScrollView Orientation="Vertical">
         <StackLayout Orientation="Vertical"
                      Spacing="20">
-            <Label Text="Thank you for using Crunch!"
-                   HorizontalTextAlignment="Center" />
+            <Label Text="Thank you for using Crunch!" />
 
-            <Label Text="If you find any bugs, please report them to GreenMountainLabs802@gmail.com. The more information you can provide (what you did to cause the error, screenshots, etc.) the easier it will be to fix." />
+            <Label Text="If you find any bugs, please report them to GreenMountainLabs802@gmail.com. The more information you can provide (what you were doing when the issue occured, screenshots, etc.) the easier it will be to fix." />
 
             <Label Text="If you enjoy using Crunch, please rate it on the app store. Ratings help with visibility, so other people can find Crunch." />
 

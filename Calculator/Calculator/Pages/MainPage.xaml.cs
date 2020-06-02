@@ -6,7 +6,7 @@ using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using Xamarin.Forms.Extensions;
 using Xamarin.Forms.MathDisplay;
-using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
+using System.Collections.Generic;
 
 namespace Calculator
 {
@@ -83,6 +83,14 @@ namespace Calculator
             get
             {
                 Thickness value = (Thickness)GetValue(Xamarin.Forms.PlatformConfiguration.iOSSpecific.Page.SafeAreaInsetsProperty);
+
+#if DEBUG
+                if (App.Current.GetInSampleMode())
+                {
+                    value.Top = 0;
+                }
+#endif
+
                 return new Thickness(
                     Math.Max(App.PAGE_PADDING, value.Left),
                     Math.Max(App.PAGE_PADDING, value.Top),
@@ -123,7 +131,8 @@ namespace Calculator
         //private CrunchKeyboard CrunchKeyboard => KeyboardAndVariables;
         //private Grid Variables => CrunchKeyboard.Variables;
 
-        public static uint ModeTransitionLength = 2500;
+        public static uint ModeTransitionLength = 2000;
+        public static Easing ModeEasing = Easing.SinInOut;
 
         public MainPage()
         {
@@ -136,6 +145,7 @@ namespace Calculator
 
             InitializeComponent();
 
+
             /*for (double i = 0.25; i < 1; i += 0.25)
             {
                 SettingsMenuButton.Children.Add(new BoxView() { Color = Color.Black }, new Rectangle(0.5, i, 0.6, 0.075), AbsoluteLayoutFlags.All);
@@ -145,6 +155,7 @@ namespace Calculator
             
 #if DEBUG
             App.Current.SetBinding<bool, bool>(Screenshots.InSampleModeProperty, AdSpace, "IsVisible", convertBack: value => !value, mode: BindingMode.OneWayToSource);
+            App.Current.WhenPropertyChanged(Screenshots.InSampleModeProperty, (sender, e) => OnPropertyChanged(nameof(SafeAreaInsets)));
 #endif
 
             //Canvas.Children.Add(new Label { Text = "⚙⛭", FontFamily = CrunchStyle.SYMBOLA_FONT, FontSize = 50 }, new Point(0, 100));
@@ -153,7 +164,7 @@ namespace Calculator
             /*canvas.Children.Add(new Expression(Render.Math("log_(4)-9")), new Point(100, 100));
             canvas.Children.Add(new Expression(Render.Math("log_-9(4)")), new Point(200, 200));
             canvas.Children.Add(new Expression(Render.Math("log_-9-4")), new Point(300, 300));*/
-            
+
             //Variables.SetBinding<StackOrientation, StackOrientation>(StackLayout.OrientationProperty, this, "Orientation", StackLayoutExtensions.Invert);
 
             AbsoluteLayout KeyboardMask = new AbsoluteLayout
@@ -189,6 +200,7 @@ namespace Calculator
             //Screen.Children.Add(CrunchKeyboard, new Rectangle(0.5, 1, -1, -1), AbsoluteLayoutFlags.PositionProportional);
             
             BasicAnswer.Remove();
+            //BasicAnswer.BackgroundColor = Color.Red;
 
             Answer CurrentAnswer() => SoftKeyboard.Cursor.Parent<Equation>()?.RHS as Answer;
 
@@ -201,6 +213,30 @@ namespace Calculator
                     {
                         new Setters { Property = VisualElementExtensions.VisibilityProperty, Values = { 1, 0 } }
                     }
+                },
+                {
+                    Label.FontSizeProperty,
+                    (nameof(CalculatorMode.Crunch), new UniversalSetter.Pair
+                    {
+                        Target = BasicAnswer,
+                        Value = 33
+                    })
+                },
+                {
+                    LabelExtensions.AutoSizeFontProperty,
+                    (nameof(CalculatorMode.Basic), new UniversalSetter.Pair
+                    {
+                        Target = BasicAnswer,
+                        Value = true
+                    })
+                },
+                {
+                    AbsoluteLayout.LayoutBoundsProperty,
+                    (nameof(CalculatorMode.Basic), new UniversalSetter.Pair
+                    {
+                        Target = BasicAnswer,
+                        Value = new Rectangle(1, 1, 1, 1)
+                    })
                 },
                 new TargetedSetters
                 {
@@ -218,7 +254,7 @@ namespace Calculator
                                 //new Thunk<double>(() => LabelExtensions.MaxFontSize(CanvasArea.Width, Height - SafeAreaInsets.Top - SETTINGS_BUTTON_SIZE - App.PAGE_PADDING - CrunchKeyboard.MeasureBasicMode().Height - App.PAGE_PADDING, BasicAnswer.Text))
                             }
                         },*/
-                        new Setters { Property = Label.PaddingProperty, Values = { new Thickness(0), new Thickness(20, SETTINGS_BUTTON_SIZE + App.PAGE_PADDING, 20, 0) } },
+                        new Setters { Property = Label.PaddingProperty, Values = { new Thickness(0), new Thickness(0, SETTINGS_BUTTON_SIZE + App.PAGE_PADDING, 0, 0) } },
                         new Setters
                         {
                             Property = OpacityProperty,
@@ -228,16 +264,16 @@ namespace Calculator
                                 1
                             }
                         },
-                        new Setters
+                        /*new Setters
                         {
                             Property = HeightRequestProperty,
                             Values =
-                            {
-                                new Thunk<double>(() => CurrentAnswer()?.Height ?? BasicAnswer.Measure(33).Request.Height),
-                                150
-                            }
-                        },
-                        new Setters
+                                    {
+                                        new Thunk<double>(() => CurrentAnswer()?.Height ?? BasicAnswer.Measure(33).Request.Height),
+                                        150
+                                    }
+                        },*/
+                        /*new Setters
                         {
                             Property = AbsoluteLayout.LayoutBoundsProperty,
                             Values =
@@ -248,12 +284,12 @@ namespace Calculator
                                     Size size = answer?.Bounds.Size ?? BasicAnswer.Measure(33).Request;
 
                                     Point point = answer?.PositionOn(CanvasArea) ?? new Point(CanvasArea.Width - size.Width, CanvasArea.Height - size.Height);
-                                    
+
                                     return new Rectangle(point, size);
                                 }),
                                 new Rectangle(1, 1, 1, 1)
                             }
-                        }
+                        }*/
                     }
                 }
             });
@@ -285,11 +321,11 @@ namespace Calculator
             {
                 CalculatorMode targetMode = (CalculatorMode)(((int)Mode + 1) % Enum.GetValues(typeof(CalculatorMode)).Length);
                 Mode = (CalculatorMode)(-1);
-
+                
                 if (targetMode == CalculatorMode.Basic)
                 {
                     CanvasArea.Children.Insert(CanvasArea.Children.IndexOf(CanvasScroll) + 1, BasicAnswer);
-                    BasicAnswer.SetValueFromState(AbsoluteLayout.LayoutBoundsProperty, this.GetVisualStateByName(nameof(CalculatorMode.Crunch)));
+                    //BasicAnswer.SetValueFromState(AbsoluteLayout.LayoutBoundsProperty, this.GetVisualStateByName(nameof(CalculatorMode.Crunch)));
 
                     BasicAnswer.Reset();
 
@@ -297,7 +333,7 @@ namespace Calculator
                     {
                         string answerText = answerView.RawAnswer?.Format(Crunch.Polynomials.Expanded, Crunch.Numbers.Decimal, Crunch.Trigonometry.Degrees)?.ToString();
 
-                        if (parentEquation.LHS.Children.Count > 1)
+                        if (!(parentEquation.LHS.Children.Count == 1 && parentEquation.LHS.Children[0] == SoftKeyboard.Cursor))
                         {
                             BasicAnswer.Input((answerText ?? "1/0") + "+0=");
                             BasicAnswer.End(parentEquation);
@@ -306,10 +342,9 @@ namespace Calculator
                 }
 
                 //BasicAnswer.SetValueFromState(AbsoluteLayout.LayoutBoundsProperty, this.GetVisualStateByName(targetMode == CalculatorMode.Basic ? nameof(CalculatorMode.Crunch) : nameof(CalculatorMode.Basic)));
-                AbsoluteLayoutExtensions.ConvertLayoutBounds(BasicAnswer, targetMode == CalculatorMode.Crunch ? AbsoluteLayoutFlags.None : AbsoluteLayoutFlags.All);
                 //AbsoluteLayoutExtensions.SetLayout(BasicAnswer, new Size(1, 1), AbsoluteLayoutFlags.All);
-
-                View answer = SoftKeyboard.Cursor.Parent<Equation>()?.RHS as Answer;
+                
+                Answer answer = CurrentAnswer();
                 if (answer != null)
                 {
                     answer.Opacity = 0;
@@ -318,19 +353,65 @@ namespace Calculator
                 {
                     BasicAnswer.Opacity = 0;
                 }
-                this.AnimateVisualState("changeMode", end: targetMode.ToString(), length: ModeTransitionLength, callback: value =>
+
+                Animation main = this.AnimationToState(end: targetMode.ToString(), callback: value =>
                 {
-                    //BasicAnswer.FontSize = BasicAnswer.AutoSizeFont(double.PositiveInfinity, Math.Max(40, BasicAnswer.HeightRequest));
+                    //BasicAnswer.WidthRequest = AbsoluteLayout.GetLayoutBounds(BasicAnswer).Width * CanvasArea.Width - BasicAnswer.Padding.HorizontalThickness;
                     //Print.Log("here", BasicAnswer.FontSize, BasicAnswer.HeightRequest);
                     AbsoluteLayoutExtensions.SetLayout(FullKeyboardView, y: value == 1 ? 1 : (Height - SoftKeyboardManager.Size.Height), flags: value == 1 ? AbsoluteLayoutFlags.PositionProportional : AbsoluteLayoutFlags.XProportional);
-                },
-                finished: (final, cancelled) =>
+                });
+
+                if (targetMode == CalculatorMode.Basic)
+                {
+                    Size size = BasicAnswer.Measure(33).Request;
+                    if (answer == null)
+                    {
+                        size.Width = CanvasArea.Width;
+                    }
+                    Point point = answer?.PositionOn(CanvasArea) ?? new Point(CanvasArea.Bounds.Size - size);
+
+                    AbsoluteLayoutExtensions.SetLayout(BasicAnswer, new Rectangle(point, size), AbsoluteLayoutFlags.None);
+                    AbsoluteLayoutExtensions.ConvertLayoutBounds(BasicAnswer, AbsoluteLayoutFlags.All);
+
+                    //AbsoluteLayoutExtensions.SetLayout(BasicAnswer, new Size(-1, -1), AbsoluteLayoutFlags.PositionProportional)
+                    //AbsoluteLayoutExtensions.SetLayout(BasicAnswer, width: -1, flags: AbsoluteLayoutFlags.PositionProportional | AbsoluteLayoutFlags.HeightProportional);
+
+                    Animation height = new PropertyAnimation(BasicAnswer, HeightRequestProperty, size.Height, 150);
+                    main.Add(0, 1, height);
+
+                    Animation fontSize = new Animation(value =>
+                    {
+                        Rectangle bounds = AbsoluteLayout.GetLayoutBounds(BasicAnswer);
+                        BasicAnswer.FontSize = BasicAnswer.AutoSizeFont(bounds.Width * CanvasArea.Width, Math.Min(BasicAnswer.HeightRequest, bounds.Height * CanvasArea.Height) - (Device.RuntimePlatform == Device.iOS ? BasicAnswer.Padding.VerticalThickness : 0));
+                    });
+                    main.Add(0, 1, fontSize);
+                }
+                else if (targetMode == CalculatorMode.Crunch)
+                {
+                    BasicAnswer.ClearValue(LabelExtensions.AutoSizeFontProperty);
+                    BasicAnswer.ClearValue(HeightRequestProperty);
+
+                    if (answer == null)
+                    {
+                        AbsoluteLayoutExtensions.SetLayout(BasicAnswer, new Rectangle(1, 1, -1, -1), AbsoluteLayoutFlags.PositionProportional);
+                    }
+                    else
+                    {
+                        Size size = BasicAnswer.Measure();
+                        AbsoluteLayoutExtensions.SetLayout(BasicAnswer, new Rectangle(new Point(CanvasArea.Bounds.Size - size), new Size(-1, -1)), AbsoluteLayoutFlags.None);
+
+                        Animation move = new PropertyAnimation(BasicAnswer, AbsoluteLayout.LayoutBoundsProperty, new Rectangle(answer.PositionOn(CanvasArea), new Size(-1, -1)));
+                        main.Add(0, 1, move);
+                    }
+                }
+
+                this.Animate("changeMode", main, length: ModeTransitionLength, easing: ModeEasing, finished: (final, cancelled) =>
                 {
                     if (targetMode == CalculatorMode.Crunch)
                     {
                         BasicAnswer.Remove();
                     }
-
+                    
                     if (answer != null)
                     {
                         answer.Opacity = 1;
@@ -361,7 +442,7 @@ namespace Calculator
                 }
                 else
                 {
-                    safeArea = new Thickness(0);
+                    safeArea = new Thickness(10);
                 }
 
                 double borderWidth = 0;
@@ -1059,7 +1140,8 @@ namespace Calculator
 
             if (IsKeyboardDocked)
             {
-                AbsoluteLayout.SetLayoutBounds(FullKeyboardView, new Rectangle(KeyboardHidden, new Size(-1, -1)));
+                AbsoluteLayoutExtensions.SetLayout(FullKeyboardView, KeyboardHidden);
+                //AbsoluteLayout.SetLayoutBounds(FullKeyboardView, new Rectangle(KeyboardHidden, new Size(-1, -1)));
             }
 
             FocusOnCalculation(null);

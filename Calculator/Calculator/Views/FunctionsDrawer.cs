@@ -250,7 +250,7 @@ namespace Calculator
 #if DEBUG
                 text = string.Join('\n', new string[]
                 {
-                    "√(a^2+b^2)",
+                    "√(x^2+y^2)",
                     "a+b+c+d+e+f+g+h+i+j+k+l+m+n+o+p+q+r+s+t+u+v+w+y+z",
                     "(-b+√(b^2-4ac))/(2a)",
                     "p(1+r/n)^(n/t)",
@@ -419,7 +419,7 @@ namespace Calculator
             {
                 SaveToken?.Cancel();
                 SaveToken = new CancellationTokenSource();
-                System.Threading.Tasks.Task.Run(SaveFunctions, SaveToken.Token);
+                System.Threading.Tasks.Task.Run((Action)SaveFunctions, SaveToken.Token);
             };
 
             FunctionsList.Add.Clicked += (sender, e) => EditFunctionAt();

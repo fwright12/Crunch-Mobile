@@ -184,7 +184,7 @@ namespace Calculator
                 {
                     Orientation = StackOrientation.Horizontal,
                     HorizontalOptions = LayoutOptions.FillAndExpand,
-                    Padding = new Thickness(10, 0, 10, 0),
+                    Margin = new Thickness(10, 0, 10, 0),
                     Children =
                     {
                         (Selected = new CheckBox { }),

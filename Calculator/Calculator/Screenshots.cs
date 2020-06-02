@@ -13,18 +13,20 @@ namespace Calculator
     public static class Screenshots
     {
         /* Store video / screenshots:
-         *      Canvas - enter 9*6/8 (top), 5pi+5 (bottom), and sin30 (middle)
+         *      Canvas - enter 9*6/8 (middle then scroll to top), 5pi+5 (bottom), and sin30 (middle)
          *      Different answer forms - tap through all forms on both
-         *      Drag and drop answers - enter + (middle), drag top answer
+         *      Drag and drop answers - enter + (middle), drag top answer, move left
          *      Flexibility - move cursor back to end of top equation, add .5 on end, go back and change .5 to .25 and 9 to 3^2
          *      Scroll the canvas for more room
          *      Custom variables - enter x^2+5x-2, x = 16^(1/4)
+		 *		Show keyboard scrolling (slowly)
          */
 
         /* Tips and tricks:
+         *      Custom functions - drop distance formula onto canvas, enter x = 3, y = 4 (DELETE A+B+C+...)
          *      Link source - Type in link equation, tap link
          *      Move calculations - Switch link and source equation
-         *      Keyboard cursor mode - Scroll link off screen, 9*6+3
+         *      Keyboard cursor mode - Scroll link off screen, 9*3.47+4
          *      Clear the canvas
          *      Default answer formats - Enter sin30*2/3, change settings, enter again
          */

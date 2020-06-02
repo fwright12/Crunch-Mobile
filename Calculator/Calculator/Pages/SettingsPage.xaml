@@ -83,6 +83,7 @@
                         <Switch x:Name="SystemThemeSwitch" />
                     </x:Arguments>
                 </Calculator:SwitchCell>
+                
                 <ViewCell x:Name="ThemeSelectorCell">
                     <Extensions:Selector x:Name="ThemeSelector"
                                          HorizontalOptions="EndAndExpand">

@@ -9,13 +9,14 @@
                       Padding="20, 20, 20, 10">
     <StackLayout Orientation="Vertical">
         <Label x:Name="DescriptionLabel"
-               VerticalOptions="CenterAndExpand"
+               VerticalOptions="{OnPlatform Default=CenterAndExpand, Android=Start}"
                FontSize="Large"
                HorizontalTextAlignment="Center" />
 
         <ContentView x:Name="Showing"
-                     VerticalOptions="CenterAndExpand">
-            <StackLayout Spacing="50">
+                     VerticalOptions="{OnPlatform Android=FillAndExpand}">
+            <StackLayout Spacing="50"
+                         VerticalOptions="CenterAndExpand">
                 <Label Text="Welcome to Crunch!"
                        HorizontalTextAlignment="Center"
                        FontSize="33" />

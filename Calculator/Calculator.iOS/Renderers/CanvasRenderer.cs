@@ -10,6 +10,7 @@ using Xamarin.Forms;
 using Xamarin.Forms.Platform.iOS;
 using Xamarin.Forms.Extensions;
 using Calculator;
+using CoreMidi;
 
 [assembly: ExportRenderer(typeof(Canvas), typeof(Calculator.iOS.CanvasRenderer))]
 

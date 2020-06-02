@@ -23,7 +23,6 @@
 
             <Calculator:BasicModeAnswerLabel x:Name="BasicAnswer"
                                              VerticalOptions="End"
-                                             Extensions:LabelExtensions.AutoSizeFont="True"
                                              HorizontalTextAlignment="End"
                                              VerticalTextAlignment="End" />
 

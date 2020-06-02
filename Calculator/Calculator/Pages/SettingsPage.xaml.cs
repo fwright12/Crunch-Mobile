@@ -54,7 +54,7 @@ namespace Calculator
                 App.ThemeSetting.Value = SelectedTheme();
             };
 
-            ThemeSelectorCell.View.Margin = LabeledCell.ViewCellMargin;
+            //ThemeSelectorCell.View.Margin = LabeledCell.ViewCellMargin;
             SystemThemeSwitch.Bind<bool>(Switch.IsToggledProperty, value =>
             {
                 if (value)
@@ -238,7 +238,7 @@ namespace Calculator
 
     public class LabeledCell : ViewCell
     {
-        public static Thickness ViewCellMargin = Device.RuntimePlatform == Device.Android ? new Thickness(16.5, 10, 12.5, 10) : new Thickness(20, 5, 20, 5);
+        //public static Thickness ViewCellMargin = Device.RuntimePlatform == Device.Android ? new Thickness(16.5, 10, 12.5, 10) : new Thickness(0);// new Thickness(20, 5, 20, 5);
 
         public readonly Label LabelView;
         public readonly View Control;
@@ -261,13 +261,13 @@ namespace Calculator
                     (LabelView = new Label()
                     {
                         Text = labelText,
-                        FontSize = NamedSize.Body.On<Label>(),
+                        //FontSize = NamedSize.Body.On<Label>(),
                         VerticalOptions = LayoutOptions.Center
                     }),
                     Control
                 }
             };
-            View.Margin = ViewCellMargin;
+            //View.Margin = new Thickness(8);
         }
     }
 }

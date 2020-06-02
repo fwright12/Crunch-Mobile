@@ -53,6 +53,11 @@ namespace Calculator.Droid
 
         public override bool DispatchTouchEvent(MotionEvent e)
         {
+            if (!(Element is Xamarin.Forms.ListView listView && listView.GetIsScrollEnabled()))
+            {
+                return false;
+            }
+
             bool block = (e.Action == MotionEventActions.Down || ScrollStarted) && ((Element as Xamarin.Forms.ListView)?.GetSwipeListener().OnSwipeEvent(new Point(e.RawX, e.RawY), e.Action.Convert()) ?? false);
 
             if (e.Action != MotionEventActions.Move)

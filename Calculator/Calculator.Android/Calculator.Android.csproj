@@ -163,6 +163,7 @@
     <Compile Include="Renderers\LongClickableButtonRenderer.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Renderers\ScrollViewRenderer.cs" />
+    <Compile Include="Renderers\ViewCellRenderer.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Renderers\TouchableStackLayoutRenderer.cs" />
@@ -170,6 +171,7 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\Symbola.ttf" />
+    <AndroidAsset Include="Assets\ionicons.ttf" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
   </ItemGroup>
@@ -214,21 +216,6 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable-xxhdpi\xxhdpi.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\answer forms.gif" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\canvas.gif" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\move equations.gif" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\scroll keyboard.gif" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\drag drop answers.gif" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\Tabbar.axml" />
