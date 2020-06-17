@@ -22,7 +22,7 @@ namespace Calculator
         public static double TextWidth { get; private set; }
 
         //public static readonly Color CRUNCH_PURPLE = Color.FromHex("#560297");
-        public static readonly int PAGE_PADDING = 10;
+        public static readonly double PAGE_PADDING = 10;
 
         //public static readonly Color TEXT_COLOR = Color.Gray;
         //public static readonly Color BACKGROUND_COLOR = Color.FromHex("#ebeae8"); //rgb(244, 236, 215)

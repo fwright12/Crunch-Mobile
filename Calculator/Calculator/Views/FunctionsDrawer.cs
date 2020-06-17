@@ -339,7 +339,34 @@ namespace Calculator
             //BackgroundColor = backgroundColor.WithAlpha(0.5);
             BoxView test = new BoxView();
 
-            VisualStateManager.GetVisualStateGroups(this).Add(new VisualStates("Open", "Closed")
+            VisualStateManager.GetVisualStateGroups(this).Add(new VisualStateGroup
+            {
+                States =
+                {
+                    new VisualState { Name = "Open" },
+                    new VisualState { Name = "Closed" },
+                }
+            });
+
+            this.AddVisualStateValues(this, CornerRadiusProperty, new States.FunctionsDrawer
+            {
+                Open = 20,
+                Closed = 10
+            });
+
+            this.AddVisualStateValues(test, BackgroundColorProperty, new States.FunctionsDrawer
+            {
+                Open = Color.Black.WithAlpha(0.25),
+                Closed = Color.Black.WithAlpha(0)
+            });
+
+            this.AddVisualStateValues((VisualElement)Keyboard.Parent, MarginProperty, new States.FunctionsDrawer
+            {
+                Open = new Thunk<Thickness>(() => new Thickness(0, 20 - ((Keyboard as Layout)?.Margin.Top ?? 0), 0, 0)),
+                Closed = new Thickness(0)
+            });
+
+            /*VisualStateManager.GetVisualStateGroups(this).Add(new VisualStates("Open", "Closed")
             {
                 new Setters { Property = CornerRadiusProperty, Values = { 20, 10 } },
                 //{ BackgroundColorProperty, ("Open", new DynamicResource("SecondaryColor")) },
@@ -351,7 +378,7 @@ namespace Calculator
                         Color.White,
                         Color.White.WithAlpha(0),
                     }
-                },*/
+                },
                 new TargetedSetters
                 {
                     Targets = test,
@@ -387,8 +414,8 @@ namespace Calculator
                     {
                         new Setters { Property = OpacityProperty, Values = { 0, 1 } }
                     }
-                }*/
-            });
+                }
+            });*/
 
             FunctionsList.ListView.GetSwipeListener().Drawer = Drawer;
             FunctionsList.EditingToolbar.SetDynamicResource(BackgroundColorProperty, "PrimaryBackgroundColor");
@@ -446,7 +473,7 @@ namespace Calculator
                 }
             };
 
-            Action<double> Transition = this.AnimationToState("Closed", "Open").GetCallback();
+            Action<double> Transition = StateAnimation.Create(this, "Open", "Closed").GetCallback();// this.AnimationToState("Closed", "Open").GetCallback();
             Drawer.Bind<double>(HeightProperty, value =>
             {
                 if (Parent == null)
@@ -459,7 +486,7 @@ namespace Calculator
                 double percent = start == end ? 0 : (value - start) / Math.Abs(end - start);
                 //Print.Log("height changed", Height, FunctionsList.Height, Keyboard.Height, percent);
                 percent = percent.Bound(0, 1);
-
+                
                 Transition(percent);
                 this.Parent<MainPage>()?.DrawerShadow?.SetValue(BackgroundColorProperty, test.BackgroundColor);
 

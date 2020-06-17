@@ -31,6 +31,7 @@
       <DependentUpon>SettingsPage.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)States.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Themes\DarkTheme.xaml.cs">
       <SubType>Code</SubType>
       <DependentUpon>DarkTheme.xaml</DependentUpon>
@@ -60,7 +61,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Views\Math\Link.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Screenshots.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Settings.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)CrunchStyle.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\Keyboard\VariableRow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\TipDialog.xaml.cs">
       <DependentUpon>TipDialog.xaml</DependentUpon>

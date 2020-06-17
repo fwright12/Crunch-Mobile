@@ -92,7 +92,7 @@
             },
             "Xamarin.AndroidX.Browser": {
               "target": "Package",
-              "version": "[1.0.0, )"
+              "version": "[1.2.0, )"
             },
             "Xamarin.AndroidX.Legacy.Support.V4": {
               "target": "Package",
@@ -100,7 +100,7 @@
             },
             "Xamarin.AndroidX.Lifecycle.LiveData": {
               "target": "Package",
-              "version": "[2.1.0, )"
+              "version": "[2.2.0, )"
             },
             "Xamarin.AndroidX.MediaRouter": {
               "target": "Package",
@@ -108,7 +108,7 @@
             },
             "Xamarin.Essentials": {
               "target": "Package",
-              "version": "[1.5.3.1, )"
+              "version": "[1.5.3.2, )"
             },
             "Xamarin.FFImageLoading": {
               "target": "Package",
@@ -120,7 +120,7 @@
             },
             "Xamarin.Forms": {
               "target": "Package",
-              "version": "[4.4.0.991864, )"
+              "version": "[4.6.0.800, )"
             },
             "Xamarin.Google.Android.Material": {
               "target": "Package",
@@ -135,7 +135,6 @@
       }
     },
     "C:\\Users\\Flint\\Documents\\Calculator Stuff\\Crunch\\Crunch.csproj": {
-      "version": "1.0.0",
       "restore": {
         "projectUniqueName": "C:\\Users\\Flint\\Documents\\Calculator Stuff\\Crunch\\Crunch.csproj",
         "projectName": "Crunch",
@@ -158,7 +157,6 @@
       }
     },
     "C:\\Users\\Flint\\Documents\\Calculator Stuff\\Parse\\Crunch.Machine.csproj": {
-      "version": "1.0.0",
       "restore": {
         "projectUniqueName": "C:\\Users\\Flint\\Documents\\Calculator Stuff\\Parse\\Crunch.Machine.csproj",
         "projectName": "Crunch.Machine",
@@ -168,6 +166,9 @@
             "projectReferences": {
               "C:\\Users\\Flint\\Documents\\Code\\C#\\System.Extensions\\System.Extensions.csproj": {
                 "projectPath": "C:\\Users\\Flint\\Documents\\Code\\C#\\System.Extensions\\System.Extensions.csproj"
+              },
+              "C:\\Users\\Flint\\Documents\\Code\\C#\\Xamarin.Forms.Extensions\\Xamarin.Forms.Extensions.csproj": {
+                "projectPath": "C:\\Users\\Flint\\Documents\\Code\\C#\\Xamarin.Forms.Extensions\\Xamarin.Forms.Extensions.csproj"
               }
             }
           }
@@ -178,7 +179,6 @@
       }
     },
     "C:\\Users\\Flint\\Documents\\Calculator Stuff\\Xamarin.Forms.MathDisplay\\Xamarin.Forms.MathDisplay.csproj": {
-      "version": "1.0.0",
       "restore": {
         "projectUniqueName": "C:\\Users\\Flint\\Documents\\Calculator Stuff\\Xamarin.Forms.MathDisplay\\Xamarin.Forms.MathDisplay.csproj",
         "projectName": "Xamarin.Forms.MathDisplay",
@@ -204,7 +204,6 @@
       }
     },
     "C:\\Users\\Flint\\Documents\\Code\\C#\\System.Extensions\\System.Extensions.csproj": {
-      "version": "1.0.0",
       "restore": {
         "projectUniqueName": "C:\\Users\\Flint\\Documents\\Code\\C#\\System.Extensions\\System.Extensions.csproj",
         "projectName": "System.Extensions",
@@ -215,7 +214,6 @@
       }
     },
     "C:\\Users\\Flint\\Documents\\Code\\C#\\Xamarin.Forms.Extensions\\Xamarin.Forms.Extensions.csproj": {
-      "version": "1.0.0",
       "restore": {
         "projectUniqueName": "C:\\Users\\Flint\\Documents\\Code\\C#\\Xamarin.Forms.Extensions\\Xamarin.Forms.Extensions.csproj",
         "projectName": "Xamarin.Forms.Extensions",

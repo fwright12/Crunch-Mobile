@@ -4,12 +4,24 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:Extensions="clr-namespace:Xamarin.Forms;assembly=Xamarin.Forms.Extensions"
+             xmlns:ext="clr-namespace:Xamarin.Forms;assembly=Xamarin.Forms.Extensions"
              xmlns:Calculator="clr-namespace:Calculator"
+             xmlns:States="clr-namespace:Calculator.States"
              mc:Ignorable="d"
              x:Class="Calculator.MainPage"
              x:Name="self"
              BackgroundColor="{DynamicResource CanvasBackgroundColor}">
+    <VisualStateManager.VisualStateGroups>
+        <VisualStateGroup>
+            <VisualState Name="{x:Static Calculator:MainPage.PORTRAIT_MODE}" />
+            <VisualState Name="{x:Static Calculator:MainPage.LANDSCAPE_MODE}" />
+        </VisualStateGroup>
+
+        <VisualStateGroup Name="{x:Static Calculator:MainPage.PORTRAIT_MODE}">
+            <VisualState Name="{x:Static Calculator:MainPage.BASIC_MODE}" />
+        </VisualStateGroup>
+    </VisualStateManager.VisualStateGroups>
+
     <AbsoluteLayout x:Name="Screen">
         <AbsoluteLayout x:Name="CanvasArea"
                         AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
@@ -17,21 +29,43 @@
             <ScrollView x:Name="CanvasScroll"
                         Orientation="Both"
                         AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
-                        AbsoluteLayout.LayoutFlags="SizeProportional">
+                        AbsoluteLayout.LayoutFlags="SizeProportional"
+                        ext:VisualElementExtensions.Visibility="{States:MainPage 1, Basic=0}">
                 <Calculator:Canvas x:Name="Canvas" />
             </ScrollView>
 
             <Calculator:BasicModeAnswerLabel x:Name="BasicAnswer"
                                              VerticalOptions="End"
                                              HorizontalTextAlignment="End"
-                                             VerticalTextAlignment="End" />
+                                             VerticalTextAlignment="End"
+                                             Opacity="{States:MainPage 0, Basic=1}"
+                                             FontSize="{States:MainPage 33}"
+                                             ext:LabelExtensions.AutoSizeFont="{States:MainPage Basic=True}"
+                                             AbsoluteLayout.LayoutBounds="{States:MainPage Basic='1, 1, 1, 1'}">
+                <Calculator:BasicModeAnswerLabel.Margin>
+                    <States:MainPage Default="0">
+                        <States:MainPage.Basic>
+                            <Thickness Top="{x:Static Calculator:MainPage.SETTINGS_BUTTON_SIZE}" />
+                        </States:MainPage.Basic>
+                    </States:MainPage>
+                </Calculator:BasicModeAnswerLabel.Margin>
+
+                <Calculator:BasicModeAnswerLabel.Padding>
+                    <States:MainPage Default="0">
+                        <States:MainPage.Basic>
+                            <Thickness Top="{x:Static Calculator:App.PAGE_PADDING}" />
+                        </States:MainPage.Basic>
+                    </States:MainPage>
+                </Calculator:BasicModeAnswerLabel.Padding>
+            </Calculator:BasicModeAnswerLabel>
 
             <Button x:Name="SettingsMenuButton"
                     Text="{OnPlatform Android=&#xf2f7;, iOS=&#xf43c;}"
                     FontSize="33"
                     FontFamily="{StaticResource IoniconsFont}"
                     AbsoluteLayout.LayoutBounds="0, 0, 50, 50"
-                    AbsoluteLayout.LayoutFlags="PositionProportional" />
+                    AbsoluteLayout.LayoutFlags="PositionProportional">
+            </Button>
 
             <ContentView x:Name="AdSpace"
                          AbsoluteLayout.LayoutBounds="0.5, 0, -1, -1"
@@ -41,7 +75,8 @@
                     Text="f(x)"
                     FontSize="Large"
                     AbsoluteLayout.LayoutBounds="1, 0, 50, 50"
-                    AbsoluteLayout.LayoutFlags="PositionProportional" />
+                    AbsoluteLayout.LayoutFlags="PositionProportional"
+                    ext:VisualElementExtensions.Visibility="{States:MainPage 1, Basic=0}" />
 
             <Math:CursorView x:Name="PhantomCursor"
                              HeightRequest="{Binding Source={x:Static Math:SoftKeyboard.Cursor}, Path=Height}"

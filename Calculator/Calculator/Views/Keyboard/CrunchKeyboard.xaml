@@ -3,70 +3,163 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
       xmlns:d="http://xamarin.com/schemas/2014/forms/design"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-      xmlns:Extensions="clr-namespace:Xamarin.Forms;assembly=Xamarin.Forms.Extensions"
+      xmlns:ext="clr-namespace:Xamarin.Forms;assembly=Xamarin.Forms.Extensions"
       xmlns:Calculator="clr-namespace:Calculator"
+      xmlns:States="clr-namespace:Calculator.States"
       mc:Ignorable="d"
       x:Class="Calculator.CrunchKeyboard"
       x:Name="self">
-    <!--<VisualStateManager.VisualStateGroups>
-        <Extensions:VisualStates>
-            <x:Arguments>
-                <x:String>Test</x:String>
-                <x:String>Test1</x:String>
-                <x:Array Type="{x:Type x:String}" />
-            </x:Arguments>
-            <Extensions:TargetedSetters>
-                <Extensions:TargetedSetters.Setters>
-                    <Extensions:Setters Property="{x:Static View.BackgroundColorProperty}">
-                        <Color>
-                            <x:Arguments>
-                                <x:Double>1</x:Double>
-                                <x:Double>1</x:Double>
-                                <x:Double>1</x:Double>
-                                <x:Double>1</x:Double>
-                            </x:Arguments>
-                        </Color>
-                    </Extensions:Setters>
-                </Extensions:TargetedSetters.Setters>
-            </Extensions:TargetedSetters>
-        </Extensions:VisualStates>
-    </VisualStateManager.VisualStateGroups>-->
+    <VisualStateManager.VisualStateGroups>
+        <VisualStateGroup>
+            <VisualState Name="{x:Static Calculator:MainPage.PORTRAIT_MODE}" />
+            <VisualState Name="{x:Static Calculator:MainPage.LANDSCAPE_MODE}" />
+        </VisualStateGroup>
 
-    <!--<Calculator:VariableRow x:Name="Variables"
-                            x:FieldModifier="public"
-                            Spacing="{Binding Source={x:Reference Main}, Path=Spacing}"
-                            ButtonSize="33" />-->
+        <VisualStateGroup Name="{x:Static Calculator:MainPage.PORTRAIT_MODE}">
+            <VisualState Name="{x:Static Calculator:MainPage.BASIC_MODE}" />
+            <VisualState Name="{x:Static Calculator:CrunchKeyboard.EXPANDED_MODE}" />
+        </VisualStateGroup>
+    </VisualStateManager.VisualStateGroups>
+
+    <Grid.Resources>
+        <Binding x:Key="SecondToLastColumn"
+                 Source="{x:Reference self}"
+                 Path="ColumnDefinitions.Count"
+                 Converter="{x:Static Calculator:CrunchKeyboard.IndexFromEnd}"
+                 ConverterParameter="1" />
+
+        <Binding x:Key="SecondToLastRow"
+                 Source="{x:Reference self}"
+                 Path="RowDefinitions.Count"
+                 Converter="{x:Static Calculator:CrunchKeyboard.IndexFromEnd}"
+                 ConverterParameter="1" />
+    </Grid.Resources>
+
+    <Grid.ColumnDefinitions>
+        <States:CrunchKeyboard>
+            <States:CrunchKeyboard.Portrait>
+                <ColumnDefinitionCollection>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="1.25*" />
+                </ColumnDefinitionCollection>
+            </States:CrunchKeyboard.Portrait>
+
+            <States:CrunchKeyboard.Basic>
+                <ColumnDefinitionCollection>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </ColumnDefinitionCollection>
+            </States:CrunchKeyboard.Basic>
+
+            <States:CrunchKeyboard.Landscape>
+                <ColumnDefinitionCollection>
+                    <ColumnDefinition Width="{Binding Source={x:Reference self}, Path=VariablesSize}" />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </ColumnDefinitionCollection>
+            </States:CrunchKeyboard.Landscape>
+
+            <States:CrunchKeyboard.Expanded>
+                <ColumnDefinitionCollection>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="1.25*" />
+                </ColumnDefinitionCollection>
+            </States:CrunchKeyboard.Expanded>
+        </States:CrunchKeyboard>
+    </Grid.ColumnDefinitions>
 
     <Grid.RowDefinitions>
-        <RowDefinition />
-        <RowDefinition />
-        <RowDefinition />
-        <RowDefinition />
-        <RowDefinition />
+        <States:CrunchKeyboard>
+            <States:CrunchKeyboard.Portrait>
+                <RowDefinitionCollection>
+                    <RowDefinition Height="{Binding Source={x:Reference self}, Path=VariablesSize}" />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </RowDefinitionCollection>
+            </States:CrunchKeyboard.Portrait>
+
+            <States:CrunchKeyboard.Basic>
+                <RowDefinitionCollection>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </RowDefinitionCollection>
+            </States:CrunchKeyboard.Basic>
+
+            <States:CrunchKeyboard.Landscape>
+                <RowDefinitionCollection>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </RowDefinitionCollection>
+            </States:CrunchKeyboard.Landscape>
+        </States:CrunchKeyboard>
     </Grid.RowDefinitions>
-    <Grid.ColumnDefinitions>
-        <ColumnDefinition />
-        <ColumnDefinition />
-        <ColumnDefinition />
-        <ColumnDefinition />
-        <ColumnDefinition />
-    </Grid.ColumnDefinitions>
 
     <Grid x:Name="Variables"
           x:FieldModifier="public"
           Grid.Row="0"
           Grid.Column="0"
-          Grid.ColumnSpan="5">
+          Grid.ColumnSpan="{ext:BindingProvider {States:MainPage Portrait={Binding Source={x:Reference self}, Path=ColumnDefinitions.Count}, Landscape=1, Owner={x:Reference self}}}"
+          Grid.RowSpan="{States:MainPage Portrait=1, Landscape={Binding Source={x:Reference self}, Path=RowDefinitions.Count}, Owner={x:Reference self}}">
         <Grid.RowDefinitions>
-            <RowDefinition />
+            <States:MainPage>
+                <States:MainPage.Portrait>
+                    <RowDefinitionCollection>
+                        <RowDefinition />
+                    </RowDefinitionCollection>
+                </States:MainPage.Portrait>
+
+                <States:MainPage.Landscape>
+                    <RowDefinitionCollection>
+                        <RowDefinition Height="{Binding Source={x:Reference Variables}, Path=Width, Converter={x:Static ext:GridExtensions.CoerceDefinitionValue}}" />
+                        <RowDefinition />
+                        <RowDefinition Height="{Binding Source={x:Reference Variables}, Path=Width, Converter={x:Static ext:GridExtensions.CoerceDefinitionValue}}" />
+                    </RowDefinitionCollection>
+                </States:MainPage.Landscape>
+            </States:MainPage>
         </Grid.RowDefinitions>
+
         <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition />
-            <ColumnDefinition />
+            <States:MainPage>
+                <States:MainPage.Portrait>
+                    <ColumnDefinitionCollection>
+                        <ColumnDefinition Width="{Binding Source={x:Reference Variables}, Path=Height, Converter={x:Static ext:GridExtensions.CoerceDefinitionValue}}" />
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="{Binding Source={x:Reference Variables}, Path=Height, Converter={x:Static ext:GridExtensions.CoerceDefinitionValue}}" />
+                    </ColumnDefinitionCollection>
+                </States:MainPage.Portrait>
+
+                <States:MainPage.Landscape>
+                    <ColumnDefinitionCollection>
+                        <ColumnDefinition />
+                    </ColumnDefinitionCollection>
+                </States:MainPage.Landscape>
+            </States:MainPage>
         </Grid.ColumnDefinitions>
 
-        <Calculator:LabelButton>
+        <Calculator:LabelButton Grid.Row="0"
+                                Grid.Column="0"
+                                ext:VisualElementExtensions.Visibility="{States:CrunchKeyboard Default=1, Basic=0}">
             <x:Arguments>
                 <Button x:Name="NextKeyboardButton"
                         Text="🌐"
@@ -79,43 +172,57 @@
                               Text="NEW"
                               Key="Down"
                               Grid.Row="0"
-                              Grid.Column="0">
+                              Grid.Column="0"
+                              ext:VisualElementExtensions.Visibility="{States:CrunchKeyboard Default=0, Basic=1}">
         </Calculator:CursorKey>
 
         <ScrollView Orientation="Horizontal"
-                    Grid.Row="0"
-                    Grid.Column="1">
+                    Grid.Row="{States:MainPage Portrait=0, Landscape=1, Owner={x:Reference self}}"
+                    Grid.Column="{States:MainPage Portrait=1, Landscape=0, Owner={x:Reference self}}">
             <StackLayout x:Name="VariableLayout"
                          Orientation="Horizontal"
-                         Spacing="{Binding Source={x:Reference self}, Path=ColumnSpacing}"/>
+                         Spacing="{Binding Source={x:Reference self}, Path=ColumnSpacing}"
+                         ext:VisualElementExtensions.Visibility="{States:CrunchKeyboard Default=1, Basic=0}" />
         </ScrollView>
 
         <Button x:Name="ExpandButton"
                 Text="&#xf104;"
                 FontFamily="{StaticResource IoniconsFont}"
                 FontSize="15"
-                Grid.Row="0"
-                Grid.Column="2" />
+                Grid.Row="{States:MainPage Portrait=0, Landscape=2, Owner={x:Reference self}}"
+                Grid.Column="{States:MainPage Portrait=2, Landscape=0, Owner={x:Reference self}}"
+                ext:VisualElementExtensions.Visibility="{States:CrunchKeyboard Default=1, Basic=0}" />
     </Grid>
 
     <Button x:Name="ClearButton"
             x:FieldModifier="public"
             Text="AC"
             Grid.Row="0"
-            Grid.Column="1" />
+            Grid.Column="1"
+            ext:VisualElementExtensions.Visibility="{States:CrunchKeyboard Default=0, Basic=1}" />
 
     <Button Text="+/-"
             x:Name="PlusMinus"
             x:FieldModifier="public"
             Grid.Row="0"
-            Grid.Column="2" />
+            Grid.Column="2"
+            ext:VisualElementExtensions.Visibility="{States:CrunchKeyboard Default=0, Basic=1}" />
 
     <ScrollView x:Name="Scroll"
                 Orientation="Horizontal"
-                Grid.Row="1"
-                Grid.Column="0"
-                Grid.RowSpan="4"
-                Grid.ColumnSpan="4">
+                Grid.Row="{States:MainPage Portrait=1, Landscape=0, Owner={x:Reference self}}"
+                Grid.Column="{States:MainPage Portrait=0, Landscape=1, Owner={x:Reference self}}"
+                Grid.RowSpan="{States:CrunchKeyboard Default=4, Basic=4}"
+                Grid.ColumnSpan="4"
+                ext:ScrollViewExtensions.IsScrollEnabled="{States:CrunchKeyboard Default=True, Basic=False}">
+        <!--<ext:ScrollViewExtensions.IsScrollEnabled>
+            <States:CrunchKeyboard Regular="True">
+                <States:CrunchKeyboard.Basic>
+                    <ext:BooleanValue x:TypeArguments="x:Boolean"
+                                      Value="False" />
+                </States:CrunchKeyboard.Basic>
+            </States:CrunchKeyboard>
+        </ext:ScrollViewExtensions.IsScrollEnabled>-->
         <Grid x:Name="Keypad" />
     </ScrollView>
 
@@ -124,7 +231,8 @@
                     Text="="
                     BorderColor="DarkOrange"
                     Grid.Row="4"
-                    Grid.Column="2" />
+                    Grid.Column="2"
+                    ext:VisualElementExtensions.Visibility="{States:CrunchKeyboard Default=0, Basic=1}" />
 
     <Grid x:Name="Right"
           Grid.Row="0"
@@ -149,14 +257,17 @@
 
     <Calculator:Key x:Name="BackspaceButton"
                     Text="DEL"
-                    Grid.Row="1"
-                    Grid.Column="4" />
+                    Grid.Column="{ext:BindingProvider {States:MainPage Portrait={Calculator:BindingResource SecondToLastColumn}, Landscape=1, Owner={x:Reference self}}}"
+                    Grid.Row="{States:MainPage Portrait=1, Landscape={Calculator:BindingResource SecondToLastRow}, Owner={x:Reference self}}" />
 
     <Grid x:Name="ArrowKeys"
-          Grid.Row="2"
-          Grid.RowSpan="2"
-          Grid.Column="4">
-        <Calculator:LabelButton Grid.ColumnSpan="2">
+          Grid.Column="{ext:BindingProvider {States:MainPage Portrait={Calculator:BindingResource SecondToLastColumn}, Landscape=2, Owner={x:Reference self}}}"
+          Grid.ColumnSpan="{States:MainPage Portrait=1, Landscape=2}"
+          Grid.Row="{States:MainPage Portrait=2, Landscape={Calculator:BindingResource SecondToLastRow}, Owner={x:Reference self}}"
+          Grid.RowSpan="{States:MainPage Portrait=2, Landscape=1}">
+        <Calculator:LabelButton Grid.Column="{States:MainPage Portrait=0, Landscape=1, Owner={x:Reference self}}"
+                                Grid.Row="0"
+                                Grid.ColumnSpan="2">
             <x:Arguments>
                 <Calculator:CursorKey Text="〈"
                                       Key="Up"
@@ -166,15 +277,21 @@
 
         <Calculator:CursorKey Text="〈"
                               Key="Left"
+                              Grid.Column="0"
+                              Grid.Row="{States:MainPage Portrait=1, Landscape=0, Owner={x:Reference self}}"
                               Grid.RowSpan="2"
                               FontFamily="{StaticResource SymbolaFont}" />
 
         <Calculator:CursorKey Text="〉"
                               Key="Right"
+                              Grid.Column="{States:MainPage Portrait=1, Landscape=3, Owner={x:Reference self}}"
+                              Grid.Row="{States:MainPage Portrait=1, Landscape=0, Owner={x:Reference self}}"
                               Grid.RowSpan="2"
                               FontFamily="{StaticResource SymbolaFont}" />
 
-        <Calculator:LabelButton Grid.ColumnSpan="2">
+        <Calculator:LabelButton Grid.Column="{States:MainPage Portrait=0, Landscape=1, Owner={x:Reference self}}"
+                                Grid.Row="{States:MainPage Portrait=3, Landscape=1, Owner={x:Reference self}}"
+                                Grid.ColumnSpan="2">
             <x:Arguments>
                 <Calculator:CursorKey Text="〉"
                                       Key="Down"
@@ -184,16 +301,17 @@
     </Grid>
 
     <ContentView x:Name="BottomRight"
-                 Grid.Row="4"
-                 Grid.Column="4" />
+                 Grid.Column="{ext:BindingProvider {States:MainPage Portrait={Calculator:BindingResource SecondToLastColumn}, Landscape=4, Owner={x:Reference self}}}"
+                 Grid.Row="{States:MainPage Portrait=4, Landscape={Calculator:BindingResource SecondToLastRow}, Owner={x:Reference self}}" />
 
-    <Extensions:LongClickableButton x:Name="DockButton"
-                                    x:FieldModifier="public"
-                                    Text="▽"
-                                    FontFamily="{StaticResource SymbolaFont}" />
+    <ext:LongClickableButton x:Name="DockButton"
+                             x:FieldModifier="public"
+                             Text="▽"
+                             FontFamily="{StaticResource SymbolaFont}" />
 
-    <Extensions:LongClickableButton x:Name="ChangeModeButton"
-                                    x:FieldModifier="public"
-                                    Text="&#xf3f2;"
-                                    FontFamily="{StaticResource IoniconsFont}" />
+    <ext:LongClickableButton x:Name="ChangeModeButton"
+                             x:FieldModifier="public"
+                             IsEnabled="{States:CrunchKeyboard Default=True, Landscape=False}"
+                             Text="&#xf3f2;"
+                             FontFamily="{StaticResource IoniconsFont}" />
 </Grid>
