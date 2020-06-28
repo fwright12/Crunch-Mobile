@@ -219,28 +219,9 @@ namespace Calculator
             Drawer = this;
             Keyboard = keyboard;
             AddFunctionLayout = addFunctionLayout;
-            CornerRadius = 0;
             
             ActionableListView listView;
             Label noFunctions;
-            BoxView cover = null;
-
-            /*ClosedState = new AnyVisualState
-            {
-                Setters =
-                {
-                    new AnySetter { Action = value => CornerRadius = (float)(dynamic)value, Value = 0 },
-                    new AnySetter<double> { Action = value => BackgroundColor = new Color(255, 255, 255, value), Value = 0 },
-                    new AnySetter<double> { Action = value => cover.Opacity = value, Value = 1 },
-                    new AnySetter<double> { Action = value => Keyboard.Margin = new Thickness(0, value, 0, 0), Value = 0 },
-                }
-            };
-            OpenValues = new List<double> { 20, 1, 0, 20 };*/
-
-            BackgroundColor = Color.Transparent;
-            //Padding = new Thickness(0);
-            HasShadow = false;
-            IsClippedToBounds = true;
 
             Functions = new ObservableCollection<FunctionViewModel>();
             if (File.Exists(Filename))
@@ -273,63 +254,42 @@ namespace Calculator
                 }
             }
 
-            Content = new AbsoluteLayout
+            Content = FunctionsList = listView = new ListView
             {
-                Children =
+                BackgroundColor = Color.Transparent,
+                ItemsSource = Functions,
+                ItemTemplate = new DataTemplate(() =>
                 {
+                    EditCell cell = new EditCell();
+                    cell.SetBinding<View, string>(EditCell.ViewProperty, "String", MakeExpression);
+                    return cell;
+                }),
+                ContextActions =
+                {
+                    new MenuItemTemplate(() => new MenuItem
                     {
-                        (FunctionsList = listView = new ListView
-                        {
-                            HeightRequest = 0,
-                            BackgroundColor = Color.Transparent,
-                            ItemsSource = Functions,
-                            ItemTemplate = new DataTemplate(() =>
-                            {
-                                EditCell cell = new EditCell();
-                                cell.SetBinding<View, string>(EditCell.ViewProperty, "String", MakeExpression);
-                                return cell;
-                            }),
-                            ContextActions =
-                            {
-                                new MenuItemTemplate(() => new MenuItem
-                                {
-                                    Text = "Delete",
-                                    IsDestructive = true,
-                                }),
-                                new MenuItemTemplate(() => new MenuItem
-                                {
-                                    Text = "Edit",
-                                })
-                            },
-                            SelectionMode = ListViewSelectionMode.None,
-                            IsPullToRefreshEnabled = false,
-                            HasUnevenRows = true,
-                            Header = new AbsoluteLayout
-                            {
-                                Children =
-                                {
-                                    {
-                                        Keyboard,
-                                        new Rectangle(0.5, 0.5, -1, -1),
-                                        AbsoluteLayoutFlags.PositionProportional
-                                    }
-                                }
-                            },
-                        }),
-                        new Rectangle(0, 0, 1, 1),
-                        AbsoluteLayoutFlags.SizeProportional
-                    },
+                        Text = "Delete",
+                        IsDestructive = true,
+                    }),
+                    new MenuItemTemplate(() => new MenuItem
                     {
-                        (cover = new BoxView
+                        Text = "Edit",
+                    })
+                },
+                SelectionMode = ListViewSelectionMode.None,
+                IsPullToRefreshEnabled = false,
+                HasUnevenRows = true,
+                Header = new AbsoluteLayout
+                {
+                    Children =
+                    {
                         {
-                            IsVisible = false,
-                            //BackgroundColor = App.BACKGROUND_COLOR,
-                            InputTransparent = true,
-                        }),
-                        new Rectangle(0.5, 1, 1, -1),
-                        AbsoluteLayoutFlags.PositionProportional | AbsoluteLayoutFlags.WidthProportional
+                            Keyboard,
+                            new Rectangle(0.5, 0.5, -1, -1),
+                            AbsoluteLayoutFlags.PositionProportional
+                        }
                     }
-                }
+                },
             };
             //BackgroundColor = Color.Black;
             //Content.BackgroundColor = new Color(245, 245, 245, 0.95);
@@ -365,57 +325,6 @@ namespace Calculator
                 Open = new Thunk<Thickness>(() => new Thickness(0, 20 - ((Keyboard as Layout)?.Margin.Top ?? 0), 0, 0)),
                 Closed = new Thickness(0)
             });
-
-            /*VisualStateManager.GetVisualStateGroups(this).Add(new VisualStates("Open", "Closed")
-            {
-                new Setters { Property = CornerRadiusProperty, Values = { 20, 10 } },
-                //{ BackgroundColorProperty, ("Open", new DynamicResource("SecondaryColor")) },
-                /*new Setters
-                {
-                    Property = BackgroundColorProperty,
-                    Values =
-                    {
-                        Color.White,
-                        Color.White.WithAlpha(0),
-                    }
-                },
-                new TargetedSetters
-                {
-                    Targets = test,
-                    Setters =
-                    {
-                        new Setters
-                        {
-                            Property = BackgroundColorProperty,
-                            Values = { Color.Black.WithAlpha(0.25), Color.Black.WithAlpha(0) }
-                        }
-                    }
-                },
-                new TargetedSetters
-                {
-                    Targets = (VisualElement)Keyboard.Parent,
-                    Setters =
-                    {
-                        new Setters 
-                        {
-                            Property = MarginProperty,
-                            Values =
-                            {
-                                new Thunk<Thickness>(() => new Thickness(0, 20 - ((Keyboard as Layout)?.Margin.Top ?? 0), 0, 0)),
-                                new Thickness(0),
-                            }
-                        }
-                    }
-                },
-                /*new TargetedSetters
-                {
-                    Targets = cover,
-                    Setters =
-                    {
-                        new Setters { Property = OpacityProperty, Values = { 0, 1 } }
-                    }
-                }
-            });*/
 
             FunctionsList.ListView.GetSwipeListener().Drawer = Drawer;
             FunctionsList.EditingToolbar.SetDynamicResource(BackgroundColorProperty, "PrimaryBackgroundColor");
@@ -473,7 +382,7 @@ namespace Calculator
                 }
             };
 
-            Action<double> Transition = StateAnimation.Create(this, "Open", "Closed").GetCallback();// this.AnimationToState("Closed", "Open").GetCallback();
+            Action<double> Transition = StateAnimation.GetCallback(this, "Open", "Closed");//.GetCallback();// this.AnimationToState("Closed", "Open").GetCallback();
             Drawer.Bind<double>(HeightProperty, value =>
             {
                 if (Parent == null)
@@ -504,10 +413,6 @@ namespace Calculator
                     SetStatus(Closed = false);
                 }
             });
-
-            void SetCoverHeight() => cover.HeightRequest = Content.Height - Keyboard.Height - Keyboard.Margin.VerticalThickness;
-            LayoutChanged += (sender, e) => SetCoverHeight();
-            Keyboard.SizeChanged += (sender, e) => SetCoverHeight();
 
             SetStatus(true);
         }

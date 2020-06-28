@@ -40,7 +40,7 @@ namespace Calculator
         {
             Operand result;
 
-            if (this.Parent<MainPage>().Mode != MainPage.CalculatorMode.Basic)
+            if (this.Parent<MainPage>().CurrentState()?.Name != MainPage.BASIC_MODE)
             {
                 try
                 {

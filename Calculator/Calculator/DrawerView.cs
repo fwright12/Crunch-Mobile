@@ -170,7 +170,7 @@ namespace Calculator
         private static void SnapToInternal(this VisualElement bindable, View view, double? unsafeHeight, double? animationSpeed = null)
         {
             double height = unsafeHeight ?? view?.Height ?? -1;
-            Print.Log("snapping to", height, bindable.Height, animationSpeed);
+            //Print.Log("snapping to", height, bindable.Height, animationSpeed);
 
             if (animationSpeed == null || bindable.Height == height)
             {

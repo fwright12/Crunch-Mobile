@@ -38,10 +38,11 @@
                                              VerticalOptions="End"
                                              HorizontalTextAlignment="End"
                                              VerticalTextAlignment="End"
-                                             Opacity="{States:MainPage 0, Basic=1}"
-                                             FontSize="{States:MainPage 33}"
+                                             HeightRequest="{States:MainPage Basic=150}"
+                                             FontSize="{States:MainPage Portrait=33}"
                                              ext:LabelExtensions.AutoSizeFont="{States:MainPage Basic=True}"
-                                             AbsoluteLayout.LayoutBounds="{States:MainPage Basic='1, 1, 1, 1'}">
+                                             AbsoluteLayout.LayoutBounds="{States:MainPage Basic='1, 1, 1, 1'}"
+                                             AbsoluteLayout.LayoutFlags="All">
                 <Calculator:BasicModeAnswerLabel.Margin>
                     <States:MainPage Default="0">
                         <States:MainPage.Basic>
@@ -64,8 +65,7 @@
                     FontSize="33"
                     FontFamily="{StaticResource IoniconsFont}"
                     AbsoluteLayout.LayoutBounds="0, 0, 50, 50"
-                    AbsoluteLayout.LayoutFlags="PositionProportional">
-            </Button>
+                    AbsoluteLayout.LayoutFlags="PositionProportional" />
 
             <ContentView x:Name="AdSpace"
                          AbsoluteLayout.LayoutBounds="0.5, 0, -1, -1"
@@ -93,6 +93,10 @@
         <StackLayout x:Name="FullKeyboardView"
                      Orientation="Vertical">
             <Calculator:FunctionsDrawer x:Name="FunctionsDrawer"
+                                        BackgroundColor="Transparent"
+                                        HasShadow="False"
+                                        IsClippedToBounds="True"
+                                        CornerRadius="0"
                                         DropArea="{x:Reference Canvas}">
                 <x:Arguments>
                     <ContentView x:Name="KeyboardView">

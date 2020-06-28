@@ -77,6 +77,7 @@ namespace Calculator
 
             return new Point(x, y);
         }, serializer: value => value.X.ToString() + "|" + value.Y.ToString());
+        public static readonly BindableValue<bool> BasicMode = Settings.Register("basicMode", false);
 
         public static readonly BindableValue<bool> ShowTips = Settings.Register("should show tips", true);
         public static readonly IReadOnlyList<Tip> Tips = new List<Tip>

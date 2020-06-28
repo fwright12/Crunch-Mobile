@@ -22,13 +22,13 @@
     </VisualStateManager.VisualStateGroups>
 
     <Grid.Resources>
-        <Binding x:Key="SecondToLastColumn"
+        <Binding x:Key="ColumnsMinus1"
                  Source="{x:Reference self}"
                  Path="ColumnDefinitions.Count"
                  Converter="{x:Static Calculator:CrunchKeyboard.IndexFromEnd}"
                  ConverterParameter="1" />
 
-        <Binding x:Key="SecondToLastRow"
+        <Binding x:Key="RowsMinus1"
                  Source="{x:Reference self}"
                  Path="RowDefinitions.Count"
                  Converter="{x:Static Calculator:CrunchKeyboard.IndexFromEnd}"
@@ -210,11 +210,11 @@
 
     <ScrollView x:Name="Scroll"
                 Orientation="Horizontal"
-                Grid.Row="{States:MainPage Portrait=1, Landscape=0, Owner={x:Reference self}}"
                 Grid.Column="{States:MainPage Portrait=0, Landscape=1, Owner={x:Reference self}}"
-                Grid.RowSpan="{States:CrunchKeyboard Default=4, Basic=4}"
-                Grid.ColumnSpan="4"
-                ext:ScrollViewExtensions.IsScrollEnabled="{States:CrunchKeyboard Default=True, Basic=False}">
+                Grid.ColumnSpan="{ext:BindingProvider {States:MainPage Portrait={Calculator:BindingResource ColumnsMinus1}, Landscape={Calculator:BindingResource ColumnsMinus1}, Basic=4}}"
+                Grid.Row="{States:MainPage Portrait=1, Landscape=0, Owner={x:Reference self}}"
+                Grid.RowSpan="4"
+                ext:ScrollViewExtensions.IsScrollEnabled="{States:MainPage Default=True, Basic=False}">
         <!--<ext:ScrollViewExtensions.IsScrollEnabled>
             <States:CrunchKeyboard Regular="True">
                 <States:CrunchKeyboard.Basic>
@@ -235,6 +235,7 @@
                     ext:VisualElementExtensions.Visibility="{States:CrunchKeyboard Default=0, Basic=1}" />
 
     <Grid x:Name="Right"
+          IsVisible="{States:MainPage Default=False, Basic=True}"
           Grid.Row="0"
           Grid.RowSpan="5"
           Grid.Column="3">
@@ -257,13 +258,13 @@
 
     <Calculator:Key x:Name="BackspaceButton"
                     Text="DEL"
-                    Grid.Column="{ext:BindingProvider {States:MainPage Portrait={Calculator:BindingResource SecondToLastColumn}, Landscape=1, Owner={x:Reference self}}}"
-                    Grid.Row="{States:MainPage Portrait=1, Landscape={Calculator:BindingResource SecondToLastRow}, Owner={x:Reference self}}" />
+                    Grid.Column="{ext:BindingProvider {States:MainPage Portrait={Calculator:BindingResource ColumnsMinus1}, Landscape=1, Owner={x:Reference self}}}"
+                    Grid.Row="{States:MainPage Portrait=1, Landscape={Calculator:BindingResource RowsMinus1}, Owner={x:Reference self}}" />
 
     <Grid x:Name="ArrowKeys"
-          Grid.Column="{ext:BindingProvider {States:MainPage Portrait={Calculator:BindingResource SecondToLastColumn}, Landscape=2, Owner={x:Reference self}}}"
+          Grid.Column="{ext:BindingProvider {States:MainPage Portrait={Calculator:BindingResource ColumnsMinus1}, Landscape=2, Owner={x:Reference self}}}"
           Grid.ColumnSpan="{States:MainPage Portrait=1, Landscape=2}"
-          Grid.Row="{States:MainPage Portrait=2, Landscape={Calculator:BindingResource SecondToLastRow}, Owner={x:Reference self}}"
+          Grid.Row="{States:MainPage Portrait=2, Landscape={Calculator:BindingResource RowsMinus1}, Owner={x:Reference self}}"
           Grid.RowSpan="{States:MainPage Portrait=2, Landscape=1}">
         <Calculator:LabelButton Grid.Column="{States:MainPage Portrait=0, Landscape=1, Owner={x:Reference self}}"
                                 Grid.Row="0"
@@ -301,8 +302,8 @@
     </Grid>
 
     <ContentView x:Name="BottomRight"
-                 Grid.Column="{ext:BindingProvider {States:MainPage Portrait={Calculator:BindingResource SecondToLastColumn}, Landscape=4, Owner={x:Reference self}}}"
-                 Grid.Row="{States:MainPage Portrait=4, Landscape={Calculator:BindingResource SecondToLastRow}, Owner={x:Reference self}}" />
+                 Grid.Column="{ext:BindingProvider {States:MainPage Portrait={Calculator:BindingResource ColumnsMinus1}, Landscape=4, Owner={x:Reference self}}}"
+                 Grid.Row="{States:MainPage Portrait=4, Landscape={Calculator:BindingResource RowsMinus1}, Owner={x:Reference self}}" />
 
     <ext:LongClickableButton x:Name="DockButton"
                              x:FieldModifier="public"
@@ -310,8 +311,6 @@
                              FontFamily="{StaticResource SymbolaFont}" />
 
     <ext:LongClickableButton x:Name="ChangeModeButton"
-                             x:FieldModifier="public"
-                             IsEnabled="{States:CrunchKeyboard Default=True, Landscape=False}"
                              Text="&#xf3f2;"
                              FontFamily="{StaticResource IoniconsFont}" />
 </Grid>

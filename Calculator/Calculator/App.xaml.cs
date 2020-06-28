@@ -175,7 +175,7 @@ namespace Calculator
                     }
                 }
             };
-
+            
             MainPage = new NavigationPage(new ContentPage { Content = new StackLayout { Children = { l } } });
         }
 
