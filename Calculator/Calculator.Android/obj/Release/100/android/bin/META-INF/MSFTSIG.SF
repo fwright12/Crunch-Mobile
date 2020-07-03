@@ -1,7 +1,7 @@
 Signature-Version: 1.0
-SHA-256-Digest-Manifest-Main-Attributes: ALzND838rQWjZkvh+HmC5oHUpzd9a
- RnrdjXzJiCOMAI=
-SHA-256-Digest-Manifest: JIhwkTplGKg1J9llkbj3UPXPBKsHu8VM97QOkUHd5ac=
+SHA-256-Digest-Manifest-Main-Attributes: j6mvJNSyU9H8+eDs6Ex+g3bl0TGEd
+ rpHCMMN/AoUiDg=
+SHA-256-Digest-Manifest: IYeBMPk1ouGZsi00vNo0+LlQEZLsRmZxum3V9Z/jp4k=
 Created-By: 1.8.0_112 (Oracle Corporation)
 
 Name: mono/java/lang/RunnableImplementor.class
@@ -621,9 +621,6 @@ SHA-256-Digest: id53zU+8T68JPptd6okZ54XG3UyikhYb3rXb5PhSEOo=
 Name: mono/android/os/MessageQueue_OnFileDescriptorEventListenerImplem
  entor.class
 SHA-256-Digest: 8yy4AACxi5OOiMuPYl5/IfXYFtdt98Y3TCvKQgaew8M=
-
-Name: android/runtime/UncaughtExceptionHandler.class
-SHA-256-Digest: XB5gwDpHc+mTM2uh0EmmrMTIC+u5r2o0TAjcyt0QD+U=
 
 Name: mono/android/media/MediaCas_EventListenerImplementor.class
 SHA-256-Digest: r7uCSQgt7vrCym5yTHHUsqBGm/VBn9XHkngZ4ag9KFg=

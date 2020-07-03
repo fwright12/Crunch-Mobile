@@ -14,7 +14,7 @@
                HorizontalTextAlignment="Center" />
 
         <ContentView x:Name="Showing"
-                     VerticalOptions="{OnPlatform Android=FillAndExpand}">
+                     VerticalOptions="FillAndExpand">
             <StackLayout Spacing="50"
                          VerticalOptions="CenterAndExpand">
                 <Label Text="Welcome to Crunch!"

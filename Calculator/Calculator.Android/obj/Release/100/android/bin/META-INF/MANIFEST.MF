@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Created-By: 1.8.0_232 (Amazon.com Inc.)
+Created-By: 1.8.0_242 (Amazon.com Inc.)
 
 Name: mono/java/lang/RunnableImplementor.class
 SHA-256-Digest: bF2FflCaQ4i/5nGbIyIlVmC2Wf1AGG/P8pRW7oTMy0U=
@@ -618,9 +618,6 @@ SHA-256-Digest: 8XMG4N6csagTA5HQhkfOFzStQL1K38X6IW7Wm1sEar0=
 Name: mono/android/os/MessageQueue_OnFileDescriptorEventListenerImplem
  entor.class
 SHA-256-Digest: D6d44Pf5tEyP/O3BN3PhQYZoNxvX488bcY3U85f4AbU=
-
-Name: android/runtime/UncaughtExceptionHandler.class
-SHA-256-Digest: vEHoYKSRADNs0efhpOFfUix3b/GmjdeGyYBGi7BjKk8=
 
 Name: mono/android/media/MediaCas_EventListenerImplementor.class
 SHA-256-Digest: DYmu3c5EdMQw3CabRO6TU8zXh4VYVYMCKX8/8XgB3oM=

@@ -47,6 +47,7 @@ Xamarin.Essentials
 Xamarin.Forms.Platform.Android
 Xamarin.Forms.Platform
 Xamarin.Google.Android.Material
+Xamarin.Google.Guava.ListenableFuture
 Xamarin.GooglePlayServices.Ads.Base
 Xamarin.GooglePlayServices.Ads.Lite
 Xamarin.GooglePlayServices.Basement
@@ -85,9 +86,9 @@ androidx.cardview.cardview
 androidx.appcompat.appcompat-resources
 androidx.appcompat.appcompat
 com.google.android.material.material
-androidx.browser.browser
-androidx.palette.palette
 androidx.media.media
-androidx.mediarouter.mediarouter
 androidx.lifecycle.lifecycle-livedata
 androidx.legacy.legacy-support-v4
+androidx.browser.browser
+androidx.palette.palette
+androidx.mediarouter.mediarouter

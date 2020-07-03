@@ -50,7 +50,8 @@ namespace Calculator
                 HorizontalOptions = LayoutOptions.Center,
                 VerticalOptions = LayoutOptions.Center,
                 WidthRequest = 400,
-                HeightRequest = 400
+                HeightRequest = 400,
+                HasShadow = false
             };
 
             tutorial.Completed += () =>
@@ -169,7 +170,8 @@ namespace Calculator
                             HorizontalOptions = LayoutOptions.Center,
                             VerticalOptions = LayoutOptions.Center,
                             WidthRequest = 400,
-                            HeightRequest = 400
+                            HeightRequest = 400,
+                            HasShadow = false
                         }, new Rectangle(0.5, 0.5, 0.75, 0.75), AbsoluteLayoutFlags.All);
                         tip.Item1.Value = true;
                     }

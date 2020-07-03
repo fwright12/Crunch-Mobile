@@ -41,7 +41,7 @@
 		<string>Icon-Small@3x</string>
 	</array>
 	<key>CFBundleShortVersionString</key>
-	<string>3.0</string>
+	<string>3.0.1</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.GreenMountainLabs.Calculator</string>
 	<key>CFBundleDisplayName</key>
@@ -58,7 +58,7 @@
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/AppIcons.appiconset</string>
 	<key>CFBundleVersion</key>
-	<string>13.3</string>
+	<string>14.0</string>
 	<key>GADApplicationIdentifier</key>
 	<string>ca-app-pub-1795523054003202~2467617560</string>
 	<key>UILaunchStoryboardName</key>

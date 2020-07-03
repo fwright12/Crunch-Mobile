@@ -291,6 +291,13 @@ namespace Calculator
                     }
                 },
             };
+
+            // Fix for iOS listview header measure/layout cycle bug
+            void StabilizeKeyboard(object sender, EventArgs e) => AbsoluteLayoutExtensions.SetLayout(Keyboard, SoftKeyboardManager.Current == CrunchSystemKeyboard.Instance ? new Size(-1, -1) : (SoftKeyboardManager.Size - new Size(FunctionsList.ListView.Margin.HorizontalThickness, 0)));
+            SoftKeyboardManager.KeyboardChanged += StabilizeKeyboard;
+            SoftKeyboardManager.SizeChanged += StabilizeKeyboard;
+            FunctionsList.ListView.WhenPropertyChanged(MarginProperty, StabilizeKeyboard);
+
             //BackgroundColor = Color.Black;
             //Content.BackgroundColor = new Color(245, 245, 245, 0.95);
             //Content.SetDynamicResource(BackgroundColorProperty, "KeyboardBackgroundColor");
@@ -425,7 +432,7 @@ namespace Calculator
         {
             if (closed)
             {
-                FunctionsList.ListView.ScrollToPosition(0, 0, true);
+                FunctionsList.ListView.ScrollToPosition(0, 0, animated);
             }
 
             //Drawer.HeightRequest = Heights[closed];

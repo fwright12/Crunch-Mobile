@@ -2,7 +2,7 @@
 <Application xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:Calculator="clr-namespace:Calculator"
-             xmlns:Extensions="clr-namespace:Xamarin.Forms;assembly=Xamarin.Forms.Extensions"
+             xmlns:ext="clr-namespace:Xamarin.Forms;assembly=Xamarin.Forms.Extensions"
              xmlns:MathDisplay="clr-namespace:Xamarin.Forms.MathDisplay;assembly=Xamarin.Forms.MathDisplay"
              x:Class="Calculator.App">
     <Application.Resources>
@@ -82,7 +82,7 @@
                     Value="White" />
         </Style>
 
-        <Style TargetType="Extensions:Selector">
+        <Style TargetType="ext:Selector">
             <Setter Property="SelectedColor"
                     Value="{DynamicResource ControlColor}" />
             <Setter Property="BackgroundColor"

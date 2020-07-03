@@ -213,8 +213,7 @@
                 Grid.Column="{States:MainPage Portrait=0, Landscape=1, Owner={x:Reference self}}"
                 Grid.ColumnSpan="{ext:BindingProvider {States:MainPage Portrait={Calculator:BindingResource ColumnsMinus1}, Landscape={Calculator:BindingResource ColumnsMinus1}, Basic=4}}"
                 Grid.Row="{States:MainPage Portrait=1, Landscape=0, Owner={x:Reference self}}"
-                Grid.RowSpan="4"
-                ext:ScrollViewExtensions.IsScrollEnabled="{States:MainPage Default=True, Basic=False}">
+                Grid.RowSpan="4">
         <!--<ext:ScrollViewExtensions.IsScrollEnabled>
             <States:CrunchKeyboard Regular="True">
                 <States:CrunchKeyboard.Basic>
@@ -235,7 +234,7 @@
                     ext:VisualElementExtensions.Visibility="{States:CrunchKeyboard Default=0, Basic=1}" />
 
     <Grid x:Name="Right"
-          IsVisible="{States:MainPage Default=False, Basic=True}"
+          InputTransparent="{States:MainPage Default=True, Basic=False}"
           Grid.Row="0"
           Grid.RowSpan="5"
           Grid.Column="3">

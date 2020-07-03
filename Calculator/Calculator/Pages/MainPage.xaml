@@ -1,5 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+﻿<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:Math="clr-namespace:Xamarin.Forms.MathDisplay;assembly=Xamarin.Forms.MathDisplay"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
@@ -30,7 +29,7 @@
                         Orientation="Both"
                         AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
                         AbsoluteLayout.LayoutFlags="SizeProportional"
-                        ext:VisualElementExtensions.Visibility="{States:MainPage 1, Basic=0}">
+                        ext:VisualElementExtensions.Visibility="{States:MainPage Default=1, Basic=0}">
                 <Calculator:Canvas x:Name="Canvas" />
             </ScrollView>
 
@@ -38,7 +37,7 @@
                                              VerticalOptions="End"
                                              HorizontalTextAlignment="End"
                                              VerticalTextAlignment="End"
-                                             HeightRequest="{States:MainPage Basic=150}"
+                                             HeightRequest="{States:MainPage Basic=100}"
                                              FontSize="{States:MainPage Portrait=33}"
                                              ext:LabelExtensions.AutoSizeFont="{States:MainPage Basic=True}"
                                              AbsoluteLayout.LayoutBounds="{States:MainPage Basic='1, 1, 1, 1'}"
@@ -73,10 +72,10 @@
 
             <Button x:Name="FunctionsMenuButton"
                     Text="f(x)"
-                    FontSize="Large"
+                    FontSize="20"
                     AbsoluteLayout.LayoutBounds="1, 0, 50, 50"
                     AbsoluteLayout.LayoutFlags="PositionProportional"
-                    ext:VisualElementExtensions.Visibility="{States:MainPage 1, Basic=0}" />
+                    ext:VisualElementExtensions.Visibility="{States:MainPage Default=1, Basic=0}" />
 
             <Math:CursorView x:Name="PhantomCursor"
                              HeightRequest="{Binding Source={x:Static Math:SoftKeyboard.Cursor}, Path=Height}"
@@ -97,6 +96,7 @@
                                         HasShadow="False"
                                         IsClippedToBounds="True"
                                         CornerRadius="0"
+                                        Padding="0"
                                         DropArea="{x:Reference Canvas}">
                 <x:Arguments>
                     <ContentView x:Name="KeyboardView">

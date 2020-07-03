@@ -49,6 +49,8 @@ namespace Calculator
             Orientation = StackOrientation.Vertical;
             Spacing = 0;
             ListView = listView;
+            ListView.VerticalOptions = LayoutOptions.FillAndExpand;
+            ListView.HeightRequest = 1;
 
             Header = new StackLayout
             {

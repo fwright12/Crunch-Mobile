@@ -66,7 +66,7 @@ namespace Calculator {
         public global::Xamarin.Forms.LongClickableButton DockButton;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
-        public global::Xamarin.Forms.LongClickableButton ChangeModeButton;
+        private global::Xamarin.Forms.LongClickableButton ChangeModeButton;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
         private void InitializeComponent() {

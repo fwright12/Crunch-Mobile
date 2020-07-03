@@ -4,13 +4,13 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:Calculator="clr-namespace:Calculator"
-             xmlns:Extensions="clr-namespace:Xamarin.Forms;assembly=Xamarin.Forms.Extensions"
-             xmlns:iOS="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
+             xmlns:ext="clr-namespace:Xamarin.Forms;assembly=Xamarin.Forms.Extensions"
+             xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
              mc:Ignorable="d"
              x:Class="Calculator.SettingsPage"
              Title="Settings"
-             iOS:NavigationPage.PrefersLargeTitles="True"
-             iOS:Page.ModalPresentationStyle="FormSheet">
+             ios:NavigationPage.PrefersLargeTitles="True"
+             ios:Page.ModalPresentationStyle="Automatic">
     <TableView VerticalOptions="FillAndExpand"
                Intent="Settings"
                BackgroundColor="Transparent"
@@ -51,7 +51,7 @@
                 <Calculator:LabeledCell>
                     <x:Arguments>
                         <x:String>Logarithm Base:</x:String>
-                        <Extensions:Selector x:Name="LogBase"
+                        <ext:Selector x:Name="LogBase"
                                              HorizontalOptions="EndAndExpand">
                             <x:Arguments>
                                 <x:Array Type="{x:Type x:String}">
@@ -59,7 +59,7 @@
                                     <x:String>10</x:String>
                                 </x:Array>
                             </x:Arguments>
-                        </Extensions:Selector>
+                        </ext:Selector>
                     </x:Arguments>
                 </Calculator:LabeledCell>
             </TableSection>
@@ -85,7 +85,7 @@
                 </Calculator:SwitchCell>
                 
                 <ViewCell x:Name="ThemeSelectorCell">
-                    <Extensions:Selector x:Name="ThemeSelector"
+                    <ext:Selector x:Name="ThemeSelector"
                                          HorizontalOptions="EndAndExpand">
                         <x:Arguments>
                             <x:Array Type="{x:Type x:String}">
@@ -93,7 +93,7 @@
                                 <x:String>Dark</x:String>
                             </x:Array>
                         </x:Arguments>
-                    </Extensions:Selector>
+                    </ext:Selector>
                 </ViewCell>
             </TableSection>
 
