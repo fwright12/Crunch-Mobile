@@ -33,7 +33,7 @@ namespace Calculator {
         private global::Calculator.Canvas Canvas;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
-        private global::Calculator.BasicModeAnswerLabel BasicAnswer;
+        private global::Xamarin.Forms.Label BasicAnswer;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
         private global::Xamarin.Forms.Button SettingsMenuButton;
@@ -73,7 +73,7 @@ namespace Calculator {
             CanvasArea = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.AbsoluteLayout>(this, "CanvasArea");
             CanvasScroll = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.ScrollView>(this, "CanvasScroll");
             Canvas = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Calculator.Canvas>(this, "Canvas");
-            BasicAnswer = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Calculator.BasicModeAnswerLabel>(this, "BasicAnswer");
+            BasicAnswer = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Label>(this, "BasicAnswer");
             SettingsMenuButton = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Button>(this, "SettingsMenuButton");
             AdSpace = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.ContentView>(this, "AdSpace");
             FunctionsMenuButton = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Button>(this, "FunctionsMenuButton");

@@ -315,22 +315,22 @@ namespace Calculator
                 }
             });
 
-            this.AddVisualStateValues(this, CornerRadiusProperty, new States.FunctionsDrawer
+            this.SetVisualStateValues(new VisualStateValues(this, CornerRadiusProperty)
             {
-                Open = 20,
-                Closed = 10
+                ["Open"] = 20,
+                ["Closed"] = 10
             });
 
-            this.AddVisualStateValues(test, BackgroundColorProperty, new States.FunctionsDrawer
+            this.SetVisualStateValues(new VisualStateValues(test, BackgroundColorProperty)
             {
-                Open = Color.Black.WithAlpha(0.25),
-                Closed = Color.Black.WithAlpha(0)
+                ["Open"] = Color.Black.WithAlpha(0.25),
+                ["Closed"] = Color.Black.WithAlpha(0)
             });
 
-            this.AddVisualStateValues((VisualElement)Keyboard.Parent, MarginProperty, new States.FunctionsDrawer
+            this.SetVisualStateValues(new VisualStateValues((VisualElement)Keyboard.Parent, MarginProperty)
             {
-                Open = new Thunk<Thickness>(() => new Thickness(0, 20 - ((Keyboard as Layout)?.Margin.Top ?? 0), 0, 0)),
-                Closed = new Thickness(0)
+                ["Open"] = new Thunk<Thickness>(() => new Thickness(0, 20 - ((Keyboard as Layout)?.Margin.Top ?? 0), 0, 0)),
+                ["Closed"] = new Thickness(0)
             });
 
             FunctionsList.ListView.GetSwipeListener().Drawer = Drawer;

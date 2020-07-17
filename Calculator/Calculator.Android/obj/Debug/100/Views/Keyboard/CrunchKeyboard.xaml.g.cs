@@ -21,13 +21,16 @@ namespace Calculator {
         private global::Xamarin.Forms.Grid self;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
+        public global::Xamarin.Forms.Style KeyboardKeyStyle;
+        
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
         public global::Xamarin.Forms.Grid Variables;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
         private global::Xamarin.Forms.Button NextKeyboardButton;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
-        private global::Calculator.CursorKey NewCalculationKey;
+        private global::Calculator.Key NewCalculationKey;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
         private global::Xamarin.Forms.StackLayout VariableLayout;
@@ -36,10 +39,10 @@ namespace Calculator {
         private global::Xamarin.Forms.Button ExpandButton;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
-        public global::Xamarin.Forms.Button ClearButton;
+        private global::Xamarin.Forms.Button ClearButton;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
-        public global::Xamarin.Forms.Button PlusMinus;
+        private global::Xamarin.Forms.Button PlusMinus;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
         private global::Xamarin.Forms.ScrollView Scroll;
@@ -48,7 +51,7 @@ namespace Calculator {
         private global::Xamarin.Forms.Grid Keypad;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
-        public global::Calculator.Key EqualsKey;
+        private global::Calculator.Key EqualsKey;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
         private global::Xamarin.Forms.Grid Right;
@@ -58,6 +61,9 @@ namespace Calculator {
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
         private global::Xamarin.Forms.Grid ArrowKeys;
+        
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
+        private global::Calculator.LabelButton DownArrowKey;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
         private global::Xamarin.Forms.ContentView BottomRight;
@@ -72,9 +78,10 @@ namespace Calculator {
         private void InitializeComponent() {
             global::Xamarin.Forms.Xaml.Extensions.LoadFromXaml(this, typeof(CrunchKeyboard));
             self = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Grid>(this, "self");
+            KeyboardKeyStyle = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Style>(this, "KeyboardKeyStyle");
             Variables = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Grid>(this, "Variables");
             NextKeyboardButton = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Button>(this, "NextKeyboardButton");
-            NewCalculationKey = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Calculator.CursorKey>(this, "NewCalculationKey");
+            NewCalculationKey = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Calculator.Key>(this, "NewCalculationKey");
             VariableLayout = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.StackLayout>(this, "VariableLayout");
             ExpandButton = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Button>(this, "ExpandButton");
             ClearButton = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Button>(this, "ClearButton");
@@ -85,6 +92,7 @@ namespace Calculator {
             Right = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Grid>(this, "Right");
             BackspaceButton = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Calculator.Key>(this, "BackspaceButton");
             ArrowKeys = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Grid>(this, "ArrowKeys");
+            DownArrowKey = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Calculator.LabelButton>(this, "DownArrowKey");
             BottomRight = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.ContentView>(this, "BottomRight");
             DockButton = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.LongClickableButton>(this, "DockButton");
             ChangeModeButton = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.LongClickableButton>(this, "ChangeModeButton");

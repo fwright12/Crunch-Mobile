@@ -37,7 +37,6 @@ namespace Calculator
 
         public static void SetInSampleMode(this App app, bool value) => app.SetValue(InSampleModeProperty, value);
 
-        private static MainPage MainPage;
         private static StackLayout Options;
 
         public static void ScreenShot()

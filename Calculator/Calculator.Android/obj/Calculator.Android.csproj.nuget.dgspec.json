@@ -90,21 +90,25 @@
               "target": "Package",
               "version": "[28.0.0.3, )"
             },
+            "Xamarin.AndroidX.AppCompat.Resources": {
+              "target": "Package",
+              "version": "[1.1.0.1, )"
+            },
             "Xamarin.AndroidX.Browser": {
               "target": "Package",
-              "version": "[1.2.0, )"
+              "version": "[1.2.0.1, )"
             },
             "Xamarin.AndroidX.Legacy.Support.V4": {
               "target": "Package",
-              "version": "[1.0.0, )"
+              "version": "[1.0.0.1, )"
             },
             "Xamarin.AndroidX.Lifecycle.LiveData": {
               "target": "Package",
-              "version": "[2.2.0, )"
+              "version": "[2.2.0.1, )"
             },
             "Xamarin.AndroidX.MediaRouter": {
               "target": "Package",
-              "version": "[1.1.0, )"
+              "version": "[1.1.0.1, )"
             },
             "Xamarin.Essentials": {
               "target": "Package",
@@ -120,11 +124,11 @@
             },
             "Xamarin.Forms": {
               "target": "Package",
-              "version": "[4.6.0.800, )"
+              "version": "[4.7.0.1080, )"
             },
             "Xamarin.Google.Android.Material": {
               "target": "Package",
-              "version": "[1.0.0, )"
+              "version": "[1.0.0.1, )"
             },
             "Xamarin.GooglePlayServices.Ads.Lite": {
               "target": "Package",
@@ -140,7 +144,7 @@
         "projectName": "Crunch",
         "projectPath": "C:\\Users\\Flint\\Documents\\Calculator Stuff\\Crunch\\Crunch.csproj",
         "frameworks": {
-          "net461": {
+          "net471": {
             "projectReferences": {
               "C:\\Users\\Flint\\Documents\\Calculator Stuff\\Parse\\Crunch.Machine.csproj": {
                 "projectPath": "C:\\Users\\Flint\\Documents\\Calculator Stuff\\Parse\\Crunch.Machine.csproj"
@@ -153,7 +157,7 @@
         }
       },
       "frameworks": {
-        "net461": {}
+        "net471": {}
       }
     },
     "C:\\Users\\Flint\\Documents\\Calculator Stuff\\Parse\\Crunch.Machine.csproj": {
@@ -162,7 +166,7 @@
         "projectName": "Crunch.Machine",
         "projectPath": "C:\\Users\\Flint\\Documents\\Calculator Stuff\\Parse\\Crunch.Machine.csproj",
         "frameworks": {
-          "net461": {
+          "net471": {
             "projectReferences": {
               "C:\\Users\\Flint\\Documents\\Code\\C#\\System.Extensions\\System.Extensions.csproj": {
                 "projectPath": "C:\\Users\\Flint\\Documents\\Code\\C#\\System.Extensions\\System.Extensions.csproj"
@@ -175,7 +179,7 @@
         }
       },
       "frameworks": {
-        "net461": {}
+        "net471": {}
       }
     },
     "C:\\Users\\Flint\\Documents\\Calculator Stuff\\Xamarin.Forms.MathDisplay\\Xamarin.Forms.MathDisplay.csproj": {

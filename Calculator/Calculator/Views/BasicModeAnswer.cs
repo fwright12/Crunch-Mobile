@@ -1,152 +1,98 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+using System.ComponentModel;
+using System.Windows.Input;
 using Xamarin.Forms;
-using Xamarin.Forms.MathDisplay;
-using Crunch;
 
 namespace Calculator
 {
-    public class BasicModeAnswerLabel : Label
+    public interface ICalculator
     {
-        //public Func<string, string, string, string> Operate;
+        string Compute(string operand1, string operation, string operand2);
+    }
+
+    public class BasicCalculator : ICalculator
+    {
+        public string Compute(string operand1, string operation, string operand2)
+        {
+            double op1, op2;
+
+            if (double.TryParse(operand1, out op1) && double.TryParse(operand2, out op2))
+            {
+                return OperationLookup(op1, operation, op2)?.ToString();
+            }
+
+            return null;
+        }
+
+        private double? OperationLookup(double operand1, string operation, double operand2)
+        {
+            switch (operation)
+            {
+                case "+": return operand1 + operand2;
+                case "-": return operand1 - operand2;
+                case "*": return operand1 * operand2;
+                case "/": return operand1 / operand2;
+                default: return null;
+            }
+        }
+    }
+
+    public class BasicCalcViewModel : BindableObject
+    {
+        public static readonly BindableProperty CalculatorProperty = BindableProperty.Create(nameof(Calculator), typeof(ICalculator), typeof(BasicCalcViewModel), new BasicCalculator());
+
+        public static readonly BindableProperty TextProperty = BindableProperty.Create(nameof(Text), typeof(string), typeof(BasicCalcViewModel), "0");
+
+        public ICalculator Calculator
+        {
+            get => (ICalculator)GetValue(CalculatorProperty);
+            set => SetValue(CalculatorProperty, value);
+        }
+
+        public string Text
+        {
+            get => (string)GetValue(TextProperty);
+            set => SetValue(TextProperty, value);
+        }
+
+        public ICommand DigitCommand { get; set; }
+        public ICommand OperationCommand { get; set; }
+        public ICommand BackspaceCommand { get; set; }
+        public ICommand EnterCommand { get; set; }
+        public ICommand ClearCommand { get; private set; }
+        public ICommand PlusMinusCommand { get; private set; }
 
         private readonly char NEGATIVE = '-';
 
         private string Answer;
         private char Operation;
         private string Operand;
-        private string LastOperation = "";
 
-        public BasicModeAnswerLabel()
+        public BasicCalcViewModel()
         {
-            Reset();
+            DigitCommand = new Command<string>(value => Digit(value[0]));
+            OperationCommand = new Command<string>(value => Operate(value[0]));
+            BackspaceCommand = new Command(Backspace);
+            EnterCommand = new Command(() => Operate('='));
+            ClearCommand = new Command(Clear);
+            PlusMinusCommand = new Command(Negate);
+
+            Clear();
         }
 
-        public void Reset()
+        public void Backspace()
+        {
+            Operand = OperandEquals("", Operand.Length - 1) ? "0" : Operand.Substring(0, Math.Max(0, Operand.Length - 1));
+            UpdateText();
+        }
+
+        public void Clear()
         {
             Answer = string.Empty;
             Operation = default;
-            Operand = "";
-            LastOperation = default;
+            Operand = string.Empty;
 
-            Input('0');
-        }
-
-        public void End(Equation equation) => SoftKeyboard.MoveCursor(equation.LHS, equation.LHS.Children.Count);
-
-        private string Operate(string answer, string operation, string operand)
-        {
-            Operand result;
-
-            if (this.Parent<MainPage>().CurrentState()?.Name != MainPage.BASIC_MODE)
-            {
-                try
-                {
-                    result = Crunch.Math.Evaluate(answer + operation + operand);
-                }
-                catch
-                {
-                    result = null;
-                }
-            }
-            else
-            {
-                Equation parentEquation = SoftKeyboard.Cursor.Parent<Equation>();
-                Answer rhs = parentEquation?.RHS as Answer;
-
-                bool negatedAnswer = rhs?.RawAnswer == null || answer == null ? false : Crunch.Math.Evaluate(answer).IsNegative ^ rhs.RawAnswer.IsNegative;
-                if (negatedAnswer || ((LastOperation == "+" || LastOperation == "-") && (operation == "*" || operation == "/")))
-                {
-                    Expression current = SoftKeyboard.Cursor.Parent<Equation>().LHS;
-                    SoftKeyboard.MoveCursor(current);
-                    if (negatedAnswer)
-                    {
-                        SoftKeyboard.Type("-");
-                    }
-                    SoftKeyboard.Type("(");
-                    SoftKeyboard.MoveCursor(current, current.Children.Count - 1);
-                    SoftKeyboard.Type(")");
-                }
-
-                if (LastOperation == default)
-                {
-                    SoftKeyboard.Type(answer ?? "");
-                }
-                SoftKeyboard.Type(operation);
-                SoftKeyboard.Type(operand);
-                End(parentEquation);
-
-                result = rhs == null ? Crunch.Math.Evaluate("0") : rhs.RawAnswer;
-            }
-
-            LastOperation = operation;
-
-            return result?.Format(Crunch.Polynomials.Expanded, Crunch.Numbers.Decimal, Crunch.Trigonometry.Degrees)?.ToString();
-        }
-
-        public void Input(string keystrokes) => Input(keystrokes.ToCharArray());
-
-        public void Input(params char[] keystrokes)
-        {
-            foreach (char c in keystrokes)
-            {
-                Input(c);
-            }
-        }
-
-        public void Input(char keystroke)
-        {
-            if (keystroke == KeyboardManager.BACKSPACE)
-            {
-                Operand = OperandEquals("", Operand.Length - 1) ? "0" : Operand.Substring(0, System.Math.Max(0, Operand.Length - 1));
-            }
-            else if (Crunch.Machine.StringClassification.IsNumber(keystroke.ToString()))
-            {
-                if (keystroke == '.')
-                {
-                    if (Operand.Length == 0)
-                    {
-                        Operand = "0";
-                    }
-                    else if (Operand.Contains('.'))
-                    {
-                        return;
-                    }
-                }
-                else if (OperandEquals("0"))
-                {
-                    Operand = Operand.Replace("0", "");
-                }
-
-                Operand += keystroke;
-            }
-            else
-            {
-                if (Operand.Length > 0)
-                {
-                    if (Operation == '=')
-                    {
-                        string operand = Operand;
-                        KeyboardManager.MoveCursor(KeyboardManager.CursorKey.Down);
-                        Input(operand);
-                    }
-
-                    Answer = Operation == default ? Operand : Operate(Answer, Operation.ToString(), Operand);
-                    Operand = "";
-                }
-
-                Operation = keystroke;
-            }
-
-            Text = Operand.Length > 0 ? Operand : (Answer ?? "Error");
-        }
-
-        private bool OperandEquals(string strB, int? length = null)
-        {
-            int start = (Operand.Length > 0 && Operand[0] == NEGATIVE).ToInt();
-            return (length ?? Operand.Length) - start == strB.Length && string.Compare(Operand, start, strB, 0, strB.Length) == 0;
+            Digit('0');
         }
 
         public void Negate()
@@ -168,6 +114,58 @@ namespace Calculator
             {
                 Answer = Text;
             }
+        }
+
+        public void Digit(char keystroke)
+        {
+            if (keystroke == '.')
+            {
+                if (Operand.Length == 0)
+                {
+                    Operand = "0";
+                }
+                else if (Operand.Contains('.'))
+                {
+                    return;
+                }
+            }
+            else if (OperandEquals("0"))
+            {
+                Operand = Operand.Replace("0", "");
+            }
+
+            Operand += keystroke;
+
+            UpdateText();
+        }
+
+        public void Operate(char operation)
+        {
+            if (Operand.Length > 0)
+            {
+                if (Operation == '=')
+                {
+                    string operand = Operand;
+                    Clear();
+                    Operand = operand;
+                    //Input(operand);
+                }
+
+                Answer = Operation == default ? Operand : (Calculator ?? (Calculator = new BasicCalculator())).Compute(Answer, Operation.ToString(), Operand);
+                Operand = "";
+            }
+
+            Operation = operation;
+
+            UpdateText();
+        }
+
+        private void UpdateText() => Text = Operand.Length > 0 ? Operand : (Answer ?? "Error");
+
+        private bool OperandEquals(string strB, int? length = null)
+        {
+            int start = (Operand.Length > 0 && Operand[0] == NEGATIVE).ToInt();
+            return (length ?? Operand.Length) - start == strB.Length && string.Compare(Operand, start, strB, 0, strB.Length) == 0;
         }
     }
 }

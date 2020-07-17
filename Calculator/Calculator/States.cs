@@ -6,21 +6,6 @@ using Xamarin.Forms.Xaml;
 
 namespace Calculator.States
 {
-    [ContentProperty(nameof(Groups))]
-    public class All : IMarkupExtension
-    {
-        public IList<string> Groups { get; set; } = new List<string>();
-
-        /*public MainPage MainPage { get; set; }
-        public CrunchKeyboard CrunchKeyboard { get; set; }
-        public FunctionsDrawer FunctionsDrawer { get; set; }*/
-
-        public object ProvideValue(IServiceProvider serviceProvider)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
     [InitialState(nameof(Portrait))]
     public class MainPage : VisualStateValuesExtension
     {
@@ -30,7 +15,7 @@ namespace Calculator.States
     }
 
     [InitialState(nameof(Portrait))]
-    public class CrunchKeyboard : VisualStateValuesExtension // MainPage
+    public class CrunchKeyboard : VisualStateValuesExtension
     {
         public object Portrait { get; set; }
         public object Landscape { get; set; }

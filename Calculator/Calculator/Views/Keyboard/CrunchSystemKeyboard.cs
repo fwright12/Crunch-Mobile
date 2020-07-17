@@ -8,7 +8,7 @@ namespace Calculator
 {
     public class CrunchSystemKeyboard : ISoftKeyboard
     {
-        public static readonly CrunchSystemKeyboard Instance = new CrunchSystemKeyboard();
+        public static CrunchSystemKeyboard Instance;// = new CrunchSystemKeyboard();
 
         public event EventHandler OnscreenSizeChanged;
         public event KeystrokeEventHandler Typed;
@@ -48,7 +48,7 @@ namespace Calculator
             {
                 return;
             }
-
+            Instance = this;
             SystemKeyboard.Instance.Typed += (sender) => Typed?.Invoke(sender);
             SystemKeyboard.Instance.OnscreenSizeChanged += (sender, e) => OnOnscreenSizeChanged();
         }

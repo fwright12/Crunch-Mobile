@@ -11,6 +11,77 @@ using Crunch;
 
 namespace Calculator
 {
+    public class DragCursorBehavior : Behavior<Expression>
+    {
+        protected override void OnAttachedTo(Expression bindable)
+        {
+            base.OnAttachedTo(bindable);
+            bindable.Touch += EquationMoveCursor;
+        }
+
+        protected override void OnDetachingFrom(Expression bindable)
+        {
+            base.OnDetachingFrom(bindable);
+            bindable.Touch -= EquationMoveCursor;
+        }
+
+        private void EquationMoveCursor(object sender, TouchEventArgs e)
+        {
+            if (sender is View view && e.State == TouchState.Down)
+            {
+                view.Parent<MainPage>().DragCursor(view, e.Point);
+                
+            }
+        }
+    }
+
+    public class DragCalculationBehavior : Behavior<Equation>
+    {
+        protected override void OnAttachedTo(Equation bindable)
+        {
+            base.OnAttachedTo(bindable);
+
+            bindable.Touch += MoveCalculation;
+            if (bindable.GetType() == typeof(Equation))
+            {
+                bindable.LHS.Behaviors.Add(new DragCursorBehavior());
+            }
+            if (bindable.RHS is Answer answer)
+            {
+                answer.Behaviors.Add(new DragLinkBehavior());
+            }
+        }
+
+        protected override void OnDetachingFrom(Equation bindable)
+        {
+            base.OnDetachingFrom(bindable);
+
+            bindable.Touch -= MoveCalculation;
+        }
+
+        private void MoveCalculation(object sender, TouchEventArgs e)
+        {
+            View draggable = sender as Calculation ?? (sender as View)?.Parent<Calculation>() ?? sender as View;
+            if (draggable != null && e.State == TouchState.Moving)
+            {
+                double backup = TouchScreen.FatFinger;
+                TouchScreen.FatFinger = 0;
+                TouchScreen.BeginDrag(draggable, draggable.Parent<AbsoluteLayout>());
+                TouchScreen.FatFinger = backup;
+
+                TouchScreen.Dragging += (sender1, e1) =>
+                {
+                    if (e1.Value != DragState.Ended)
+                    {
+                        return;
+                    }
+
+                    draggable.Parent<MainPage>()?.AdjustKeyboardPosition();
+                };
+            }
+        }
+    }
+
     public class VariableAssignment : Equation
     {
         public char Name { get; private set; }

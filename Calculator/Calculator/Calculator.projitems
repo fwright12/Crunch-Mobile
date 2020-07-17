@@ -19,6 +19,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)DrawerView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MathViewModels.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Pages\AboutPage.xaml.cs">
       <DependentUpon>AboutPage.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -31,6 +32,7 @@
       <DependentUpon>SettingsPage.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)ScientificViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)States.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Themes\DarkTheme.xaml.cs">
       <SubType>Code</SubType>
@@ -41,13 +43,13 @@
       <DependentUpon>LightTheme.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Views\BasicModeAnswer.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Views\EditListView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\Keyboard\CrunchKeyboard.xaml.cs">
       <DependentUpon>CrunchKeyboard.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Views\Keyboard\CrunchSystemKeyboard.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\Keyboard\Key.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\Keyboard\KeyboardEntry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\ModalView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>

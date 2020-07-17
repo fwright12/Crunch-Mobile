@@ -14,7 +14,7 @@ using Android.Views.InputMethods;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.Android;
 
-[assembly: ExportRenderer(typeof(SystemKeyboard.KeyboardEntry), typeof(Calculator.Droid.KeyboardEntryRenderer))]
+[assembly: ExportRenderer(typeof(Calculator.KeyboardEntry), typeof(Calculator.Droid.KeyboardEntryRenderer))]
 
 namespace Calculator.Droid
 {
@@ -24,7 +24,7 @@ namespace Calculator.Droid
 
         public KeyboardEntryRenderer(Context context) : base(context)
         {
-            Xamarin.Forms.Application.Current.MainPage.SizeChanged += (sender, e) => (Element as SystemKeyboard.KeyboardEntry)?.OnOnscreenSizeChanged(new Size(Xamarin.Forms.Application.Current.MainPage.Width, 0));
+            Xamarin.Forms.Application.Current.MainPage.SizeChanged += (sender, e) => (Element as KeyboardEntry)?.OnOnscreenSizeChanged(new Size(Xamarin.Forms.Application.Current.MainPage.Width, 0));
         }
 
         public override void ClearChildFocus(Android.Views.View child)
@@ -32,13 +32,13 @@ namespace Calculator.Droid
             Print.Log("clearing child focus");
             base.ClearChildFocus(child);
 
-            if (!ImplicitDismissal && Element is SystemKeyboard.KeyboardEntry keyboard)
+            if (!ImplicitDismissal && Element is KeyboardEntry keyboard)
             {
                 keyboard.DismissedBySystem();
             }
         }
 
-        public override bool IsFocused => Element is SystemKeyboard.KeyboardEntry keyboard && keyboard.Showing;
+        public override bool IsFocused => Element is KeyboardEntry keyboard && keyboard.Showing;
 
         public override void ClearFocus()
         {
@@ -53,7 +53,7 @@ namespace Calculator.Droid
             base.OnFocusChangeRequested(sender, e);
             Print.Log("focus change requested", e.Focus, e.Result);
 
-            if (e.Focus && Element is SystemKeyboard.KeyboardEntry keyboard && keyboard.Showing)
+            if (e.Focus && Element is KeyboardEntry keyboard && keyboard.Showing)
             {
                 RequestFocus();
 
@@ -77,21 +77,23 @@ namespace Calculator.Droid
 
         public override bool OnKeyDown([GeneratedEnum] Keycode keyCode, KeyEvent e)
         {
+            KeyboardEntry view = Element as KeyboardEntry;
+
             if (keyCode == Keycode.DpadUp)
             {
-                KeyboardManager.MoveCursor(KeyboardManager.CursorKey.Up);
+                view.ViewModel.MoveCursorCommand?.Execute(KeyboardManager.CursorKey.Up);
             }
             else if (keyCode == Keycode.DpadDown)
             {
-                KeyboardManager.MoveCursor(KeyboardManager.CursorKey.Down);
+                view.ViewModel.MoveCursorCommand?.Execute(KeyboardManager.CursorKey.Down);
             }
             else if (keyCode == Keycode.DpadLeft)
             {
-                KeyboardManager.MoveCursor(KeyboardManager.CursorKey.Left);
+                view.ViewModel.MoveCursorCommand?.Execute(KeyboardManager.CursorKey.Left);
             }
             else if (keyCode == Keycode.DpadRight)
             {
-                KeyboardManager.MoveCursor(KeyboardManager.CursorKey.Right);
+                view.ViewModel.MoveCursorCommand?.Execute(KeyboardManager.CursorKey.Right);
             }
 
             return base.OnKeyDown(keyCode, e);

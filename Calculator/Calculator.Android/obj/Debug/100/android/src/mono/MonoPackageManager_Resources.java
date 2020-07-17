@@ -51,6 +51,7 @@ public class MonoPackageManager_Resources {
 		"Xamarin.Android.Support.ViewPager.dll",
 		"Xamarin.AndroidX.Activity.dll",
 		"Xamarin.AndroidX.Annotation.dll",
+		"Xamarin.AndroidX.AppCompat.AppCompatResources.dll",
 		"Xamarin.AndroidX.AppCompat.dll",
 		"Xamarin.AndroidX.AppCompat.Resources.dll",
 		"Xamarin.AndroidX.Arch.Core.Common.dll",

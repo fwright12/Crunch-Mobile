@@ -44,8 +44,6 @@ namespace Calculator
         }
         private int LongClickListenerCount = 0;
 
-        public string Basic { get; set; }
-
         public Key()
         {
             Padding = new Thickness(0);
@@ -54,7 +52,7 @@ namespace Calculator
             base.LongClick += OnLongClick;
         }
 
-        public string Output => Basic ?? Text;// Basic == "" ? Text : Basic;
+        public string Output => CommandParameter as string ?? Text;// Basic == "" ? Text : Basic;
 
         public static implicit operator Key(string s) => new Key { Text = s };
 
@@ -66,17 +64,5 @@ namespace Calculator
                 await System.Threading.Tasks.Task.Delay(RepeatedKeyPressSpeed);
             }
         }
-    }
-
-    public class CursorKey : Key
-    {
-        /*public static readonly string LEFT = "left";
-        public static readonly string RIGHT = "right";
-        public static readonly string UP = "up";
-        public static readonly string DOWN = "down";*/
-
-        public KeyboardManager.CursorKey Key { get; set; }
-
-        public CursorKey() : base() { }
     }
 }

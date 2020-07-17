@@ -27,6 +27,71 @@ namespace Calculator
         }
     }
 
+    public class DragLinkBehavior : Behavior<View>
+    {
+        protected override void OnAttachedTo(View bindable)
+        {
+            base.OnAttachedTo(bindable);
+
+            if (bindable is Link link)
+            {
+                link.PropertyChanged += GetTouchFromLinkContent;
+                link.MathContent.Touch += DragLink;
+            }
+            else if (bindable is Answer answer)
+            {
+                answer.Touch += DragLink;
+            }
+        }
+
+        protected override void OnDetachingFrom(View bindable)
+        {
+            base.OnDetachingFrom(bindable);
+
+            if (bindable is Link link)
+            {
+                link.PropertyChanged -= GetTouchFromLinkContent;
+                link.MathContent.Touch -= DragLink;
+            }
+            else if (bindable is Answer answer)
+            {
+                answer.Touch -= DragLink;
+            }
+        }
+
+        private void DragLink(object sender, TouchEventArgs e)
+        {
+            if (e.State != TouchState.Moving)
+            {
+                return;
+            }
+
+            Link link = sender is Answer answer ? new Link(answer) : (sender as View)?.Parent as Link;
+
+            if (link != null)
+            {
+                Layout<View> dropArea = (sender as View).Parent<AbsoluteLayout>();
+
+                if (!TouchScreen.Active)
+                {
+                    link.StartDrag(dropArea);
+                }
+                TouchScreen.BeginDrag(link, dropArea, sender as Answer ?? (View)link);
+            }
+        }
+
+        private void GetTouchFromLinkContent(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName != ContentView.ContentProperty.PropertyName)
+            {
+                return;
+            }
+
+            Link link = (Link)sender;
+            link.MathContent.Touch += DragLink;
+        }
+    }
+
     public class Link : Frame, IMathView
     {
         public Expression MathContent
@@ -73,6 +138,16 @@ namespace Calculator
             GestureRecognizers.Add(tgr);
         }
 
+        /*public void StartDraggingLinkOn(Layout<View> dropArea)
+        {
+            BoxView placeholder = StartDrag();
+
+            TouchScreen.Dragging += (sender, e) =>
+            {
+                
+            };
+        }*/
+
         private async void OnTap()
         {
             Print.Log("link tapped");
@@ -90,7 +165,7 @@ namespace Calculator
             animation.Commit(this, "FadeBackground", length / 255, length, Easing.Linear, (v, c) => Value.BackgroundColor = Color.Transparent, () => false);
         }
 
-        public BoxView StartDrag()
+        public BoxView StartDrag(Layout<View> dropArea)
         {
             BoxView placeholder = new BoxView
             {
@@ -102,7 +177,18 @@ namespace Calculator
 
             TouchScreen.Dragging += (sender, e) =>
             {
-                if (e.Value == DragState.Ended)
+                if (e.Value == DragState.Moving)
+                {
+                    if (Parent == null)
+                    {
+                        return;
+                    }
+
+                    Tuple<Expression, int> target = MainPage.ExampleDrop(this, dropArea, Parent as AbsoluteLayout);
+
+                    target?.Item1.Insert(target.Item2, placeholder);
+                }
+                else if (e.Value == DragState.Ended)
                 {
                     this.Remove();
 

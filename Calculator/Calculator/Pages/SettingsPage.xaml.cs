@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Extensions;
 using Xamarin.Forms.Xaml;
@@ -118,11 +118,11 @@ namespace Calculator
             };
 
             //ExternalLinkCell support = new ExternalLinkCell { Text = "Support" };
-            SupportTextCell.Tapped += (sender, e) => Device.OpenUri(new Uri(@"https://gml802.wixsite.com/apps/support"));
-            TipsTextCell.Tapped += (sender, e) => Device.OpenUri(new Uri(@"https://gml802.wixsite.com/apps/support"));
+            SupportTextCell.Tapped += (sender, e) => Launcher.OpenAsync(new Uri(@"https://gml802.wixsite.com/apps/support"));
+            TipsTextCell.Tapped += (sender, e) => Launcher.OpenAsync(new Uri(@"https://gml802.wixsite.com/apps/support"));
 
             AboutTextCell.Tapped += (sender, e) => Navigation.PushAsync(new AboutPage());
-            PrivacyTextCell.Tapped += (sender, e) => Device.OpenUri(new Uri(@"https://gml802.wixsite.com/apps/privacy"));
+            PrivacyTextCell.Tapped += (sender, e) => Launcher.OpenAsync(new Uri(@"https://gml802.wixsite.com/apps/privacy"));
 
             ResetViewCell.Tapped += async (sender, e) =>
             {
