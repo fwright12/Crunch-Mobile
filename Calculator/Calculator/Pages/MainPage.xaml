@@ -21,7 +21,21 @@
         </VisualStateGroup>
     </VisualStateManager.VisualStateGroups>
 
+    <ContentPage.Resources>
+        <Calculator:CrunchCalculator x:Key="BasicCalculator" />
+
+        <Style x:Name="MathLayoutStyle"
+               TargetType="math:MathLayout"
+               ApplyToDerivedTypes="True">
+            <Setter Property="TextColor"
+                    Value="{DynamicResource DetailColor}" />
+        </Style>
+    </ContentPage.Resources>
+
     <AbsoluteLayout x:Name="Screen">
+        <Calculator:KeyboardEntry BindingContext="{Binding BindingContext, Source={x:Reference CrunchKeyboard}}"
+                                  AbsoluteLayout.LayoutBounds="-1000, -1000, -1, -1" />
+
         <AbsoluteLayout x:Name="CanvasArea"
                         AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
                         AbsoluteLayout.LayoutFlags="SizeProportional">
@@ -33,7 +47,8 @@
                 <Calculator:Canvas x:Name="Canvas">
                     <Calculator:Canvas.Resources>
                         <Style TargetType="Calculator:Equation"
-                               ApplyToDerivedTypes="True">
+                               ApplyToDerivedTypes="True"
+                               BasedOn="{x:Reference MathLayoutStyle}">
                             <Style.Behaviors>
                                 <Calculator:DragCalculationBehavior />
                             </Style.Behaviors>
@@ -54,8 +69,7 @@
                    HorizontalTextAlignment="End"
                    VerticalTextAlignment="End"
                    HeightRequest="{States:MainPage Basic=100}"
-                   BindingContext="{Binding BindingContext, Source={x:Reference CrunchKeyboard}}"
-                   Text="{Binding Path=Text, FallbackValue=0}"
+                   Text="{Binding Path=Text, Source={StaticResource BasicCalculator}, FallbackValue=0}"
                    FontSize="{States:MainPage Portrait=33}"
                    ext:LabelExtensions.AutoSizeFont="{States:MainPage Basic=True}"
                    AbsoluteLayout.LayoutBounds="{States:MainPage Basic='1, 1, 1, 1'}"
@@ -127,7 +141,12 @@
                             </Style>
                         </ContentView.Resources>
 
-                        <Calculator:CrunchKeyboard x:Name="CrunchKeyboard" />
+                        <Calculator:CrunchKeyboard x:Name="CrunchKeyboard">
+                            <Calculator:CrunchKeyboard.BindingContext>
+                                <States:MainPage Default="{Binding FocusedMathField.BindingContext, Source={x:Reference self}}"
+                                                 Basic="{StaticResource BasicCalculator}" />
+                            </Calculator:CrunchKeyboard.BindingContext>
+                        </Calculator:CrunchKeyboard>
                     </ContentView>
 
                     <Calculator:AddFunction x:Name="AddFunctionLayout"

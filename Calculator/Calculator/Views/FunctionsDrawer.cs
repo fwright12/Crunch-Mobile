@@ -315,19 +315,19 @@ namespace Calculator
                 }
             });
 
-            this.SetVisualStateValues(new VisualStateValues(this, CornerRadiusProperty)
+            this.SetVisualStateValues(new VisualStateValues(CornerRadiusProperty)
             {
                 ["Open"] = 20,
                 ["Closed"] = 10
             });
 
-            this.SetVisualStateValues(new VisualStateValues(test, BackgroundColorProperty)
+            test.SetVisualStateValues(new VisualStateValues(BackgroundColorProperty, this)
             {
                 ["Open"] = Color.Black.WithAlpha(0.25),
                 ["Closed"] = Color.Black.WithAlpha(0)
             });
 
-            this.SetVisualStateValues(new VisualStateValues((VisualElement)Keyboard.Parent, MarginProperty)
+            ((VisualElement)Keyboard.Parent).SetVisualStateValues(new VisualStateValues(MarginProperty, this)
             {
                 ["Open"] = new Thunk<Thickness>(() => new Thickness(0, 20 - ((Keyboard as Layout)?.Margin.Top ?? 0), 0, 0)),
                 ["Closed"] = new Thickness(0)
@@ -555,7 +555,8 @@ namespace Calculator
             Answer answer = SoftKeyboard.Cursor.Parent<Equation>().RHS as Answer;
             answer.NumberChoice = Crunch.Numbers.Exact;
             SoftKeyboard.Type(function);
-            KeyboardManager.MoveCursor(KeyboardManager.CursorKey.Down);
+            (this.Parent<MainPage>()?.FocusedMathField?.BindingContext as MathFieldViewModel)?.MoveCursorCommand?.Execute(MathFieldViewModel.CursorKey.Down);
+            //KeyboardManager.MoveCursor(KeyboardManager.CursorKey.Down);
         }
     }
 }

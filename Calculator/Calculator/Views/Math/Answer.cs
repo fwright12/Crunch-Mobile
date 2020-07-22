@@ -70,10 +70,11 @@ namespace Calculator
             Label label = new Label
             {
                 FontSize = Text.MaxFontSize * 2 / 3,
-                Opacity = 0.5,
+                Opacity = 0.75,
                 VerticalOptions = LayoutOptions.EndAndExpand,
                 Margin = new Thickness(3, 0, 0, 0)
             };
+            label.SetDynamicResource(Label.TextColorProperty, "ControlColor");
 
             TapGestureRecognizer tgr = new TapGestureRecognizer();
             tgr.Tapped += delegate
@@ -205,7 +206,7 @@ namespace Calculator
                         };
                         e.GestureRecognizers.Add(pgr);*/
 
-                        
+
 
                         allFormats[(int)polynomials, (int)numbers, (int)TrigChoice] = e;
                     }

@@ -71,7 +71,7 @@ namespace Calculator
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class CrunchKeyboard : Grid, IEnumerable<Key>, ISoftKeyboard, IStateTransitionManager
     {
-        public event KeystrokeEventHandler Typed;
+        //public event KeystrokeEventHandler Typed;
         public event EventHandler OnscreenSizeChanged;
 
         //public double Spacing { get; set; } = 6;
@@ -177,7 +177,7 @@ namespace Calculator
                         (VariableLayout.Parent as ScrollView)?.ScrollToAsync(VariableLayout, ScrollToPosition.Start, true);
                     }
 
-                    KeyboardManager.Type(c.ToString());
+                    //KeyboardManager.Type(c.ToString());
                 };
 
                 button.SetBinding(WidthRequestProperty, NextKeyboardButton, nameof(Width));
@@ -302,6 +302,11 @@ namespace Calculator
         public void NextKeyboardButtonClicked(object sender, EventArgs e)
         {
             SoftKeyboardManager.NextKeyboard();
+        }
+
+        public void DismissButtonClicked(object sender, EventArgs e)
+        {
+            SoftKeyboardManager.OnDismissed();
         }
 
         protected virtual void OnOnscreenSizeChanged(Size size)

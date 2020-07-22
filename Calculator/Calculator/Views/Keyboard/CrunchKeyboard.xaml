@@ -38,7 +38,7 @@
                 <Setter Property="CornerRadius"
                         Value="10" />
                 <Setter Property="Command"
-                        Value="{Binding InputCommand, TargetNullValue={x:Null}, FallbackValue={x:Null}}" />
+                        Value="{Binding InputCommand}" />
                 <Setter Property="CommandParameter"
                         Value="{Binding Text, Source={RelativeSource Self}}" />
             </Style.Setters>
@@ -48,14 +48,13 @@
             </Style.Behaviors>
         </Style>
 
-        <Style TargetType="Button"
+        <Style x:Name="OperatorStyle"
+               TargetType="Button"
                Class="Operator"
                ApplyToDerivedTypes="True">
             <Style.Setters>
                 <Setter Property="BorderColor"
                         Value="DarkOrange" />
-                <Setter Property="Command"
-                        Value="{States:MainPage Default={Binding InputCommand}, Basic={Binding OperationCommand}}" />
             </Style.Setters>
         </Style>
 
@@ -89,18 +88,6 @@
                  Converter="{x:Static Calculator:CrunchKeyboard.IndexFromEnd}"
                  ConverterParameter="1" />
     </Grid.Resources>
-
-    <Grid.BindingContext>
-        <States:MainPage Default="{Binding KeyboardContext.Focused, Source={RelativeSource AncestorType={x:Type Calculator:MainPage}}}">
-            <States:MainPage.Basic>
-                <Calculator:BasicCalcViewModel>
-                    <Calculator:BasicCalcViewModel.Calculator>
-                        <Calculator:CrunchCalculator />
-                    </Calculator:BasicCalcViewModel.Calculator>
-                </Calculator:BasicCalcViewModel>
-            </States:MainPage.Basic>
-        </States:MainPage>
-    </Grid.BindingContext>
 
     <Grid.ColumnDefinitions>
         <States:CrunchKeyboard Portrait="1*, 1*, 1*, 1*, 1.25*"
@@ -178,8 +165,8 @@
 
         <Calculator:Key x:Name="NewCalculationKey"
                         Text="NEW"
+                        Command="{Binding NewCommand}"
                         StyleClass="BasicOnly"
-                        CommandParameter="{Binding ClearCommand}"
                         Grid.Row="0"
                         Grid.Column="0">
         </Calculator:Key>
@@ -198,6 +185,8 @@
                 Text="&#xf104;"
                 FontFamily="{StaticResource IoniconsFont}"
                 FontSize="15"
+                Command="{x:Null}"
+                Clicked="DismissButtonClicked"
                 Grid.Row="{States:MainPage Portrait=0, Landscape=2, Owner={x:Reference self}}"
                 Grid.Column="{States:MainPage Portrait=2, Landscape=0, Owner={x:Reference self}}" />
     </Grid>
@@ -239,6 +228,15 @@
                     <Style.Setters>
                         <Setter Property="Command"
                                 Value="{States:MainPage Default={Binding InputCommand}, Basic={Binding DigitCommand}}" />
+                    </Style.Setters>
+                </Style>
+
+                <Style TargetType="Calculator:Key"
+                       Class="Operator"
+                       BasedOn="{x:Reference OperatorStyle}">
+                    <Style.Setters>
+                        <Setter Property="Command"
+                                Value="{States:MainPage Default={Binding InputCommand}, Basic={Binding OperationCommand}}" />
                     </Style.Setters>
                 </Style>
             </Grid.Resources>
@@ -363,18 +361,18 @@
                                 Grid.ColumnSpan="2">
             <x:Arguments>
                 <Calculator:Key Text="〈"
-                                CommandParameter="{x:Static ext:KeyboardManager+CursorKey.Up}" />
+                                CommandParameter="{x:Static Calculator:MathFieldViewModel+CursorKey.Up}" />
             </x:Arguments>
         </Calculator:LabelButton>
 
         <Calculator:Key Text="〈"
-                        CommandParameter="{x:Static ext:KeyboardManager+CursorKey.Left}"
+                        CommandParameter="{x:Static Calculator:MathFieldViewModel+CursorKey.Left}"
                         Grid.Column="0"
                         Grid.Row="{States:MainPage Portrait=1, Landscape=0, Owner={x:Reference self}}"
                         Grid.RowSpan="2" />
 
         <Calculator:Key Text="〉"
-                        CommandParameter="{x:Static ext:KeyboardManager+CursorKey.Right}"
+                        CommandParameter="{x:Static Calculator:MathFieldViewModel+CursorKey.Right}"
                         Grid.Column="{States:MainPage Portrait=1, Landscape=3, Owner={x:Reference self}}"
                         Grid.Row="{States:MainPage Portrait=1, Landscape=0, Owner={x:Reference self}}"
                         Grid.RowSpan="2" />
@@ -385,7 +383,7 @@
                                 Grid.ColumnSpan="2">
             <x:Arguments>
                 <Calculator:Key Text="〉"
-                                CommandParameter="{x:Static ext:KeyboardManager+CursorKey.Down}" />
+                                CommandParameter="{x:Static Calculator:MathFieldViewModel+CursorKey.Down}" />
             </x:Arguments>
         </Calculator:LabelButton>
     </Grid>

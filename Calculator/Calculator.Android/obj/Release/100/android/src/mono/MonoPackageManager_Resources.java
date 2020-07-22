@@ -40,8 +40,8 @@ public class MonoPackageManager_Resources {
 		"Xamarin.Android.Support.VersionedParcelable.dll",
 		"Xamarin.Android.Support.ViewPager.dll",
 		"Xamarin.AndroidX.Annotation.dll",
+		"Xamarin.AndroidX.AppCompat.AppCompatResources.dll",
 		"Xamarin.AndroidX.AppCompat.dll",
-		"Xamarin.AndroidX.AppCompat.Resources.dll",
 		"Xamarin.AndroidX.Arch.Core.Common.dll",
 		"Xamarin.AndroidX.Arch.Core.Runtime.dll",
 		"Xamarin.AndroidX.AsyncLayoutInflater.dll",
@@ -78,7 +78,6 @@ public class MonoPackageManager_Resources {
 		"Xamarin.AndroidX.VersionedParcelable.dll",
 		"Xamarin.AndroidX.ViewPager.dll",
 		"Xamarin.Google.Android.Material.dll",
-		"Calculator.Android.dll",
 		"Crunch.dll",
 		"Crunch.Machine.dll",
 		"FFImageLoading.dll",
@@ -102,6 +101,7 @@ public class MonoPackageManager_Resources {
 		"Xamarin.GooglePlayServices.Basement.dll",
 		"Xamarin.GooglePlayServices.Measurement.Base.dll",
 		"Xamarin.GooglePlayServices.Measurement.Sdk.Api.dll",
+		"Calculator.Android.dll",
 	};
 	public static String[] Dependencies = new String[]{
 	};

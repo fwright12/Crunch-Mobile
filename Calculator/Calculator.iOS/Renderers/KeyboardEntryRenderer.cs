@@ -9,8 +9,9 @@ using UIKit;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.iOS;
 using Xamarin.Forms.Extensions;
+using Calculator;
 
-[assembly: ExportRenderer(typeof(SystemKeyboard.KeyboardEntry), typeof(Calculator.iOS.KeyboardEntryRenderer))]
+[assembly: ExportRenderer(typeof(KeyboardEntry), typeof(Calculator.iOS.KeyboardEntryRenderer))]
 
 namespace Calculator.iOS
 {
@@ -28,7 +29,7 @@ namespace Calculator.iOS
             {
                 HiddenBySystem = false;
 
-                if (Element is SystemKeyboard.KeyboardEntry keyboard && !keyboard.Showing)
+                if (Element is KeyboardEntry keyboard && !keyboard.Showing)
                 {
                     Control.EndEditing(true);
                 }
@@ -42,7 +43,7 @@ namespace Calculator.iOS
                     rect = new CoreGraphics.CGRect(0, 0, Xamarin.Forms.Application.Current.MainPage.Width, 0);
                 }
 
-                (Element as SystemKeyboard.KeyboardEntry)?.OnOnscreenSizeChanged(new Size(rect.Width, rect.Height));
+                (Element as KeyboardEntry)?.OnOnscreenSizeChanged(new Size(rect.Width, rect.Height));
             });
         }
 
@@ -58,7 +59,7 @@ namespace Calculator.iOS
             Control.ShouldEndEditing = (sender) =>
             {
                 //Print.Log("should end editing", Hidden, HiddenBySystem);
-                return Element is SystemKeyboard.KeyboardEntry keyboard && (!keyboard.Showing || HiddenBySystem);
+                return Element is KeyboardEntry keyboard && (!keyboard.Showing || HiddenBySystem);
             };
         }
 
@@ -71,15 +72,17 @@ namespace Calculator.iOS
         };
 
         [Export("LeftArrow")]
-        private void LeftArrow() => KeyboardManager.MoveCursor(KeyboardManager.CursorKey.Left);
+        private void LeftArrow() => MoveCursor(MathFieldViewModel.CursorKey.Left);
 
         [Export("RightArrow")]
-        private void RightArrow() => KeyboardManager.MoveCursor(KeyboardManager.CursorKey.Right);
+        private void RightArrow() => MoveCursor(MathFieldViewModel.CursorKey.Right);
 
         [Export("UpArrow")]
-        private void UpArrow() => KeyboardManager.MoveCursor(KeyboardManager.CursorKey.Up);
+        private void UpArrow() => MoveCursor(MathFieldViewModel.CursorKey.Up);
 
         [Export("DownArrow")]
-        private void DownArrow() => KeyboardManager.MoveCursor(KeyboardManager.CursorKey.Down);
+        private void DownArrow() => MoveCursor(MathFieldViewModel.CursorKey.Down);
+
+        private void MoveCursor(MathFieldViewModel.CursorKey key) => (Element as KeyboardEntry)?.ViewModel.MoveCursorCommand?.Execute(key);
     }
 }

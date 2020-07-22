@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.Extensions;
-using Java.Util;
 using Xamarin.Forms;
 using Xamarin.Forms.MathDisplay;
 
@@ -133,7 +130,6 @@ namespace Calculator
     public class MathElementTemplateSelector : DataTemplateSelector
     {
         public DataTemplate TextTemplate { get; set; }
-
         public DataTemplate FractionTemplate { get; set; }
 
         protected override DataTemplate OnSelectTemplate(object item, BindableObject container)

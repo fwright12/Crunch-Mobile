@@ -240,7 +240,7 @@ namespace Calculator
                 OnscreenKeyboardSizeChanged();
                 //SetCanvasSafeArea();
             };
-            
+
             SoftKeyboardManager.SizeChanged += (sender, e) =>
             {
                 OnscreenKeyboardSizeChanged();
@@ -274,8 +274,8 @@ namespace Calculator
 
                 Func<Thickness, Thickness> LeftRightPadding = value => new Thickness(value.Left, 0, value.Right, 0);
                 Func<Thickness, Thickness> LeftRightBottomPadding = value => new Thickness(value.Left, 0, value.Right, value.Bottom);
-
-                FunctionsDrawer.FunctionsList.EditingToolbar.SetBinding<Thickness, Thickness>(Xamarin.Forms.Layout.PaddingProperty, this, "SafeAreaInsets", sender == CrunchSystemKeyboard.Instance ? LeftRightPadding : LeftRightBottomPadding);
+                
+FunctionsDrawer.FunctionsList.EditingToolbar.SetBinding<Thickness, Thickness>(Xamarin.Forms.Layout.PaddingProperty, this, "SafeAreaInsets", sender == CrunchSystemKeyboard.Instance ? LeftRightPadding : LeftRightBottomPadding);
 
                 UpdateState();
             };
@@ -311,10 +311,10 @@ namespace Calculator
             });
 
             //Set up for keyboards
-            KeyboardContext.Focused = new MathFieldLayout().BindingContext as MathFieldViewModel;
+            FocusedMathField = new MathFieldLayout();
             //Canvas.Children.Add(FocusedMathField, new Point(100, 100));
+            OnPropertyChanged(nameof(FocusedMathField));
 
-            Screen.Children.Add(new KeyboardEntry { BindingContext = CrunchKeyboard.BindingContext }, new Point(-1000, -1000));
             new CrunchSystemKeyboard();
             CrunchSystemKeyboard.Instance.Variables = CrunchKeyboard.Variables;
             WireUpKeyboard(CrunchKeyboard);
@@ -346,7 +346,7 @@ namespace Calculator
             FixDynamicLag("");
         }
 
-        public KeyboardContext<MathFieldViewModel> KeyboardContext { get; } = new KeyboardContext<MathFieldViewModel>();
+        public MathFieldLayout FocusedMathField { get; }
 
         private void UpdateState(bool? animated = null)
         {
@@ -429,12 +429,12 @@ namespace Calculator
                     AbsoluteLayoutExtensions.SetLayout(FullKeyboardView, y: 1, flags: AbsoluteLayoutFlags.PositionProportional);
                 }));
             }
-
+            
             if (newState == BASIC_MODE)
             {
                 CanvasArea.Children.Insert(CanvasArea.Children.IndexOf(CanvasScroll) + 1, BasicAnswer);
 
-                BasicCalcViewModel calcViewModel = (BasicCalcViewModel)CrunchKeyboard.GetValue(BindingContextProperty, BASIC_MODE);
+                BasicCalcViewModel calcViewModel = (BasicCalcViewModel)Resources["BasicCalculator"];
                 calcViewModel.Clear();
 
                 if (SoftKeyboard.Cursor.Parent<Equation>() is Equation parentEquation && parentEquation.RHS is Answer answerView)
@@ -443,7 +443,7 @@ namespace Calculator
 
                     if (!(parentEquation.LHS.Children.Count == 1 && parentEquation.LHS.Children[0] == SoftKeyboard.Cursor))
                     {
-                        (calcViewModel.Calculator as CrunchCalculator).Keyboard = null;
+                        (calcViewModel.Calculator as CrunchCalculator).Interface = null;
                         foreach (char keystroke in (answerText ?? "1/0") + "+0")
                         {
                             if (Crunch.Machine.StringClassification.IsNumber(keystroke.ToString()))
@@ -456,11 +456,12 @@ namespace Calculator
                             }
                         }
                         calcViewModel.EnterCommand?.Execute(null);
-                        (calcViewModel.Calculator as CrunchCalculator).Keyboard = KeyboardContext;
 
                         parentEquation.LHS.End();
                     }
                 }
+
+                (calcViewModel.Calculator as CrunchCalculator).Interface = this;
 
                 if (animation != null)
                 {
@@ -588,7 +589,7 @@ namespace Calculator
             }
 
             AbsoluteLayoutExtensions.SetLayout(FullKeyboardView, new Size(width, displayMode == Display.CondensedLandscape ? height : -1));
-            FunctionsDrawer.FunctionsList.Margin = new Thickness(0, 0, 0, SoftKeyboardManager.Current == CrunchSystemKeyboard.Instance ? SystemKeyboard.Instance.Size.Height : 0);
+            FunctionsDrawer.FunctionsList.Margin = new Thickness(0, 0, 0, SoftKeyboardManager.Current == CrunchSystemKeyboard.Instance ? KeyboardEntry.Instance.Size.Height : 0);
             
             DisplayMode = displayMode;
         }
@@ -601,7 +602,7 @@ namespace Calculator
             {
                 // Long press DEL to clear the canvas
                 //if (text == KeyboardManager.BACKSPACE.ToString())
-                if (key.Text != "DEL")
+                if (key.Text == "DEL")
                 {
                     key.LongClick += async (sender, e) =>
                     {
@@ -618,7 +619,7 @@ namespace Calculator
                 }
                 // Long press on any other key triggers cursor mode
                 //else if (!(key is CursorKey))
-                else if (!(key.CommandParameter is KeyboardManager.CursorKey))
+                else if (!(key.CommandParameter is MathFieldViewModel.CursorKey))
                 {
                     key.LongClick += (sender, e) =>
                     {

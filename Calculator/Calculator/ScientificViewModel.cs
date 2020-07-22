@@ -13,6 +13,8 @@ namespace Calculator
 {
     public class MathFieldViewModel : BindableObject
     {
+        public enum CursorKey { Left, Right, Up, Down, End, Home };
+
         public static readonly BindableProperty TextProperty = BindableProperty.Create(nameof(Text), typeof(string), typeof(MathFieldViewModel), string.Empty, propertyChanged: TextPropertyChanged);
 
         public string Text
@@ -41,6 +43,12 @@ namespace Calculator
 
             InputCommand = new Command<string>(value =>
             {
+                MainPage page = SoftKeyboard.Cursor.Parent<MainPage>();
+                if (page == null)
+                {
+                    App.Current.Home.AddCalculation();
+                }
+
                 SoftKeyboard.Type(value);
             });
 
@@ -49,28 +57,28 @@ namespace Calculator
                 SoftKeyboard.Delete();
             });
 
-            MoveCursorCommand = new Command<KeyboardManager.CursorKey>(value =>
+            MoveCursorCommand = new Command<CursorKey>(value =>
             {
-                if (value == KeyboardManager.CursorKey.Up)
+                if (value == CursorKey.Up)
                 {
                     if (!SoftKeyboard.Up())
                     {
                         SoftKeyboard.Cursor.Parent<Calculation>()?.Up();
                     }
                 }
-                else if (value == KeyboardManager.CursorKey.Down)
+                else if (value == CursorKey.Down)
                 {
                     if (!SoftKeyboard.Down())
                     {
                         SoftKeyboard.Cursor.Parent<Calculation>()?.Down();
                     }
                 }
-                else if (value == KeyboardManager.CursorKey.Right)
+                else if (value == CursorKey.Right)
                 {
                     SoftKeyboard.Right();
                     //MathField.CursorPosition++;
                 }
-                else if (value == KeyboardManager.CursorKey.Left)
+                else if (value == CursorKey.Left)
                 {
                     SoftKeyboard.Left();
                     //MathField.CursorPosition--;
@@ -186,73 +194,116 @@ namespace Calculator
             MoveCursorCommand = new Command(value => MathField?.MoveCursorCommand?.Execute(value));
         }
     }*/
-    
-    public class KeyboardContext<T>
-    {
-        public T Focused { get; set; }
-    }
 
-    public class CrunchCalculator : ICalculator
+
+    public class CrunchCalculator : BasicCalcViewModel, ICalculator
     {
+        public MainPage Interface { get; set; }
+        public ICommand NewCommand { get; protected set; }
+
         private readonly ICalculator ScientificCalculator = new ScientificCalculator();
+
+        private MathFieldViewModel MathField => Interface?.FocusedMathField.BindingContext as MathFieldViewModel;
+        private Equation MathEntry => SoftKeyboard.Cursor.Parent<Equation>();
         private string LastOperation;
 
-        public KeyboardContext<MathFieldViewModel> Keyboard { get; set; }
-
-        public string Compute(string operand1, string operation, string operand2)
+        public CrunchCalculator() : base()
         {
-            if (Keyboard == null)
+            Calculator = this;
+
+            ICommand baseClearCommand = ClearCommand;
+            ClearCommand = new Command(value =>
             {
-                return ScientificCalculator.Compute(operand1, operation, operand2);
-            }
+                baseClearCommand?.Execute(value);
 
-            Equation parentEquation = SoftKeyboard.Cursor.Parent<Equation>();
-            Answer answer = parentEquation?.RHS as Answer;
-            Operand op1 = Crunch.Math.Evaluate(operand1);
-            bool negatedAnswer = answer?.RawAnswer == null || operand1 == null ? false : op1.IsNegative ^ answer.RawAnswer.IsNegative;
+                Expression root = MathEntry?.LHS;
 
-            //if (LastOperation == default)
-            if (!negatedAnswer && answer?.RawAnswer?.Equals(op1) != true)
-            {
-                Keyboard.Focused?.MoveCursorCommand?.Execute(KeyboardManager.CursorKey.Down);
-
-                if (SoftKeyboard.Cursor.Parent<Equation>().LHS is Expression current)
+                if (root != null)
                 {
-                    //current.Children.Clear();
-                    SoftKeyboard.MoveCursor(current);
-                    while (current.Children.Count > 1)
+                    SoftKeyboard.MoveCursor(root);
+                    while (root.Children.Count > 1)
                     {
-                        current.Children.RemoveAt(1);
+                        root.Children.RemoveAt(1);
                     }
                 }
 
-                //LastOperation = default;
+                LastOperation = default;
+            });
 
-                Input(operand1);
-            }
-            else if (negatedAnswer || ((LastOperation == "+" || LastOperation == "-") && (operation == "*" || operation == "/")))
+            NewCommand = new Command(() =>
             {
-                Expression current = SoftKeyboard.Cursor.Parent<Equation>().LHS;
-                SoftKeyboard.MoveCursor(current);
-                if (negatedAnswer)
-                {
-                    Input("-");
-                }
-                Input("(");
-                SoftKeyboard.MoveCursor(current, current.Children.Count - 1);
-                Input(")");
-            }
+                baseClearCommand?.Execute(null);
+                MathField?.MoveCursorCommand?.Execute(MathFieldViewModel.CursorKey.Down);
+            });
+        }
 
-            Input(operation);
-            Input(operand2);
-            parentEquation.LHS.End();
+        public string Compute(string operand1, string operation, string operand2)
+        {
+            string result;
+
+            if (Interface?.CurrentState().Name != MainPage.BASIC_MODE)
+            {
+                result = ScientificCalculator.Compute(operand1, operation, operand2);
+            }
+            else
+            {
+                Equation parentEquation = MathEntry;
+                Answer answer = parentEquation?.RHS as Answer;
+
+                bool negatedAnswer = false;
+                bool sameAnswer = operand1 == null && answer?.RawAnswer == null;
+                if (operand1 != null && answer?.RawAnswer != null)
+                {
+                    Operand ans = Format(answer.RawAnswer);
+                    Operand op1 = Format(Crunch.Math.Evaluate(operand1));
+                    bool Compare(Operand a, Operand b) => a.ToString() == b.ToString();
+
+                    sameAnswer = Compare(ans, op1);
+
+                    if (!sameAnswer && (op1.IsNegative ^ ans.IsNegative))
+                    {
+                        op1 = Format(Crunch.Math.Evaluate("(" + operand1 + ")*-1"));
+                        negatedAnswer = sameAnswer = Compare(ans, op1);
+                    }
+                }
+                
+                //if (LastOperation == default)
+                if (!sameAnswer)
+                //if (Answer?.RawAnswer == null)
+                {
+                    NewCommand?.Execute(null);
+                    Input(operand1 ?? string.Empty);
+                }
+                else if (negatedAnswer || ((LastOperation == "+" || LastOperation == "-") && (operation == "*" || operation == "/")))
+                {
+                    SoftKeyboard.MoveCursor(parentEquation.LHS);
+                    if (negatedAnswer)
+                    {
+                        Input("-");
+                    }
+                    Input("(");
+                    parentEquation.LHS.End();
+                    Input(")");
+                }
+
+                Input(operation);
+                Input(operand2);
+
+                parentEquation = MathEntry;
+                answer = parentEquation?.RHS as Answer;
+                parentEquation.LHS.End();
+
+                result = Format(answer == null ? Crunch.Math.Evaluate("0") : answer.RawAnswer)?.ToString();
+            }
 
             LastOperation = operation;
 
-            return (answer == null ? Crunch.Math.Evaluate("0") : answer.RawAnswer)?.Format(Polynomials.Expanded, Numbers.Decimal, Trigonometry.Degrees)?.ToString();
+            return result;
         }
 
-        private void Input(string input) => Keyboard.Focused?.InputCommand?.Execute(input);
+        public Operand Format(Operand operand) => operand?.Format(Polynomials.Expanded, Numbers.Decimal, Trigonometry.Degrees);
+
+        private void Input(string input) => MathField?.InputCommand?.Execute(input);
     }
 
     public class ScientificCalculator : ICalculator

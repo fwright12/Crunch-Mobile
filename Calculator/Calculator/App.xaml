@@ -64,12 +64,6 @@
                     Value="{DynamicResource DetailColor}" />
         </Style>
 
-        <Style TargetType="MathDisplay:MathLayout"
-               ApplyToDerivedTypes="True">
-            <Setter Property="TextColor"
-                    Value="{DynamicResource DetailColor}" />
-        </Style>
-
         <Style TargetType="CheckBox">
             <Setter Property="Color"
                     Value="{DynamicResource ControlColor}" />

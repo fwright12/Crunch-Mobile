@@ -11,7 +11,7 @@ namespace Calculator
         public static CrunchSystemKeyboard Instance;// = new CrunchSystemKeyboard();
 
         public event EventHandler OnscreenSizeChanged;
-        public event KeystrokeEventHandler Typed;
+        //public event KeystrokeEventHandler Typed;
 
         public VisualElement Variables
         {
@@ -49,13 +49,13 @@ namespace Calculator
                 return;
             }
             Instance = this;
-            SystemKeyboard.Instance.Typed += (sender) => Typed?.Invoke(sender);
-            SystemKeyboard.Instance.OnscreenSizeChanged += (sender, e) => OnOnscreenSizeChanged();
+            //SystemKeyboard.Instance.Typed += (sender) => Typed?.Invoke(sender);
+            KeyboardEntry.Instance.OnscreenSizeChanged += (sender, e) => OnOnscreenSizeChanged();
         }
 
-        public void Disable(bool animated = false) => SystemKeyboard.Instance.Disable(animated);
+        public void Disable(bool animated = false) => KeyboardEntry.Instance.Disable(animated);
 
-        public void Enable(bool animated = false) => SystemKeyboard.Instance.Enable(animated);
+        public void Enable(bool animated = false) => KeyboardEntry.Instance.Enable(animated);
 
         protected void OnOnscreenSizeChanged(Size onscreenSize)
         {
@@ -63,6 +63,6 @@ namespace Calculator
             OnscreenSizeChanged?.Invoke(this, new EventArgs());
         }
 
-        private void OnOnscreenSizeChanged() => OnOnscreenSizeChanged(new Size(SystemKeyboard.Instance.Size.Width, SystemKeyboard.Instance.Size.Height + VariablesHeight));
+        private void OnOnscreenSizeChanged() => OnOnscreenSizeChanged(new Size(KeyboardEntry.Instance.Size.Width, KeyboardEntry.Instance.Size.Height + VariablesHeight));
     }
 }

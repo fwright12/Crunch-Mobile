@@ -127,15 +127,7 @@ namespace Calculator
             Value = value;
             Value.FormChanged += Update;
 
-            Print.Log(";lkjasd;lkf", Value.BetterToString());
             Update(Value.BetterToString());
-            
-            TapGestureRecognizer tgr = new TapGestureRecognizer();
-            tgr.Tapped += (sender, e) =>
-            {
-                OnTap();
-            };
-            GestureRecognizers.Add(tgr);
         }
 
         /*public void StartDraggingLinkOn(Layout<View> dropArea)
@@ -272,12 +264,15 @@ namespace Calculator
 
         protected void Update(string text)
         {
+            MathContent?.GestureRecognizers.Clear();
             MathContent = new Expression(Reader.Render(text));
 
-            MathContent.Tapped += (point) =>
+            TapGestureRecognizer tgr = new TapGestureRecognizer();
+            tgr.Tapped += (sender, e) =>
             {
                 OnTap();
             };
+            MathContent.GestureRecognizers.Add(tgr);
 
             /*MathContent.Touch += (sender, e) =>
             {

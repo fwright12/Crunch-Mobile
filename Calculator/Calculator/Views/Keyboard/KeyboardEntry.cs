@@ -9,14 +9,9 @@ using Xamarin.Forms.MathDisplay;
 
 namespace Calculator
 {
-    public static class SystemKeyboard
-    {
-        public static ISoftKeyboard Instance => KeyboardEntry.Instance;
-    }
-
     public class KeyboardEntry : Entry, ISoftKeyboard
     {
-        public event KeystrokeEventHandler Typed;
+        //public event KeystrokeEventHandler Typed;
         public event EventHandler OnscreenSizeChanged;
         public Size Size { get; private set; }
 
@@ -37,7 +32,6 @@ namespace Calculator
                 {
                     return;
                 }
-
 
                 if (Text.Length < 2)
                 {

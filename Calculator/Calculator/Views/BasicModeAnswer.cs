@@ -55,12 +55,12 @@ namespace Calculator
             set => SetValue(TextProperty, value);
         }
 
-        public ICommand DigitCommand { get; set; }
-        public ICommand OperationCommand { get; set; }
-        public ICommand BackspaceCommand { get; set; }
-        public ICommand EnterCommand { get; set; }
-        public ICommand ClearCommand { get; private set; }
-        public ICommand PlusMinusCommand { get; private set; }
+        public ICommand DigitCommand { get; protected set; }
+        public ICommand OperationCommand { get; protected set; }
+        public ICommand BackspaceCommand { get; protected set; }
+        public ICommand EnterCommand { get; protected set; }
+        public ICommand ClearCommand { get; protected set; }
+        public ICommand PlusMinusCommand { get; protected set; }
 
         private readonly char NEGATIVE = '-';
 
@@ -151,7 +151,7 @@ namespace Calculator
                     //Input(operand);
                 }
 
-                Answer = Operation == default ? Operand : (Calculator ?? (Calculator = new BasicCalculator())).Compute(Answer, Operation.ToString(), Operand);
+                Answer = Operation == default ? Operand : (Calculator ?? (ICalculator)CalculatorProperty.DefaultValue).Compute(Answer, Operation.ToString(), Operand);
                 Operand = "";
             }
 
