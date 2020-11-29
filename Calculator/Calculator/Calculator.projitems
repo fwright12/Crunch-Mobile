@@ -19,7 +19,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)DrawerView.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)MathViewModels.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Pages\AboutPage.xaml.cs">
       <DependentUpon>AboutPage.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -42,7 +41,7 @@
       <SubType>Code</SubType>
       <DependentUpon>LightTheme.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Views\BasicModeAnswer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\BasicCalcViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\Keyboard\CrunchKeyboard.xaml.cs">
       <DependentUpon>CrunchKeyboard.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -77,6 +76,7 @@
     <Content Include="$(MSBuildThisFileDirectory)desmos.html" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)ViewModels\" />
     <Folder Include="$(MSBuildThisFileDirectory)Views\Math\" />
   </ItemGroup>
   <ItemGroup>

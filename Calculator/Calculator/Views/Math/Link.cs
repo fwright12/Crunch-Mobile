@@ -256,16 +256,16 @@ namespace Calculator
             ParentEquation = this.Parent<Equation>();
         }
 
-        protected void Update(object sender, ChangedEventArgs<Expression> e)
+        protected void Update(object sender, TextChangedEventArgs e)
         {
-            Update(e.NewValue.ToString());
+            Update(e.NewTextValue);
             //ParentEquation?.Update();
         }
 
         protected void Update(string text)
         {
             MathContent?.GestureRecognizers.Clear();
-            MathContent = new Expression(Reader.Render(text));
+            MathContent = new Expression { Text = text };
 
             TapGestureRecognizer tgr = new TapGestureRecognizer();
             tgr.Tapped += (sender, e) =>

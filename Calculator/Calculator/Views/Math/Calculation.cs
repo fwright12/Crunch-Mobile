@@ -51,7 +51,7 @@ namespace Calculator
             Spacing = 0;
             Variables = new Dictionary<char, Operand>();
 
-            this.WhenDescendantAdded<Equation>(equation1 =>
+            /*this.WhenDescendantAdded<Equation>(equation1 =>
             {
                 equation1.DescendantRemoved += (sender, e) =>
                 {
@@ -60,7 +60,7 @@ namespace Calculator
                         equation.Remove();
                     }
                 };
-            });
+            });*/
             //CursorPositions = new List<Tuple<Expression, int>>();
 
             //Children.Add(Main = main);

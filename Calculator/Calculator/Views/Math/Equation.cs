@@ -96,7 +96,7 @@ namespace Calculator
 
         private List<Equation> Dependencies;
 
-        public VariableAssignment(char name) : base(new Expression(MathDisplay.Reader.Render(name.ToString())), new Equation(new Expression()))
+        public VariableAssignment(char name) : base(new MathEntry { Text = name.ToString() }, new Equation(new MathEntry()))
         {
             Name = name;
             Value = RHS as Equation;
@@ -153,11 +153,11 @@ namespace Calculator
         public event EventHandler<ChangedEventArgs<Operand>> AnswerChanged;
 
         public Expression LHS { get; protected set; }
-        public MathLayout RHS { get; protected set; }
+        public View RHS { get; protected set; }
         public Tuple<Expression, int> LastCursor { get; private set; }
 
         public override Expression InputContinuation => LHS;
-        public override double MinimumHeight => System.Math.Max(LHS.MinimumHeight, RHS.MinimumHeight);
+        public override double MinimumHeight => System.Math.Max(LHS.MinimumHeight, (RHS as Answer)?.Expression?.MinimumHeight ?? 0);
 
         static Equation()
         {
@@ -174,13 +174,13 @@ namespace Calculator
             };
         }
 
-        public Equation() : this(new Expression()) { }
+        public Equation() : this(new MathEntry()) { }
 
-        public Equation(string lhs) : this(new Expression(MathDisplay.Reader.Render(lhs))) { }
+        public Equation(string lhs) : this(new MathEntry { Text = lhs }) { }
 
-        public Equation(Expression lhs) : this(lhs, new Answer())
+        public Equation(MathEntry lhs) : this(lhs, new Answer())
         {
-            LHS.Editable = true;
+            //LHS.Editable = true;
 
             LHS.DescendantAdded += Update;
             LHS.DescendantRemoved += Update;
@@ -188,20 +188,20 @@ namespace Calculator
             //LHS.InputChanged += () => Update();
         }
 
-        public Equation(string lhs, string rhs) : this(new Expression(MathDisplay.Reader.Render(lhs)), new Expression(MathDisplay.Reader.Render(rhs))) { }
+        public Equation(string lhs, string rhs) : this(new MathEntry { Text = lhs }, new Expression { Text = rhs }) { }
 
-        public Equation(Expression lhs, MathLayout rhs) //: this()
+        public Equation(MathEntry lhs, View rhs) //: this()
         {
             Orientation = StackOrientation.Horizontal;
             Spacing = 0;
             VerticalOptions = LayoutOptions.Center;
-            LHS = lhs;
+            LHS = lhs.Expression;
             RHS = rhs;
 
             //LHS = lhs;// text == "" ? new Expression() : new Expression(Xamarin.Forms.MathDisplay.Reader.Render(text));
             Text equals = new Text(" = ") { FontSize = Text.MaxFontSize };
 
-            Children.Add(LHS, equals, RHS);
+            Children.Add(lhs, equals, RHS);
 
             //Changed += (newAnswer, oldAnswer) => CheckAnswerNecessary();
             AnswerChanged += (o, n) => CheckAnswerNecessary();

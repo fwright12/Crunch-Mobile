@@ -119,16 +119,6 @@ namespace Calculator
                             Math.Floor(33 * Math.Max(button.Height, button.Width) / 75);
                     };
                 }
-                /*if (e.Element is CursorKey cursorKey)
-                {
-                    cursorKey.Clicked += (sender1, e1) => KeyboardManager.MoveCursor(cursorKey.Key);
-                }*/
-                //this.WhenExactDescendantAdded<Key>((key) =>
-                /*else if (e.Element is Key key)
-                {
-                    key.Clicked += (sender1, e1) => Typed?.Invoke(key.Output);
-                }*/
-                //this.WhenExactDescendantAdded<CursorKey>((cursorKey) =>
             }
 
             DescendantAdded += InitialButtonSetup;
@@ -137,16 +127,6 @@ namespace Calculator
             ColumnSpacing = 2;
 
             InitializeComponent();
-
-            /*Keys = new View[][]
-            {
-                //new Key[] { null,  null,    null,   null,   null,   null,   null },
-                new Key[] { "sin",  TEN,    EXP,    "7",    "8",    "9",    DIV },
-                new Key[] { "cos",  LOG,    SQRD,   "4",    "5",    "6",    MULT },
-                new Key[] { "tan",  "ln",   SQRT,    "1",    "2",    "3",    "-" },
-                new List<View>(new Key[] { PI,     "e",    "x",    "0",    ".",    "()",   "+" }).ToArray()
-            };
-            Keys[3][5] = parentheses;*/
 
             // Rotate the arrow text for the up and down keys
             foreach (LabelButton labelButton in ArrowKeys.Children.OfType<LabelButton>())
@@ -176,8 +156,6 @@ namespace Calculator
 
                         (VariableLayout.Parent as ScrollView)?.ScrollToAsync(VariableLayout, ScrollToPosition.Start, true);
                     }
-
-                    //KeyboardManager.Type(c.ToString());
                 };
 
                 button.SetBinding(WidthRequestProperty, NextKeyboardButton, nameof(Width));
@@ -187,77 +165,6 @@ namespace Calculator
                 VariableLayout.Children.Add(button);
 #endif
             }
-
-            /*for (int i = 0; i < Keypad.Children.Count; i++)
-            {
-                View view = Keypad.Children[i];
-                int col = i % Keypad.ColumnDefinitions.Count;
-                int row = i / Keypad.ColumnDefinitions.Count;
-
-                GridExtensions.SetPos(view, col, row);
-
-                if (view is Button button)
-                {
-                    if (col == Keypad.ColumnDefinitions.Count - 1)
-                    {
-                        //button.BorderColor = Color.DarkOrange;
-                    }
-                    else
-                    {
-                        //button.SetDynamicResource(Button.BorderColorProperty, "PrimaryKeyboardKeyColor");
-                    }
-                    //button.BorderColor = j == Keys[i].Length - 1 ? Color.DarkOrange : Color.Black;// Color.FromHex("#C4C3D0");
-                }
-            }*/
-
-            /*for (int i = 0; i < Keys.Length; i++)
-            {
-                Keypad.RowDefinitions.Add(new RowDefinition());
-            }
-            for (int i = 0; i < Keys[0].Length; i++)
-            {
-                Keypad.ColumnDefinitions.Add(new ColumnDefinition());
-            }*/
-
-            /*for (int i = 0; i < Keys.Length; i++)
-            {
-                for (int j = 0; j < Keys[i].Length; j++)
-                {
-                    View view = Keys[i][j];
-
-                    if (view == null)
-                    {
-                        continue;
-                    }
-
-                    /*if (Keys[i][j].Text == "()")
-                    {
-                        
-                    }
-                    else
-                    {
-                        if (Keys[i].Length - j > MIN_COLUMNS)
-                        {
-                            //Keys[i][j].Clicked += (sender, e) => Scroll.ScrollToAsync(Keypad, ScrollToPosition.End, false);
-                        }
-                    }
-
-                    if (view is Button button)
-                    {
-                        if (j == Keys[i].Length - 1)
-                        {
-                            button.BorderColor = Color.DarkOrange;
-                        }
-                        else
-                        {
-                            button.SetDynamicResource(Button.BorderColorProperty, "PrimaryKeyboardKeyColor");
-                        }
-                        //button.BorderColor = j == Keys[i].Length - 1 ? Color.DarkOrange : Color.Black;// Color.FromHex("#C4C3D0");
-                    }
-
-                    Keypad.Children.Add(view, j, i);
-                }
-            }*/
 
             this.AddContinuousTouchListener<TouchEventArgs>(Gesture.Pinch, (sender, e) =>
             {
@@ -302,6 +209,7 @@ namespace Calculator
         public void NextKeyboardButtonClicked(object sender, EventArgs e)
         {
             SoftKeyboardManager.NextKeyboard();
+            this.Parent<MainPage>().FocusedMathField.Test();
         }
 
         public void DismissButtonClicked(object sender, EventArgs e)

@@ -81,19 +81,19 @@ namespace Calculator.Droid
 
             if (keyCode == Keycode.DpadUp)
             {
-                view.ViewModel.MoveCursorCommand?.Execute(MathFieldViewModel.CursorKey.Up);
+                view.ViewModel.MoveCursorCommand?.Execute(Xamarin.Forms.MathDisplay.MathEntryViewModel.CursorKey.Up);
             }
             else if (keyCode == Keycode.DpadDown)
             {
-                view.ViewModel.MoveCursorCommand?.Execute(MathFieldViewModel.CursorKey.Down);
+                view.ViewModel.MoveCursorCommand?.Execute(Xamarin.Forms.MathDisplay.MathEntryViewModel.CursorKey.Down);
             }
             else if (keyCode == Keycode.DpadLeft)
             {
-                view.ViewModel.MoveCursorCommand?.Execute(MathFieldViewModel.CursorKey.Left);
+                view.ViewModel.MoveCursorCommand?.Execute(Xamarin.Forms.MathDisplay.MathEntryViewModel.CursorKey.Left);
             }
             else if (keyCode == Keycode.DpadRight)
             {
-                view.ViewModel.MoveCursorCommand?.Execute(MathFieldViewModel.CursorKey.Right);
+                view.ViewModel.MoveCursorCommand?.Execute(Xamarin.Forms.MathDisplay.MathEntryViewModel.CursorKey.Right);
             }
 
             return base.OnKeyDown(keyCode, e);

@@ -90,7 +90,7 @@
           "buildTransitive/Xamarin.Firebase.iOS.Core.targets": {}
         }
       },
-      "Xamarin.Forms/4.7.0.1080": {
+      "Xamarin.Forms/4.7.0.1142": {
         "type": "package",
         "compile": {
           "lib/Xamarin.iOS10/Xamarin.Forms.Core.dll": {},
@@ -381,7 +381,7 @@
           "buildTransitive/Xamarin.Firebase.iOS.Core.targets": {}
         }
       },
-      "Xamarin.Forms/4.7.0.1080": {
+      "Xamarin.Forms/4.7.0.1142": {
         "type": "package",
         "compile": {
           "lib/Xamarin.iOS10/Xamarin.Forms.Core.dll": {},
@@ -672,7 +672,7 @@
           "buildTransitive/Xamarin.Firebase.iOS.Core.targets": {}
         }
       },
-      "Xamarin.Forms/4.7.0.1080": {
+      "Xamarin.Forms/4.7.0.1142": {
         "type": "package",
         "compile": {
           "lib/Xamarin.iOS10/Xamarin.Forms.Core.dll": {},
@@ -963,7 +963,7 @@
           "buildTransitive/Xamarin.Firebase.iOS.Core.targets": {}
         }
       },
-      "Xamarin.Forms/4.7.0.1080": {
+      "Xamarin.Forms/4.7.0.1142": {
         "type": "package",
         "compile": {
           "lib/Xamarin.iOS10/Xamarin.Forms.Core.dll": {},
@@ -1444,10 +1444,10 @@
         "xamarin.firebase.ios.core.nuspec"
       ]
     },
-    "Xamarin.Forms/4.7.0.1080": {
-      "sha512": "YN04zJoVBBKdhYnIK1lwZJTGCFrHJ+bUfqQK4aKy8oDjthh5JlNcjetUS+eV+JK9XcmYpS2SxpmDxFFXxSfONQ==",
+    "Xamarin.Forms/4.7.0.1142": {
+      "sha512": "P/o+VzmgeoFJZ2WoRiar/w0RmkR9WvwAEx6j891Bf31psPjSYjfTI8tGLczFa8LDqdv63pGQNH4hnBoxJjivzg==",
       "type": "package",
-      "path": "xamarin.forms/4.7.0.1080",
+      "path": "xamarin.forms/4.7.0.1142",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -1754,7 +1754,7 @@
         "lib/uap10.0.16299/Xamarin.Forms.Xaml.dll",
         "lib/uap10.0.16299/Xamarin.Forms.Xaml.pdb",
         "lib/uap10.0.16299/Xamarin.Forms.Xaml.xml",
-        "xamarin.forms.4.7.0.1080.nupkg.sha512",
+        "xamarin.forms.4.7.0.1142.nupkg.sha512",
         "xamarin.forms.nuspec"
       ]
     },
@@ -1810,7 +1810,7 @@
       "Xamarin.Essentials >= 1.5.3.2",
       "Xamarin.FFImageLoading >= 2.4.11.982",
       "Xamarin.FFImageLoading.Forms >= 2.4.11.982",
-      "Xamarin.Forms >= 4.7.0.1080",
+      "Xamarin.Forms >= 4.7.0.1142",
       "Xamarin.Forms.Extensions >= 1.0.0",
       "Xamarin.Forms.MathDisplay >= 1.0.0",
       "Xamarin.Google.iOS.MobileAds >= 7.47.0.1"
@@ -1888,7 +1888,7 @@
           },
           "Xamarin.Forms": {
             "target": "Package",
-            "version": "[4.7.0.1080, )"
+            "version": "[4.7.0.1142, )"
           },
           "Xamarin.Google.iOS.MobileAds": {
             "target": "Package",

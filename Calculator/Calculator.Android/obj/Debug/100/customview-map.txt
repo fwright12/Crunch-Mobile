@@ -21,7 +21,6 @@ com.google.android.material.tabs.TabLayout;C:\Users\Flint\Documents\Calculator S
 com.google.android.material.tabs.TabLayout;C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\100\lp\47\jl\res\layout\rootlayout.xml
 com.google.android.material.tabs.TabLayout;C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\100\lp\47\jl\res\layout\tabbar.xml
 com.google.android.material.tabs.TabLayout;obj\Debug\100\res\layout\tabbar.xml
-crc64720bb2db43a66fe9.FormsViewPager;C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\100\lp\47\jl\res\layout\rootlayout.xml
 declare-styleable;C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\100\lp\47\jl\res\values\attrs.xml
 external-cache-path;C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\100\lp\46\jl\res\xml\xamarin_essentials_fileprovider_file_paths.xml
 external-path;C:\Users\Flint\Documents\Calculator Stuff\Calculator\Calculator\Calculator.Android\obj\Debug\100\lp\46\jl\res\xml\xamarin_essentials_fileprovider_file_paths.xml

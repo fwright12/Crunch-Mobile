@@ -113,7 +113,7 @@ namespace Calculator
             SoftKeyboard.MoveCursor(FunctionToAdd.LHS);
             if (existing != null)
             {
-                SoftKeyboard.Type(existing);
+                (this.Root<MainPage>().FocusedMathField.BindingContext as MathEntryViewModel).Type(existing);
             }
 
             ConfirmAdd.Text = existing == null ? "Add" : "Update";
@@ -468,8 +468,9 @@ namespace Calculator
                 return null;
             }
 
-            Expression expression = new Expression(Reader.Render(text))
+            Expression expression = new Expression
             {
+                Text = text,
                 FontSize = 33,
             };
 
@@ -531,7 +532,7 @@ namespace Calculator
             }
 
             Expression expression = (Expression)((StackLayout)sender).Children[0];
-            Expression copy = new Expression(Reader.Render(expression.ToString()));
+            Expression copy = new Expression { Text = expression.ToString() };
             Print.Log("dragging", expression, sender.GetHashCode());
             TouchScreen.BeginDrag(copy, this.Root<AbsoluteLayout>(), TouchScreen.LastTouch.Subtract(new Point (TouchScreen.Instance.Padding.Left + expression.Width / 2, TouchScreen.Instance.Padding.Top + expression.Height / 2)));//.Subtract(new Point(expression.Width / 2 + TouchScreen.Instance.Padding.Left, expression.Height / 2 + TouchScreen.Instance.Padding.Top)));
             ChangeStatus(true);
@@ -554,8 +555,8 @@ namespace Calculator
 
             Answer answer = SoftKeyboard.Cursor.Parent<Equation>().RHS as Answer;
             answer.NumberChoice = Crunch.Numbers.Exact;
-            SoftKeyboard.Type(function);
-            (this.Parent<MainPage>()?.FocusedMathField?.BindingContext as MathFieldViewModel)?.MoveCursorCommand?.Execute(MathFieldViewModel.CursorKey.Down);
+            (this.Root<MainPage>().FocusedMathField.BindingContext as MathEntryViewModel).Type(function);
+            (this.Parent<MainPage>()?.FocusedMathField?.BindingContext as MathEntryViewModel)?.MoveCursorCommand?.Execute(MathEntryViewModel.CursorKey.Down);
             //KeyboardManager.MoveCursor(KeyboardManager.CursorKey.Down);
         }
     }
