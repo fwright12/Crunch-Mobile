@@ -124,7 +124,7 @@
             },
             "Xamarin.Forms": {
               "target": "Package",
-              "version": "[4.7.0.1142, )"
+              "version": "[4.7.0.1080, )"
             },
             "Xamarin.Google.Android.Material": {
               "target": "Package",

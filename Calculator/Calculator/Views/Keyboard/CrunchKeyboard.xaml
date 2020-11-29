@@ -4,7 +4,6 @@
       xmlns:d="http://xamarin.com/schemas/2014/forms/design"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:ext="clr-namespace:Xamarin.Forms;assembly=Xamarin.Forms.Extensions"
-      xmlns:math="clr-namespace:Xamarin.Forms.MathDisplay;assembly=Xamarin.Forms.MathDisplay"
       xmlns:Calculator="clr-namespace:Calculator"
       xmlns:States="clr-namespace:Calculator.States"
       mc:Ignorable="d"
@@ -362,18 +361,18 @@
                                 Grid.ColumnSpan="2">
             <x:Arguments>
                 <Calculator:Key Text="〈"
-                                CommandParameter="{x:Static math:MathEntryViewModel+CursorKey.Up}" />
+                                CommandParameter="{x:Static Calculator:MathFieldViewModel+CursorKey.Up}" />
             </x:Arguments>
         </Calculator:LabelButton>
 
         <Calculator:Key Text="〈"
-                        CommandParameter="{x:Static math:MathEntryViewModel+CursorKey.Left}"
+                        CommandParameter="{x:Static Calculator:MathFieldViewModel+CursorKey.Left}"
                         Grid.Column="0"
                         Grid.Row="{States:MainPage Portrait=1, Landscape=0, Owner={x:Reference self}}"
                         Grid.RowSpan="2" />
 
         <Calculator:Key Text="〉"
-                        CommandParameter="{x:Static math:MathEntryViewModel+CursorKey.Right}"
+                        CommandParameter="{x:Static Calculator:MathFieldViewModel+CursorKey.Right}"
                         Grid.Column="{States:MainPage Portrait=1, Landscape=3, Owner={x:Reference self}}"
                         Grid.Row="{States:MainPage Portrait=1, Landscape=0, Owner={x:Reference self}}"
                         Grid.RowSpan="2" />
@@ -384,7 +383,7 @@
                                 Grid.ColumnSpan="2">
             <x:Arguments>
                 <Calculator:Key Text="〉"
-                                CommandParameter="{x:Static math:MathEntryViewModel+CursorKey.Down}" />
+                                CommandParameter="{x:Static Calculator:MathFieldViewModel+CursorKey.Down}" />
             </x:Arguments>
         </Calculator:LabelButton>
     </Grid>

@@ -7,7 +7,6 @@ using Xamarin.Forms.Xaml;
 using Xamarin.Forms.Extensions;
 using Xamarin.Forms.MathDisplay;
 using System.Collections.Generic;
-using System.Collections;
 
 namespace Calculator
 {
@@ -48,21 +47,6 @@ namespace Calculator
      * render (sinx)^2 as sin^2(x)
      * Look for uneccessary hashing
      */
-
-    public class CrunchTemplateSelector : MathTemplateSelector
-    {
-        public DataTemplate CursorTemplate { get; set; }
-        public DataTemplate LinkTemplate { get; set; }
-
-        protected override DataTemplate OnSelectTemplate(object item, BindableObject container)
-        {
-            if (item is CursorView)
-            {
-                return null;
-            }
-            return base.OnSelectTemplate(item, container);
-        }
-    }
 
     public delegate void FocusChangedEventHandler(Calculation oldFocus, Calculation newFocus);
 
@@ -159,6 +143,26 @@ namespace Calculator
             });
 
             BasicAnswer.Remove();
+
+            /*KeyboardManager.Typed += (keystroke) =>
+            {
+                if (BasicAnswer.Parent == null)
+                {
+                    return;
+                }
+                
+                BasicAnswer.Input(keystroke);
+            };*/
+
+            /*KeyboardManager.CursorMoved += (key) =>
+            {
+                if (BasicAnswer.Parent == null)
+                {
+                    return;
+                }
+
+                
+            };*/
             
             FunctionsDrawerSetup();
 
@@ -307,9 +311,10 @@ FunctionsDrawer.FunctionsList.EditingToolbar.SetBinding<Thickness, Thickness>(Xa
             });
 
             //Set up for keyboards
-            //FocusedMathField = new MathEntry();
+            FocusedMathField = new MathFieldLayout();
             //Canvas.Children.Add(FocusedMathField, new Point(100, 100));
-            
+            OnPropertyChanged(nameof(FocusedMathField));
+
             new CrunchSystemKeyboard();
             CrunchSystemKeyboard.Instance.Variables = CrunchKeyboard.Variables;
             WireUpKeyboard(CrunchKeyboard);
@@ -341,35 +346,7 @@ FunctionsDrawer.FunctionsList.EditingToolbar.SetBinding<Thickness, Thickness>(Xa
             FixDynamicLag("");
         }
 
-        public static readonly BindableProperty FocusedMathFieldProperty = BindableProperty.Create(nameof(FocusedMathField), typeof(MathEntry), typeof(MainPage), propertyChanged: FocusedMathFieldChanged);
-
-        public MathEntry FocusedMathField
-        {
-            get => (MathEntry)GetValue(FocusedMathFieldProperty);
-            set => SetValue(FocusedMathFieldProperty, value);
-        }
-
-        private static void FocusedMathFieldChanged(BindableObject bindable, object oldValue, object newValue)
-        {
-            if (oldValue is MathEntry mathEntry && mathEntry.IsEmpty())
-            {
-                Equation equation = mathEntry.Parent<Equation>();
-                Calculation calculation = equation?.Parent<Calculation>();
-
-                if (calculation != null && calculation.Children.Count == 1)
-                {
-                    calculation.Remove();
-                }
-                else if (equation != null)
-                {
-                    equation.Remove();
-                }
-                else
-                {
-                    mathEntry.Remove();
-                }
-            }
-        }
+        public MathFieldLayout FocusedMathField { get; }
 
         private void UpdateState(bool? animated = null)
         {
@@ -642,11 +619,11 @@ FunctionsDrawer.FunctionsList.EditingToolbar.SetBinding<Thickness, Thickness>(Xa
                 }
                 // Long press on any other key triggers cursor mode
                 //else if (!(key is CursorKey))
-                else if (!(key.CommandParameter is MathEntryViewModel.CursorKey))
+                else if (!(key.CommandParameter is MathFieldViewModel.CursorKey))
                 {
                     key.LongClick += (sender, e) =>
                     {
-                        if (BasicMode || FocusedMathField == null)// !SoftKeyboard.Cursor.IsDescendantOf(Canvas))
+                        if (BasicMode || !SoftKeyboard.Cursor.IsDescendantOf(Canvas))
                         {
                             return;
                         }
@@ -684,6 +661,33 @@ FunctionsDrawer.FunctionsList.EditingToolbar.SetBinding<Thickness, Thickness>(Xa
                     TouchScreen.BeginDrag(FullKeyboardView, Screen);
                 }
             };
+
+            /*KeyboardManager.Typed += (keystroke) =>
+            {
+                if (BasicAnswer.Parent != null)
+                {
+                    if (!SoftKeyboard.Cursor.IsDescendantOf(this))
+                    {
+                        AddCalculation();
+                    }
+
+                    return;
+                }
+
+                if (keystroke == KeyboardManager.BACKSPACE)
+                {
+                    //if (CalculationFocus != null)
+                    //SoftKeyboard.Delete();
+                }
+                else if (keystroke != '=')
+                {
+                    //if (CalculationFocus == null)
+                    //if (SoftKeyboard.Cursor.Parent<Canvas>() == null)
+                    
+
+                    //SoftKeyboard.Type(keystroke.ToString());
+                }
+            };*/
         }
 
         public static int MaxBannerWidth = -1;
@@ -790,13 +794,70 @@ FunctionsDrawer.FunctionsList.EditingToolbar.SetBinding<Thickness, Thickness>(Xa
                 }
             };
 
-            Equation equation = new Equation(FocusedMathField = new MathEntry());
-            
-            //SoftKeyboard.MoveCursor(equation.LHS);
+            Equation equation = new Equation();
+            SoftKeyboard.MoveCursor(equation.LHS);
 
             calculation.Add(equation);
             Canvas.Children.Add(calculation, point);
         }
+
+        /*private void OnDescendantAdded(object sender, ElementEventArgs e)
+        {
+            if (e.Element is Calculation)
+            {
+                //(e.Element as Calculation).Touch += DragOnCanvas;
+            }
+            else if (e.Element is Equation equation)
+            {
+                if (e.Element.GetType() == typeof(Equation))
+                {
+                    //equation.LHS.Touch += EquationMoveCursor;
+                }
+                if (equation.RHS is Answer)
+                {
+                    //equation.RHS.Touch += DragAnswer;
+                }
+
+                //equation.Touch += MoveCalculation;
+            }
+            /*else if (e.Element is Link link)
+            {
+                link.Bind<Expression>(ContentView.ContentProperty, value =>
+                {
+                    value.Touch += DragLink;
+                });
+                /*link.PropertyChanged += (sender1, e1) =>
+                {
+                    if (e1.PropertyName == ContentView.ContentProperty.PropertyName)
+                    {
+                        link.MathContent.Touch += DragLink;
+                    }
+                };
+            }
+        }*/
+
+        /*private void DragAnswer(object sender, TouchEventArgs e)
+        {
+            if (sender is Answer answer && e.State == TouchState.Moving)
+            {
+                Link link = new Link(answer);
+                //link.MathContent.Touch += DragLink;
+                TouchScreen.BeginDrag(link, CanvasArea, answer);
+                link.StartDrag(Canvas);
+            }
+        }*/
+
+        /*private void DragLink(object sender, TouchEventArgs e)
+        {
+            if ((sender as View)?.Parent is Link link && e.State == TouchState.Moving)
+            {
+                if (!TouchScreen.Active)
+                {
+                    link.StartDrag(Canvas);
+                }
+                TouchScreen.BeginDrag(link, CanvasArea);
+            }
+        }*/
 
         private void ClearCanvas()
         {
@@ -854,26 +915,8 @@ FunctionsDrawer.FunctionsList.EditingToolbar.SetBinding<Thickness, Thickness>(Xa
 
         private void ExitCursorMode()
         {
-            FocusedMathField = SoftKeyboard.Cursor.Parent<MathEntry>();
-
-            Element parent = (SoftKeyboard.Cursor as View).Parent;
-            int index = SoftKeyboard.Cursor.Index();
-            SoftKeyboard.Cursor.Remove();
-
-            if (FocusedMathField.BindingContext is MathEntryViewModel entry && parent is Layout<View> layout)
-            {
-                bool isAfter = index == layout.Children.Count;
-                //entry.SetCursor(layout.Children[index - (isAfter ? 1 : 0)], isAfter);
-            }
-
-            /*Layout<View> parent = (SoftKeyboard.Cursor as View).Parent as Layout<View>;
-            int index = parent.IndexOf(SoftKeyboard.Cursor);
-            View left = index > 0 ? parent.Children[index - 1] : null;
-            View right = index < parent.Children.Count - 1 ? parent.Children[index + 1] : null;
-            (FocusedMathField.BindingContext as MathEntryViewModel)?.SetCursor(left?.BindingContext, right?.BindingContext);*/
-
             //Climb up to the top of the tree structure
-            Calculation root = FocusedMathField.Root<Calculation>();
+            Calculation root = SoftKeyboard.Cursor.Root<Calculation>();
             /*Element root = SoftKeyboard.Cursor;
             while (!(root is Calculation))
             {
@@ -943,7 +986,7 @@ FunctionsDrawer.FunctionsList.EditingToolbar.SetBinding<Thickness, Thickness>(Xa
             {
                 Expression e = view as Expression;
 
-                if (loc.X <= e.PadLeft || loc.X >= e.Width - e.PadRight)
+                if (e.Editable && loc.X <= e.PadLeft || loc.X >= e.Width - e.PadRight)
                 {
                     return new Tuple<Expression, int>(e, Math.Min(e.ChildCount(), e.ChildCount() * leftOrRight));
                 }
@@ -951,12 +994,11 @@ FunctionsDrawer.FunctionsList.EditingToolbar.SetBinding<Thickness, Thickness>(Xa
             else if (view.Parent is Expression)
             {
                 Expression parent = view.Parent as Expression;
-                return new Tuple<Expression, int>(parent, parent.IndexOf(view) + leftOrRight);
 
-                /*if (parent.Editable)
+                if (parent.Editable)
                 {
-                    
-                }*/
+                    return new Tuple<Expression, int>(parent, parent.IndexOf(view) + leftOrRight);
+                }
             }
 
             return null;
@@ -980,7 +1022,7 @@ FunctionsDrawer.FunctionsList.EditingToolbar.SetBinding<Thickness, Thickness>(Xa
                     {
                         return GetViewAt(child as Layout<View>, point, out scaled);
                     }
-                    else if (layout is Expression)
+                    else if (layout.Editable())
                     {
                         scaled = point;
                         return child;

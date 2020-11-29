@@ -40,10 +40,10 @@ namespace Calculator
         }
     }*/
 
-    public class Answer : TouchableStackLayout
+    public class Answer : Expression
     {
         public event EventHandler<ChangedEventArgs<Operand>> Changed;
-        public event EventHandler<TextChangedEventArgs> FormChanged;
+        public event EventHandler<ChangedEventArgs<Expression>> FormChanged;
 
         public Polynomials PolynomialChoice = App.Polynomials;
         public Numbers NumberChoice = App.Numbers.Value;
@@ -53,10 +53,9 @@ namespace Calculator
         private Polynomials actualPolynomialForm;
         private Numbers actualNumbersForm;
 
-        public Expression Expression => Children.Count > 0 ? Children[0] as Expression : null;
         public Operand RawAnswer { get; private set; }
         public Operand answer { get; private set; }
-        private MathView[,,] allFormats = new MathView[2, 2, 2];
+        private Expression[,,] allFormats = new Expression[2, 2, 2];
         private List<Operand> formats = new List<Operand>();
 
         private TouchableStackLayout DegRadLabel;
@@ -139,7 +138,7 @@ namespace Calculator
         {
             Children.Clear();
 
-            allFormats = new MathView[2, 2, 2];
+            allFormats = new Expression[2, 2, 2];
 
             RawAnswer = answer;
             Operand old = this.answer;
@@ -165,7 +164,7 @@ namespace Calculator
 
         private bool SwitchToNextValidFormat(Polynomials polynomials, Numbers numbers, bool existingFormat = true)
         {
-            MathView e;
+            Expression e;
             int i = 0;
             do
             {
@@ -198,7 +197,7 @@ namespace Calculator
                     if (o != null)
                     {
                         //print.log("rendering new answer");
-                        e = new MathView { Text = o.ToString() };
+                        e = new Expression(Xamarin.Forms.MathDisplay.Reader.Render(o.ToString()));
 
                         /*PanGestureRecognizer pgr = new PanGestureRecognizer();
                         pgr.PanUpdated += (sender, e1) =>
@@ -215,12 +214,12 @@ namespace Calculator
 
                 if (e != null)
                 {
-                    MathView old = allFormats[(int)actualPolynomialForm, (int)actualNumbersForm, (int)TrigChoice];
+                    Expression old = allFormats[(int)actualPolynomialForm, (int)actualNumbersForm, (int)TrigChoice];
 
                     actualPolynomialForm = polynomials;
                     actualNumbersForm = numbers;
 
-                    FormChanged?.Invoke(this, new TextChangedEventArgs(old.ToString(), e.ToString()));
+                    FormChanged?.Invoke(this, new ChangedEventArgs<Expression>(old, e));
 
                     break;
                 }

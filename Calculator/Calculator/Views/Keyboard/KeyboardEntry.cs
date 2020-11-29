@@ -19,7 +19,7 @@ namespace Calculator
 
         public static KeyboardEntry Instance;
 
-        public MathEntryViewModel ViewModel => BindingContext as MathEntryViewModel;
+        public MathFieldViewModel ViewModel => BindingContext as MathFieldViewModel;
 
         public KeyboardEntry()
         {

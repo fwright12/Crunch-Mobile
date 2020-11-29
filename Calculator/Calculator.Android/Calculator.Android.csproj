@@ -150,7 +150,7 @@
       <Version>2.4.11.982</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Forms">
-      <Version>4.7.0.1142</Version>
+      <Version>4.7.0.1080</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.GooglePlayServices.Ads.Lite">
       <Version>71.1720.1</Version>

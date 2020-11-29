@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "6CIjh7TE8P5xI2rljXPEebkeZ9liKwtsdvqzPD948KCDkwgTAYHFwmL/tqSCEOchVm8sgp9DqGQuLC6CvufQbg==",
+  "dgSpecHash": "FwKpXm1izkxSMdM9SJqhRVplkl4IqdJyKvhy5FeKkJqkj2dBnDzEZLiQDcdAoJwKMslkf1GKUnT/Yr5r8jPZ6g==",
   "success": true,
   "projectFilePath": "C:\\Users\\Flint\\Documents\\Calculator Stuff\\Calculator\\Calculator\\Calculator.Android\\Calculator.Android.csproj",
   "expectedPackageFiles": [
@@ -91,7 +91,7 @@
     "C:\\Users\\Flint\\.nuget\\packages\\xamarin.essentials\\1.5.3.2\\xamarin.essentials.1.5.3.2.nupkg.sha512",
     "C:\\Users\\Flint\\.nuget\\packages\\xamarin.ffimageloading\\2.4.11.982\\xamarin.ffimageloading.2.4.11.982.nupkg.sha512",
     "C:\\Users\\Flint\\.nuget\\packages\\xamarin.ffimageloading.forms\\2.4.11.982\\xamarin.ffimageloading.forms.2.4.11.982.nupkg.sha512",
-    "C:\\Users\\Flint\\.nuget\\packages\\xamarin.forms\\4.7.0.1142\\xamarin.forms.4.7.0.1142.nupkg.sha512",
+    "C:\\Users\\Flint\\.nuget\\packages\\xamarin.forms\\4.7.0.1080\\xamarin.forms.4.7.0.1080.nupkg.sha512",
     "C:\\Users\\Flint\\.nuget\\packages\\xamarin.google.android.material\\1.0.0.1\\xamarin.google.android.material.1.0.0.1.nupkg.sha512",
     "C:\\Users\\Flint\\.nuget\\packages\\xamarin.google.guava.listenablefuture\\1.0.0.2\\xamarin.google.guava.listenablefuture.1.0.0.2.nupkg.sha512",
     "C:\\Users\\Flint\\.nuget\\packages\\xamarin.googleplayservices.ads.base\\71.1720.0\\xamarin.googleplayservices.ads.base.71.1720.0.nupkg.sha512",
